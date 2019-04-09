@@ -1,7 +1,7 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Pro Integra SL, Pixelada S. Coop. And <info@pixelada.org>.
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -1047,7 +1047,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    char * sql =NULL;
 	    std::string clientCode = std::to_string(formEntrada->retArrCosCode());
 
-	    if(formEntrada->retArrCosCode() == DEF_OUR_COSTUMER_CODE) //SI ES UNA TRANSFERENCIA LO DEFINIMOS COMO TIPO DE MOVIMIENTO AQUI
+	    if(formEntrada->retArrCosCode() == DEF_BIORECICLAJE_CODE) //SI ES UNA TRANSFERENCIA LO DEFINIMOS COMO TIPO DE MOVIMIENTO AQUI
 	      formEntrada->setArrMovType(DEF_MOV_TRANSFER);
 	    else
 	      formEntrada->setArrMovType(DEF_MOV_ENTRADA);
@@ -1184,6 +1184,16 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		    col++;
 		  }
 	      }
+	    formEntrada->allProductos.clear();
+	    formEntrada->allProductos = d->allProductos;
+	    formEntrada->allProductos2.clear();
+	    formEntrada->allProductos2 = d->allProductos2;
+	    formEntrada->allProductos3.clear();
+	    formEntrada->allProductos3 = d->allProductos3;
+	    formEntrada->allProductosCodes.clear();
+	    formEntrada->allProductosCodes = d->allProductosCodes;
+	    formEntrada->allProductosLers.clear();
+	    formEntrada->allProductosLers = d->allProductosLers;	    
 
 	    std::vector <std::string> allProdsCodes4Combo;
 	    for (int i=0; i < d->allProductos.size(); i++)
@@ -1301,7 +1311,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    //operator comment
 	    refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 	    //COSTUMER
-	    formEntrada->setArrCosCode(DEF_OUR_COSTUMER_CODE);	    
+	    formEntrada->setArrCosCode(DEF_BIORECICLAJE_CODE);	    
 	    formEntrada->setAllArrCostumerData(localDatabase);
 	    pvSetText(p,EDITCLIENTES,formEntrada->retArrCosName().c_str());	    
 	    //PRODUCT
@@ -1406,10 +1416,10 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	  break;
 	case 1024://retrieving all DI data
 	  {
-	    costumer * ourId = new costumer(DEF_OUR_COSTUMER_CODE,localDatabase);
+	    costumer * ourId = new costumer(DEF_BIORECICLAJE_CODE,localDatabase);
 	    formEntrada->setOurId(ourId);
 	    delete ourId;
-	    formEntrada->setAllDiData(localDatabase, myStation, DEF_OUR_COSTUMER_CODE);
+	    formEntrada->setAllDiData(localDatabase, myStation, DEF_BIORECICLAJE_CODE);
 	  }
 	  break;
 	case 1025: //transición pesaje2
@@ -1822,7 +1832,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  pvClear(p,COMBOCLIENTES);
 	  d->allClientes.clear();
 	}
-      else if(formEntrada->retArrCosCode()>=0) //si tenemos elegido un cliente pasamos al estado 
+      else if(formEntrada->retArrCosCode()>0) //si tenemos elegido un cliente pasamos al estado 
 	{
 	  pvClear(p,COMBOCLIENTES);
 	  pvSetText(p,COMBOCLIENTES,formEntrada->retArrCosName().c_str());
@@ -1853,6 +1863,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  formEntrada->resetArrCostumer();
 	  d->enFutEstado = 10;
 	  pvClear(p,COMBOPRODUCTOS);
+	  formEntrada->allClienteProds.clear();
 	}
       else if(d->cancelar) //cancel form
 	{
@@ -2137,6 +2148,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  formEntrada->resetArrCostumer();
 	  d->enFutEstado = 110;
 	  pvClear(p,COMBOPRODUCTOS);
+	  formEntrada->allClienteProds.clear();
 	}
       if(d->cancelar) //cancel form
 	{
