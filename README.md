@@ -1,4 +1,4 @@
-# piResiduos
+# Pixelada S. Coop. and. Fork of piResiduos
 garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server.
 developed using pvbrowser(https://github.com/pvbrowser/pvb) SCADA framework.
 
@@ -46,7 +46,7 @@ Happy Hacking!
 ## license and copyright
  This file is part of PiResiduos.
 
- Copyright 2017-2019, Prointegra SL.
+ Copyright 2017-2019, Pro Integra SL and Pixelada S. Coop. And.
 
  PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
