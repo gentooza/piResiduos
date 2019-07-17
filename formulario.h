@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Prointegra SL
+Copyright 2019, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -267,6 +268,9 @@ class  baseForm
   virtual int storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected){return -1;};
   virtual int delTransit(int index, std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code){return -1;};
   void storeMov(std::string& localSql,std::string& remoteSql,station *& myStation, qtDatabase & localDatabase);
+  /*!function for checking last movement stored, for redundancy purposes*/
+  void check_last(std::string& remoteSql,station *& myStation);
+  
   virtual int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected){return -1;};
   virtual int storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my_remote_database, int remote_host_connected){return -1;};
   //plates

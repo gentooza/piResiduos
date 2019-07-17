@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Prointegra SL 
+Copyright 2019, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -559,6 +560,14 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
   mysqlQuery += values;
   mysqlQuery += ")";
 }
+
+/*!function for checking last movement stored, for redundancy purposes*/
+void baseForm::check_last(std::string& remoteSql,station *& myStation)
+{
+  remoteSql = "select * from movimientos where CODIGO_MOV = " + retDepMovCode();
+  return;
+}
+
 
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
 {
