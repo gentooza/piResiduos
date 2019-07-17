@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Pro Integra SL.
+Copyright 2019, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -41,12 +42,33 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
       log_message(str_log_message, 1);
       if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //SYNCRONIZED
 	{
-	  log_message("(DESCARGA) registro en BD remota parece OK", 1);
-	  sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
+	  log_message("(DESCARGA) registro en BD remota parece OK ",1);
+	  int sync=1;
+	  //RECHECK!
+	  check_last(mysqlQuery,depDestinationStation);
+	  str_log_message = "(DESCARGA) chequeo redundante en BD remota -> ";
+	  str_log_message += mysqlQuery;
+	  log_message(str_log_message, 1);
+	  if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
+	    sync=0;
+	  else
+	    {
+	      if(remoteDatabase.retData2().empty())
+		sync=0;
+	    }
+	  
+	  if(sync)
+	    {
+	      log_message("(DESCARGA) chequeo redundante en BD remota parece OK", 1);
+	      sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
+	    }
+	  else
+	    log_message("(DESCARGA) chequeo redundante en BD remota parece que FALLÓ", 1);
+	  
 	  str_log_message = "(DESCARGA) en BD local -> ";
 	  str_log_message += sqliteQuery;
 	  log_message(str_log_message, 1);
-	  if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
+	  if(!localDatabase.query(NULL,sqliteQuery.c_str())) //SAVE TO LOCAL SERVER
 	    {
 	      log_message("(DESCARGA) registro en BD local parece OK", 1);
 	      //DELETING TRANSIT
@@ -122,6 +144,7 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
 	      log_message("(DESCARGA) registro en BD local parece ERROR", 2);
 	      ret = -2;
 	    }
+
 	}
       else
 	{

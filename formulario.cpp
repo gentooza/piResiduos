@@ -568,7 +568,6 @@ void baseForm::check_last(std::string& remoteSql,station *& myStation)
   return;
 }
 
-
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
 {
    int ret;

@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Prointegra SL.
+Copyright 2019, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -728,6 +729,7 @@ static void globalSyncronization(PARAM *p, DATA* d, baseForm *& myForm)
       DatabaseData_chkd = 0;
     }
   log_message("(SINCRO) Executing global syncronization", 1);
+  log_message("(SINCRO) ping to " + remoteDatabaseData.db_host + " port:" + std::to_string(DatabaseData_chkd), 1);
   if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
     {      
       //syncReconnectIfNeeded();

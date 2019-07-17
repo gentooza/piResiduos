@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2019, Prointegra SL.
+Copyright 2019, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -478,6 +479,7 @@ std::string zeroPadNumber(int num, int stringLength)
 /*! isConnected(int elementId)
 check if server connection is possible, elementId from enum in pvapp.h
 returns 0 if unavailable*/
+// trying method from https://stackoverflow.com/questions/26365575/gethostbyname-h-addr-list-incorrect-first-bit
 int isConnected(const char* address, int port)
 {
   int ret = 0;
@@ -516,7 +518,20 @@ int isConnected(const char* address, int port)
 		  ret = 1;
 		  close(sockfd);
 		}
+	      	      else
+		
+		  std::cout << "CONNECT FAIL! : "<< strerror(errno) << " to host:" <<  (char *)server->h_addr <<std::endl;
+		  //trying method 2 by IP
+		  // sprintf(ip_address,"%d.%d.%d.%d",(unsigned char)(server->h_addr_list[0][0]),
+		  //	  (unsigned char)(server->h_addr_list[0][1]),
+		  //	  (unsigned char)(server->h_addr_list[0][2]),
+		  //	  (unsigned char)(server->h_addr_list[0][3]));
+		  //method=0;
+		
 	    }
+	  else
+	    std::cout << "SERVER NULO!\n" << std::endl;
+	    
 	}
       
       else
@@ -531,6 +546,8 @@ int isConnected(const char* address, int port)
 	      ret = 1;
 	      close(sockfd);
 	    }
+	  else
+	    std::cout << "CONNECT 2 FAIL!\n" <<std::endl;
 	}
       
     }
