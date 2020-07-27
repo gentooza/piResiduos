@@ -1048,6 +1048,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    char * sql =NULL;
 	    std::string clientCode = std::to_string(formEntrada->retArrCosCode());
             int istation_type = 0;
+	    myStation->getType(istation_type);
 	    if(formEntrada->retArrCosCode() == DEF_BIORECICLAJE_CODE) //SI ES UNA TRANSFERENCIA LO DEFINIMOS COMO TIPO DE MOVIMIENTO AQUI
 	      formEntrada->setArrMovType(DEF_MOV_TRANSFER);
 	    else if(istation_type == 3) //deposit
@@ -1055,9 +1056,9 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    else
 	      formEntrada->setArrMovType(DEF_MOV_ENTRADA);
 
-	    std::string station_type;
-	    myStation->getType(station_type);
-	    selProdsAllowedToClient(sql,clientCode.c_str(),station_type.c_str(),true);
+	    std::string strstation_type;
+	    myStation->getType(strstation_type);
+	    selProdsAllowedToClient(sql,clientCode.c_str(),strstation_type.c_str(),true);
 	    localDatabase.query(p,sql);
 	    localDatabase.query(p,"select * from resultado");	
 	    populateProdsCombo(p,COMBOPRODUCTOS,localDatabase.retData2(),true);
