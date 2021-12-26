@@ -1,0 +1,38 @@
+# Compiled Object files
+*.o
+
+# Compiled Dynamic libraries
+*.so
+
+# Compiled Static libraries
+*.la
+*.a
+
+#binary generated database
+*.db
+
+#garbage
+*~
+
+# Executables
+piResiduos
+
+# generated docs
+informe.pdf
+
+#folders
+backup/
+camera/
+logs/
+saves/
+WacomGSS/
+lib/
+extras/libharu
+extras/image
+
+#closed source
+tableta.cpp
+tableta.h
+
+# secrets
+config.ini
