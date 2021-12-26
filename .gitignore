@@ -38,9 +38,9 @@ tableta.h
 config.ini
 
 #custom images
-images/log_nuevo_completo_transp.png
-images/log_nuevo_completo_transp_red.png
-images/logo_costumer_trans.png
-images/logo_redux.png
-images/mural_costumer.png
-images/sellotrans.png
+image/log_nuevo_completo_transp.png
+image/log_nuevo_completo_transp_red.png
+image/logo_costumer_trans.png
+image/logo_redux.png
+image/mural_costumer.png
+image/sellotrans.png
