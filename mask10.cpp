@@ -634,10 +634,10 @@ static int generated_defineMask(PARAM *p)
   pvSetFont(p,OUTPUT,"Roboto",9,0,0,0,0);
 
 
-  pvQImage(p,LOGOBIO,0,"image/logo_bioreciclaje_trans.png",&w,&h,&depth);
+  pvQImage(p,LOGOBIO,0,"image/logo_costumer_trans.png",&w,&h,&depth);
   pvSetGeometry(p,LOGOBIO,1255,915,275,95);
   pvSetFont(p,LOGOBIO,"Default",9,0,0,0,0);
-  pvSetWhatsThis(p,LOGOBIO,pvtr("image/logo_bioreciclaje_trans.png"));
+  pvSetWhatsThis(p,LOGOBIO,pvtr("image/logo_costumer_trans.png"));
 
 
   pvQImage(p,LOGOPRO,0,"image/log_nuevo_completo_transp_red.png",&w,&h,&depth);

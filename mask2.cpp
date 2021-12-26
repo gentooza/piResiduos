@@ -1383,7 +1383,7 @@ static int generated_defineMask(PARAM *p)
   pvSetGeometry(p,OUTPUT,5,940,1240,70);
   pvSetFont(p,OUTPUT,"Sans Serif",9,0,0,0,0);
 
-  pvQImage(p,LOGOBIO,0,"image/logo_bioreciclaje_trans.png",&w,&h,&depth);
+  pvQImage(p,LOGOBIO,0,"image/logo_costumer_trans.png",&w,&h,&depth);
   pvSetGeometry(p,LOGOBIO,1250,935,255,75);
   pvSetFont(p,LOGOBIO,"Default",9,0,0,0,0);
   pvSetWhatsThis(p,LOGOBIO,pvtr("image/image.jpg"));

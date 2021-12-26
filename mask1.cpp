@@ -66,7 +66,7 @@ static int generated_defineMask(PARAM *p)
   pvStartDefinition(p,ID_END_OF_WIDGETS);
 
 
-  pvQImage(p,obj1,0,"image/mural_bioreciclaje.jpg",&w,&h,&depth);
+  pvQImage(p,obj1,0,"image/mural_costumer.jpg",&w,&h,&depth);
   pvSetGeometry(p,obj1,-30,40,1910,1074);
   pvSetFont(p,obj1,"Sans Serif",9,0,0,0,0);
   pvSetWhatsThis(p,obj1,pvtr("image/logo_redux.png"));
