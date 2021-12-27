@@ -1,19 +1,20 @@
 /*
-This file is part of PiResiduos.
+This file is part of PixResiduos.
 
-Copyright 2017-2019, Pro Integra SL, Pixelada S. Coop. And <info@pixelada.org>.
+Copyright 2017-2019, Pro Integra SL.
+Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PixResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PixResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -1233,23 +1234,21 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    int DatabaseData_chkd;
 	    int remote_connected = 0;
 	    try
-	      {
-		DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
-	      }
+	    {
+		    DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
+	    }
 	    catch(...)
-	      {
-		DatabaseData_chkd = 0;
-	      }	    
+	    {
+        DatabaseData_chkd = 0;
+	    }	    
 	    if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
 	      remote_connected = 1;
-	    
+
 	    if(formEntrada->storeTransit(localDatabase,remoteDatabase,myStation,remote_connected))
-	      {
-		 console.push_back("AVISO: no se consiguió escribir el movimiento a tránsito en la base de datos remota, sincronice cuando pueda");
-		 
-		 console.push_back("AVISO: tenga en cuenta que si es un movimiento de transferencia, este seguirá en el sistema, pida a administración que lo borren");
-	      }
-	    cameraSemaphore(1,1,globalConfiguration.traffic_lights_enabled);
+	    {
+		    console.push_back("AVISO: no se consiguió escribir el movimiento a tránsito en la base de datos remota, sincronice cuando pueda");
+		    console.push_back("AVISO: tenga en cuenta que si es un movimiento de transferencia, este seguirá en el sistema, pida a administración que lo borren");
+	    }
 	  }
 	  break;
 	case 101: //matrícula no registrada
@@ -2068,10 +2067,10 @@ static int maquinaEstados(PARAM *p, DATA *d)
       break;
     case 99: //descarga realizada correctamente, vamos a transición
       resetForm(p,d,formEntrada);
-	  cameraSemaphore(1,1,globalConfiguration.traffic_lights_enabled);
       d->enFutEstado = 0;
+      cameraSemaphore(1,1,globalConfiguration.traffic_lights_enabled);
       console.push_back("INFO: vehículo a tránsito interno");
-      break;       
+    	break;       
     case 101:
       {
 	if(!d->entrarDescargar) //selector a salirDescargar
@@ -2769,20 +2768,20 @@ static int maquinaEstados(PARAM *p, DATA *d)
       break;
     case 1099:
     	if(!d->error)
-		{
-			cameraSemaphore(1,1,globalConfiguration.traffic_lights_enabled);
+		  {
 	  		pvSetText(p,EDITDIDEF,"");
 	  		pvSetText(p,EDITPESOTARA,"");
 	  		pvSetText(p,EDITCAM_E2,"");
 	  		resetForm(p,d,formEntrada);
 	  		d->enFutEstado = 1000;
+        cameraSemaphore(2,1,globalConfiguration.traffic_lights_enabled);
 	  		console.push_back("INFO: Formulario finalizado!");
-		}
-      	else
-		{
+		  }
+      else
+		  {
 	  		d->error=0;
 	  		d->enFutEstado = 1030;
-		}
+		  }
     	break;
       
     case 1035: //fin de firma
