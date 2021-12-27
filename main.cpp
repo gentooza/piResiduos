@@ -1,20 +1,20 @@
 /*
-This file is part of PiResiduos.
+This file is part of PixResiduos.
 
 Copyright 2017-2019, Pro Integra SL.
 Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PixResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PixResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -35,7 +35,7 @@ If not, see <https://www.gnu.org/licenses/>.
 //rlPPIClient        ppi(ppidaemon_MAILBOX,ppidaemon_SHARED_MEMORY,ppidaemon_SHARED_MEMORY_SIZE);
 
 
-const char* sVERSION = "piResiduos v0.1.9dev (20211215)";
+const char* sVERSION = "piResiduos v0.1.9dev (20211227)";
 
 
 camera* camera1;
