@@ -1,19 +1,20 @@
 /*
-This file is part of PiResiduos.
+This file is part of PixResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2021, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PixResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PixResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -144,6 +145,7 @@ BUTDELETRANS,
   FRAMESEMSALIDA,
   LABSEMSALIDA,
   IMICONSEMSALIDA,
+  BUTSEMSALIDA,
   /********************/
   LABTIME, //-7
   LABDATE, //-6
@@ -273,6 +275,7 @@ static const char *widgetName[] = {
   "FRAMESEMSALIDA",
   "LABSEMSALIDA",
   "IMICONSEMSALIDA",
+  "BUTSEMSALIDA",
   /********************/
   "LABTIME",
   "LABDATE",
@@ -309,6 +312,7 @@ static const char *widgetName[] = {
   "",
   "",
     "",
+  "",
   "",
   "",
   "",
@@ -482,6 +486,7 @@ static const char *widgetName[] = {
   "",
   "",
   "",
+  "",
     "",
   "",
     "",
@@ -641,6 +646,7 @@ static const char *widgetName[] = {
   TQFrame,
   TQLabel,
   TQImage,
+  TQPushButton,
   /*******************************************/
   TQLabel,
   TQLabel,
@@ -1192,7 +1198,12 @@ static int generated_defineMask(PARAM *p)
   pvSetFont(p,LABSEMSALIDA,"Default",14,1,1,0,0);
 
   pvQImage(p,IMICONSEMSALIDA,FRAMESEMSALIDA,"image/grey.png",&w,&h,&depth);
-  pvSetGeometry(p,IMICONSEMSALIDA,60,40,90,90);
+  pvSetGeometry(p,IMICONSEMSALIDA,30,40,90,90);
+
+  pvQPushButton(p,BUTSEMSALIDA,FRAMESEMSALIDA);
+  pvSetGeometry(p,BUTSEMSALIDA,80,35,70,50);
+  pvSetText(p,BUTSEMSALIDA,pvtr("ENCENCIDO\nMANUAL"));
+  pvSetFont(p,BUTSEMSALIDA,"Verdana",7,1,0,0,0);
  
   pvSetEnabled(p,FRAMESEMSALIDA,0);
   /*******************************************/

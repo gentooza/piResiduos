@@ -1,20 +1,20 @@
 /*
-This file is part of PiResiduos.
+This file is part of PixResiduos.
 
 Copyright 2017-2018, Prointegra SL.
-Copyright 2019 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PixResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PixResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -163,104 +163,117 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 {
   if(p == NULL || id == 0 || d == NULL) return -1;
   if(id == BUTCAM)
-    {
-      if(formEntrada->getState()  == 0 || formEntrada->getState()  == 2 || formEntrada->getState()  == 101)
-	{
-	  d->plateTaking = 1;
-	}
-    }
+  {
+    if(formEntrada->getState()  == 0 || formEntrada->getState()  == 2 || formEntrada->getState()  == 101)
+	  {
+	    d->plateTaking = 1;
+	  }
+  }
   else if(id == BUTEDITCAM)
-    {
-      pvInputDialog(p,BUTEDITCAM,"Inserte valor para la matrícula de entrada:","");
-    }
+  {
+    pvInputDialog(p,BUTEDITCAM,"Inserte valor para la matrícula de entrada:","");
+  }
   else if(id == BUTCANCELAR_E1)
-    {   
-      //std::cout << "DEBUG: formulario cancelado" << std::endl;
-      d->cancelar=1;
-    }
+  {   
+    //std::cout << "DEBUG: formulario cancelado" << std::endl;
+    d->cancelar=1;
+  }
   else if(id == BUTRETROCEDER_E1)
-    {
-      d->retroceder=1;
-    }
+  {
+    d->retroceder=1;
+  }
   else if(id == BUTPROCEDER_E1)
-    {   
-      pvText(p,EDITCOMMENTENT);
-      pvText(p,EDITCOMMENTSAL);
-      d->proceder=1;
-    }
+  {   
+    pvText(p,EDITCOMMENTENT);
+    pvText(p,EDITCOMMENTSAL);
+    d->proceder=1;
+  }
   else if(id == BUT2) // a salidas
-    {
-      //PT type
-      pvText(p,EDITCOMMENTENT);
-      pvText(p,EDITCOMMENTSAL);
-      show_mask5(p);
-    }
+  {
+    //PT type
+    pvText(p,EDITCOMMENTENT);
+    pvText(p,EDITCOMMENTSAL);
+    show_mask5(p);
+  }
   else if(id == BUT3) // a configuración
-    {
-      pvText(p,EDITCOMMENTENT);
-      pvText(p,EDITCOMMENTSAL);
-      show_mask2(p);
-    }
+  {
+    pvText(p,EDITCOMMENTENT);
+    pvText(p,EDITCOMMENTSAL);
+    show_mask2(p);
+  }
   else if(id == BUTFIRMAR)
-    {
-      d->firmar = 1;
-    }
+  {
+    d->firmar = 1;
+  }
   else if(id == BUTPESOENT)
-    {
-      d->pesaje1 = 1;
-    }
+  {
+    d->pesaje1 = 1;
+  }
   else if(id == BUTEDITPESOENT)
-    {
-      pvInputDialog(p,BUTEDITPESOENT,"Inserte valor de pesaje en entrada a planta del transporte:","");
-    }
+  {
+    pvInputDialog(p,BUTEDITPESOENT,"Inserte valor de pesaje en entrada a planta del transporte:","");
+  }
   else if(id == BUTPESOTARA)
-    {
-      d->pesaje2 = 1;
-    }
+  {
+    d->pesaje2 = 1;
+  }
   else if(id == BUTEDITPESOSAL)
-    {
-      pvInputDialog(p,BUTEDITPESOSAL,"Inserte valor de pesaje en salida de planta del transporte:","");      
-    }
-   else if (id == BUTRETENER)
-     {
-        d->retroceder = 1;       
-     }
-   else if(id == BUTEDITDIDEF)
-     {
-       pvText(p,EDITCOMMENTENT);
-       pvText(p,EDITCOMMENTSAL);
-       d->editDI = 1;
-     }
-   else if(id == BUTTEST)
-     d->test=1;
-   else if(id == BUTSINCRONIZA) //manual SINCRONIZATION
-     {
-       globalSyncronization(p,d,formEntrada);
-       actualizaForm(p,d, formEntrada->getState());
-       //commons
-       popteTransito(p,d,TABLATRANSITO,formEntrada);
-      }
-   else if(id == BUTCAM_E2)
-    {	
-      if(formEntrada->getState()  == 1000)
-	{
-	  d->plateTaking = 1;
-	}
-    }
-   else if(id == BUTEDITCAM2)
-     pvInputDialog(p,BUTEDITCAM2,"Inserte valor para la matrícula de entrada:","");
-   else if(id == BUTDELETRANS)
-     {
-       if(d->camionElegido >=0 && !d->pre_transito_plate.empty())
-	 {
-	   std::string message = "¿Desea eliminar el transporte con matrícula/código: " + d->pre_transito_plate + " de la tabla de tránsito interna?";
-	   pvMessageBox(p,BUTDELETRANS,BoxWarning,message.c_str(),MessageBoxOk ,MessageBoxCancel,0);
-	 }
-     }
+  {
+    pvInputDialog(p,BUTEDITPESOSAL,"Inserte valor de pesaje en salida de planta del transporte:","");      
+  }
+  else if (id == BUTRETENER)
+  {
+    d->retroceder = 1;       
+  }
+  else if(id == BUTEDITDIDEF)
+  {
+    pvText(p,EDITCOMMENTENT);
+    pvText(p,EDITCOMMENTSAL);
+    d->editDI = 1;
+  }
+  else if(id == BUTTEST)
+  {
+    d->test=1;
+  }
+  else if(id == BUTSINCRONIZA) //manual SINCRONIZATION
+  {
+    globalSyncronization(p,d,formEntrada);
+    actualizaForm(p,d, formEntrada->getState());
+    //commons
+    popteTransito(p,d,TABLATRANSITO,formEntrada);
+  }
+  else if(id == BUTCAM_E2)
+  {	
+    if(formEntrada->getState()  == 1000)
+	  {
+	    d->plateTaking = 1;
+	  }
+  }
+  else if(id == BUTEDITCAM2)
+  {
+    pvInputDialog(p,BUTEDITCAM2,"Inserte valor para la matrícula de entrada:","");
+  }
+  else if(id == BUTDELETRANS)
+  {
+    if(d->camionElegido >=0 && !d->pre_transito_plate.empty())
+	  {
+	    std::string message = "¿Desea eliminar el transporte con matrícula/código: " + d->pre_transito_plate + " de la tabla de tránsito interna?";
+	    pvMessageBox(p,BUTDELETRANS,BoxWarning,message.c_str(),MessageBoxOk ,MessageBoxCancel,0);
+	  }
+  }
+  // manual entrance trafficlights
   else if(id == BUTSEMENTRADA)
   {
-    cameraSemaphore(1,1,globalConfiguration.traffic_lights_enabled);
+    // enabled force to 1, last parameter
+    cameraSemaphore(1,1,1);
   }
+  // manual exit trafficlights
+  else if(id == BUTSEMSALIDA)
+  {
+    // enabled force to 1, last parameter
+    cameraSemaphore(2,1,1);
+  }
+
   return 0;
 }
 
