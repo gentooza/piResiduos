@@ -937,6 +937,7 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
 									if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB, 0))
 									{			   
 										cameras.at(location-1).statusB = 0;
+										sleep(1); //testing
 										if(!cameraInstance->setRelayOn(cameras.at(location-1).relayA, -1))
 											cameras.at(location-1).statusA = 1;
 									}
@@ -976,9 +977,11 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
 								std::cout << "(AVISO) Conexión a cámara retorna " << ret << std::endl;
 								if(ret > 0)
 								{
-									if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB,cameras.at(location-1).lastGreen.seconds*1000))
+									// if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB,cameras.at(location-1).lastGreen.seconds*1000))
+									if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB, -1))
 									{
 										cameras.at(location-1).statusB = 1;
+										sleep(1); //testing
 										cameras.at(location-1).lastGreen.begin =  std::chrono::steady_clock::now();
 										if(!cameraInstance->setRelayOn(cameras.at(location-1).relayA, 0))
 											cameras.at(location-1).statusA = 0;
