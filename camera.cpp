@@ -109,9 +109,9 @@ int camera::setRefTime(int ms)
     ms = 59999;
 
   if (ms >= 1000)
-    {
-      seconds = ms/1000;
-    }
+  {
+    seconds = ms/1000;
+  }
   camMs = ms;
   milliseconds = ms - seconds*1000;
   if(referenceT != NULL)
