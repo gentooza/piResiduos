@@ -1,6 +1,15 @@
-# 2021/12/26 version 0.2.0rc1 
+# 2021/12/28 version 0.1.9dev
 
 forked from last piResiduos production version
+
+## improves
+
++ manual trafficlights control in input/output materials processes.
+
+## fixes
+
++ automatic trafficlights turning on/off on input/output materials processes. Added sleep function between camera calls.
+
 
 ```
  This file is part of PixResiduos.

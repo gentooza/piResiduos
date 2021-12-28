@@ -1,19 +1,20 @@
 /*
-This file is part of PiResiduos.
+This file is part of PixResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PixResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PixResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -74,6 +75,7 @@ enum {
   FRAMESEMENTRADA,
   LABSEMENTRADA,
   IMICONSEMENTRADA,
+  BUTSEMENTRADA,
   /********************/
   /*FRAME CON EL ICONO DEL PERMISO DE ENTRADA*/
   FRAMEPERMISOENTRADA, 
@@ -136,6 +138,7 @@ BUTDELETRANS,
   FRAMESEMSALIDA,
   LABSEMSALIDA,
   IMICONSEMSALIDA,
+  BUTSEMSALIDA,
   /********************/
   LABTIME, //-7
   LABDATE, //-6
@@ -195,6 +198,7 @@ BUTDELETRANS,
   "FRAMEPERMISOENTRADA",
   "LABPERMISOENTRADA",
   "IMICONPERMISOENTRADA",
+  "BUTSEMENTRADA",
   /********************/
   /*FRAME CON EL ICONO DEL PERMISO DE ENTRADA*/
   "FRAMEPERMISOENTRADA",
@@ -257,6 +261,7 @@ BUTDELETRANS,
   "FRAMESEMSALIDA",
   "LABSEMSALIDA",
   "IMICONSEMSALIDA",
+  "BUTSEMSALIDA",
   /********************/
   "LABTIME",
   "LABDATE",
@@ -307,6 +312,8 @@ BUTDELETRANS,
   "",
   "",
     "",
+  "",
+  "",
   "",
   "",
   "",
@@ -454,6 +461,8 @@ BUTDELETRANS,
   "",
   "",
   "",
+  "",
+  "",
     "",
     "",
   "",
@@ -557,6 +566,7 @@ BUTDELETRANS,
   TQFrame,
   TQLabel,
   TQImage,
+  TQPushButton,
   /*******************************************/
   /* FRAME CON EL ICONO DE PERMISO DE ENTRADA*/
   TQFrame,
@@ -619,6 +629,7 @@ BUTDELETRANS,
   TQFrame,
   TQLabel,
   TQImage,
+  TQPushButton,
   /*******************************************/
   TQLabel,
   TQLabel,
@@ -855,7 +866,7 @@ static int generated_defineMask(PARAM *p)
 
   /*FRAME DEL SEMÁFORO DE ENTRADA*/    
   pvQFrame(p,FRAMESEMENTRADA,CENTRALFORM,Box,Plain,1,1);
-  pvSetGeometry(p,FRAMESEMENTRADA,1375,10,155,90);
+  pvSetGeometry(p,FRAMESEMENTRADA,1340,10,190,90);
   pvSetFont(p,FRAMESEMENTRADA,"Verdana",12,1,0,0,0);
 
   pvQLabel(p,LABSEMENTRADA,FRAMESEMENTRADA);
@@ -865,6 +876,11 @@ static int generated_defineMask(PARAM *p)
 
   pvQImage(p,IMICONSEMENTRADA,FRAMESEMENTRADA,"image/grey.png",&w,&h,&depth);
   pvSetGeometry(p,IMICONSEMENTRADA,60,40,90,90);
+
+  pvQPushButton(p,BUTSEMENTRADA,FRAMESEMENTRADA);
+  pvSetGeometry(p,BUTSEMENTRADA,115,35,70,50);
+  pvSetText(p,BUTSEMENTRADA,pvtr("ENCENCIDO\nMANUAL"));
+  pvSetFont(p,BUTSEMENTRADA,"Verdana",7,1,0,0,0);
   
   pvSetEnabled(p,FRAMESEMENTRADA,0);
   /*******************************************/
@@ -1132,7 +1148,7 @@ static int generated_defineMask(PARAM *p)
 
   /*FRAME DEL SEMÁFORO DE SALIDA*/    
   pvQFrame(p,FRAMESEMSALIDA,CENTRALFORM,Box,Plain,1,1);
-  pvSetGeometry(p,FRAMESEMSALIDA,1330,480,117,90);
+  pvSetGeometry(p,FRAMESEMSALIDA,1330,430,117,130);
   pvSetFont(p,FRAMESEMSALIDA,"Verdana",12,1,0,0,0);
 
   pvQLabel(p,LABSEMSALIDA,FRAMESEMSALIDA);
@@ -1141,7 +1157,12 @@ static int generated_defineMask(PARAM *p)
   pvSetFont(p,LABSEMSALIDA,"Default",14,1,1,0,0);
 
   pvQImage(p,IMICONSEMSALIDA,FRAMESEMSALIDA,"image/grey.png",&w,&h,&depth);
-  pvSetGeometry(p,IMICONSEMSALIDA,35,40,90,90);
+  pvSetGeometry(p,IMICONSEMSALIDA,42,35,90,90);
+
+  pvQPushButton(p,BUTSEMSALIDA,FRAMESEMSALIDA);
+  pvSetGeometry(p,BUTSEMSALIDA,24,75,70,50);
+  pvSetText(p,BUTSEMSALIDA,pvtr("ENCENCIDO\nMANUAL"));
+  pvSetFont(p,BUTSEMSALIDA,"Verdana",7,1,0,0,0);
  
   pvSetEnabled(p,FRAMESEMSALIDA,0);
   /*******************************************/

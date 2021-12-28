@@ -35,7 +35,7 @@ If not, see <https://www.gnu.org/licenses/>.
 //rlPPIClient        ppi(ppidaemon_MAILBOX,ppidaemon_SHARED_MEMORY,ppidaemon_SHARED_MEMORY_SIZE);
 
 
-const char* sVERSION = "piResiduos v0.1.9dev (20211227)";
+const char* sVERSION = "piResiduos v0.1.9dev (20211228)";
 
 
 camera* camera1;

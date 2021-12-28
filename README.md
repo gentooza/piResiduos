@@ -1,15 +1,18 @@
 # Pixelada S. Coop. and. Fork of piResiduos
+
 garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server.
 developed using pvbrowser(https://github.com/pvbrowser/pvb) SCADA framework.
 
 ## dependencies
+
 + libharu >= 2.3.0
 + SmtpClient-for-Qt (https://github.com/bluetiger9/SmtpClient-for-Qt) as submodule inside lib folder.
 + pvbrowser (pvslib and rllib)
 + boost
 
 ## remote database connection and web administration page
-piResiduos is developed for working with a central remote MySQL database in mind, you'll need a VPS and it's connections for tunneling the database (SSH) and being able to syncronize, update, share, etc.
+
+pixResiduos is developed for working with a central remote MySQL database in mind, you'll need a VPS and it's connections for tunneling the database (SSH) and being able to syncronize, update, share, etc.
 
 Also there will be files app will backup via SSH tunneling.
 
@@ -19,20 +22,24 @@ put the ssh key for example in extras/ .
 
 for building the local database execute in terminal it's creations cript
 
-    sqlite3 bio.db < bio.sqlite3
+```
+sqlite3 bio.db < bio.sqlite3
+```
 
 ## remote server database structure
 
 see file bio.remote.
 
 ## hardware needed
+
 It was first designed using a privative signing pad, it has been removed in this free version, now I think I would use a software signing pad using dual screens.
 
 It uses scales, and we communicate it using a basic rs232 serial protocol, sending a command and receiving the weight. (we use boost, is easy to understand it protocol seeing source code) You can bypass it inserting plate by hand.
 
-It uses privative cameras for taking plates from trucks, they are from a Spanish company bad for free software but also technical support, so we have developed our own library using it's http API. You can bypass it inserting plate by hand.
+It uses privative cameras for taking plates from trucks, they are from a (now vanished) Spanish company bad for free software but also technical support, so we have developed our own library using it's http API. You can bypass it inserting plate by hand.
 
 ## Compile and execute
+
 It has been developed only for GNU/Linux, it's working now for real under ubuntu 16.04 (xenial)
 
 Once dependencies are installed or compiled and linked.
