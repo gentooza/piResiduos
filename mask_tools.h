@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2019-2022 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -981,8 +982,8 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
 									if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB, -1))
 									{
 										cameras.at(location-1).statusB = 1;
-										sleep(1); //testing
 										cameras.at(location-1).lastGreen.begin =  std::chrono::steady_clock::now();
+										sleep(1); //testing
 										if(!cameraInstance->setRelayOn(cameras.at(location-1).relayA, 0))
 											cameras.at(location-1).statusA = 0;
 									}
@@ -1069,6 +1070,56 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
 	{
     	str_log_message = "(CAMERA'S TRAFFIC LIGHTS)(WARNING!) camera's traffic lights not enabled, check your configuration";
 		log_message(str_log_message, 1);
+		if((location <= cameras.size()) && (location > 0))
+		{
+	  		if(on_off_check == -1) // only checking when not enabled, for turning them off
+	    	{
+				if(cameras.at(location-1).statusB)
+				{
+					if(isConnected(cameras.at(location-1).ip.c_str(),cameras.at(location-1).port))
+					{
+						camera* cameraInstance = new camera(cameras.at(location-1).ip,cameras.at(location-1).port);	 
+						try
+						{
+							std::cout << "(INFO) usando camera, ip:" << cameras.at(location-1).ip << " with port:" << cameras.at(location-1).port << std::endl;	      
+							cameraInstance->setRefTime(cameras.at(location-1).timeout);
+							ret = cameraInstance->connect();
+							std::cout << "(AVISO) Conexión a cámara retorna " << ret << std::endl;
+							if(ret > 0)
+							{
+								cameras.at(location-1).lastGreen.end = std::chrono::steady_clock::now();
+								if(std::chrono::duration_cast<std::chrono::seconds>(cameras.at(location-1).lastGreen.end - cameras.at(location-1).lastGreen.begin).count() >= cameras.at(location-1).lastGreen.seconds)
+								{
+									if(!cameraInstance->setRelayOn(cameras.at(location-1).relayB, 0))
+									{
+										cameras.at(location-1).statusB = 0;
+										if(!cameraInstance->setRelayOn(cameras.at(location-1).relayA, -1))
+											cameras.at(location-1).statusA = 1;
+									}
+								}
+							}
+							else
+							{
+								console.push_back("*ERROR* imposible usar la cámara, IP o puerto correctos? estamos en la misma red?");
+							}
+						}
+						catch(...)
+						{
+							console.push_back("*ERROR* imposible usar la cámara, IP o puerto correctos? estamos en la misma red?");
+						}
+						cameraInstance->disconnect();
+						delete cameraInstance;			      
+					}
+					else
+						console.push_back("*ERROR* ¡Imposible conectar con la cámara!");
+				}	
+				else 
+				{
+					str_log_message = "(CAMERA'S TRAFFIC LIGHTS)(*ERROR*) camera statusB bit activated!, cancelling CHECK";
+					log_message(str_log_message, 2);
+				}	
+			}
+		}
 	}
   	return; 
 }
