@@ -58,6 +58,7 @@ int findCodeInList(std::vector<std::string>,long);
 long retCodeFromString(std::string fromString,std::string separator); //we have a string with format: "XXXXXX...XXX {code}" this function will return the code.
 std::string extractIncidentCode(std::string);
 std::vector<std::string> ret_paragraph_with_lines_return(std::string original,int line_width);
+std::string stringToUppercase(std::string);
 
 //
 int isNewYear(std::string temporalDIDate,int year);

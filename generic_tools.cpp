@@ -223,6 +223,15 @@ std::vector<std::string> ret_paragraph_with_lines_return(std::string original,in
   my_paragraph.push_back(tmp);
   return my_paragraph;
 }
+// easy function to convert to uppercase a string */
+std::string stringToUppercase(std::string toConvert)
+{
+  for(int i = 0; i < toConvert.length(); i++)
+  {
+    toConvert[i] = std::toupper(toConvert[i]);
+  }
+  return toConvert;
+}
 
 ////
 int isNewYear(std::string temporalDIDate,int year)
