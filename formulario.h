@@ -416,6 +416,7 @@ class  baseForm
   virtual void saveSignature(const char* file);  
   virtual int isSignature();
   virtual void createPdf(std::string printerId){};
+  virtual int createTicket(std::string printerId){};
   int set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
   void backupFiles(const char* movFolder);
 
