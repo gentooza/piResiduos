@@ -634,7 +634,7 @@ int iniProcessor::setMailRecipients(std::vector <std::string> recipients)
   return 0;
 }
 
-//printer
+//printers
 int iniProcessor::retPrinterId(std::string & printerId)
 {
   int ret = 0;
@@ -649,6 +649,23 @@ int iniProcessor::retPrinterId(std::string & printerId)
 int iniProcessor::setPrinterId(std::string printerId)
 {
   configIni.setText("extras","impresora",printerId.c_str());
+  configIni.write("config.ini");
+  return 0;
+}
+int iniProcessor::retTicketPrinterId(std::string & printerId)
+{
+  int ret = 0;
+  
+  printerId.clear();
+  printerId = configIni.text("extras","tickets_printer");
+  if (printerId.empty())
+    ret = 1;
+  
+  return ret;
+}
+int iniProcessor::setTicketPrinterId(std::string printerId)
+{
+  configIni.setText("extras","tickets_printer",printerId.c_str());
   configIni.write("config.ini");
   return 0;
 }

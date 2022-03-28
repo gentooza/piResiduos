@@ -95,9 +95,11 @@ class iniProcessor
   int setMailName(std::string name);
   int setMailRecipients(std::vector <std::string> recipients);
 
-  //printer
+  //printers
   int retPrinterId(std::string & printerId);
   int setPrinterId(std::string printerId);
+  int retTicketPrinterId(std::string & printerId);
+  int setTicketPrinterId(std::string printerId);
 
   //automatic sycnronization
   int ret_syncro_mins();
