@@ -23,39 +23,58 @@ If not, see <https://www.gnu.org/licenses/>.
 //aspecto
 static int actualizaForm(PARAM *p,DATA* d,int estado)
 {
-  //std::cout << "ACTUALIZAMOS FORMULARIO AL ESTADO: " << estado << std::endl;
-  switch(estado)
+	//std::cout << "ACTUALIZAMOS FORMULARIO AL ESTADO: " << estado << std::endl;
+  	switch(estado)
     {
-    case(-1): //llegamos
-      break;			
-    case(0): //estado normal
-      //navegación
-      pvSetEnabled(p,BUT1,1);
-      pvSetEnabled(p,BUT2,1);      
-      //cámaras deshabilitadas
-      pvSetEnabled(p,FFCAMERA,0);
-      pvSetEnabled(p,FFBAS,0);
-      //
-      break;
-    case(1): //estado cámara seleccionada
-      //cámaras deshabilitadas
-      pvSetEnabled(p,FFCAMERA,1);
-      pvSetEnabled(p,FFBAS,0);
-      pvSetCurrentItem(p,COMBOBAS,0);
-      //
-      break;
-    case(2): //estado báscula seleccionada
-      //cámaras deshabilitadas
-      pvSetEnabled(p,FFCAMERA,0);
-      pvSetEnabled(p,FFBAS,1);
-      pvSetCurrentItem(p,COMBOCAMERAS,0);
-      //   
-      break;
-    default: //con cámara seleccionada
-      break;		
+    	case(-1): //llegamos
+      		break;
+
+    	case(0): // start
+      		//navegación
+      		pvSetEnabled(p,BUT1,1);
+      		pvSetEnabled(p,BUT2,1);      
+      		// disable
+      		pvSetEnabled(p,FFCAMERA,0);
+      		pvSetEnabled(p,FFBAS,0);
+			pvSetEnabled(p,FRAMEACTUALIMP,0);
+      		break;
+
+    	case(1): // camera selected
+    		// disable
+			pvSetEnabled(p,FRAMEACTUALIMP,0);
+			pvSetCurrentItem(p,COMBOIMP,0);
+			pvSetEnabled(p,FFBAS,0);
+      		pvSetCurrentItem(p,COMBOBAS,0);
+			// enable
+      		pvSetEnabled(p,FFCAMERA,1);
+      		break;
+
+    	case(2): // selected weight
+
+    		// disable
+      		pvSetEnabled(p,FFCAMERA,0);
+			pvSetCurrentItem(p,COMBOCAMERAS,0);
+			pvSetEnabled(p,FRAMEACTUALIMP,0);
+			pvSetCurrentItem(p,COMBOIMP,0);
+			// enable
+      		pvSetEnabled(p,FFBAS,1);
+      		break;
+
+		case(3): //estado impresora seleccionada
+      		// deshabilitamos
+      		pvSetEnabled(p,FFCAMERA,0);
+			pvSetCurrentItem(p,COMBOCAMERAS,0);
+			pvSetEnabled(p,FFBAS,0);
+			pvSetCurrentItem(p,COMBOBAS,0);
+			// habilitamos
+	  		pvSetEnabled(p,FRAMEACTUALIMP,1);
+			break;
+    
+		default: //con cámara seleccionada
+		break;		
     }
 
-  return 0;
+  	return 0;
 }
 
 //acciones
@@ -280,6 +299,27 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	  
 	  break;
 	  }
+		case 3: // selected a printer position
+		{
+			if(!strcmp(d->selectedPrinter.c_str(), "impresora de DIs")) 
+				miIni->retPrinterId(d->actualPrinter);
+			if(!strcmp(d->selectedPrinter.c_str(), "impresora de tickets"))
+				miIni->retTicketPrinterId(d->actualPrinter);
+  			if(!d->actualPrinter.empty())
+			{
+				pvSetCurrentItem(p, COMBOACTUALIMP, 0);
+				std::vector <std::string> strPrinters = retPrinters();
+				for(int i = 0; i < strPrinters.size(); ++i)
+				{
+					if(!strcmp(strPrinters[i].c_str(), d->actualPrinter.c_str()))
+						pvSetCurrentItem(p, COMBOACTUALIMP, i+1);	
+				}
+			}
+			else 
+			{
+				pvSetCurrentItem(p, COMBOACTUALIMP, 0);
+			}
+		}
 	default:
 	  ret = -1;
 	  break;
@@ -317,6 +357,11 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  d->loadedBas = d->selectedBas;
 	  d->estadoFuturo= 2;
 	}
+		if(d->selectedPrinter.compare("ELIJA") && !d->selectedPrinter.empty() )
+		{
+			d->loadedPrinter = d->selectedPrinter;
+	  		d->estadoFuturo= 3;
+		}
       ret = 0;
       break;
     case 1: //info de cámara cargada
@@ -325,7 +370,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  pvSetText(p,LABCURRCAM,pvtr("Elija una"));
 	  d->estadoFuturo= 0;
 	}
-      if(d->selectedBas.compare(d->loadedBas))
+      if(d->selectedBas.compare(d->loadedBas) || d->selectedPrinter.compare(d->loadedPrinter))
 	{
 	  pvSetText(p,LABCURRCAM,pvtr("Elija una"));
 	  d->selectedCam.clear();
@@ -340,7 +385,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  pvSetText(p,LABCURRBAS,pvtr("Elija una"));
 	  d->estadoFuturo= 0;
 	}
-      if(d->selectedCam.compare(d->loadedCam))
+      if(d->selectedCam.compare(d->loadedCam) || d->selectedPrinter.compare(d->loadedPrinter))
 	{
 	  pvSetText(p,LABCURRBAS,pvtr("Elija una"));
 	  d->selectedBas.clear();
@@ -348,7 +393,18 @@ static int maquinaEstados(PARAM *p, DATA *d)
 	  d->estadoFuturo= 0;
 	}
       ret = 0;
-      break; 
+      break;
+	case 3: // printer loaded
+		if(d->selectedPrinter.compare(d->loadedPrinter))
+		{
+			d->estadoFuturo= 0;
+		}
+		if(d->selectedCam.compare(d->loadedCam) || d->selectedBas.compare(d->loadedBas))
+		{
+	  		d->selectedPrinter.clear();
+	  		d->loadedPrinter.clear();
+	  		d->estadoFuturo= 0;
+		}
     default:
       ret = -1;
       break;

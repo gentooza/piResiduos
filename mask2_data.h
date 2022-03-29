@@ -58,6 +58,8 @@ typedef struct // (todo: define your data structure here)
   std::string recipients;
   std::string mailName;
 
+  std::string selectedPrinter;
+  std::string loadedPrinter;
   std::string actualPrinter;
 
   int syncro_minutes;

@@ -163,10 +163,16 @@ static int slotInit(PARAM *p, DATA *d)
   d->selectedTrans = defTrans->get_code();
   //
   //printers
-  populateCombo(p,COMBOIMP, retPrinters(),1);
+  std::vector <std::string> strPrintersPos;
+  strPrintersPos.push_back("impresora de DIs");
+  strPrintersPos.push_back("impresora de tickets");
+  populateCombo(p,COMBOIMP, strPrintersPos,1);
+  populateCombo(p, COMBOACTUALIMP, retPrinters(), 1);
+  /*
   miIni->retPrinterId(d->actualPrinter);
   if(!d->actualPrinter.empty())
     pvSetText(p,EDITACTUALIMP,d->actualPrinter.c_str());
+  */
   //
   //auto-syncronization
   std::string str_minutes = std::to_string(my_syncro_data.minutes);
@@ -472,10 +478,12 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
       DEF_TRANS_CODE = d->selectedTrans;
     }
   else if(id == BUTSETIMP)
-    {
-      miIni->setPrinterId(d->actualPrinter);
-      pvSetText(p,EDITACTUALIMP,d->actualPrinter.c_str());
-    }
+  {
+    if(!strcmp(d->selectedPrinter.c_str(), "impresora de DIs")) 
+			miIni->setPrinterId(d->actualPrinter);
+		if(!strcmp(d->selectedPrinter.c_str(), "impresora de tickets"))
+			miIni->setTicketPrinterId(d->actualPrinter);   
+  }
   else if(id == BUTERRPES)
     { 
       DEF_ERROR_SCALES = d->error_scale;
@@ -524,6 +532,13 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
       else
 	d->selectedBas.clear();
     }
+  if(id== COMBOIMP)
+  {
+    if(strcmp(text,"ELIJA"))
+	    d->selectedPrinter = text;
+    else
+	    d->selectedPrinter.clear();
+  }
   if(id == EDITIP)
     {
       d->editedCamIp = text;
@@ -625,14 +640,14 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
     d->mailPass = text;
   if(id == EDITMAILNAME)
     d->mailName = text;
-  else if(id == COMBOIMP)
-    {
-      std::string myText = text;
-      if(!myText.compare("ELIJA"))
-	d->actualPrinter.clear();
-      else
-	d->actualPrinter = myText;
-    }
+  else if(id == COMBOACTUALIMP)
+  {
+    std::string myText = text;
+    if(!myText.compare("ELIJA"))
+	    d->actualPrinter.clear();
+    else
+	    d->actualPrinter = myText;
+  }
   
   else if(id == EDITASYNCROMIN)
     {

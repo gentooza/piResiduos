@@ -152,7 +152,7 @@ enum {
   BUTSETIMP,
   FRAMEACTUALIMP,
   LABACTUALIMP,
-  EDITACTUALIMP,
+  COMBOACTUALIMP,
   /////////
   //AUTOMATIC SYNCRONIZATION
   FRAMESYNCRO,
@@ -298,7 +298,7 @@ enum {
   "BUTSETIMP",
   "FRAMEACTUALIMP",
   "LABACTUALIMP",
-  "EDITACTUALIMP",
+  "COMBOACTUALIMP",
   /////////
   //AUTOMATIC SYNCRONIZATION
   "FRAMESYNCRO",
@@ -713,7 +713,7 @@ enum {
   TQPushButton,	//BUTSETIMP
   TQFrame,	//FRAMEACTUALIMP
   TQLabel,	//LABACTUALIMP
-  TQLineEdit,	//EDITACTUALIMP
+  TQComboBox,	//EDITACTUALIMP
   /////////
   //AUTOMATIC SYNCRONIZATION
   TQFrame,
@@ -1300,42 +1300,40 @@ static int generated_defineMask(PARAM *p)
   // IMPRESORA
 
   pvQFrame(p,FRAMEIMP,CENTRALFORM,Box,Plain,1,1);
-  pvSetGeometry(p,FRAMEIMP,1300,425,375,160);
+  pvSetGeometry(p,FRAMEIMP,1300,425,375,185);
   pvSetFont(p,FRAMEIMP,"Verdana",12,1,0,0,0);
 
   pvQLabel(p,LABSELECIMP,FRAMEIMP);
   pvSetGeometry(p,LABSELECIMP,10,5,350,30);
-  pvSetText(p,LABSELECIMP,pvtr("SELECCIONE IMPRESORA"));
+  pvSetText(p,LABSELECIMP,pvtr("IMPRESORAS"));
   pvSetFontColor(p,LABSELECIMP,215,215,215);
   pvSetFont(p,LABSELECIMP,"Default",14,1,1,0,0);
 
   pvQComboBox(p,COMBOIMP,FRAMEIMP,0,AtBottom);
   pvSetGeometry(p,COMBOIMP,10,40,225,30);
   pvSetFont(p,COMBOIMP,"Default",12,1,0,0,0);
-
-  pvQPushButton(p,BUTSETIMP,FRAMEIMP);
-  pvSetGeometry(p,BUTSETIMP,245,35,120,40);
-  pvSetText(p,BUTSETIMP,pvtr("ESTABLECER"));
-  pvSetFont(p,BUTSETIMP,"Verdana",12,1,0,0,0);
   
   pvQFrame(p,FRAMEACTUALIMP,FRAMEIMP,Box,Raised,2,1);
-  pvSetGeometry(p,FRAMEACTUALIMP,4,80,365,75);
+  pvSetGeometry(p,FRAMEACTUALIMP,4,80,365,80);
   pvSetFont(p,FRAMEACTUALIMP,"Verdana",12,1,0,0,0);
 
   pvQLabel(p,LABACTUALIMP,FRAMEACTUALIMP);
   pvSetGeometry(p,LABACTUALIMP,10,5,350,30);
-  pvSetText(p,LABACTUALIMP,pvtr("IMPRESORA ACTUAL:"));
+  pvSetText(p,LABACTUALIMP,pvtr("SELECCIONADA:"));
   pvSetFont(p,LABACTUALIMP,"Default",14,1,1,0,0);
 
-  pvQLineEdit(p,EDITACTUALIMP,FRAMEACTUALIMP);
-  pvSetGeometry(p,EDITACTUALIMP,10,35,345,30);
-  pvSetText(p,EDITACTUALIMP,pvtr(""));
-  pvSetFont(p,EDITACTUALIMP,"Default",12,1,0,0,0);
-  pvSetEditable(p,EDITACTUALIMP,0);
+  pvQComboBox(p,COMBOACTUALIMP,FRAMEACTUALIMP,0,AtBottom);
+  pvSetGeometry(p,COMBOACTUALIMP,10,35,270,30);
+  pvSetFont(p,COMBOACTUALIMP,"Default",12,1,0,0,0);
+
+  pvQPushButton(p,BUTSETIMP,FRAMEACTUALIMP);
+  pvSetGeometry(p,BUTSETIMP,280,34,70,38);
+  pvSetPixmap(p,BUTSETIMP,"./image/gnome-dev-floppy.png",1);
+  pvSetWhatsThis(p,BUTSETIMP,pvtr("salvar"));
 
   //AUTOMATIC SYNCRONIZATION
   pvQFrame(p,FRAMESYNCRO,CENTRALFORM,Box,Plain,1,1);
-  pvSetGeometry(p,FRAMESYNCRO,1300,595,375,150);
+  pvSetGeometry(p,FRAMESYNCRO,1300,620,375,150);
   pvSetFont(p,FRAMESYNCRO,"Verdana",12,1,0,0,0);
 
   pvQLabel(p,LABSYNCRO,FRAMESYNCRO);
