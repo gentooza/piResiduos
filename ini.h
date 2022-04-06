@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -100,6 +101,10 @@ class iniProcessor
   int setPrinterId(std::string printerId);
   int retTicketPrinterId(std::string & printerId);
   int setTicketPrinterId(std::string printerId);
+
+  // ticket code
+  int retTicketCode(std::string & code);
+  int setTicketCode(std::string code);
 
   //automatic sycnronization
   int ret_syncro_mins();

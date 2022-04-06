@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -669,7 +670,28 @@ int iniProcessor::setTicketPrinterId(std::string printerId)
   configIni.write("config.ini");
   return 0;
 }
-
+/*! function for setting and getting the station header code of tickets */
+int iniProcessor::retTicketCode(std::string & code)
+{
+  int ret = 0;
+  
+  code.clear();
+  code = configIni.text("extras","tickets_code");
+  if (code.empty())
+  {
+    // setting to default code
+    code = "AAI/CA/026/M1 - GRU:292";
+    ret = 1;
+  }
+  return ret;
+}
+int iniProcessor::setTicketCode(std::string code)
+{
+  configIni.setText("extras","tickets_code",code.c_str());
+  configIni.write("config.ini");
+  return 0;
+}
+///
 //automatic sycnronization
 int iniProcessor::ret_syncro_mins()
 {
