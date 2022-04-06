@@ -1,20 +1,20 @@
 /*
-This file is part of PixResiduos.
+This file is part of PiResiduos.
 
 Copyright 2017-2019, Pro Integra SL.
-Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2019-2022 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
-PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PixResiduos is distributed in the hope that it will 
+PiResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PixResiduos.  
+along with PiResiduos.  
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -1622,7 +1622,14 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		  	}
 			formEntrada->createPdf(myPrinter);
 			mailClient->sendIncidentsMail(myStation,formEntrada);
-			formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+			try 
+			{
+				formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+			} 
+			catch(...)
+			{
+				console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
+			}
 	    }
 	    else if(error ==-1)
 	    {
@@ -1636,7 +1643,14 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		  	}
 			formEntrada->createPdf(myPrinter);
 			mailClient->sendIncidentsMail(myStation,formEntrada);
-			formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+			try 
+			{
+				formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+			} 
+			catch(...)
+			{
+				console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
+			}
 	    }
 	    else if(error == -10)
 	    {
@@ -1646,7 +1660,15 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    }
 	    else
 	      console.push_back("*ERROR* ¡Fallo al guardar el movimiento!");
-	    
+		std::string myTicketPrinter;
+		std::string ticketCode;
+		miIni->retTicketPrinterId(myTicketPrinter);
+		miIni->retTicketCode(ticketCode);
+		if(myTicketPrinter.empty())
+		{
+		    console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
+		}
+		formEntrada->createTicket(myTicketPrinter, ticketCode);
 	    break;
 	  }
 	default:

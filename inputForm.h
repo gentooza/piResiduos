@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -100,6 +101,11 @@ class inputForm: public baseForm
   std::vector <std::string> allClientesCodes;
 
   void createPdf(std::string printerId);
+
+  int createTicket(std::string printerId, std::string ticketCode);
+  void ticketHeader(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, std::string ticketCode, float fsize_small);
+  void ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium);
+  void ticketRegistrationData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
   
   //
  private:
@@ -108,3 +114,4 @@ class inputForm: public baseForm
 };
 
 #endif
+

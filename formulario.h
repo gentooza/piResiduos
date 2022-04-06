@@ -1,7 +1,8 @@
 /*
 This file is part of PiResiduos.
 
-Copyright 2017-2019, Prointegra SL, Pixelada S. Coop. And.
+Copyright 2017-2018, Prointegra SL.
+Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -416,7 +417,7 @@ class  baseForm
   virtual void saveSignature(const char* file);  
   virtual int isSignature();
   virtual void createPdf(std::string printerId){};
-  virtual int createTicket(std::string printerId){};
+  virtual int createTicket(std::string printerId, std::string ticketCode){};
   int set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
   void backupFiles(const char* movFolder);
 
@@ -819,8 +820,6 @@ class  baseForm
   void retDepAuthCostumer(costumer *& newDepAuthCostumer){ (depAuthCostumer?newDepAuthCostumer = new costumer(depAuthCostumer):newDepAuthCostumer = new costumer());};
   ////
 
- 
-
   //RESET FUNCTIONS
   void resetArrCostumer();
   void resetDepCostumer(); 
@@ -839,7 +838,6 @@ class  baseForm
   void resetArrDestination();
   void resetDepDestination();
   void resetOurId();
-
 
   std::string retDepMovCode(){return myDepMovement.CODIGO_MOVIMIENTO;};
   void setDepMovCode(std::string code){myDepMovement.CODIGO_MOVIMIENTO = code; return;}; 

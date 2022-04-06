@@ -2,7 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2019, Pro Integra SL.
-Copyright 2019-2020, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -2110,4 +2110,228 @@ void inputForm::createPdf(std::string printerId)
    }  
  return;
 
+}
+//////////////////////////////////////////////////////////////////
+//TICKET generation
+//////////////////////////////////////////////////////////////////
+/*! function for creating our ticket document with all the stored info 
+  about our movement*/
+int inputForm::createTicket(std::string printerId, std::string ticketCode)
+{
+  std::string titulo = "Ticket cliente: ";
+
+  HPDF_Doc  pdf;
+  HPDF_Font font;
+  HPDF_Page page1;
+  HPDF_Image templatePage1;
+  char fname[512];
+  char signature[512];
+  float fsize = 10;
+  float fsize_small = 8;
+  float fsize_big = 12;
+  HPDF_STATUS ret;
+  std::string myText;
+  int line = 0;
+
+  strcpy (fname, "ticket.pdf");
+
+  pdf = HPDF_New (error_handler, NULL);
+  if (!pdf) {
+    printf ("error: cannot create PdfDoc object\n");
+    return -1;
+  }
+
+  if (setjmp(env)) {
+    HPDF_Free (pdf);
+    return -1;
+  }
+  /* set compression mode */
+  HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);
+  HPDF_UseUTFEncodings(pdf); 
+
+  /* create default-font */
+  font = HPDF_GetFont (pdf, HPDF_LoadTTFontFromFile (pdf, "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf", HPDF_TRUE),"UTF-8");
+  /* add pages objects */
+  page1 = HPDF_AddPage (pdf);
+  HPDF_Page_SetWidth (page1, 200);
+  // TODO: calculation of line and total height
+  line = 600;
+  HPDF_Page_SetHeight (page1, 600);
+
+  
+  HPDF_Page_SetFontAndSize (page1, font, fsize);  
+
+  //ticket header
+  ticketHeader(pdf, page1, line, font, ticketCode, fsize_small);
+
+  // station title and NIMA
+  ticketStationTitle(pdf, page1, line, font, fsize_big, fsize);
+
+  // registration data
+  ticketRegistrationData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
+
+  // origin
+  // ticketOriginData(pdf, page1, font, fsize_big, fsize, fsize_small);
+
+  // transport
+  // ticketTransData(pdf, page1, font, fsize_big, fsize, fsize_small);
+
+  // product
+  // ticketProductData(pdf, page1, font, fsize_big, fsize, fsize_small);
+
+  // weight
+  // ticketWeightData(pdf, page1, font, fsize_big, fsize, fsize_small);
+
+  // staff
+  // ticketStaffData(pdf, page1, font, fsize_big, fsize, fsize_small);
+
+  // saving the document to a file
+  std::cout << "INFO: saving to file: " << fname << std::endl;
+  ret = HPDF_SaveToFile (pdf, fname);
+  int iterations,max_iterations;
+  max_iterations = 10000;
+  iterations = 0;
+  struct stat buffer;   
+  while(stat (fname, &buffer) && iterations<max_iterations)
+  {
+     iterations++;
+  }
+
+  // cleaning up
+  HPDF_Free (pdf);
+
+  // printing
+  if (!printerId.empty())
+  {
+     int num_options = 0;
+     cups_option_t *options = NULL;
+     // num_options = cupsAddOption("fit-to-page", "true", num_options, &options);
+     num_options = cupsAddOption("landscape", "false", num_options, &options);
+     cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, options);
+  } 
+  return 0;
+}
+/*! function helper for writting the ticket header */
+void inputForm::ticketHeader(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, std::string ticketCode, float fsize_small = 9)
+{
+  // TODO: error handling?
+  HPDF_Image logoImg;
+  HPDF_Image lineImg;
+
+  // logo
+  logoImg = HPDF_LoadPngImageFromFile (myPdf, "image/logo_bioreciclaje_trans.png");
+  HPDF_Page_DrawImage (myPage, logoImg, 10, line - 55, 180, 53);
+
+  // code
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_small);
+  HPDF_Page_BeginText (myPage);
+  if(HPDF_Page_TextRect( myPage, 10, line - 57, 140, (line - 57 - 9), ticketCode.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  // cif
+  costumer * our_costumer;
+  retOurId(our_costumer);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_small);
+  HPDF_Page_BeginText (myPage);
+  if(HPDF_Page_TextRect( myPage, 110, line - 57, 190, (line - 57 - 9), our_costumer->getNif().c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  // horizontal line
+  lineImg = HPDF_LoadPngImageFromFile (myPdf, "image/black_square.png");
+  HPDF_Page_DrawImage (myPage, lineImg, 10, (line - 57 - 9 -2), 180, 2);
+
+  //updating line
+  line = line - 57 - 9 - 2;
+
+  return;
+}
+/*! function helper for writting the ticket station name, and it's NIMA, with the second horizontal separation line */
+void inputForm::ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big, float fsize_medium)
+{
+  HPDF_Image lineImg;
+  station * localDestination;
+  retDepDestinationStation(localDestination);
+  std::string stationName = "COMPLEJO MEDIOAMBENTAL DE " + localDestination->getName();
+  stationName = stringToUppercase(stationName);
+  std::string nima_text = "NIMA: " + std::to_string(localDestination->getNima());
+
+  // station name
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_big);
+  HPDF_Page_BeginText (myPage);
+  if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 50), stationName.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+  line = line - 50;
+
+  // NIMA
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_BeginText (myPage);
+  if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 15), nima_text.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+  line = line - 15;
+
+  // horizontal line
+  lineImg = HPDF_LoadPngImageFromFile (myPdf, "image/black_square.png");
+  HPDF_Page_DrawImage (myPage, lineImg, 10, line - 5, 180, 2);
+  line = line - 5;
+
+  return;
+}
+/*! function helper for writting the ticket first ifnormation, about movement number, date and time */
+void inputForm::ticketRegistrationData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big = 12,
+  float fsize_medium = 10, float fsize_small = 9)
+{
+  std::string myText;
+
+   // label
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_big);
+  HPDF_Page_BeginText (myPage);
+  if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 21), "REGISTRO DE ENTRADA", HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+  line = line - 26;
+
+  // DATA
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_small);
+  HPDF_Page_BeginText (myPage);
+  myText = "Nº MOV:" + retDepMovCode();
+  if(HPDF_Page_TextRect( myPage, 10, line - 15, 190, (line - 25), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_small);
+  HPDF_Page_BeginText (myPage);
+  myText = "FECHA:" + retDepDateTime().substr(0, retDepDateTime().find(' '));
+  if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 15), myText.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_small);
+  HPDF_Page_BeginText (myPage);
+  myText = "HORA SALIDA:" + retDepDateTime().substr(retDepDateTime().find(' '), retDepDateTime().length());
+  if(HPDF_Page_TextRect( myPage, 10, line - 25, 190, (line - 35), myText.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+  line = line -35;
+
+  return;
 }
