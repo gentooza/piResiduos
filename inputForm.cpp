@@ -2262,17 +2262,28 @@ void inputForm::ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line
   std::string nima_text = "NIMA: " + std::to_string(localDestination->getNima());
 
   // station name
+  int Y = 25;
+  int finalY = 50;
+  if (stationName.length() > 20)
+    Y = 20;
+  if ( stationName.length() > 45)
+  {
+    Y = 10;
+    finalY = 65;
+  }
   HPDF_Page_SetFontAndSize (myPage, font, fsize_big);
+  HPDF_Page_SetTextLeading(myPage, fsize_big);
   HPDF_Page_BeginText (myPage);
-  if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 50), stationName.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  if(HPDF_Page_TextRect( myPage, 10, line - Y, 190, (line - finalY), stationName.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
   {
     std::cout << "TODO: not enough space" << std::endl;
   }
   HPDF_Page_EndText (myPage);
-  line = line - 50;
+  line = line - finalY;
 
   // NIMA
   HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_SetTextLeading(myPage, fsize_medium);
   HPDF_Page_BeginText (myPage);
   if(HPDF_Page_TextRect( myPage, 10, line - 5, 190, (line - 15), nima_text.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
   {
