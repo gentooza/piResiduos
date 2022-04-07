@@ -679,8 +679,9 @@ int iniProcessor::retTicketCode(std::string & code)
   code = configIni.text("extras","tickets_code");
   if (code.empty())
   {
-    // setting to default code
-    code = "AAI/CA/026/M1 - GRU:292";
+    // setting a default code
+    code = "AAI/CA/026/M1-GRU:292";
+    setTicketCode(code);
     ret = 1;
   }
   return ret;
