@@ -2154,11 +2154,11 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   /* add pages objects */
   page1 = HPDF_AddPage (pdf);
   HPDF_Page_SetWidth (page1, 200);
-  // TODO: calculation of line and total height
-  line = 600;
-  HPDF_Page_SetHeight (page1, 600);
-
-  
+  // calculation of total height
+  calculateTicketHeight(line);
+  //std::cout << "DEBUG: lines height = " << line << std::endl;
+  HPDF_Page_SetHeight (page1, line);
+  // default font size
   HPDF_Page_SetFontAndSize (page1, font, fsize);  
 
   //ticket header
@@ -2171,16 +2171,20 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   ticketRegistrationData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
 
   // origin
-  // ticketOriginData(pdf, page1, font, fsize_big, fsize, fsize_small);
+  ticketOriginData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
 
   // transport
-  // ticketTransData(pdf, page1, font, fsize_big, fsize, fsize_small);
+  ticketTransportData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
 
   // product
-  // ticketProductData(pdf, page1, font, fsize_big, fsize, fsize_small);
+  ticketProductData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
 
   // weight
-  // ticketWeightData(pdf, page1, font, fsize_big, fsize, fsize_small);
+  ticketWeightData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
+
+  // paid?
+  // if(retDepPayProcedure()==1)
+  //  ticketPaidData(pdf, page1, line, font, fsize_big, fsize, fsize_small);   
 
   // staff
   // ticketStaffData(pdf, page1, font, fsize_big, fsize, fsize_small);
@@ -2203,11 +2207,12 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   // printing
   if (!printerId.empty())
   {
-     int num_options = 0;
-     cups_option_t *options = NULL;
-     // num_options = cupsAddOption("fit-to-page", "true", num_options, &options);
-     num_options = cupsAddOption("landscape", "false", num_options, &options);
-     cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, options);
+    int num_options = 0;
+    cups_option_t *options = NULL;
+    // num_options = cupsAddOption("fit-to-page", "true", num_options, &options);
+    // num_options = cupsAddOption("landscape", "false", num_options, &options);
+    num_options = cupsAddOption("media", "custom.200x1100", num_options, &options);
+    // cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, options);
   } 
   return 0;
 }
@@ -2266,7 +2271,7 @@ void inputForm::ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line
   int finalY = 50;
   if (stationName.length() > 20)
     Y = 20;
-  if ( stationName.length() > 45)
+  if (stationName.length() > 45)
   {
     Y = 10;
     finalY = 65;
@@ -2297,6 +2302,7 @@ void inputForm::ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line
   HPDF_Page_DrawImage (myPage, lineImg, 10, line - 5, 180, 2);
   line = line - 5;
 
+  delete localDestination;
   return;
 }
 /*! function helper for writting the ticket first ifnormation, about movement number, date and time */
@@ -2345,4 +2351,201 @@ void inputForm::ticketRegistrationData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &
   line = line -35;
 
   return;
+}
+
+/*! function helper for writting the ticket second information, about origin costumer */
+void inputForm::ticketOriginData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big = 12,
+  float fsize_medium = 10, float fsize_small = 9)
+{
+  std::string myText;
+  std::string costumerName = retDepCosName();
+  int finalLine = fsize_big;
+
+  // ORIGEN label
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 0, line - fsize_big - 5);
+  HPDF_Page_ShowText (myPage, "ORIGEN: ");
+  HPDF_Page_EndText (myPage);
+
+  // costumer name
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_big);
+  HPDF_Page_SetTextLeading(myPage, fsize_big);
+  HPDF_Page_BeginText (myPage);
+  myText = "      " + costumerName;
+  if(myText.length() > 28) {
+    finalLine = 3*fsize_big;
+  }
+  if(myText.length() > 56) {
+    finalLine = 5*fsize_big;
+  }
+  if(HPDF_Page_TextRect( myPage, 0, line - 7, 190, (line - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  line = line - finalLine;
+}
+
+/*! function helper for writting the ticket third information, about transportation */
+void inputForm::ticketTransportData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big = 12,
+  float fsize_medium = 10, float fsize_small = 9)
+{
+  std::string myText;
+  std::string transportName = retDepDriName();
+  std::string transportPlate = retDepPlate();
+  int finalLine = fsize_medium;
+
+  // transportation label
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 0, line - fsize_big - 5);
+  HPDF_Page_ShowText (myPage, "TRANSPORTISTA: ");
+  HPDF_Page_EndText (myPage);
+
+  // transportation name
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_SetTextLeading(myPage, fsize_medium);
+  HPDF_Page_BeginText (myPage);
+  myText = "              " + transportName;
+  if(myText.length() > 30) {
+    finalLine = 3*fsize_medium;
+  }
+  if(myText.length() > 68) {
+    finalLine = 5*fsize_medium;
+  }
+  if(HPDF_Page_TextRect( myPage, 0, line - 8, 190, (line - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  line = line - finalLine;
+  finalLine = fsize_medium;
+
+  // PLATE label
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 0, line - fsize_big - 5);
+  HPDF_Page_ShowText (myPage, "MATRÍCULA: ");
+  HPDF_Page_EndText (myPage);
+
+  // transportation plate
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 60, line - fsize_big - 5);
+  HPDF_Page_ShowText (myPage, transportPlate.c_str());
+  HPDF_Page_EndText (myPage);
+
+  line = line - finalLine;
+}
+
+/*! function helper for writting the ticket forth information, about product */
+void inputForm::ticketProductData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big = 12,
+  float fsize_medium = 10, float fsize_small = 9)
+{
+  std::string myText;
+  std::string ler = std::to_string(retDepProdLER()) + "-";
+  std::string product = retDepProdFullName();
+  int finalLine = fsize_medium;
+
+  // product label
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 0, line - fsize_big - 7);
+  HPDF_Page_ShowText (myPage, "LER-PRODUCTO: ");
+  HPDF_Page_EndText (myPage);
+
+  // product ler
+  HPDF_Page_BeginText (myPage);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 77, line - fsize_big - 7);
+  HPDF_Page_ShowText (myPage, ler.c_str());
+  HPDF_Page_EndText (myPage);
+
+  // transportation name
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_SetTextLeading(myPage, fsize_medium);
+  HPDF_Page_BeginText (myPage);
+  myText = "                    " + product;
+  if(myText.length() > 30) {
+    finalLine = 3*fsize_medium;
+  }
+  if(myText.length() > 68) {
+    finalLine = 5*fsize_medium;
+  }
+  if(HPDF_Page_TextRect( myPage, 0, line - 10, 190, (line - 10 - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (myPage);
+
+  line = line - finalLine - 5;
+}
+
+/*! function helper for writting the ticket fifth information, about weight */
+void inputForm::ticketWeightData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float fsize_big = 12,
+  float fsize_medium = 10, float fsize_small = 9)
+{
+  std::string myText;
+  int finalLine = line - fsize_medium - 5;
+
+  // bruto
+  HPDF_Page_BeginText (myPage);
+  myText = "BRUTO:" + std::to_string(retDepScaleOut());
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_medium);
+  HPDF_Page_MoveTextPos (myPage, 0, line - 7); 
+  HPDF_Page_ShowText (myPage, myText.c_str());
+  HPDF_Page_EndText (myPage);
+
+  // tara
+  HPDF_Page_BeginText (myPage);
+  myText = "TARA:" + std::to_string(retDepScaleIn());
+  HPDF_Page_MoveTextPos (myPage, 55, line - 7);
+  HPDF_Page_ShowText (myPage, myText.c_str());
+  HPDF_Page_EndText (myPage);
+
+  ///neto
+  HPDF_Page_BeginText (myPage);
+  myText = "NETO:" + std::to_string(retDepTotalWeight());
+  myText += " Kg"; 
+  HPDF_Page_MoveTextPos (myPage, 110, line - 7);
+  HPDF_Page_SetFontAndSize (myPage, font, fsize_big);
+  HPDF_Page_ShowText (myPage, myText.c_str());
+  HPDF_Page_EndText (myPage);
+
+  line = line - finalLine;
+}
+
+/*! function helper for calculating ticket height */
+void inputForm::calculateTicketHeight(int &line)
+{
+  std::string textToCompare;
+  // minimal height
+  line = 900;
+  // station name length
+  station * localDestination;
+  retDepDestinationStation(localDestination);
+  if(localDestination->getName().length() > 20) {
+    line += 15;
+  }
+  // origin costumer name length
+  textToCompare = "ORIGEN: " + retDepCosName();
+  if(textToCompare.length() >  26) {
+    line += 15;
+  }
+  if(textToCompare.length() > 52) {
+    line += 15;
+  }
+  // transportation name length
+  textToCompare = "TRANSPORTISTA: " + retDepDriName();
+  if(textToCompare.length() >  30) {
+    line += 15;
+  }
+  if(textToCompare.length() > 60) {
+    line += 15;
+  }
+
+  delete localDestination;
 }
