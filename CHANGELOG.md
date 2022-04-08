@@ -1,3 +1,11 @@
+# 2022/04/08 version 0.1.99a
+
+## improves
++ now we can configure of ticket printer.
++ ticket layout and routines implemented.
++ ticket printing implemented in material input, and transference materia output movements.
+
+
 # 2021/12/28 version 0.1.9dev
 
 forked from last piResiduos production version
