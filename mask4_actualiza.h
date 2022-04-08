@@ -1622,14 +1622,6 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		  	}
 			formEntrada->createPdf(myPrinter);
 			mailClient->sendIncidentsMail(myStation,formEntrada);
-			try 
-			{
-				formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
-			} 
-			catch(...)
-			{
-				console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
-			}
 	    }
 	    else if(error ==-1)
 	    {
@@ -1643,14 +1635,6 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		  	}
 			formEntrada->createPdf(myPrinter);
 			mailClient->sendIncidentsMail(myStation,formEntrada);
-			try 
-			{
-				formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
-			} 
-			catch(...)
-			{
-				console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
-			}
 	    }
 	    else if(error == -10)
 	    {
@@ -1669,6 +1653,14 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		    console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
 		}
 		formEntrada->createTicket(myTicketPrinter, ticketCode);
+		try 
+		{
+			formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+		} 
+		catch(...)
+		{
+			console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
+		}
 	    break;
 	  }
 	default:
