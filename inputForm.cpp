@@ -2118,7 +2118,14 @@ void inputForm::createPdf(std::string printerId)
   about our movement*/
 int inputForm::createTicket(std::string printerId, std::string ticketCode)
 {
-  std::string titulo = "Ticket cliente: ";
+  printable * myTicket;
+
+  myTicket->new printable(DOC_TICKET);
+  myTicket->startNewTicket();
+  myTicket->setTicketCode(ticketCode);
+  myTicket->generate();
+  myTicket->print(printerId);
+
 
   HPDF_Doc  pdf;
   HPDF_Font font;

@@ -49,45 +49,7 @@ Facade class for managing every entity in database
 #include "costumer.h"
 #include "staff.h"
 #include "driver.h"
-
-
-void
-print_grid  (HPDF_Doc     pdf,
-             HPDF_Page    page);
-
-static jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler (HPDF_STATUS   error_no,
-               HPDF_STATUS   detail_no,
-               void         *user_data);
-
-void
-print_grid  (HPDF_Doc     pdf,
-             HPDF_Page    page);
-
-void
-show_stripe_pattern  (HPDF_Page   page,
-                      HPDF_REAL   x,
-                      HPDF_REAL   y);
-
-void
-show_description  (HPDF_Page          page,
-                   HPDF_REAL          x,
-                   HPDF_REAL          y,
-                   const char   *text);
-
-void
-draw_image (HPDF_Doc     pdf,
-            const char  *filename,
-            float        x,
-            float        y,
-            const char  *text,int png_jpeg);
-
+#include "printable.h"
 
 
 enum
