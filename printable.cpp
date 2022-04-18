@@ -250,8 +250,7 @@ draw_image (HPDF_Doc     pdf,
     HPDF_Page_EndText (page);
 }
 
-printable::printable(int doc_type) {
-    docType = DOC_NOT_SET;
+printable::printable() {
     return;
 }
 
@@ -259,53 +258,31 @@ printable::~printable() {
     return;
 }
 
-/*! function for start a ticket creation */
-void printable::startNewTicket() 
+int printable::saveFile() 
 {
-  HPDF_Doc  pdf;
-  HPDF_Font font;
-  HPDF_Page page1;
-  HPDF_Image templatePage1;
-  char fname[512];
-  char signature[512];
-  float fsize = 10;
-  float fsize_small = 8;
-  float fsize_big = 12;
-  HPDF_STATUS ret;
-  std::string myText;
-  int line = 0;
-
-  strcpy (fname, "ticket.pdf");
-
-  pdf = HPDF_New (error_handler, NULL);
-  if (!pdf) {
-    printf ("error: cannot create PdfDoc object\n");
-    return -1;
-  }
-
-  if (setjmp(env)) {
-    HPDF_Free (pdf);
-    return -1;
-  }
-  /* set compression mode */
-  HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);
-  HPDF_UseUTFEncodings(pdf); 
-
-  /* create default-font */
-  font = HPDF_GetFont (pdf, HPDF_LoadTTFontFromFile (pdf, "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf", HPDF_TRUE),"UTF-8");
-  /* add pages objects */
-  page1 = HPDF_AddPage (pdf);
-  HPDF_Page_SetWidth (page1, 200);
-  // calculation of total height
-  calculateTicketHeight(line);
-  //std::cout << "DEBUG: lines height = " << line << std::endl;
-  HPDF_Page_SetHeight (page1, line);
-  // default font size
-  HPDF_Page_SetFontAndSize (page1, font, fsize);  
-
+    // saving the document to a file
+    hpdfStatus = HPDF_SaveToFile (hpdfDoc, fileName.c_str());
+    if (hpdfStatus != HPDF_OK) {
+        return -1;
+    }
+    int iterations,max_iterations;
+    max_iterations = 10000;
+    iterations = 0;
+    struct stat buffer;   
+    while(stat (fileName.c_str(), &buffer) && iterations<max_iterations)
+    {
+        iterations++;
+    }
+    return 0;
 }
-/*! function for start a DI creation */
-void printable::startNewDI() 
+int printable::printFile(std::string printerId)
 {
-
+    int ret = -1;
+    // printing
+    if (!printerId.empty())
+    {
+        cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, printOpts);
+        ret = 0;
+    }
+    return ret;
 }

@@ -18,7 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 
 /**
-@file printable.cpp
+@file printable.h
 */
 
 #ifndef _PRINTABLE_
@@ -75,33 +75,21 @@ draw_image (HPDF_Doc     pdf,
             float        y,
             const char  *text,int png_jpeg);
 
-enum
-{
-    DOC_NOT_SET = 0,
-    DOC_TICKET,
-    DOC_DI,
-};
-
 class printable 
 {
-    printable(int type);
+    printable();
     ~printable();
 
-    void startNewTicket();
-    void startNewDI();
+    int saveFile();
+    int printFile();
+
+    virtual int compose(){return 0;};
 
     private:
-    int docType;
     HPDF_Doc  hpdfDoc;
-    HPDF_Font hpdfFont;
-    HPDF_Page hpdfPage1;
-    HPDF_Page hpdfPage2;
-    std::string fileName;
-    float fontSize;
-    float fontSize_sm;
-    float fontSize_xl;
     HPDF_STATUS hpdfStatus;
-    int currentLine;
+    std::string fileName;
+    cups_option_t *printOpts;
 };
 
 
