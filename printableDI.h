@@ -32,15 +32,12 @@ class printableDI: public printable
     ~printableDI();
 
     private:
-    HPDF_Doc  hpdfDoc;
     HPDF_Font hpdfFont;
     HPDF_Page hpdfPage1;
     HPDF_Page hpdfPage2;
-    std::string fileName;
     float fontSize;
     float fontSize_sm;
     float fontSize_xl;
-    HPDF_STATUS hpdfStatus;
     int currentLine;
 };
 
