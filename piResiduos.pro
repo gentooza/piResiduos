@@ -54,7 +54,10 @@ HEADERS += pvapp.h      \
            mail.h \
            generic_tools.h \
 	   staff.h \
-	   driver.h
+	   driver.h \
+           printable.h \
+           printableTicket.h \
+           printableDI.h
 SOURCES += main.cpp     \
            mask10.cpp \
            mask9.cpp \
@@ -80,7 +83,10 @@ SOURCES += main.cpp     \
            mail.cpp \
            generic_tools.cpp \
 	   staff.cpp \
-           driver.cpp
+           driver.cpp \
+           printable.cpp \
+           printableTicket.cpp \
+           printableDI.cpp
 
 
 !macx {
