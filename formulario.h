@@ -50,6 +50,8 @@ Facade class for managing every entity in database
 #include "staff.h"
 #include "driver.h"
 #include "printable.h"
+#include "printableTicket.h"
+#include "printableDI.h"
 
 
 enum
