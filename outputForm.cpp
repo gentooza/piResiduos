@@ -2471,9 +2471,10 @@ delete localDestination;
   about our movement*/
 int outputForm::createTicket(std::string printerId, std::string ticketCode)
 {
-   printable * myTicket;
+  printable *myTicket;
+  std::string fileName = "ticket.pdf";
 
-  myTicket->new printableTicket();
+  myTicket = new printableTicket(fileName, printerId);
 
   myTicket->setTicketType("REGISTRO DE SALIDA");
   myTicket->setTicketCode(ticketCode);
@@ -2484,7 +2485,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
   station * localDestination;
   retDepOriginStation(localDestination);
   myTicket->setStationName(localDestination->getName());
-  myTicket->setStationNIMA(localDestination->getNima());
+  myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
   delete localDestination;
   myTicket->setMovCode(retDepMovCode());
   myTicket->setMovDate(retDepDateTime().substr(0, retDepDateTime().find(' ')));
@@ -2509,40 +2510,10 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
   myTicket->setStaffCode(std::to_string(ret_staff_code()));
   std::string signaturePath = retDepDiFolder() + "/firma.png";
   myTicket->setSignaturePath(signaturePath);
-  myTicket->generate();
-  myTicket->print(printerId);
+  myTicket->composeFile();
+  myTicket->saveFile();
+  myTicket->printFile();
   delete myTicket;
 
-  // comment
-  ticketCommentData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
-
-  // staff
-  ticketStaffData(pdf, page1, line, font, fsize_big, fsize, fsize_small);
-
-  // saving the document to a file
-  std::cout << "INFO: saving to file: " << fname << std::endl;
-  ret = HPDF_SaveToFile (pdf, fname);
-  int iterations,max_iterations;
-  max_iterations = 10000;
-  iterations = 0;
-  struct stat buffer;   
-  while(stat (fname, &buffer) && iterations<max_iterations)
-  {
-     iterations++;
-  }
-
-  // cleaning up
-  HPDF_Free (pdf);
-
-  // printing
-  if (!printerId.empty())
-  {
-    int num_options = 0;
-    cups_option_t *options = NULL;
-    // num_options = cupsAddOption("fit-to-page", "true", num_options, &options);
-    // num_options = cupsAddOption("landscape", "false", num_options, &options);
-    num_options = cupsAddOption("media", "custom.200x1100", num_options, &options);
-    cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, options);
-  } 
   return 0;
 }
