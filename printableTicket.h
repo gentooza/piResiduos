@@ -28,10 +28,11 @@ If not, see <https://www.gnu.org/licenses/>.
 
 class printableTicket: public printable
 {
-    printableTicket();
+    public:
+    printableTicket(std::string file, std::string ptrId);
     ~printableTicket();
 
-    int compose();
+    int composeFile();
 
     int composeHeader();
     int composeStationTitle();

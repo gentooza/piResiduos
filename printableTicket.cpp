@@ -22,131 +22,135 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 #include "printableTicket.h"
 
-printableTicket::printableTicket() 
+printableTicket::printableTicket(std::string file, std::string ptrId) 
 {
-    // temporary name
-    // from base class
-    fileName = "ticket.pdf";
-    // fonts sizes
-    fontSize = 10;
-    fontSize_sm = 8;
-    fontSize_xl = 12;
-    // pdf entity creation
-    // from base class
-    hpdfDoc = HPDF_New (error_handler, NULL);
-    if (!hpdfDoc) 
-    {
-        printf ("error: cannot create PdfDoc object\n");
-        return -1;
-    }
-    if (setjmp(env)) 
-    {
-        HPDF_Free (hpdfDoc);
-        return -1;
-    }
-    /* set compression mode */
-    HPDF_SetCompressionMode (hpdfDoc, HPDF_COMP_ALL);
-    HPDF_UseUTFEncodings(hpdfDoc); 
-
-    /* create default-font */
-    hpdfFont = HPDF_GetFont (hpdfDoc, HPDF_LoadTTFontFromFile (hpdfDoc, "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf", HPDF_TRUE),"UTF-8");
-    /* add pages objects */
-    hpdfPage = HPDF_AddPage (hpdfDoc);
-    HPDF_Page_SetWidth (hpdfPage, 200);
-    // initial line and ticket height
-    currentLine = 0;
-    HPDF_Page_SetHeight (hpdfPage, 900);
-    // default font size
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fsize);  
-    // ticket cups printing options
-    // printOpts from base class
-    int num_options = 0;
-    num_options = cupsAddOption("media", "custom.200x1100", num_options, &printOpts);
-
+  std::cout << "prinrtableTicket::pritnableTicket()" << std::endl;
+  // temporary name
+  // from base class
+  fileName = file;
+  printerId = ptrId;
+  // fonts sizes
+  fontSize = 10;
+  fontSize_sm = 8;
+  fontSize_xl = 12;
+  // pdf entity creation
+  // from base class
+  hpdfDoc = HPDF_New (error_handler, NULL);
+  if (!hpdfDoc) 
+  {
+      std::cout << "error: cannot create PdfDoc object" << std::endl;
+      return;
+  }
+  if (setjmp(env)) 
+  {
+    HPDF_Free (hpdfDoc);
     return;
+  }
+  /* set compression mode */
+  HPDF_SetCompressionMode (hpdfDoc, HPDF_COMP_ALL);
+  HPDF_UseUTFEncodings(hpdfDoc); 
+
+  /* create default-font */
+  hpdfFont = HPDF_GetFont (hpdfDoc, HPDF_LoadTTFontFromFile (hpdfDoc, "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf", HPDF_TRUE),"UTF-8");
+  /* add pages objects */
+  hpdfPage = HPDF_AddPage (hpdfDoc);
+  HPDF_Page_SetWidth (hpdfPage, 200);
+  // initial line and ticket height
+  currentLine = 900;
+  HPDF_Page_SetHeight (hpdfPage, 900);
+  // default font size
+  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);  
+  // ticket cups printing options
+  // printOpts from base class
+  int num_options = 0;
+  num_options = cupsAddOption("media", "custom.200x1100", num_options, &printOpts);
+
+  return;
 }
 
 printableTicket::~printableTicket() 
 {
-    HPDF_Free (hpdfDoc);
+  std::cout << "printableTicket::~printableTicket()" << std::endl;
+  HPDF_Free (hpdfDoc);
 }
 
-int printableTicket::compose()
+int printableTicket::composeFile()
 {
-    int ret = 0;
-    //ticket header
-    if (composeHeader())
-        ret = -1;
-    // station title and NIMA
-    if (composeStationTitle())
-        ret = -1;
-    // registration data
-    if (composeRegistration())
-        ret = -1;
-    // origin
-    if (composeOrigin())
-        ret = -1;
-    // transport
-    if (composeTransport())
-        ret = -1;
-    // product
-    if (composeProduct())
-        ret = -1;
-    // weight
-    if (composeWeight())
-        ret = -1;
-    // paid?
-    if(ticket_payProcedure == 1)
-        if (composePrice())
-            ret = -1;
-    // comment
-    if (composeComment())
-        ret = -1;
-    // staff
-    if (composeStaff())
-        ret = -1;
-    return ret;
+  std::cout << "printableTicket::composeFile()" << std::endl;
+  int ret = 0;
+  //ticket header
+  if (composeHeader())
+    ret = -1;
+  // station title and NIMA
+  if (composeStationTitle())
+    ret = -1;
+  // registration data
+  if (composeRegistration())
+    ret = -1;
+  // origin
+  if (composeOrigin())
+    ret = -1;
+  // transport
+  if (composeTransport())
+    ret = -1;
+  // product
+  if (composeProduct())
+    ret = -1;
+  // weight
+  if (composeWeight())
+    ret = -1;
+  // paid?
+  if(ticket_payProcedure == 1)
+    if (composePrice())
+      ret = -1;
+  // comment
+  if (composeComment())
+    ret = -1;
+  // staff
+  if (composeStaff())
+    ret = -1;
+  return ret;
 }
 /*! function helper for writting the ticket header */
-void printableTicket::composeHeader()
+int printableTicket::composeHeader()
 {
-    // TODO: error handling?
-    HPDF_Image logoImg = NULL;
-    HPDF_Image lineImg = NULL;
-    // logo
-    logoImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/logo_bioreciclaje_trans.png");
-    if (logoImg != NULL)
-        HPDF_Page_DrawImage (hpdfPage, logoImg, 10, line - 55, 180, 53);
-    // code
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_sm);
-    HPDF_Page_BeginText (hpdfPage);
-    if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 57, 140, (currentLine - 57 - 9), ticket_code.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-    {
-        std::cout << "TODO: not enough space" << std::endl;
-    }
-    HPDF_Page_EndText (hpdfPage);
+  std::cout << "prinrtableTicket::composeHeader()" << std::endl;
+  // TODO: error handling?
+  HPDF_Image logoImg = NULL;
+  HPDF_Image lineImg = NULL;
+  // logo
+  logoImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/logo_bioreciclaje_trans.png");
+  if (logoImg != NULL)
+      HPDF_Page_DrawImage (hpdfPage, logoImg, 10, currentLine - 55, 180, 53);
+  // code
+  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_sm);
+  HPDF_Page_BeginText (hpdfPage);
+  if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 57, 140, (currentLine - 57 - 9), ticket_code.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+      std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (hpdfPage);
 
-    // cif
-    HPDF_Page_BeginText (hpdfPage);
-    if(HPDF_Page_TextRect( hpdfPage, 110, currentLine - 57, 190, (currentLine - 57 - 9), ticket_ourCIF.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-    {
-        std::cout << "TODO: not enough space" << std::endl;
-    }
-    HPDF_Page_EndText (hpdfPage);
+  // cif
+  HPDF_Page_BeginText (hpdfPage);
+  if(HPDF_Page_TextRect( hpdfPage, 110, currentLine - 57, 190, (currentLine - 57 - 9), ticket_ourCIF.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+    std::cout << "TODO: not enough space" << std::endl;
+  HPDF_Page_EndText (hpdfPage);
 
-    // horizontal line
-    lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
-    if (lineImg != NULL)
-        HPDF_Page_DrawImage (hpdfPage, lineImg, 10, (currentLine - 57 - 9 -2), 180, 2);
+  // horizontal line
+  lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
+  if (lineImg != NULL)
+    HPDF_Page_DrawImage (hpdfPage, lineImg, 10, (currentLine - 57 - 9 -2), 180, 2);
 
-    //updating line
-    currentLine = currentLine - 57 - 9 - 2;
+  //updating line
+  currentLine = currentLine - 57 - 9 - 2;
 
-    return;
+  return 0;
 }
 /*! function helper for writting the ticket station name, and it's NIMA, with the second horizontal separation line */
-void printableTicket::composeStationTitle()
+int printableTicket::composeStationTitle()
 {
+  std::cout << "prinrtableTicket::composeStationTitle()" << std::endl;
     HPDF_Image lineImg = NULL;
 
     ticket_stationName = stringToUppercase(ticket_stationName);
@@ -189,11 +193,12 @@ void printableTicket::composeStationTitle()
         HPDF_Page_DrawImage (hpdfPage, lineImg, 10, currentLine - 5, 180, 2);
     currentLine = currentLine - 5;
 
-    return;
+    return 0;
 }
 /*! function helper for writting the ticket first ifnormation, about movement number, date and time */
-void printableTicket::composeRegistration()
+int printableTicket::composeRegistration()
 {
+  std::cout << "prinrtableTicket::composeRegistration()" << std::endl;
   std::string myText;
 
    // label
@@ -233,12 +238,13 @@ void printableTicket::composeRegistration()
   HPDF_Page_EndText (hpdfPage);
   currentLine = currentLine - 35;
 
-  return;
+  return 0;
 }
 
 /*! function helper for writting the ticket second information, about origin costumer */
-void printableTicket::composeOrigin()
+int printableTicket::composeOrigin()
 {
+  std::cout << "prinrtableTicket::composeOrigin()" << std::endl;
   std::string myText;
   int finalLine = fontSize_xl;
 
@@ -266,11 +272,13 @@ void printableTicket::composeOrigin()
   HPDF_Page_EndText (hpdfPage);
 
   currentLine = currentLine - finalLine;
+  return 0;
 }
 
 /*! function helper for writting the ticket third information, about transportation */
-void printableTicket::composeTransport()
+int printableTicket::composeTransport()
 {
+  std::cout << "prinrtableTicket::composeTransport()" << std::endl;
   std::string myText;
   int finalLine = fontSize;
 
@@ -309,15 +317,17 @@ void printableTicket::composeTransport()
   // transportation plate
   HPDF_Page_BeginText (hpdfPage);
   HPDF_Page_MoveTextPos (hpdfPage, 60, currentLine - fontSize_xl - 5);
-  HPDF_Page_ShowText (hpdfPage, transportPlate.c_str());
+  HPDF_Page_ShowText (hpdfPage, ticket_transportPlate.c_str());
   HPDF_Page_EndText (hpdfPage);
 
   currentLine = currentLine - finalLine;
+  return 0;
 }
 
 /*! function helper for writting the ticket forth information, about product */
-void printableTicket::composeProduct()
+int printableTicket::composeProduct()
 {
+  std::cout << "prinrtableTicket::composeProduct()" << std::endl;
   std::string myText;
   int finalLine = fontSize;
 
@@ -351,11 +361,14 @@ void printableTicket::composeProduct()
   HPDF_Page_EndText (hpdfPage);
 
   currentLine = currentLine - finalLine - 5;
+
+  return 0;
 }
 
 /*! function helper for writting the ticket fifth information, about weight */
-void printableTicket::composeWeight()
+int printableTicket::composeWeight()
 {
+  std::cout << "prinrtableTicket::composeWeight()" << std::endl;
   std::string myText;
   int finalLine = fontSize + 7;
 
@@ -384,11 +397,14 @@ void printableTicket::composeWeight()
   HPDF_Page_EndText (hpdfPage);
 
   currentLine = currentLine - finalLine;
+
+  return 0;
 }
 
 /*! function helper for writting the ticket sixth information, about payment */
-void printableTicket::composePrice()
+int printableTicket::composePrice()
 {
+  std::cout << "prinrtableTicket::composePrice()" << std::endl;
   std::string myText;
   int finalLine = fontSize + 5;
 
@@ -401,17 +417,19 @@ void printableTicket::composePrice()
   HPDF_Page_EndText (hpdfPage);
 
   currentLine = currentLine - finalLine;
+
+  return 0;
 }
 
 /*! function helper for writting the ticket seventh information, about operator comment */
-void printableTicket::composeComment()
+int printableTicket::composeComment()
 {
   std::string myText;
   int finalLine = fontSize + 5;
  
   // comment label
   HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
+  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
   myText = "OBSERVACIONES: " +  ticket_comment;
   if(myText.length() > 30)
   {
@@ -428,10 +446,12 @@ void printableTicket::composeComment()
   HPDF_Page_EndText (hpdfPage);
      
   currentLine = currentLine - finalLine;
+
+  return 0;
 }
 
 /*! function helper for writting the ticket last information, about staff, and driver signature */
-void printableTicket::composeStaff()
+int printableTicket::composeStaff()
 {
   int refLine = 0;
   int finalLine = 7;
@@ -484,42 +504,12 @@ void printableTicket::composeStaff()
     std::cout << "TODO: not enough space" << std::endl;
   }
   HPDF_Page_EndText (hpdfPage);
-  line = line - finalLine - 5;
+  currentLine = currentLine - finalLine - 5;
   
   // Signature
-  signatureImg = HPDF_LoadPngImageFromFile (myPdf, ticket_signaturePath.c_str());
+  signatureImg = HPDF_LoadPngImageFromFile (hpdfDoc, ticket_signaturePath.c_str());
   if (signatureImg != NULL)
     HPDF_Page_DrawImage (hpdfPage, signatureImg, 100, currentLine - 60, 90, 60);
-}
 
-/*! function helper for calculating ticket height */
-void inputForm::calculateTicketHeight(int &line)
-{
-  std::string textToCompare;
-  // minimal height
-  line = 900;
-  // station name length
-  station * localDestination;
-  retDepDestinationStation(localDestination);
-  if(localDestination->getName().length() > 20) {
-    line += 15;
-  }
-  // origin costumer name length
-  textToCompare = "ORIGEN: " + retDepCosName();
-  if(textToCompare.length() >  26) {
-    line += 15;
-  }
-  if(textToCompare.length() > 52) {
-    line += 15;
-  }
-  // transportation name length
-  textToCompare = "TRANSPORTISTA: " + retDepDriName();
-  if(textToCompare.length() >  30) {
-    line += 15;
-  }
-  if(textToCompare.length() > 60) {
-    line += 15;
-  }
-
-  delete localDestination;
+  return 0;
 }
