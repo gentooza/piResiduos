@@ -261,12 +261,13 @@ printable::~printable() {
 int printable::saveFile() 
 {
     // saving the document to a file
+    std::cout << "INFO: saving to file: " << fileName << std::endl;
     hpdfStatus = HPDF_SaveToFile (hpdfDoc, fileName.c_str());
     if (hpdfStatus != HPDF_OK) {
         return -1;
     }
     int iterations,max_iterations;
-    max_iterations = 10000;
+    max_iterations = 15000;
     iterations = 0;
     struct stat buffer;   
     while(stat (fileName.c_str(), &buffer) && iterations<max_iterations)
@@ -275,13 +276,13 @@ int printable::saveFile()
     }
     return 0;
 }
-int printable::printFile(std::string printerId)
+int printable::printFile()
 {
     int ret = -1;
     // printing
     if (!printerId.empty())
     {
-        cupsPrintFile(printerId.c_str(), fname, "TICKET", 1, printOpts);
+        cupsPrintFile(printerId.c_str(), fileName.c_str(), "TICKET", 1, printOpts);
         ret = 0;
     }
     return ret;
