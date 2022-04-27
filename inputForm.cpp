@@ -2119,8 +2119,8 @@ void inputForm::createPdf(std::string printerId)
 int inputForm::createTicket(std::string printerId, std::string ticketCode)
 {
   printable * myTicket;
-
-  myTicket->new printableTicket();
+  std::string fileName = "ticket.pdf";
+  myTicket = new printableTicket(fileName, printerId);
 
   myTicket->setTicketType("REGISTRO DE ENTRADA");
   myTicket->setTicketCode(ticketCode);
@@ -2131,7 +2131,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   station * localDestination;
   retDepDestinationStation(localDestination);
   myTicket->setStationName(localDestination->getName());
-  myTicket->setStationNIMA(localDestination->getNima());
+  myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
   delete localDestination;
   myTicket->setMovCode(retDepMovCode());
   myTicket->setMovDate(retDepDateTime().substr(0, retDepDateTime().find(' ')));
@@ -2153,8 +2153,9 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   myTicket->setStaffCode(std::to_string(ret_staff_code()));
   std::string signaturePath = retDepDiFolder() + "/firma.png";
   myTicket->setSignaturePath(signaturePath);
-  myTicket->generate();
-  myTicket->print(printerId);
+  myTicket->composeFile();
+  int ret = myTicket->saveFile();
+  ret = myTicket->printFile();
   delete myTicket;
 
   return 0;
