@@ -28,6 +28,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 class printableDI: public printable
 {
+    public:
     printableDI();
     ~printableDI();
 
