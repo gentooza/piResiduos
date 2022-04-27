@@ -1232,14 +1232,13 @@ static int generated_defineMask(PARAM *p)
   pvSetGeometry(p,OUTPUT,5,915,1240,85);
   pvSetFont(p,OUTPUT,"Roboto",9,0,0,0,0);
 
-  pvQImage(p,LOGOBIO,0,"image/logo_costumer_trans.png",&w,&h,&depth);
-  pvSetGeometry(p,LOGOBIO,1255,915,275,95);
-  pvSetFont(p,LOGOBIO,"Default",9,0,0,0,0);
-  pvSetWhatsThis(p,LOGOBIO,pvtr("image/logo_costumer_trans.png"));
-
+  // pvQImage(p,LOGOBIO,0,"image/logo_costumer_trans.png",&w,&h,&depth);
+  // pvSetGeometry(p,LOGOBIO,1255,915,275,95);
+  // pvSetFont(p,LOGOBIO,"Default",9,0,0,0,0);
+  // pvSetWhatsThis(p,LOGOBIO,pvtr("image/logo_costumer_trans.png"));
 
   pvQImage(p,LOGOPRO,0,"image/log_nuevo_completo_transp_red.png",&w,&h,&depth);
-  pvSetGeometry(p,LOGOPRO,1545,920,395,95);
+  pvSetGeometry(p,LOGOPRO,1500,920,395,95);
   pvSetFont(p,LOGOPRO,"Default",9,0,0,0,0);
   pvSetWhatsThis(p,LOGOPRO,pvtr(""));
 
