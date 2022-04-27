@@ -88,7 +88,7 @@ SOURCES += main.cpp     \
            printableTicket.cpp \
            printableDI.cpp
 
-
+QMAKE_LIBDIR += ./lib
 !macx {
 QMAKE_CXXFLAGS    += -g -std=gnu++11
 unix:LIBS	  += ./WacomGSS/build/Linux/x86_64/WacomGSS.a
