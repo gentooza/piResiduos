@@ -151,49 +151,49 @@ int printableTicket::composeHeader()
 int printableTicket::composeStationTitle()
 {
   std::cout << "prinrtableTicket::composeStationTitle()" << std::endl;
-    HPDF_Image lineImg = NULL;
+  HPDF_Image lineImg = NULL;
+  std::string stationNameField;
 
-    ticket_stationName = stringToUppercase(ticket_stationName);
-    std::string nima_text = "NIMA: " + ticket_stationNIMA;
+  stationNameField = "Instalación: " stringToUppercase(ticket_stationName);
+  std::string nima_text = "NIMA: " + ticket_stationNIMA;
+  // station name
+  int Y = 25;
+  int finalY = 50;
+  if (ticket_stationName.length() > 20)
+    Y = 20;
+  if (ticket_stationName.length() > 45)
+  {
+    Y = 10;
+    finalY = 65;
+  }
+  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
+  HPDF_Page_SetTextLeading(hpdfPage, fontSize_xl);
+  HPDF_Page_BeginText (hpdfPage);
+  if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - Y, 190, (currentLine - finalY), stationNameField.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (hpdfPage);
+  currentLine = currentLine - finalY;
 
-    // station name
-    int Y = 25;
-    int finalY = 50;
-    if (ticket_stationName.length() > 20)
-        Y = 20;
-    if (ticket_stationName.length() > 45)
-    {
-        Y = 10;
-        finalY = 65;
-    }
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
-    HPDF_Page_SetTextLeading(hpdfPage, fontSize_xl);
-    HPDF_Page_BeginText (hpdfPage);
-    if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - Y, 190, (currentLine - finalY), ticket_stationName.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-    {
-        std::cout << "TODO: not enough space" << std::endl;
-    }
-    HPDF_Page_EndText (hpdfPage);
-    currentLine = currentLine - finalY;
+  // NIMA
+  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
+  HPDF_Page_SetTextLeading(hpdfPage, fontSize);
+  HPDF_Page_BeginText (hpdfPage);
+  if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 5, 190, (currentLine - 15), nima_text.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  {
+    std::cout << "TODO: not enough space" << std::endl;
+  }
+  HPDF_Page_EndText (hpdfPage);
+  currentLine = currentLine - 15;
 
-    // NIMA
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
-    HPDF_Page_SetTextLeading(hpdfPage, fontSize);
-    HPDF_Page_BeginText (hpdfPage);
-    if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 5, 190, (currentLine - 15), nima_text.c_str(), HPDF_TALIGN_CENTER, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-    {
-        std::cout << "TODO: not enough space" << std::endl;
-    }
-    HPDF_Page_EndText (hpdfPage);
-    currentLine = currentLine - 15;
+  // horizontal line
+  lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
+  if (lineImg != NULL)
+    HPDF_Page_DrawImage (hpdfPage, lineImg, 10, currentLine - 5, 180, 2);
+  currentLine = currentLine - 5;
 
-    // horizontal line
-    lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
-    if (lineImg != NULL)
-        HPDF_Page_DrawImage (hpdfPage, lineImg, 10, currentLine - 5, 180, 2);
-    currentLine = currentLine - 5;
-
-    return 0;
+  return 0;
 }
 /*! function helper for writting the ticket first ifnormation, about movement number, date and time */
 int printableTicket::composeRegistration()
