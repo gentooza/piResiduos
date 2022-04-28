@@ -159,9 +159,9 @@ int printableTicket::composeStationTitle()
   // station name
   int Y = 25;
   int finalY = 50;
-  if (ticket_stationName.length() > 20)
+  if (stationNameField.length() > 20)
     Y = 20;
-  if (ticket_stationName.length() > 45)
+  if (stationNameField.length() > 45)
   {
     Y = 10;
     finalY = 65;
