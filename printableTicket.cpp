@@ -154,7 +154,7 @@ int printableTicket::composeStationTitle()
   HPDF_Image lineImg = NULL;
   std::string stationNameField;
 
-  stationNameField = "Instalación: " stringToUppercase(ticket_stationName);
+  stationNameField = "Instalación: " + stringToUppercase(ticket_stationName);
   std::string nima_text = "NIMA: " + ticket_stationNIMA;
   // station name
   int Y = 25;
