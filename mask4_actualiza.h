@@ -1613,54 +1613,47 @@ static int actualizaEstado(PARAM *p, DATA *d)
 
 	    int error = formEntrada->storeDepMov(localDatabase,remoteDatabase,remote_connected);
 	    if(!error)
-	    {
-			std::string myPrinter;
-			miIni->retPrinterId(myPrinter);
-			if(myPrinter.empty())
-		  	{
-		    	console.push_back("AVISO: no se va a imprimir el documento, al no tener configurada la impresora");
-		  	}
-			formEntrada->createPdf(myPrinter);
-			mailClient->sendIncidentsMail(myStation,formEntrada);
-	    }
+				console.push_back("INFO Movimiento generado correctamente");
 	    else if(error ==-1)
 	    {
-			console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
-			console.push_back("*ERROR* ¡Necesita sincronizar para actualizar el movimiento en el servidor central!");
-			std::string myPrinter;
-			miIni->retPrinterId(myPrinter);
-			if(myPrinter.empty())
-		  	{
-		    	console.push_back("AVISO: no se va a imprimir el documento, al no tener configurada la impresora");
-		  	}
-			formEntrada->createPdf(myPrinter);
-			mailClient->sendIncidentsMail(myStation,formEntrada);
+				console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
+				console.push_back("*ERROR* ¡Necesita sincronizar para actualizar el movimiento en el servidor central!");
 	    }
 	    else if(error == -10)
 	    {
-			console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
-			console.push_back("*ERROR* ¡Necesita sincronizar! Vuelva a intentarlo");
-			d->error = 1;
+				console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
+				console.push_back("*ERROR* ¡Necesita sincronizar! Vuelva a intentarlo");
+				d->error = 1;
 	    }
 	    else
-	      console.push_back("*ERROR* ¡Fallo al guardar el movimiento!");
-		std::string myTicketPrinter;
-		std::string ticketCode;
-		miIni->retTicketPrinterId(myTicketPrinter);
-		miIni->retTicketCode(ticketCode);
-		if(myTicketPrinter.empty())
-		{
-		    console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
-		}
-		formEntrada->createTicket(myTicketPrinter, ticketCode);
-		try 
-		{
-			formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
-		} 
-		catch(...)
-		{
-			console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
-		}
+			{
+	    	console.push_back("*ERROR* ¡Fallo al guardar el movimiento!");
+				d->error = 1;
+			}
+			if (!d->error)
+			{
+				// printing
+				std::string myTicketPrinter;
+				std::string ticketCode;
+				miIni->retTicketPrinterId(myTicketPrinter);
+				miIni->retTicketCode(ticketCode);
+				if(myTicketPrinter.empty())
+				{
+		  		console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
+				}
+				formEntrada->createTicket(myTicketPrinter, ticketCode);
+				// backing up files
+				try 
+				{
+					formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+				} 
+				catch(...)
+				{
+					console.push_back("*ERROR* ¡Hubo errores al guardar los ficheros del movimiento en el servidor central!");
+				}
+				// sending incidents email
+				mailClient->sendIncidentsMail(myStation,formEntrada);
+			}
 	    break;
 	  }
 	default:
