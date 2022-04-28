@@ -370,7 +370,7 @@ int printableTicket::composeWeight()
 {
   std::cout << "prinrtableTicket::composeWeight()" << std::endl;
   std::string myText;
-  int finalLine = fontSize + 7;
+  int finalLine = fontSize + fontSize_xl + 12;
 
   // bruto
   HPDF_Page_BeginText (hpdfPage);
@@ -392,7 +392,7 @@ int printableTicket::composeWeight()
   myText = "NETO:" + ticket_totalWeight;
   myText += " Kg"; 
   HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
-  HPDF_Page_MoveTextPos (hpdfPage, 110, currentLine - 7);
+  HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontsize - 12);
   HPDF_Page_ShowText (hpdfPage, myText.c_str());
   HPDF_Page_EndText (hpdfPage);
 
