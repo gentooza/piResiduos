@@ -383,7 +383,7 @@ int printableTicket::composeWeight()
   // tara
   HPDF_Page_BeginText (hpdfPage);
   myText = "TARA:" + ticket_tareWeight;
-  HPDF_Page_MoveTextPos (hpdfPage, 55, currentLine - 7);
+  HPDF_Page_MoveTextPos (hpdfPage, 100, currentLine - 7);
   HPDF_Page_ShowText (hpdfPage, myText.c_str());
   HPDF_Page_EndText (hpdfPage);
 
