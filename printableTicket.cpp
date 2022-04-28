@@ -392,7 +392,7 @@ int printableTicket::composeWeight()
   myText = "NETO:" + ticket_totalWeight;
   myText += " Kg"; 
   HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
-  HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontsize - 12);
+  HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontSize - 12);
   HPDF_Page_ShowText (hpdfPage, myText.c_str());
   HPDF_Page_EndText (hpdfPage);
 
