@@ -265,7 +265,7 @@ int printableTicket::composeOrigin()
   if(myText.length() > 56) {
     finalLine = 5*fontSize_xl;
   }
-  if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 7, 190, (currentLine - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 8, 190, (currentLine - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
   {
     std::cout << "TODO: not enough space" << std::endl;
   }
@@ -294,12 +294,12 @@ int printableTicket::composeTransport()
   HPDF_Page_BeginText (hpdfPage);
   myText = "              " + ticket_transportName;
   if(myText.length() > 30) {
-    finalLine = 3*fontSize;
+    finalLine = 3*fontSize + 1;
   }
   if(myText.length() > 68) {
-    finalLine = 5*fontSize;
+    finalLine = 5*fontSize + 2;
   }
-  if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 8, 190, (currentLine - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+  if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 8.5, 190, (currentLine - finalLine), myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
   {
     std::cout << "TODO: not enough space" << std::endl;
   }
