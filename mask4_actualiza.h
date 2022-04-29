@@ -1591,24 +1591,28 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    int remote_connected = 0;
 	    try
 	    {
-			DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
+			  DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
 	    }
 	    catch(...)
 	    {
-			DatabaseData_chkd = 0;
-	    }	    
+			  DatabaseData_chkd = 0;
+	    }	
+      std::cout << "trying out connection of: " + remoteDatabaseData.db_host + ":" + remoteDatabaseData.db_port;    
 	    if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
 	    {
-			try
+			  try
 		  	{
 		    	DatabaseData_chkd = std::stoi(remoteDatabaseData.local_db_port);
 		  	}
-			catch(...)
+			  catch(...)
 		  	{
 		    	DatabaseData_chkd = 0;
 		  	}
-			if(isConnected(remoteDatabaseData.local_db_host.c_str(), DatabaseData_chkd))
-		  		remote_connected = 1;
+        std::cout << "trying out connection of: " + remoteDatabaseData.local_db_host + ":" + remoteDatabaseData.local_db_port;
+			  if(isConnected(remoteDatabaseData.local_db_host.c_str(), DatabaseData_chkd))
+        {
+		  	  remote_connected = 1;
+        }
 	    }
 
 	    int error = formEntrada->storeDepMov(localDatabase,remoteDatabase,remote_connected);

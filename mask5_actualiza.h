@@ -1059,99 +1059,93 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	  break;
 	case 1199: //almacenaje del movimiento, impresión del pdf
 	{
-		//to DATABASE
-	    int DatabaseData_chkd;
-	    int remote_connected = 0;
-	    int error_check = 0;
-	    try
-	    {
+	  //to DATABASE
+	  int DatabaseData_chkd;
+	  int remote_connected = 0;
+	  int error_check = 0;
+	  try
+	  {
 			DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
 		}
-	    catch(...)
-	    {
+	  catch(...)
+	  {
 			DatabaseData_chkd = 0;
-	    }	    
-	    if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
-	    {
-			try
-		  	{
-		    	DatabaseData_chkd = std::stoi(remoteDatabaseData.local_db_port);
-		  	}
-			catch(...)
-		  	{
-		    	DatabaseData_chkd = 0;
-		  	}
-			if(isConnected(remoteDatabaseData.local_db_host.c_str(), DatabaseData_chkd))
-		  		remote_connected = 1;
-	    }
+	  }	    
+	  if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
+	  {
+	    try
+		  {
+		    DatabaseData_chkd = std::stoi(remoteDatabaseData.local_db_port);
+		  }
+		  catch(...)
+		  {
+		    DatabaseData_chkd = 0;
+		  }
+		  if(isConnected(remoteDatabaseData.local_db_host.c_str(), DatabaseData_chkd))
+		    remote_connected = 1;
+	  }
+	  d->ret = 0;
 
-	    d->ret = 0;
-
-    	std::string myPrinter;
-    	miIni->retPrinterId(myPrinter);
-    	if(myPrinter.empty())
-      	{
-			console.push_back("**AVISO** no se va a imprimir el DI, al no tener configurada la impresora");
-      	}
-    	if (formSalida->retDepMovType() == DEF_MOV_TRANSFER) //transfers
-      	{			
-			error_check = formSalida->storeDepTransfer(localDatabase, remoteDatabase,remote_connected);
+    std::string myPrinter;
+    miIni->retPrinterId(myPrinter);
+    if(myPrinter.empty())
+		  console.push_back("**AVISO** no se va a imprimir el DI, al no tener configurada la impresora");
+    // transfers movements
+    if (formSalida->retDepMovType() == DEF_MOV_TRANSFER)
+    {			
+		  error_check = formSalida->storeDepTransfer(localDatabase, remoteDatabase,remote_connected);
 			if(error_check == -2) //cathastrophic
-	  		{
-	    		console.push_back("*ERROR* no se pudo guardar la transferencia, contacte con mantenimiento");
-	    		d->ret = 1;
-	  		}
+	  	{
+	    	console.push_back("*ERROR* no se pudo guardar la transferencia, contacte con mantenimiento");
+	    	d->ret = 1;
+	  	}
 			else
 			{
 				formSalida->saveSignature(1);
-	    		if(error_check == -1) //only remote error
-	    		{
+	    	if(error_check == -1) //only remote error
+	    	{
 					console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
 					console.push_back("*ERROR* ¡Necesita sincronizar! Si se trata de un movimiento de transferencia la estación de destino no lo verá");
 				}
 				formSalida->createPdf(myPrinter);
-				std::string myTicketPrinter;
-				std::string ticketCode;
-				miIni->retTicketPrinterId(myTicketPrinter);
-				miIni->retTicketCode(ticketCode);
-				if(myTicketPrinter.empty())
-				{
-	    			console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
-				}
-				formSalida->createTicket(myTicketPrinter, ticketCode);
-	    		d->ret = 0;
-	  		}
-      	}
-    	else //loading materials
-      	{		
+	    	d->ret = 0;
+	  	}
+    }
+    // outcoming loading materials movements
+    else
+    {		
 			error_check = formSalida->storeDepMov(localDatabase,remoteDatabase,remote_connected);
 			if(!error_check)
-	  		{
-	    		formSalida->saveSignature();
-	    		formSalida->createPdf(myPrinter);
-	    		if(mailClient->sendIncidentsMail(myStation,formSalida))
-					console.push_back("*ERROR* ¡Error en el sistema de envío de emails");
-	    		formSalida->backupFiles(formSalida->retDepMovCode().c_str());
-	    		d->ret = 0;
-	  		}
+	  	{
+        console.push_back("INFO Movimiento generado correctamente");
+	    	d->ret = 0;
+	  	}
 			else if(error_check == -1) //remote fail
-	  		{
-	    		formSalida->saveSignature();
-	    		console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
-	    		console.push_back("*ERROR* ¡Necesita sincronizar! Si se trata de una orden de recogida necesitará que administración la borre manualmente");
-	    		formSalida->createPdf(myPrinter);
-	    		mailClient->sendIncidentsMail(myStation,formSalida);
-	    		formSalida->backupFiles(formSalida->retDepMovCode().c_str());
-	    		d->ret = 0;
-	  		}
+	  	{
+	    	console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
+	    	console.push_back("*ERROR* ¡Necesita sincronizar! Si se trata de una orden de recogida necesitará que administración la borre manualmente");
+	    	d->ret = 0;
+	  	}
 			else //Cathastrophic
-	  		{
-	    		console.push_back("*ERROR* ¡Fallo al guardar el movimiento!");
-	    		d->ret =1;
-	  		}	
-      	}
-    	cameraSemaphore(4,1,globalConfiguration.traffic_lights_enabled);
-    	break;
+	  	{
+	    	console.push_back("*ERROR* ¡Fallo al guardar el movimiento!");
+	    	d->ret =1;
+	  	}	
+      if(!d->ret)
+      {
+        // saving signature
+        formSalida->saveSignature();
+        // printing DI
+        formSalida->createPdf(myPrinter);
+        // sending incidents email
+        if(mailClient->sendIncidentsMail(myStation,formSalida))
+				  console.push_back("*ERROR* ¡Error en el sistema de envío de emails");
+        // backing up files
+        formSalida->backupFiles(formSalida->retDepMovCode().c_str());
+      }
+    }
+    cameraSemaphore(4,1,globalConfiguration.traffic_lights_enabled);
+    break;
 	}
 	default:
 	  	break;
