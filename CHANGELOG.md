@@ -5,7 +5,7 @@
 + ticket layout and routines implemented.
 + ticket printing implemented in incoming material input movements.
 
-## code improvements
+## code improvement
 + printing is going to be managed now by external classes, DI printing is not yet implemented.
 + logic saving movements is now more efficient and easy to read.
 + some log messages are not needed anymore.
