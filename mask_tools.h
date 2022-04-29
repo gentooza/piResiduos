@@ -912,8 +912,7 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
   	char error[128];
   	int port;
 	std::string str_log_message = "(CAMERA'S TRAFFIC LIGHTS)(INFO) starting... location: " + std::to_string(location) + ", action: " + std::to_string(on_off_check) + " , are cameras enabled?: " + std::to_string(traffic_lights_enabled);
-
-	log_message(str_log_message, 1);
+	// log_message(str_log_message, 1);
   	if(traffic_lights_enabled)
     {
       	if((location <= cameras.size()) && (location > 0))
