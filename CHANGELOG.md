@@ -1,9 +1,14 @@
-# 2022/04/08 version 0.1.99a
+# 2022/04/28 version 0.2rc1 
 
 ## improves
 + now we can configure of ticket printer.
 + ticket layout and routines implemented.
-+ ticket printing implemented in material input, and transference materia output movements.
++ ticket printing implemented in incoming material input movements.
+
+## code improvements
++ printing is going to be managed now by external classes, DI printing is not yet implemented.
++ logic saving movements is now more efficient and easy to read.
++ some log messages are not needed anymore.
 
 
 # 2021/12/28 version 0.1.9dev
@@ -11,11 +16,9 @@
 forked from last piResiduos production version
 
 ## improves
-
 + manual trafficlights control in input/output materials processes.
 
 ## fixes
-
 + automatic trafficlights turning on/off on input/output materials processes. Added sleep function between camera calls.
 
 
