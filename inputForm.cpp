@@ -2134,8 +2134,8 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
   myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
   delete localDestination;
   myTicket->setMovCode(retDepMovCode());
-  myTicket->setMovDate(retDepDateTime().substr(0, retDepDateTime().find(' ')));
-  myTicket->setMovTime(retDepDateTime().substr(retDepDateTime().find(' '), retDepDateTime().length()));
+  myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
+  myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
   myTicket->setCostumerName(retDepCosName());
   myTicket->setTransportName(retDepDriName());
   myTicket->setTransportPlate(retDepPlate());
