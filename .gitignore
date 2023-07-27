@@ -29,6 +29,7 @@ WacomGSS/
 lib/
 extras/libharu
 extras/image
+tests/
 
 #closed source
 tableta.cpp
@@ -44,3 +45,6 @@ image/logo_costumer_trans.png
 image/logo_redux.png
 image/mural_costumer.png
 image/sellotrans.png
+
+# generated misc
+Makefile
