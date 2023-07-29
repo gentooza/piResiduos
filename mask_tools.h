@@ -788,43 +788,43 @@ static int syncTransitDep(PARAM *p, int codigo_estacion)
 /*!function for syncing stations from central Database*/
 static int syncStations(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing stations table... ";
-  if(remoteDatabase.isOpen())
-    {
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      //stations
-      rmt_selAllStations(sql);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
+	int ret = 0;
+	char* sql = NULL;
+  	std::string str_log_message;
+  	str_log_message = "(SINCRO) syncing stations table... ";
+  	if(remoteDatabase.isOpen())
 	{
-	  delete sql;
-	  localDatabase.query(p,"delete from centros");
-	  log_message("(SINCRO) BD local -> delete from centros", 1);
-	  dataReturn = remoteDatabase.retData2();
-	  sqlLoadStations(sql,dataReturn);
-	  str_log_message = "(SINCRO) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  localDatabase.query(p,sql);
-	}
-      else
-	{
-	  log_message("(SINCRO)(centros) Error BD remota (query)", 2);
-	  ret = -2;
-	}
-      delete sql;
+    	std::vector <std::vector <std::string>> dataReturn;
+    	//stations
+    	rmt_selAllStations(sql);
+    	str_log_message = "(SINCRO) BD remota -> ";
+    	str_log_message += sql;
+    	log_message(str_log_message, 1);
+    	if(!remoteDatabase.query(p,sql))
+		{
+	  		delete[] sql;
+	  		localDatabase.query(p,"delete from centros");
+	  		log_message("(SINCRO) BD local -> delete from centros", 1);
+	  		dataReturn = remoteDatabase.retData2();
+	  		sqlLoadStations(sql,dataReturn);
+	  		str_log_message = "(SINCRO) BD local -> ";
+	  		str_log_message += sql;
+	  		log_message(str_log_message, 1);
+	  		localDatabase.query(p,sql);
+			delete[] sql;
+		}
+      	else
+		{
+	  		log_message("(SINCRO)(centros) Error BD remota (query)", 2);
+	  		ret = -2;
+		}
     }
-  else
+  	else
     {
-      log_message("(SINCRO)(centros) Error BD remota (conexión)", 2);
-      ret = -1;
+    	log_message("(SINCRO)(centros) Error BD remota (conexión)", 2);
+      	ret = -1;
     }
-  return ret;
+  	return ret;
 }
 
 
