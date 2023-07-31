@@ -43,7 +43,7 @@ extern RESOURCES myResources;
 extern SYNC_DATA my_ssh_syncro_data;
 extern SYNC_DATA my_syncro_data;
 extern GLOBAL_DATA globalConfiguration;
-#include <boost/algorithm/string.hpp>
+
 #include "mask4_data.h"
 #include "mask_tools.h"
 #include "mask4_tools.h"
