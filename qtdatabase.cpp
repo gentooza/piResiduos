@@ -1,17 +1,22 @@
 /*
- *  PiResiduos
- *
- *  Copyright 2016,2017 by it's authors. 
- *
- *  Some rights reserved. See COPYING, AUTHORS.
- *  This file may be used under the terms of the GNU General Public
- *  License version 3.0 ,or any later version of GPL, as published by the Free Software Foundation
- *  and appearing in the file COPYING included in the packaging of
- *  this file.
- *
- *  This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- *  WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- */
+This file is part of PiResiduos.
+
+Copyright 2017-2018, Prointegra SL.
+Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) uco (dot) es>
+
+PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PiResiduos is distributed in the hope that it will 
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PiResiduos.  
+If not, see <https://www.gnu.org/licenses/>.
+*/
 
 /***************************************************************************
                           qtdatabase.cpp  -  description
@@ -301,63 +306,64 @@ int qtDatabase::nextRecord()
 }
 
 
-std::vector <std::vector <std::string>> qtDatabase::retData2()
+std::vector<std::vector<std::string>> qtDatabase::retData2()
 {
-  //std::cout << "DEBUG: (inside qtDatabase::retData2)" << std::endl;
+    std::cout << "DEBUG: (inside qtDatabase::retData2)" << std::endl;
   
-  int xmax,ymax,failed = -1;
-  std::vector <std::vector <std::string>> matrix;
-
-  xmax = result->record().count();
-  if(db->driverName() == "QSQLITE")
+    int xmax,ymax,failed = -1;
+    std::vector <std::vector <std::string>> matrix;
+    xmax = result->record().count();
+    if(db->driverName() == "QSQLITE")
     {
-      result->last();
-      ymax = result->at()+1;
-      result->first();
-      //printf("SQLITE ymax = %d \n",ymax);
+        ymax = 0;
+        if(result->last() && result->isValid())
+        {
+            ymax = result->at()+1;
+            result->first();
+        }
+        // std::cout << "SQLITE ymax = " << ymax << std::endl;
     }
-  else
+    else
     {
-      ymax = result->numRowsAffected();
-      //printf("no SQLITE, ymax = %d \n",ymax);
+        ymax = result->numRowsAffected();
+        // std::cout << "NO SQLITE ymax = " << ymax << std::endl;
     }
-  
-  if(db != NULL)
-  {
-    QSqlRecord record = result->record();
-    if(!record.isEmpty())
-      {
-	for(int i=0; i  < ymax;i++)
-	  {
-	    if(db->driverName() != "QSQLITE")
-	      result->next();
-	    std::vector < std::string> row;	    
-	    QSqlRecord record = result->record();
-	    for (int j=0;j< xmax; j++)
-	      {		
-		QSqlField f = record.field(j);
 
-		if(db->driverName() != "QSQLITE" ? f.isValid() : !f.isNull())
-		  {
-		    QVariant v = f.value();
-		    //std::cout << i << "," << j <<" = " << v.toByteArray().constData() << std::endl;
-		    if(v.canConvert(QVariant::String))
-		      row.push_back(v.toString().toUtf8().constData());
-		    else
-		      row.push_back(v.toByteArray().constData());
-		    //row.push_back(v.toByteArray().data());
-		    //sprintf(retTable[y][x],"%s",v.toByteArray().data());
-		    failed = 0;
-		  }
-		else
-		  row.push_back("");
-	      }
-	    if(!row.empty())
-	      matrix.push_back(row);
-	    if(db->driverName() == "QSQLITE")
-	      result->next();
-	  }
-      }
-  }
-  return matrix;
+    if(db != NULL)
+    {
+        QSqlRecord record = result->record();
+        if(!record.isEmpty())
+        {
+	        for(int i=0; i < ymax;i++)
+	        {
+	            if(db->driverName() != "QSQLITE")
+	                result->next();
+	            std::vector < std::string> row;	    
+	            QSqlRecord record = result->record();
+	            for (int j=0;j< xmax; j++)
+	            {		
+		            QSqlField f = record.field(j);
+		            if(db->driverName() != "QSQLITE" ? f.isValid() : !f.isNull())
+		            {
+		                QVariant v = f.value();
+		                // std::cout << i << "," << j <<" = " << v.toByteArray().constData() << std::endl;
+		                if(v.canConvert(QVariant::String))
+		                    row.push_back(v.toString().toUtf8().constData());
+		                else
+		                    row.push_back(v.toByteArray().constData());
+		                //row.push_back(v.toByteArray().data());
+		                //sprintf(retTable[y][x],"%s",v.toByteArray().data());
+		                failed = 0;
+		            }
+		            else
+		                row.push_back("");
+	            }
+	            if(!row.empty())
+	                matrix.push_back(row);
+	            if(db->driverName() == "QSQLITE")
+	                result->next();
+	        }
+        }
+    }
+    return matrix;
 }
