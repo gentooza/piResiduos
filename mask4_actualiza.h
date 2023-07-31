@@ -974,11 +974,11 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    break;
 	  }
 	case 0:
-	  {
+	{
 	    popteTransito(p,d,TABLATRANSITO,formEntrada);
 	    refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 	    break;
-	  }
+	}
 	case -100: 	
 	    //NUNCA ENTRAREMOS AQUI	  
 	  break;
@@ -1336,19 +1336,21 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	  break;
 	  
 	case 1000: //salida de descargar
-	  {
+	{
+		std::cout << "estado 1000" << std::endl;
 	    if(syncro_needed(&my_syncro_data))
-	      {
-		globalSyncronization(p,d,formEntrada);
-		actualizaForm(p,d, formEntrada->getState());
-		syncro_done(&my_syncro_data);
-	      }
+	    {
+			globalSyncronization(p,d,formEntrada);
+			actualizaForm(p,d, formEntrada->getState());
+			syncro_done(&my_syncro_data);
+	    }
 	    //commons
 	    popteTransito(p,d,TABLATRANSITO, formEntrada);
 	    d->transito_plate.clear();
 	    d->post_transito_plate.clear();
-	  }
-	  break;
+
+		break;
+	}
 	case 1010: //animation, camera 2
 	  break;
 	case 1011: //taking plate camera2
