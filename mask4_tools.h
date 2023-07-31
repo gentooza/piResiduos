@@ -199,75 +199,81 @@ static int populateListView(PARAM *p, int id, std::vector<std::vector <std::stri
     }
   std::cout << "fuera de populatelistview" << std::endl;
 }
+
+/*! function for populating GUI table of transit transports */
 static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
 {
-  std::cout << "inside popteTransito" << std::endl;
-  char *sql;
-  sel_all_transito(sql,myStation->getCode());
-  localDatabase.query(p,sql);
-  std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-  if(are2dMatrixDifferents(ourData,formulario->retTransit()))
+    // std::cout << "inside popteTransito" << std::endl;
+    char *sql;
+    std::vector<std::vector<std::string>> ourData;
+    sel_all_transito(sql,myStation->getCode());
+    localDatabase.query(p,sql);
+    delete[] sql;
+    try
     {
-      formulario->setTransit(ourData);           
-    
-      std::vector < std::vector < std::string>>::iterator trucks;
-      std::vector <std::string> ::iterator fields;
-      std::string item;
-      std::string tmpItem = "\n(";
-      int column = 1;
-      pvClear(p,id);
-      //ICON, PLATE, FECHA_HORA
-      std::string icon;
-      std::string plate;
-      std::string date;
-      int weight;
-      for(trucks = ourData.begin(); trucks != ourData.end(); ++trucks)
-	{
-	  column = 1;
-	  item.clear();
-	  plate.clear();
-	  date.clear();
-	  icon = "image/small_truck_BW_icon_T.png";
-	  for(fields = trucks->begin(); fields != trucks->end(); ++fields)
-	    {
-	      if(column == 8) //plate
-		{
-		  plate = *fields;
-		}
-	      else if(column == 2) //date
-		{
-		  date = *fields;
-		}
-	      else if(column == 13)
-		{
-		  std::cout << "WEIGHT TO INT: " << *fields << std::endl;
-
-	  try
-	    {
-	      weight = std::stoi(*fields);
-	    }
-	  catch(...)
-	    {
-	      weight = 0;
-	    }
-      
-		  if(weight)
-		    icon = "image/small_truck_BW_icon_G.png";
-		}
-	      column++;
-	    }
-	  item = plate;
-	  item += "\n(";
-	  item += date;
-	  item += ")";
-	  // std::cout << item << std::endl;
-	  if(item.length() >= MAX_EVENT_LENGTH/16)
-	    item = item.substr(0,MAX_EVENT_LENGTH/16-1);
-	  pvInsertItem(p,id,-1,icon.c_str(),item.c_str(),1);
-	}
+        ourData = localDatabase.retData2();
     }
+    catch(...)
+    {
+        ourData.clear();
+    }
+    if(are2dMatrixDifferents(ourData,formulario->retTransit()))
+    {
+        formulario->setTransit(ourData);           
+        // std::vector < std::vector < std::string>>::iterator trucks;
+        // std::vector <std::string> ::iterator fields;
+        std::string item;
+        std::string tmpItem = "\n(";
+        int column = 1;
+        pvClear(p,id);
+        //ICON, PLATE, FECHA_HORA
+        std::string icon;
+        std::string plate;
+        std::string date;
+        int weight;
 
+        for(auto trucks : ourData)
+	    {
+	        column = 1;
+	        item.clear();
+	        plate.clear();
+	        date.clear();
+	        icon = "image/small_truck_BW_icon_T.png";
+	        for(auto fields : trucks)
+	        {
+	            if(column == 8) //plate
+		            plate = fields;
+	            else if(column == 2) //date
+		            date = fields;
+		        else if(column == 13)
+		        {
+		            std::cout << "WEIGHT TO INT: " << fields << std::endl;
+	                try
+	                {
+	                    weight = std::stoi(fields);
+	                }
+	                catch(...)
+	                {
+	                    weight = 0;
+	                } 
+		            if(weight)
+		                icon = "image/small_truck_BW_icon_G.png";
+		        }
+	            column++;
+	        }
+	        item = plate;
+	        item += "\n(";
+	        item += date;
+	        item += ")";
+	        // std::cout << item << std::endl;
+	        if(item.length() >= MAX_EVENT_LENGTH/16)
+	            item = item.substr(0,MAX_EVENT_LENGTH/16-1);
+	        pvInsertItem(p,id,-1,icon.c_str(),item.c_str(),1);
+	    }
+    }
+    return 0;
 }
+
 ///
 static int resetForm(PARAM *p,DATA* d, baseForm *& myForm)
 {
