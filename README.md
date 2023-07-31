@@ -55,6 +55,7 @@ Happy Hacking!
  This file is part of PixResiduos.
 
  Copyright 2021, Pixelada S. Coop. And.
+ Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) uco (dot) es>
 
  PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or

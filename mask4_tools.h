@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) uco (dot) es>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
