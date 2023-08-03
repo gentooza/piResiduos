@@ -109,7 +109,7 @@ static int useCamera(PARAM *p, DATA* d, int location, std::string & plate, int c
     }
   else
     {
-      sprintf(error,"*ERROR* mala localización de la cámara o mala configuración en el .ini, localización:%d,cámaras en .ini:%d",location,cameras.size());
+      sprintf(error,"*ERROR* mala localización de la cámara o mala configuración en el .ini, localización:%d,cámaras en .ini:%zu", location, cameras.size());
       console.push_back(error);
     }
     
@@ -1059,7 +1059,7 @@ static void cameraSemaphore(int location, int on_off_check, int traffic_lights_e
 		}
       	else
 		{
-	  		sprintf(error,"*ERROR* mala localización de la cámara o mala configuración en el .ini, localización:%d,cámaras en .ini:%d",location,cameras.size());
+	  		sprintf(error,"*ERROR* mala localización de la cámara o mala configuración en el .ini, localización:%d,cámaras en .ini:%zu", location, cameras.size());
 	  		console.push_back(error);
 			str_log_message = "(CAMERA'S TRAFFIC LIGHTS)(*ERROR*) wrong camera location! location:" + std::to_string(location) + " cameras in ini file:" + std::to_string(cameras.size());
 			log_message(str_log_message, 2);
