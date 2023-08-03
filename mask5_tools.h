@@ -274,8 +274,7 @@ static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
       pvInsertItem(p,id,-1,icon.c_str(),item.c_str(),1);
       std::cout << "exiting!!" << std::endl;
     }
-    
-
+  return 0;
 }
 
 static int resetForm(PARAM *p,DATA* d, baseForm *& myForm)
