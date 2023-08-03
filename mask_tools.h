@@ -561,95 +561,92 @@ static int sync_staff(PARAM *p)
 
 static int syncMovements(PARAM *p,long codigo_estacion)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing movements table... ";
-  if(remoteDatabase.isOpen())
+	int ret = 0;
+	std::string str_log_message;
+	str_log_message = "(SINCRO) syncing movements table... ";
+  	if(remoteDatabase.isOpen())
     {
-      //1 - choosing all unsyncronized local movements
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      sel_all_unsyncro_movements(sql);
-      str_log_message = "(SINCRO) BD local -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!localDatabase.query(p,sql))
-	{
-	  dataReturn = localDatabase.retData2();
-	  if(dataReturn.size()) //if there is local movements to sync
-	    {
-	      delete sql;
-	      //1b - udpdating remote movements table
-	      rmt_updtMovements(sql,dataReturn);
-	      str_log_message = "(SINCRO) BD remota -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(remoteDatabase.query(p,sql))
+      	//1 - choosing all unsyncronized local movements
+      	std::vector <std::vector <std::string>> dataReturn;
+      	char* sql;
+      	sel_all_unsyncro_movements(sql);
+      	str_log_message = "(SINCRO) BD local -> ";
+      	str_log_message += sql;
+      	log_message(str_log_message, 1);
+      	if(!localDatabase.query(p,sql))
 		{
-		  log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
-		  ret=-2;
+	  		dataReturn = localDatabase.retData2();
+	  		if(dataReturn.size()) //if there is local movements to sync
+	    	{
+	      		delete sql;
+	      		//1b - udpdating remote movements table
+	      		rmt_updtMovements(sql,dataReturn);
+	      		str_log_message = "(SINCRO) BD remota -> ";
+	      		str_log_message += sql;
+	      		log_message(str_log_message, 1);
+	      		if(remoteDatabase.query(p,sql))
+				{
+		  			log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
+		  			ret = -2;
+				}
+	      		else //if sincronizing remote movements with local's success
+				{
+		  			//uploading files!
+		  			upload_movement_files_from_sql(dataReturn,0);
+		  			//1c - set local movements as syncronized
+		  			delete sql;
+		  			upd_all_unsyncro_movements(sql);
+		  			str_log_message = "(SINCRO) BD local -> ";
+		  			str_log_message += sql;
+		  			log_message(str_log_message, 1);
+		  			localDatabase.query(p,sql);
+				}
+	    	}
 		}
-	      else //if sincronizing remote movements with local's success
+      	else
 		{
-		  //uploading files!
-		  upload_movement_files_from_sql(dataReturn,0);
-		  //1c - set local movements as syncronized
-		  delete sql;
-		  upd_all_unsyncro_movements(sql);
-		  str_log_message = "(SINCRO) BD local -> ";
-		  str_log_message += sql;
-		  log_message(str_log_message, 1);
-		  localDatabase.query(p,sql);
+	  		log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
+	  		ret = -2;
 		}
-	    }
-	  delete sql;
-	  
-	}
-      else
-	{
-	  log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
-	  ret = -2;
-	  delete sql;
-	}
-      //2 - only selecting last movement in station, in remote database
-      time_t t = time(NULL);
-      tm* timePtr = localtime(&t);
-      int year =  timePtr->tm_year+1900;
-      
-      rmt_sel_last_movement(sql,codigo_estacion,year);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  dataReturn = remoteDatabase.retData2();
-	  if(dataReturn.size()) //if there is remote movements to sync
-	    {
-	      delete sql;
-	      //2b update in local database
-	      upd_syncro_movements(sql,dataReturn);
-	      str_log_message = "(SINCRO) BD local -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(localDatabase.query(p,sql))
-		ret=-3;
-	    }
-	  delete sql;
-	}
-      else
-	{
-	  log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);	  
-	  ret = -3;
-	  delete sql;
-	}
+		delete sql;
+      	//2 - only selecting last movement in station, in remote database
+      	time_t t = time(NULL);
+      	tm* timePtr = localtime(&t);
+      	int year =  timePtr->tm_year+1900;
+      	rmt_sel_last_movement(sql,codigo_estacion,year);
+      	str_log_message = "(SINCRO) BD remota -> ";
+      	str_log_message += sql;
+      	log_message(str_log_message, 1);
+      	if(!remoteDatabase.query(p,sql))
+		{
+	  		dataReturn = remoteDatabase.retData2();
+	  		if(dataReturn.size()) //if there is remote movements to sync
+	    	{
+	      		delete sql;
+	      		//2b update in local database
+	      		upd_syncro_movements(sql,dataReturn);
+	      		str_log_message = "(SINCRO) BD local -> ";
+	      		str_log_message += sql;
+	      		log_message(str_log_message, 1);
+	      		if(localDatabase.query(p,sql))
+					ret=-3;
+	    	}
+	  		delete sql;
+		}
+      	else
+		{
+	  		log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);	  
+	  		ret = -3;
+	  		delete sql;
+		}
     }
-  else
+  	else
     {
-      log_message("(SINCRO)(movimientos) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+    	log_message("(SINCRO)(movimientos) Error BD remota (conexión)", 2);
+    	std::cout << "DATABASE not opened!" << std::endl;
+    	ret = -1;
     }
-  return ret;
+  	return ret;
 }
 static int syncTransit(PARAM *p, int codigo_estacion)
 {

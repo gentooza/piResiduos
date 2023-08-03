@@ -578,15 +578,16 @@ std::string fromBufferAPeso(char * buffer)
 
 int upload_movement_files_from_sql(std::vector< std::vector< std::string>> data_from_sql_movement, int field)
 {
-  std::vector< std::vector <std::string> >::iterator iter;
+    std::vector< std::vector <std::string> >::iterator iter;
 
-  for(iter = data_from_sql_movement.begin(); iter != data_from_sql_movement.end(); ++iter)
+    for(iter = data_from_sql_movement.begin(); iter != data_from_sql_movement.end(); ++iter)
     {
-      if(iter->size()> (field+1))
-	{
-	  copy_files_to_remote_server(iter->at(field));
-	}
+        if(iter->size()> (field+1))
+	    {
+	        copy_files_to_remote_server(iter->at(field));
+	    }
     }
+    return 0;
 }
 
 
