@@ -148,58 +148,6 @@ static int setComboBoxPosByField(PARAM *p,int id,std::vector <std::vector < std:
     }
   return done;
 }
-static int populateListView(PARAM *p, int id, std::vector<std::vector <std::string>> allValues)
-{
-  std::cout << "dentro de populatelistview" << std::endl;
-  std::vector < std::vector < std::string>>::iterator camiones;
-  std::vector <std::string> ::iterator fields;
-  std::string time_and_date;
-  std::string plate;
-  std::string wholeInfo;
-  int column = 1;
-  pvClear(p,id);
-  std::string camion;
-  for(camiones = allValues.begin(); camiones != allValues.end(); ++camiones)
-    {
-      column = 1;
-      camion.clear();
-      wholeInfo.clear();
-      for(fields = camiones->begin(); fields != camiones->end(); ++fields)
-	{	  
-	  if(column == 2) //time and date
-	    {
-	     time_and_date = *fields;      
-	    }
-	  if(column == 8) //plate
-	    {
-	      plate = *fields;
-	    }
-	  if(column == 13) //output weigth
-	    {
-	      int tara;
-
-	  try
-	    {
-	      tara = std::stoi(*fields);
-	    }
-	  catch(...)
-	    {
-	      tara = 0;
-	    }
-
-	      if(tara > 0)
-		camion = "image/small_truck_BW_icon_G.png";
-	      else
-		camion = "image/small_truck_BW_icon_T.png";
-	    }
-	  column++;
-	}
-      wholeInfo = "(" + time_and_date + ")\n";
-      wholeInfo += plate;
-      pvInsertItem(p,id,-1,camion.c_str(),wholeInfo.c_str(),1);
-    }
-  std::cout << "fuera de populatelistview" << std::endl;
-}
 
 /*! function for populating GUI table of transit transports */
 static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
