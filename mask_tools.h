@@ -520,43 +520,52 @@ static int syncDrivers(PARAM *p)
 
 static int sync_staff(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing staff table... ";
-  if(remoteDatabase.isOpen())
+	int ret = 0;
+	char* sql = NULL;
+  	std::string str_log_message;
+  	str_log_message = "(SINCRO) syncing staff table... ";
+  	if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> data_return;
-      //clientes
-      char* sql;
-      rmt_sel_all_staff(sql);
-      str_log_message = "(SINCRO)(basculistas) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  delete sql;
-	  localDatabase.query(p,"delete from BASCULISTAS");
-	  log_message("(SINCRO)(basculistas) BD local -> delete from BASCULISTAS", 1);
-	  data_return = remoteDatabase.retData2();
-	  load_staff(sql,data_return);
-	  str_log_message = "(SINCRO)(basculistas) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  localDatabase.query(p,sql);
-	}
-      else
-	{
-	  log_message("(SINCRO)(basculistas) Error BD remota (query)", 2);
-	  ret = -2;
-	}
+      	std::vector <std::vector <std::string>> data_return;
+      	//clientes
+      	rmt_sel_all_staff(sql);
+      	str_log_message = "(SINCRO)(basculistas) BD remota -> ";
+      	str_log_message += sql;
+      	log_message(str_log_message, 1);
+      	if(!remoteDatabase.query(p,sql))
+		{
+	  		if (sql)
+			{
+				delete[] sql;
+				sql = NULL;
+			}
+	  		localDatabase.query(p,"delete from BASCULISTAS");
+	  		log_message("(SINCRO)(basculistas) BD local -> delete from BASCULISTAS", 1);
+	  		data_return = remoteDatabase.retData2();
+	  		load_staff(sql,data_return);
+	  		str_log_message = "(SINCRO)(basculistas) BD local -> ";
+	  		str_log_message += sql;
+	  		log_message(str_log_message, 1);
+	  		localDatabase.query(p,sql);
+		}
+      	else
+		{
+	  		log_message("(SINCRO)(basculistas) Error BD remota (query)", 2);
+	  		ret = -2;
+		}
+		if (sql)
+		{
+			delete[] sql;
+			sql = NULL;
+		}
     }
-  else
+  	else
     {
-      log_message("(SINCRO)(basculistas) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+    	log_message("(SINCRO)(basculistas) Error BD remota (conexión)", 2);
+    	std::cout << "DATABASE not opened!" << std::endl;
+    	ret = -1;
     }
-  return ret;
+  	return ret;
 }
 
 static int syncMovements(PARAM *p,long codigo_estacion)
