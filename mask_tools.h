@@ -518,7 +518,7 @@ static int syncDrivers(PARAM *p)
   return ret;
 }
 
-static int sync_staff(PARAM *p)
+static int syncStaff(PARAM *p)
 {
 	int ret = 0;
 	char* sql = NULL;

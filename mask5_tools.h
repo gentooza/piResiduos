@@ -762,7 +762,7 @@ static void globalSyncronization(PARAM *p, DATA* d, baseForm *& myForm)
       if(error == -1)
 	reconnectSSH(NULL);
       wasError = wasError + error;
-      error = sync_staff(p);
+      error = syncStaff(p);
       if(error)
 	console.push_back("¡Error al sincronizar la tabla de basculistas!");
       if(error == -1)
