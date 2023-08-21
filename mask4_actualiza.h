@@ -1041,7 +1041,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	  }
 	case 120: //AUTHORIZED CLIENT SELECTED, WE SHOW IT'S PRODUCTS ASSOCIATED ALLOWED
 	case 20: //cliente seleccionado mostramos todos los productos de ese cliente!
-	  {
+	{
 	    refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 
 	    //TODO
@@ -1066,7 +1066,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    localDatabase.query(p,"drop table resultado");
 	    d->pesaje1 = 0;
 	    break;
-	  }
+	}
 	case 121: //waiting taking weigth, product chosen from authorized client
 	case 21: //waiting weigth, product chosen by normal path
 	  {
@@ -2124,32 +2124,32 @@ static int maquinaEstados(PARAM *p, DATA *d)
       }
       break;
       
-      //autorizamos una matrícula no registrada
+    //autorizamos una matrícula no registrada
     case 110:      
-      if(d->retroceder) //retroceder a estado 101
-	{
-	  d->retroceder=0;
-	  d->enFutEstado=101;
-	  d->allClientes.clear();
-	  pvClear(p,COMBOCLIENTES);
-	  formEntrada->incArrPlateAuto(0);
-	  pvSetChecked(p,CHCKAUTMATRI,0);
-	}
-      if(d->cancelar) //Cancelamos
-	{
-	  d->cancelar=0;
-	  resetForm(p,d,formEntrada);
-	  d->enFutEstado = 0;
-	  console.push_back("INFO: Formulario cancelado!");
-	}
-      if(formEntrada->retArrCosCode()>0) //si tenemos elegido un cliente pasamos al estado 
-	{
-	  pvClear(p,COMBOCLIENTES);
-	  pvSetText(p,COMBOCLIENTES,formEntrada->retArrCosName().c_str());
-	  d->enFutEstado=120;
-	}
-      ret = 0;
-      break;
+    	if(d->retroceder) //retroceder a estado 101
+		{
+	  		d->retroceder=0;
+	  		d->enFutEstado=101;
+	  		d->allClientes.clear();
+	  		pvClear(p,COMBOCLIENTES);
+	  		formEntrada->incArrPlateAuto(0);
+	  		pvSetChecked(p,CHCKAUTMATRI,0);
+		}
+      	if(d->cancelar) //Cancelamos
+		{
+	  		d->cancelar=0;
+	  		resetForm(p,d,formEntrada);
+	  		d->enFutEstado = 0;
+	  		console.push_back("INFO: Formulario cancelado!");
+		}
+      	if(formEntrada->retArrCosCode()>0) //si tenemos elegido un cliente pasamos al estado 
+		{
+	  		pvClear(p,COMBOCLIENTES);
+	  		pvSetText(p,COMBOCLIENTES,formEntrada->retArrCosName().c_str());
+	  		d->enFutEstado=120;
+		}
+      	ret = 0;
+      	break;
     case 120: //product choosing from client    (plate manually authorized)
       if(formEntrada->retArrProdCode()>0)
 	d->enFutEstado = 21;
