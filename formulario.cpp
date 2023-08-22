@@ -1257,29 +1257,35 @@ void baseForm::outputConcatenate(std::vector<std::string> newIncidents)
 /**PLATES**/
 int baseForm::isArrPlateRegistered(qtDatabase & myDatabase)
 {
-  int reg = 0;
-  char* sql;
-  std::vector<std::vector<std::string>> retData;
-  std::vector<std::vector<std::string>>::iterator iter;
-  if(!retArrPlate().empty())
+    int reg = 0;
+
+    if(!retArrPlate().empty())
     {
-      sel_all_cars(sql);
-      if(!myDatabase.query(NULL,sql))
+        char* sql = NULL;
+        sel_all_cars(sql);
+        if(!myDatabase.query(NULL,sql))
         {
-          retData = myDatabase.retData2();     
-          for(iter=retData.begin();iter!=retData.end()&&!reg;++iter)
+            std::vector<std::vector<std::string>> retData;
+            std::vector<std::vector<std::string>>::iterator iter;
+            retData = myDatabase.retData2();     
+            for(iter=retData.begin();iter!=retData.end()&&!reg;++iter)
             {
-              if(iter->size())
+                if(iter->size())
                 {
-                  boost::to_upper(iter->at(0));
-                  if(!retArrPlate().compare(iter->at(0)))
-                    reg=1;
+                    boost::to_upper(iter->at(0));
+                    if(!retArrPlate().compare(iter->at(0)))
+                    {
+                        reg=1;
+                    }
                 }
             }
         }
-      delete sql;
+        if (sql != NULL)
+        {
+            delete[] sql;
+        }
     }
-  return reg;
+    return reg;
 }
 
 void baseForm::insertProduct(std::vector<std::string> record)
