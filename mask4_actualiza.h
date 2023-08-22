@@ -1137,7 +1137,9 @@ static int actualizaEstado(PARAM *p, DATA *d)
 		  			}
 	      		}
 	    		if(testBascula != NULL)
+				{
 	      			delete testBascula;
+				}
 				break;
 	  		}
 			case 230:
@@ -1253,10 +1255,13 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 	    		// TODO: database access out of GUI
 				//seleccionamos todos los clientes
-	    		char * sql;
+	    		char * sql = NULL;
 	    		selAllDatFrmCostumers(sql);
 	    		localDatabase.query(p,sql);
-	    		delete sql;
+				if (sql != NULL)
+				{
+	    			delete[] sql;
+				}
 	    		d->allClientes.clear();
 	    		d->allClientesCodes.clear();
 	    		std::vector <std::vector <std::string>> dataReturn;
@@ -1652,7 +1657,7 @@ static int actualizaEstado(PARAM *p, DATA *d)
       	actualizaForm(p,d,formEntrada->getState());
       	ret = 0;
     }
-	std::cout << "funtion called, state:" << formEntrada->getState() << std::endl;
+	std::cout << "function called, state:" << formEntrada->getState() << std::endl;
   	return ret;
 }
 
@@ -1660,108 +1665,111 @@ static int actualizaEstado(PARAM *p, DATA *d)
 //condiciones de cambio
 static int maquinaEstados(PARAM *p, DATA *d)
 {
-  int ret = -1;
-  switch(formEntrada->getState()) 
+  	int ret = -1;
+  	switch(formEntrada->getState()) 
     {
-    case -100:
-      {
-	//comunes
-	popteTransito(p,d,TABLATRANSITO, formEntrada);	
-	//checkbox de entrada
-	if(d->enFutEstado >=1000) //finalizando entrada ET
-	  {
-	    d->entrarDescargar=0;
-	    pvSetChecked(p,CHKSALIDA,1);
-	    pvSetChecked(p,CHKENTRADA,0);
-	    d->camionElegido = -1;
-	    if(d->enFutEstado >= 1020)
-	      {
-		//Saving destination where files are stored
-		pvSetText(p,EDITDIDEF, formEntrada->retDepDi().c_str());
-		std::string peso = std::to_string(formEntrada->retDepScaleOut());
-		pvSetText(p,EDITPESOTARA,peso.c_str());
-		pvSetText(p,EDITCAM_E2,formEntrada->retDepPlate().c_str());
-	      }
-	  }
-	else//comenzando una entrada ET
-	  {
-	    d->entrarDescargar=1;
-	    pvSetChecked(p,CHKSALIDA,0);
-	    pvSetChecked(p,CHKENTRADA,1);
-	    //plate
-	    std::string myPlate = formEntrada->retArrPlate();
-	    if(!myPlate.empty())
-	      {
-		//matrículas
-		pvSetText(p,EDITCAM,myPlate.c_str());
-		if(!formEntrada->isArrPlateRegistered(localDatabase))
-		  pvSetImage(p,ICONAUTMATRI,"image/red.png");
-		else
-		  pvSetImage(p,ICONAUTMATRI,"image/green.png");
-	      }
-	    //forced status
-	    if(formEntrada->isIncArrPlateAuto())
-	      pvSetChecked(p,CHCKAUTMATRI,1);
-	    //particular costumer
-	    if(formEntrada->isIncArrParticular())
-	      pvSetChecked(p,CHCKNOREGISTRADO,1);
-	    //comboclientes	    
-	    if(formEntrada->retArrCosCode()>0)
-	      {
-	        formEntrada->setAllArrCostumerData(localDatabase);
-		std::string costumer = formEntrada->retArrCosName();
-		if(!costumer.empty())
-		  pvSetText(p,COMBOCLIENTES,costumer.c_str());
-	      }
-	    //combos productos	    
-	    if(formEntrada->retArrProdCode()>0)
-	      {
-		std::cout << formEntrada->retArrProdCode() << std::endl;
-		formEntrada->setAllArrProductData(localDatabase);
-		if(formEntrada->isArrProdPermit())
-		    pvSetText(p,COMBOPRODUCTOS,formEntrada->retArrProdFullName().c_str());
-		else
-		  {
-		    pvSetText(p,COMBOPRODUCTOS,"MOSTRAR TODOS");
-		    pvSetText(p,COMBOLERS,formEntrada->retArrProdFullName().c_str());
-		    refreshLerPerms(p,1,formEntrada);
-		  }
-		//product forced
-		if(formEntrada-> isIncArrProdFz())
-		  pvSetChecked(p,CHKFORZARPROD,1);		
-	      }
-	    
-	    //scale in
-	    std::string sPeso = std::to_string(formEntrada->retArrScaleIn());
-	    pvSetText(p,EDITPESOENT,sPeso.c_str());
-	    //DI
-	    pvSetText(p,EDITDIPROV,formEntrada->retArrDi().c_str());
-	    if(formEntrada->retArrMovType() == DEF_MOV_TRANSFER)
-	      {
-		pvClear(p,COMBOCLIENTES);
-		pvClear(p,COMBOPRODUCTOS);
-		pvSetText(p,EDITCLIENTES,formEntrada->retArrCosName().c_str());
-		pvSetText(p,EDITPRODUCTOS,formEntrada->retArrProdFullName().c_str());					   
-	      }	    
-	  }
-	pvHide(p,LOADINGFORM);
-	break;
-      }
-    case -2:
-      //LLegamos nuevos!
-      d->entrarDescargar=1;
-      pvSetChecked(p,CHKSALIDA,0);
-      pvSetChecked(p,CHKENTRADA,1);
-      d->enFutEstado = -1;
-      d->proceder=0;
-      ret = 0;
-      break;
-    case -1: //inicialización
-      //LLegamos nuevos!
-      d->enFutEstado = 0;
-      d->proceder=0;
-      ret = 0;
-      break;
+    	case -100:
+      	{
+			//comunes
+			popteTransito(p,d,TABLATRANSITO, formEntrada);	
+			//checkbox de entrada
+			if(d->enFutEstado >=1000) //finalizando entrada ET
+	  		{
+	    		d->entrarDescargar=0;
+	    		pvSetChecked(p,CHKSALIDA,1);
+	    		pvSetChecked(p,CHKENTRADA,0);
+	    		d->camionElegido = -1;
+	    		if(d->enFutEstado >= 1020)
+	      		{
+					//Saving destination where files are stored
+					pvSetText(p,EDITDIDEF, formEntrada->retDepDi().c_str());
+					std::string peso = std::to_string(formEntrada->retDepScaleOut());
+					pvSetText(p,EDITPESOTARA,peso.c_str());
+					pvSetText(p,EDITCAM_E2,formEntrada->retDepPlate().c_str());
+	      		}
+	  		}
+			else//comenzando una entrada ET
+	  		{
+	    		d->entrarDescargar=1;
+	    		pvSetChecked(p,CHKSALIDA,0);
+	    		pvSetChecked(p,CHKENTRADA,1);
+	    		//plate
+	    		std::string myPlate = formEntrada->retArrPlate();
+	    		if(!myPlate.empty())
+	      		{
+					//matrículas
+					pvSetText(p,EDITCAM,myPlate.c_str());
+					if(!formEntrada->isArrPlateRegistered(localDatabase))
+		  				pvSetImage(p,ICONAUTMATRI,"image/red.png");
+					else
+		  				pvSetImage(p,ICONAUTMATRI,"image/green.png");
+	      		}
+	    		//forced status
+	    		if(formEntrada->isIncArrPlateAuto())
+	      			pvSetChecked(p,CHCKAUTMATRI,1);
+	    		//particular costumer
+	    		if(formEntrada->isIncArrParticular())
+	      			pvSetChecked(p,CHCKNOREGISTRADO,1);
+	    		//comboclientes	    
+	    		if(formEntrada->retArrCosCode()>0)
+	      		{
+	        		formEntrada->setAllArrCostumerData(localDatabase);
+					std::string costumer = formEntrada->retArrCosName();
+					if(!costumer.empty())
+		  				pvSetText(p,COMBOCLIENTES,costumer.c_str());
+	      		}
+	    		//combos productos	    
+	    		if(formEntrada->retArrProdCode()>0)
+	      		{
+					std::cout << formEntrada->retArrProdCode() << std::endl;
+					formEntrada->setAllArrProductData(localDatabase);
+					if(formEntrada->isArrProdPermit())
+		    			pvSetText(p,COMBOPRODUCTOS,formEntrada->retArrProdFullName().c_str());
+					else
+		  			{
+		    			pvSetText(p,COMBOPRODUCTOS,"MOSTRAR TODOS");
+		    			pvSetText(p,COMBOLERS,formEntrada->retArrProdFullName().c_str());
+		    			refreshLerPerms(p,1,formEntrada);
+		  			}
+					//product forced
+					if(formEntrada-> isIncArrProdFz())
+		  				pvSetChecked(p,CHKFORZARPROD,1);		
+	      		}
+	    		//scale in
+	    		std::string sPeso = std::to_string(formEntrada->retArrScaleIn());
+	    		pvSetText(p,EDITPESOENT,sPeso.c_str());
+	    		//DI
+	    		pvSetText(p,EDITDIPROV,formEntrada->retArrDi().c_str());
+	    		if(formEntrada->retArrMovType() == DEF_MOV_TRANSFER)
+	      		{
+					pvClear(p,COMBOCLIENTES);
+					pvClear(p,COMBOPRODUCTOS);
+					pvSetText(p,EDITCLIENTES,formEntrada->retArrCosName().c_str());
+					pvSetText(p,EDITPRODUCTOS,formEntrada->retArrProdFullName().c_str());					   
+	      		}
+	  		}
+			pvHide(p,LOADINGFORM);
+			break;
+      	}
+    	case -2:
+		{
+      		//LLegamos nuevos!
+      		d->entrarDescargar=1;
+      		pvSetChecked(p,CHKSALIDA,0);
+      		pvSetChecked(p,CHKENTRADA,1);
+      		d->enFutEstado = -1;
+      		d->proceder=0;
+      		ret = 0;
+      		break;
+		}
+    	case -1: //inicialización
+		{
+      		//LLegamos nuevos!
+      		d->enFutEstado = 0;
+      		d->proceder=0;
+      		ret = 0;
+      		break;
+		}
     case 0:
       {
 	//auto-syncronization
@@ -2134,7 +2142,7 @@ static int maquinaEstados(PARAM *p, DATA *d)
       	ret = 0;
       	break;
     case 120: //product choosing from client    (plate manually authorized)
-      if(formEntrada->retArrProdCode()>0)
+    if(formEntrada->retArrProdCode()>0)
 	d->enFutEstado = 21;
       std::cout << "PRODUCTO:" << d->comboProducto << std::endl;
       if(!d->comboProducto.compare("MOSTRAR TODOS!")) //if we prefer a new list between ALL products
