@@ -254,10 +254,6 @@ printable::printable() {
     return;
 }
 
-printable::~printable() {
-    return;
-}
-
 int printable::saveFile() 
 {
     // saving the document to a file

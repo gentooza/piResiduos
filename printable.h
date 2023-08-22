@@ -88,7 +88,7 @@ class printable
 {
     public:
     printable();
-    ~printable();
+    virtual ~printable(){return;};
 
     int saveFile();
     int printFile();
