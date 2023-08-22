@@ -364,40 +364,38 @@ int inputForm::setMovCode(std::string sLastCode, int stationCode, int movementTy
 //transfer movements managment
 int inputForm::isTrf(qtDatabase & myDatabase, station *& myStation)
 {
-  int ret = 0;
-  char * sql;
-  std::vector<std::vector<std::string>> retData;
-  std::vector<std::vector<std::string>>::iterator regs;
-  std::vector<std::string>::iterator iter;
-  int field = 0;
-    
-  if(!retArrPlate().empty())
+    int ret = 0;
+    if(!retArrPlate().empty())
     {
-      selAllTransfers(sql, myStation->getCode());
-      if(!myDatabase.query(NULL,sql))
-	{
-	  retData = myDatabase.retData2();
-	  for(regs = retData.begin(); regs != retData.end(); ++regs)
+        char * sql = NULL;
+        selAllTransfers(sql, myStation->getCode());
+        if(!myDatabase.query(NULL,sql))
 	    {
-	      for(iter = regs->begin(); iter != regs->end(); ++iter)
-		{
-
-		  if(field==5) //MATRICULA!
-		    {
-		      //TODO BOOST TO UPPER, GENERIC TOOLS
-		      if(!iter->compare(retArrPlate()))
-			ret=1;
-		    }		  
+            std::vector<std::vector<std::string>> retData;
+            std::vector<std::vector<std::string>>::iterator regs;
+            std::vector<std::string>::iterator iter;
+            int field = 0;
+	        retData = myDatabase.retData2();
+	        for(regs = retData.begin(); regs != retData.end(); ++regs)
+	        {
+	            for(iter = regs->begin(); iter != regs->end(); ++iter)
+		        {
+		            if(field==5) //MATRICULA!
+		            {
+		                //TODO BOOST TO UPPER, GENERIC TOOLS
+		                if(!iter->compare(retArrPlate()))
+			                ret=1;
+		            }		  
 		  
-		  field++;
-		}
-	      field=0;
+		            field++;
+		        }
+	            field=0;
+	        }
 	    }
-	}
-      delete sql;
+        if (sql != NULL)
+            delete sql;
     }
-
-  return ret;
+    return ret;
 }
 
 int inputForm::setTrfMov(qtDatabase & myDatabase, station *& myStation)
@@ -2118,45 +2116,46 @@ void inputForm::createPdf(std::string printerId)
   about our movement*/
 int inputForm::createTicket(std::string printerId, std::string ticketCode)
 {
-  printable * myTicket;
-  std::string fileName = "ticket.pdf";
-  myTicket = new printableTicket(fileName, printerId);
-
-  myTicket->setTicketType("REGISTRO DE ENTRADA");
-  myTicket->setTicketCode(ticketCode);
-  costumer * our_costumer;
-  retOurId(our_costumer);
-  myTicket->setOurCIF(our_costumer->getNif());
-  delete our_costumer;
-  station * localDestination;
-  retDepDestinationStation(localDestination);
-  myTicket->setStationName(localDestination->getName());
-  myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
-  delete localDestination;
-  myTicket->setMovCode(retDepMovCode());
-  myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
-  myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
-  myTicket->setCostumerName(retDepCosName());
-  myTicket->setTransportName(retDepDriName());
-  myTicket->setTransportPlate(retDepPlate());
-  myTicket->setProductName(retDepProdFullName());
-  myTicket->setProductLER(std::to_string(retDepProdLER()));
-  myTicket->setGrossWeight(std::to_string(retDepScaleOut()));
-  myTicket->setNetWeight(std::to_string(retDepScaleIn()));
-  myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
-  myTicket->setPayProcedure(retDepPayProcedure());
-  double total_price = retDepTotalWeight()*retDepPrice() / 1000.0;
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(2) << total_price;
-  myTicket->setFinalPrice(stream.str());
-  myTicket->setComment(getOutputComment());
-  myTicket->setStaffCode(std::to_string(ret_staff_code()));
-  std::string signaturePath = retDepDiFolder() + "/firma.png";
-  myTicket->setSignaturePath(signaturePath);
-  myTicket->composeFile();
-  int ret = myTicket->saveFile();
-  ret = myTicket->printFile();
-  delete myTicket;
-
-  return 0;
+    printable * myTicket = NULL;
+    std::string fileName = "ticket.pdf";
+    myTicket = new printableTicket(fileName, printerId);
+    myTicket->setTicketType("REGISTRO DE ENTRADA");
+    myTicket->setTicketCode(ticketCode);
+    costumer * ourCostumer = NULL;
+    retOurId(ourCostumer);
+    myTicket->setOurCIF(ourCostumer->getNif());
+    if (ourCostumer != NULL)
+        delete ourCostumer;
+    station * localDestination = NULL;
+    retDepDestinationStation(localDestination);
+    myTicket->setStationName(localDestination->getName());
+    myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
+    if (localDestination != NULL)
+        delete localDestination;
+    myTicket->setMovCode(retDepMovCode());
+    myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
+    myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
+    myTicket->setCostumerName(retDepCosName());
+    myTicket->setTransportName(retDepDriName());
+    myTicket->setTransportPlate(retDepPlate());
+    myTicket->setProductName(retDepProdFullName());
+    myTicket->setProductLER(std::to_string(retDepProdLER()));
+    myTicket->setGrossWeight(std::to_string(retDepScaleOut()));
+    myTicket->setNetWeight(std::to_string(retDepScaleIn()));
+    myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
+    myTicket->setPayProcedure(retDepPayProcedure());
+    double total_price = retDepTotalWeight()*retDepPrice() / 1000.0;
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << total_price;
+    myTicket->setFinalPrice(stream.str());
+    myTicket->setComment(getOutputComment());
+    myTicket->setStaffCode(std::to_string(ret_staff_code()));
+    std::string signaturePath = retDepDiFolder() + "/firma.png";
+    myTicket->setSignaturePath(signaturePath);
+    myTicket->composeFile();
+    int ret = myTicket->saveFile();
+    ret += myTicket->printFile();
+    if (myTicket != NULL)
+        delete myTicket;
+    return ret;
 }
