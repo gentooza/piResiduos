@@ -1040,9 +1040,6 @@ static int actualizaEstado(PARAM *p, DATA *d)
 			case 20: //cliente seleccionado mostramos todos los productos de ese cliente!
 			{
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
-	    		//TODO
-	    		//fuera de aquí el acceso a la base de datos!
-	    		char * sql =NULL;
 	    		std::string clientCode = std::to_string(formEntrada->retArrCosCode());
 	    		int istation_type = 0;
 	    		myStation->getType(istation_type);
@@ -1054,8 +1051,15 @@ static int actualizaEstado(PARAM *p, DATA *d)
 	      			formEntrada->setArrMovType(DEF_MOV_ENTRADA);
 	    		std::string strstation_type;
 	    		myStation->getType(strstation_type);
+				//TODO
+	    		//fuera de aquí el acceso a la base de datos!
+	    		char * sql = NULL;
 	    		selProdsAllowedToClient(sql,clientCode.c_str(),strstation_type.c_str(),true);
 	    		localDatabase.query(p,sql);
+				if (sql != NULL)
+				{
+					delete [] sql;
+				}
 	    		localDatabase.query(p,"select * from resultado");	
 	    		populateProdsCombo(p,COMBOPRODUCTOS,localDatabase.retData2(),true);
 	    		localDatabase.query(p,"drop table resultado");
