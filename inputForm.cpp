@@ -393,7 +393,7 @@ int inputForm::isTrf(qtDatabase & myDatabase, station *& myStation)
 	        }
 	    }
         if (sql != NULL)
-            delete sql;
+            delete[] sql;
     }
     return ret;
 }
