@@ -719,7 +719,7 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
       temporalDI = ourData.at(0).at(0);
       temporalDIDate = ourData.at(0).at(1);
     }
-  delete sql; 
+  delete[] sql; 
   //REFRESH COSTUMER NIF
   setAllDepCostumerData(localDatabase);	   
   if(isNewYear(temporalDIDate,year)) //new year, new DI
