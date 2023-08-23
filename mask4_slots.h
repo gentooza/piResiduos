@@ -47,6 +47,7 @@ extern GLOBAL_DATA globalConfiguration;
 #include "mask4_data.h"
 #include "mask_tools.h"
 #include "mask4_tools.h"
+#include "mask4_stateGUI.h"
 #include "mask4_actualiza.h"
 
 extern bascula* testBascula;
@@ -238,7 +239,7 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
   else if(id == BUTSINCRONIZA) //manual SINCRONIZATION
   {
     globalSyncronization(p,d,formEntrada);
-    actualizaForm(p,d, formEntrada->getState());
+    stateGUI(p,d, formEntrada->getState());
     //commons
     popteTransito(p,d,TABLATRANSITO,formEntrada);
   }

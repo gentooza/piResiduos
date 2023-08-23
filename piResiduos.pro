@@ -31,6 +31,7 @@ HEADERS += pvapp.h      \
            mask5_data.h \	
            mask5_slots.h \
            mask4_actualiza.h \
+           mask4_stateGUI.h \
            mask4_tools.h \
            mask4_data.h \
            mask4_slots.h \
