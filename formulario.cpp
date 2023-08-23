@@ -1667,51 +1667,47 @@ std::vector<std::string> baseForm::ret_all_cos_by_plate_4_combo(qtDatabase & my_
 
 std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
 {
-  char * sql =NULL;
-  std::vector <std::vector <std::string>> dataReturn;
-  std::vector <std::vector <std::string>>::iterator prod;
-  std::vector<std::string>::iterator prodField;
-  int field = 0;
-  std::string fullName;
-  std::vector <std::string> productsName;
-  long code;
-
-  selAllProds(sql);
-  if(!myDatabase.query(NULL,sql))
+    char * sql =NULL;
+    std::vector <std::string> productsName;
+ 
+    selAllProds(sql);
+    if(!myDatabase.query(NULL,sql))
     {
-      dataReturn = myDatabase.retData2();
-      for(prod = dataReturn.begin(); prod != dataReturn.end(); ++prod)
-	{
-	  fullName.clear();
-	  code = 0;
-	  for(prodField = prod->begin(); prodField != prod->end(); ++prodField)
-	    {
-	      if(field == 0)
-		{
-		  try
-		    {
-		      code = std::stol(*prodField);
-		    }
-		  catch(...)
-		    {
-		      code = 0;
-		    }
-		}
-	      else if ((field == 2) || (field==3) || (field==4))
-		{
-		  fullName += *prodField;
-		  fullName += " ";
-		}	      
-	      field++;
-	    }
-	  field = 0;
-	  fullName += std::to_string(code);
-	  productsName.push_back(fullName);
-	}
-	  	  	  
+        std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2();
+        std::vector <std::vector <std::string>>::iterator prod;
+        for(prod = dataReturn.begin(); prod != dataReturn.end(); ++prod)
+        {
+            std::string fullName;
+            long code = 0;
+            int field = 0;
+            std::vector<std::string>::iterator prodField;
+            for(prodField = prod->begin(); prodField != prod->end(); ++prodField)
+            {
+                if(field == 0)
+                {
+                    try
+                    {
+                        code = std::stol(*prodField);
+                    }
+                    catch(...)
+                    {
+                        code = 0;
+                    }
+                }
+                else if ((field == 2) || (field==3) || (field==4))
+                {
+                    fullName += *prodField;
+                    fullName += " ";
+                }	      
+                field++;
+            }
+            fullName += std::to_string(code);
+            productsName.push_back(fullName);
+        }             
     }
-  delete sql;
-  return productsName;
+    if (sql != NULL)
+        delete[] sql;
+    return productsName;
 }
 
 /*! function for returning the product code of a product, searched by full name*/
@@ -2533,24 +2529,24 @@ void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
 //Drivers Data
 int baseForm::updteDrivers(qtDatabase& myDatabase)
 {
-  char * sql;
-  std::vector<std::vector<std::string>> dataReturn;
-  int ret = -1;
-  
-  selAllDrivers(sql);
-  if(!myDatabase.query(NULL,sql))
+    char * sql = NULL;
+    int ret = -1;
+    
+    selAllDrivers(sql);
+    if(!myDatabase.query(NULL,sql))
     {
-      dataReturn = myDatabase.retData2();
-      resetDrivers();
-      for(unsigned int i=0;i<dataReturn.size();i++)
-	{
-	  insertDriver(dataReturn[i]);
-	}
-      ret = 0;
+        std::vector<std::vector<std::string>> dataReturn = myDatabase.retData2();
+        resetDrivers();
+        for(unsigned int i=0;i<dataReturn.size();i++)
+        {
+            insertDriver(dataReturn[i]);
+        }
+        ret = 0;
     }
-  delete sql;
+    if (sql != NULL)
+        delete[] sql;
 
-  return ret;
+    return ret;
 }
 
 //clears Drivers Data
@@ -2700,37 +2696,37 @@ center.NAME + " " + center.CODE
 to be used in comboboxes for example*/
 std::vector<std::string> baseForm::retStationsLst(qtDatabase & myDatabase, int internal)
 {
-  char * sql;
-  std::vector<std::vector<std::string>> myData;
-  std::vector<std::string> myList;
-  std::vector<std::vector<std::string>>::iterator row;
-  std::vector<std::string>::iterator col;
-  std::string myText;
+    char * sql = NULL;
+    std::vector<std::string> myList;
 
-  if(internal)
-    selIntCentersNameCode(sql);
-  else
-    selExtCentersNameCode(sql);   
-  if(!myDatabase.query(NULL,sql))
+    if(internal)
+        selIntCentersNameCode(sql);
+    else
+        selExtCentersNameCode(sql);   
+    if(!myDatabase.query(NULL,sql))
     {
-      myData = myDatabase.retData2();
-      if(myData.size())
-	{
-	  for(row = myData.begin(); row != myData.end(); ++row)
-	    {
-	      myText.clear();
-	      for(col = row->begin(); col != row->end(); ++col)
-		{
-		  myText += *col;
-		  myText += " ";
-		}
-	      myText = myText.substr(0,myText.size()-1);
-	      myList.push_back(myText);
-	    }
-	}
+        std::vector<std::vector<std::string>> myData = myDatabase.retData2();
+        if(myData.size())
+        {
+            std::vector<std::vector<std::string>>::iterator row;
+            std::string myText;
+            std::vector<std::string>::iterator col;
+            for(row = myData.begin(); row != myData.end(); ++row)
+            {
+                myText.clear();
+                for(col = row->begin(); col != row->end(); ++col)
+                {
+                    myText += *col;
+                    myText += " ";
+                }
+                myText = myText.substr(0,myText.size()-1);
+                myList.push_back(myText);
+            }
+        }
     }
-  delete sql;
-  return myList;
+    if( sql != NULL)
+        delete[] sql;
+    return myList;
 }
 /*!function for getting the billing method*/
 int baseForm::set_all_billing_info(qtDatabase & local_database)
