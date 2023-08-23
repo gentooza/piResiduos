@@ -349,55 +349,55 @@ static int setFrame(PARAM *p,int id, int state)
 }
 static int refreshLerPerms(PARAM *p,int enabled,baseForm *& myForm)
 {
-  if(enabled)
-  {
-    //PERMISO PLANTA
-    if(myForm->isArrProdGralPermit())                       
-      pvSetImage(p,ICONPERM,"image/green.png");
+    if(enabled)
+    {
+        //PERMISO PLANTA
+        if(myForm->isArrProdGralPermit())                       
+            pvSetImage(p,ICONPERM,"image/green.png");
+        else
+            pvSetImage(p,ICONPERM,"image/red.png");
+        //PERMISO FECHA CONTRATO
+        if(myForm->isArrProdDatePermit())
+            pvSetImage(p,ICONFECHCONTR,"image/green.png");
+        else
+            pvSetImage(p,ICONFECHCONTR,"image/red.png");
+        //PERMISO FECHA NPT	
+        if(myForm->isArrProdNptPermit())                       
+            pvSetImage(p,ICONFECHNPRT,"image/green.png");
+        else
+            pvSetImage(p,ICONFECHNPRT,"image/red.png");
+        //PERMISO CARACTERIZACIÓN BÁSICA	
+        if(myForm->isArrProdCbPermit())                       
+            pvSetImage(p,ICONCB,"image/green.png");
+        else
+            pvSetImage(p,ICONCB,"image/red.png");
+        //PERMISO CARACTERIZACIÓN DE PELIGRO	
+        if(myForm->isArrProdCpPermit())                      
+            pvSetImage(p,ICONCP,"image/green.png");
+        else
+            pvSetImage(p,ICONCP,"image/red.png");
+        //PERMISO DCP
+        if(myForm->isArrProdDcpPermit())                       
+            pvSetImage(p,ICONDCP,"image/green.png");
+        else
+            pvSetImage(p,ICONDCP,"image/red.png");
+    }
     else
-      pvSetImage(p,ICONPERM,"image/red.png");
-    //PERMISO FECHA CONTRATO
-    if(myForm->isArrProdDatePermit())
-      pvSetImage(p,ICONFECHCONTR,"image/green.png");
+    {
+        pvSetImage(p,ICONPERM,"image/grey.png");			  
+        pvSetImage(p,ICONFECHCONTR,"image/grey.png");			  
+        pvSetImage(p,ICONFECHNPRT,"image/grey.png");			  
+        pvSetImage(p,ICONCB,"image/grey.png");			  
+        pvSetImage(p,ICONCP,"image/grey.png");
+        pvSetImage(p,ICONDCP,"image/grey.png");
+    }
+    //frame permiso de entrada
+    setFrame(p,FRAMEPERMISOENTRADA,FRAME_NORMAL); 
+    if(myForm->isArrProdPermit())
+        pvSetImage(p,IMICONPERMISOENTRADA,"image/green.png");
     else
-      pvSetImage(p,ICONFECHCONTR,"image/red.png");
-    //PERMISO FECHA NPT	
-    if(myForm->isArrProdNptPermit())                       
-      pvSetImage(p,ICONFECHNPRT,"image/green.png");
-    else
-      pvSetImage(p,ICONFECHNPRT,"image/red.png");
-    //PERMISO CARACTERIZACIÓN BÁSICA	
-    if(myForm->isArrProdCbPermit())                       
-      pvSetImage(p,ICONCB,"image/green.png");
-    else
-      pvSetImage(p,ICONCB,"image/red.png");
-    //PERMISO CARACTERIZACIÓN DE PELIGRO	
-    if(myForm->isArrProdCpPermit())                      
-      pvSetImage(p,ICONCP,"image/green.png");
-    else
-      pvSetImage(p,ICONCP,"image/red.png");
-    //PERMISO DCP
-    if(myForm->isArrProdDcpPermit())                       
-      pvSetImage(p,ICONDCP,"image/green.png");
-    else
-      pvSetImage(p,ICONDCP,"image/red.png");
-  }
-  else
-  {
-    pvSetImage(p,ICONPERM,"image/grey.png");			  
-    pvSetImage(p,ICONFECHCONTR,"image/grey.png");			  
-    pvSetImage(p,ICONFECHNPRT,"image/grey.png");			  
-    pvSetImage(p,ICONCB,"image/grey.png");			  
-    pvSetImage(p,ICONCP,"image/grey.png");
-    pvSetImage(p,ICONDCP,"image/grey.png");
-  }
-  //frame permiso de entrada
-  setFrame(p,FRAMEPERMISOENTRADA,FRAME_NORMAL); 
-  if(formEntrada->isArrProdPermit())
-     pvSetImage(p,IMICONPERMISOENTRADA,"image/green.png");
-  else
-    pvSetImage(p,IMICONPERMISOENTRADA,"image/red.png");
-       
+        pvSetImage(p,IMICONPERMISOENTRADA,"image/red.png");
+    return 0;
 }
 static void toolsSetControl(PARAM *p, DATA *d,int setStatus)
 {
