@@ -293,31 +293,29 @@ void inputForm::setAndCalcScaleOut(unsigned int scale)
   scaleIn = retDepScaleIn();
   setDepTotalWeight(scaleIn-scale);    
 }
+
 /*! function to save scale out in database*/
 int inputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort )
 {
-  char *sql = NULL;
-  std::string another_sql;
-  //rodri: int port;
-  int ret = 1;
+    int ret = 1;
 
-  setAndCalcScaleOut(retDepScaleOut());
-  
-  updtScaleOutTrans(sql, retDepDateTime().c_str(), retDepCosCode(), retDepProdCode(), retDepScaleOut(), getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-  
-  if(!myDatabase.query(NULL,sql))
+    setAndCalcScaleOut(retDepScaleOut());
+    char *sql = NULL;
+    updtScaleOutTrans(sql, retDepDateTime().c_str(), retDepCosCode(), retDepProdCode(), retDepScaleOut(), getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+    
+    if(!myDatabase.query(NULL,sql))
     {
-      ret = 0;     
-      if(isConnected(remoteHost, remotePort))
-	{
-	  remote_updatePesoSalidaTransito(another_sql, retDepCosCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepScaleOut(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-	  myRemoteDatabase.query(NULL,another_sql.c_str());
-	}
-
+        ret = 0;     
+        if(isConnected(remoteHost, remotePort))
+        {
+            std::string another_sql;
+            remote_updatePesoSalidaTransito(another_sql, retDepCosCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepScaleOut(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+            myRemoteDatabase.query(NULL,another_sql.c_str());
+        }
     }
-  delete sql;
-
-  return ret;
+    if (sql != NULL)
+        delete[] sql;
+    return ret;
 }
 
 ///
