@@ -48,7 +48,8 @@ extern GLOBAL_DATA globalConfiguration;
 #include "mask_tools.h"
 #include "mask4_tools.h"
 #include "mask4_stateGUI.h"
-#include "mask4_actualiza.h"
+#include "mask4_stateWork.h"
+#include "mask4_stateNext.h"
 
 extern bascula* testBascula;
 
@@ -128,8 +129,8 @@ static int slotNullEvent(PARAM *p, DATA *d)
   std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retDepDiFolder():"null") << std::endl;
   std::cout << "----" << std::endl;
   std::cout << "############" << std::endl;
-  maquinaEstados(p,d);
-  actualizaEstado(p,d);
+  stateNext(p,d);
+  stateWork(p,d);
   //semaphores
   cameraSemaphore(1, -1,globalConfiguration.traffic_lights_enabled);
   cameraSemaphore(2, -1,globalConfiguration.traffic_lights_enabled);
