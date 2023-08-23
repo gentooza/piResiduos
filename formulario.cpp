@@ -2211,47 +2211,49 @@ int baseForm::setAllArrCostumerData(qtDatabase & myDatabase)
 NPT is what we need*/
 int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
 {
-  int ret = -1;
-  char * sql = NULL;
-  std::vector<std::vector<std::string>> retData;
-  float price;
-
-  std::string station_type;
-  myStation->getType(station_type);
-  sel_DIbasis_cos_prod(sql,station_type.c_str(), retDepCosCode(), retDepProdCode());
-  if(!myDatabase.query(NULL,sql))
+    int ret = -1;
+    char * sql = NULL;
+    std::string station_type;
+    myStation->getType(station_type);
+    sel_DIbasis_cos_prod(sql,station_type.c_str(), retDepCosCode(), retDepProdCode());
+    if(!myDatabase.query(NULL,sql))
     {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  std::vector <std::string> result = retData.at(0);
-	  try //NPT
-	    {
-	      setDepPermitNPT(std::stoul(result.at(0)));
-	    }
-	  catch(...)
-	    {
-	      setDepPermitNPT(0);	    
-	    }
-	  try //price
-	    {
-	      price = std::stof(result.at(1));
-	    }
-	  catch(...)
-	    {
-	      price = 0.0;
-	    }
-	  if(price > 0.0)
-	    setDepPrice(price);
-	  ret=0;
-	}
-      else
-	{
-	  setDepPermitNPT(0);
-	  //no costumer - product price defined
-	}
+        std::vector<std::vector<std::string>> retData = myDatabase.retData2();
+        if(retData.size())
+        {
+            float price;
+            std::vector <std::string> result = retData.at(0);
+            try //NPT
+            {
+                setDepPermitNPT(std::stoul(result.at(0)));
+            }
+            catch(...)
+            {
+                setDepPermitNPT(0);	    
+            }
+            try //price
+            {
+                price = std::stof(result.at(1));
+            }
+            catch(...)
+            {
+                price = 0.0;
+            }
+            if(price > 0.0)
+                setDepPrice(price);
+            ret=0;
+        }
+        else
+        {
+            setDepPermitNPT(0);
+            //no costumer - product price defined
+        }
     }
-  delete sql;
+    if (sql != NULL)
+    {
+        delete[] sql;
+    }
+    return ret;
 }
 int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
 {
