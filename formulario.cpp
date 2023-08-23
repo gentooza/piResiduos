@@ -699,60 +699,64 @@ std::string baseForm::createArrDi(qtDatabase & localDatabase)
 
 std::string baseForm::createDepDi(qtDatabase & localDatabase)
 {
-  std::string oldDi = retDepDi();
-  std::string di;
-  //our year
-  time_t myTime = time(NULL);
-  struct tm *aTime = localtime(&myTime);
-  int year = aTime->tm_year + 1900;
-	    
-  char * sql;
-  std::string temporalDI;
-  std::string temporalDIDate;
-  std::vector<std::vector<std::string>> ourData;
-  //LAST DI
-  selLastDiFromMovementsByClientProduct(sql,retDepCosCode(),retDepProdCode());  
-  localDatabase.query(NULL,sql);
-  ourData = localDatabase.retData2();
-  if(ourData.size())
+    std::string oldDi = retDepDi();
+    std::string di;
+    //our year
+    time_t myTime = time(NULL);
+    struct tm *aTime = localtime(&myTime);
+    int year = aTime->tm_year + 1900;
+            
+    char * sql = NULL;
+    std::string temporalDI;
+    std::string temporalDIDate;
+    std::vector<std::vector<std::string>> ourData;
+    //LAST DI
+    selLastDiFromMovementsByClientProduct(sql,retDepCosCode(),retDepProdCode());  
+    localDatabase.query(NULL,sql);
+    ourData = localDatabase.retData2();
+    if(ourData.size())
     {
-      temporalDI = ourData.at(0).at(0);
-      temporalDIDate = ourData.at(0).at(1);
+        temporalDI = ourData.at(0).at(0);
+        temporalDIDate = ourData.at(0).at(1);
     }
-  delete[] sql; 
-  //REFRESH COSTUMER NIF
-  setAllDepCostumerData(localDatabase);	   
-  if(isNewYear(temporalDIDate,year)) //new year, new DI
-    temporalDI.clear();	    
-  di = generateDi(temporalDI, 0);
-
-  if(oldDi.compare(di)) //COPYING DATA
+    if (sql != NULL)
     {
-      std::string oldFolder = "\"saves/" + retDepDi();
-      std::string newFolder = "\"saves/" + di;
-      if(!retDepDateTime().empty())
-	{
-	  oldFolder += " " + retDepDateTime();
-	  newFolder += " " + retDepDateTime();
-	}
-      oldFolder += "\"";
-      newFolder += "\""; 
-      
-      std::string command = "mkdir " + newFolder;
-      system(command.c_str());
-      command = "cp " + oldFolder + "/* " + newFolder;
-      system(command.c_str());
-      command = "rm -r " + oldFolder;
-      system(command.c_str());
+        delete[] sql;
     }
-  setDepDi(di);
-  //FOLDER
-  std::string folder = retDepDi();
-  if(!retDepDateTime().empty())
-    folder += " "+ retDepDateTime();
-  setDepDiFolder(folder);
+    
+    //REFRESH COSTUMER NIF
+    setAllDepCostumerData(localDatabase);	   
+    if(isNewYear(temporalDIDate,year)) //new year, new DI
+        temporalDI.clear();	    
+    di = generateDi(temporalDI, 0);
 
-  return retDepDi();
+    if(oldDi.compare(di)) //COPYING DATA
+    {
+        std::string oldFolder = "\"saves/" + retDepDi();
+        std::string newFolder = "\"saves/" + di;
+        if(!retDepDateTime().empty())
+        {
+            oldFolder += " " + retDepDateTime();
+            newFolder += " " + retDepDateTime();
+        }
+        oldFolder += "\"";
+        newFolder += "\""; 
+        
+        std::string command = "mkdir " + newFolder;
+        system(command.c_str());
+        command = "cp " + oldFolder + "/* " + newFolder;
+        system(command.c_str());
+        command = "rm -r " + oldFolder;
+        system(command.c_str());
+    }
+    setDepDi(di);
+    //FOLDER
+    std::string folder = retDepDi();
+    if(!retDepDateTime().empty())
+        folder += " "+ retDepDateTime();
+    setDepDiFolder(folder);
+
+    return retDepDi();
 }
 
 std::string baseForm::generateDi(std::string lastDi, int arrive)
@@ -2651,43 +2655,42 @@ int baseForm::setDriverByCode(long code,qtDatabase & local_database)
 
 int baseForm::default_driver(qtDatabase & local_database)
 {
-  int set = 0;
-  char * sql;
-  long driver_code = 0;
-  std::vector< std::vector< std::string>> ret_data;
+    int set = 0;
 
-  if(retDepCosCode()>0)
+    if(retDepCosCode()>0)
     {
-      sel_default_driver(sql,retDepCosCode());
-      if(!local_database.query(NULL,sql))
-	{
-	  ret_data = local_database.retData2();
-	  if(ret_data.size())
-	    {
-	      if(ret_data[0].size())
-		{
-		  try
-		    {
-		      driver_code = std::stol(ret_data[0][0]);
-		    }
-		  catch(...)
-		    {
-		      driver_code = 0;
-		    }
-		  if(driver_code)
-		    {
-		      set = 1;
-		      if(dep_driver)
-			delete dep_driver;
-		      dep_driver = new driver(driver_code, local_database);
-		    }
-		}
-	    }
-	}
-      delete sql;
-    }
-  
-  return set;
+        char * sql = NULL;
+        long driver_code = 0;
+        std::vector< std::vector< std::string>> ret_data;
+        sel_default_driver(sql,retDepCosCode());
+        if(!local_database.query(NULL,sql))
+        {
+            ret_data = local_database.retData2();
+            if(ret_data.size())
+            {
+                if(ret_data[0].size())
+                {
+                    try
+                    {
+                        driver_code = std::stol(ret_data[0][0]);
+                    }
+                    catch(...)
+                    {
+                        driver_code = 0;
+                    }
+                    if(driver_code)
+                    {
+                        set = 1;
+                        if(dep_driver)
+                            delete dep_driver;
+                        dep_driver = new driver(driver_code, local_database);
+                    }
+                }
+            }
+        }
+        delete [] sql;
+    }   
+    return set;
 }
 
 /*! function for returning a complete list external stations with format:
