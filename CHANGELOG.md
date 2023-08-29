@@ -1,3 +1,15 @@
+# 2023 version 0.3 
+
+## improves
++ upgraded pvbrowser version, and using qt5 now.
+
+## fixes
++ using valgrind for detecting memory leaks, fixing them.
+
+## code improvement
++ code cleaning, fixing functions with no return statement, etc.
+
+
 # 2022/04/28 version 0.2rc1 
 
 ## improves
