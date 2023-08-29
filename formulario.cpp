@@ -673,39 +673,40 @@ void baseForm::setDatePermit(std::string strDate)
 
 std::string baseForm::createArrDi(qtDatabase & localDatabase)
 {
-  std::string di;
-  //our year
-  time_t myTime = time(NULL);
-  struct tm *aTime = localtime(&myTime);
-  int year = aTime->tm_year + 1900;
-	    
-  char * sql;
-  std::string temporalDI;
-  std::string temporalDIDate;
-  std::vector<std::vector<std::string>> ourData;
-  //LAST DI
-  selLastDiFromMovementsByClientProduct(sql,retArrCosCode(),retArrProdCode());  
-  localDatabase.query(NULL,sql);
-  ourData = localDatabase.retData2();
-  if(ourData.size())
+    std::string di;
+    //our year
+    time_t myTime = time(NULL);
+    struct tm *aTime = localtime(&myTime);
+    int year = aTime->tm_year + 1900;
+            
+    char * sql = NULL;
+    std::string temporalDI;
+    std::string temporalDIDate;
+    std::vector<std::vector<std::string>> ourData;
+    //LAST DI
+    selLastDiFromMovementsByClientProduct(sql,retArrCosCode(),retArrProdCode());  
+    localDatabase.query(NULL,sql);
+    ourData = localDatabase.retData2();
+    if(ourData.size())
     {
-      temporalDI = ourData.at(0).at(0);
-      temporalDIDate = ourData.at(0).at(1);
+        temporalDI = ourData.at(0).at(0);
+        temporalDIDate = ourData.at(0).at(1);
     }
-  delete sql; 
-  //REFRESH COSTUMER NIF
-  setAllArrCostumerData(localDatabase);	   
-  if(isNewYear(temporalDIDate,year)) //new year, new DI
-    temporalDI.clear();	    
-  di = generateDi(temporalDI,1);
-  setArrDi(di);
-  //FOLDER
-  if(retArrDateTime().empty())
-    setArrDateTime(getCurrentDate());
-  std::string folder =retArrDi() + " "+ retArrDateTime();
-  setArrDiFolder(folder);
-    
-  return retArrDi();
+    if (sql != NULL)
+        delete [] sql;
+    //REFRESH COSTUMER NIF
+    setAllArrCostumerData(localDatabase);	   
+    if(isNewYear(temporalDIDate,year)) //new year, new DI
+        temporalDI.clear();	    
+    di = generateDi(temporalDI,1);
+    setArrDi(di);
+    //FOLDER
+    if(retArrDateTime().empty())
+        setArrDateTime(getCurrentDate());
+    std::string folder =retArrDi() + " "+ retArrDateTime();
+    setArrDiFolder(folder);
+        
+    return retArrDi();
 }
 
 std::string baseForm::createDepDi(qtDatabase & localDatabase)
