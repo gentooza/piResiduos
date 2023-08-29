@@ -25,332 +25,343 @@ If not, see <https://www.gnu.org/licenses/>.
 
 baseForm::baseForm(int type, int entrance)  
 {
-  clearMovement(myArrMovement);
-  clearMovement(myDepMovement);
-  //pointers
-  arrOriginStation = new station();
-  depOriginStation = new station ();
-  arrDestinationStation = new station ();
-  depDestinationStation = new station ();
-  ourId = NULL;
-  ourStation = NULL;
-  staff_in_charge = new staff();
-  dep_driver = new driver();
-  depAuthCostumer = NULL;
-  /**TODO BORRAR NO NECESARIO**/
-  formType = NOT_DEFINED;
-  if(type == ET || type == PT)
+    clearMovement(myArrMovement);
+    clearMovement(myDepMovement);
+    //pointers
+    arrOriginStation = new station();
+    depOriginStation = new station ();
+    arrDestinationStation = new station ();
+    depDestinationStation = new station ();
+    ourId = NULL;
+    ourStation = NULL;
+    staff_in_charge = new staff();
+    dep_driver = new driver();
+    depAuthCostumer = NULL;
+    /**TODO BORRAR NO NECESARIO**/
+    formType = NOT_DEFINED;
+    if(type == ET || type == PT)
     {
-      formType = type;
-      formState = -1;
+        formType = type;
+        formState = -1;
     }
-  formLlegada = entrance;
-  /*****************/
+    formLlegada = entrance;
+    /*****************/
 
-  //plate dimensions
-  maxPlateLength = 8;
-  minPlateLength = 5;
+    //plate dimensions
+    maxPlateLength = 8;
+    minPlateLength = 5;
 
-  //departure movement index in matrix
-  depMovIndex = -1;
-  
-  return;
+    //departure movement index in matrix
+    depMovIndex = -1;
+    
+    return;
 }
 baseForm::baseForm()
 {
-  clearMovement(myArrMovement);
-  clearMovement(myDepMovement);
-  arrOriginStation = NULL;
-  depOriginStation = NULL;
-  arrDestinationStation = NULL;
-  depDestinationStation = NULL;
-  ourId = NULL;
-  ourStation = NULL;
-  staff_in_charge = new staff();
-  dep_driver = NULL;
-  depAuthCostumer = NULL;
+    clearMovement(myArrMovement);
+    clearMovement(myDepMovement);
+    arrOriginStation = NULL;
+    depOriginStation = NULL;
+    arrDestinationStation = NULL;
+    depDestinationStation = NULL;
+    ourId = NULL;
+    ourStation = NULL;
+    staff_in_charge = new staff();
+    dep_driver = NULL;
+    depAuthCostumer = NULL;
+    return;
 }
 baseForm::~baseForm()
 {
-  if(arrOriginStation)
-    delete arrOriginStation;
-  if(depOriginStation)
-    delete depOriginStation;
-  if(arrDestinationStation)
-    delete arrDestinationStation;
-  if(depDestinationStation)
-    delete depDestinationStation;
-  if(ourId)
-    delete ourId;
-  if(ourStation)
-    delete ourStation;
-  if(staff_in_charge)
-    delete staff_in_charge;
-  if(dep_driver)
-    delete dep_driver;
-  if(depAuthCostumer)
-    delete depAuthCostumer;
-  resetDrivers();
+    if(arrOriginStation)
+        delete arrOriginStation;
+    if(depOriginStation)
+        delete depOriginStation;
+    if(arrDestinationStation)
+        delete arrDestinationStation;
+    if(depDestinationStation)
+        delete depDestinationStation;
+    if(ourId)
+        delete ourId;
+    if(ourStation)
+        delete ourStation;
+    if(staff_in_charge)
+        delete staff_in_charge;
+    if(dep_driver)
+        delete dep_driver;
+    if(depAuthCostumer)
+        delete depAuthCostumer;
+    resetDrivers();
+    return;
 }
 void baseForm::copyFrom(baseForm * toCopy)  
 {
-  myArrMovement = toCopy->retArrMovement();
-  myDepMovement = toCopy->retDepMovement();
+    myArrMovement = toCopy->retArrMovement();
+    myDepMovement = toCopy->retDepMovement();
 
-  toCopy->retArrOriginStation(arrOriginStation);
-  toCopy->retDepOriginStation(depOriginStation);
-  toCopy->retArrDestinationStation(arrDestinationStation);
-  toCopy->retDepDestinationStation(depDestinationStation);
-  toCopy->retOurId(ourId);
-  toCopy->retOurStation(ourStation);
+    toCopy->retArrOriginStation(arrOriginStation);
+    toCopy->retDepOriginStation(depOriginStation);
+    toCopy->retArrDestinationStation(arrDestinationStation);
+    toCopy->retDepDestinationStation(depDestinationStation);
+    toCopy->retOurId(ourId);
+    toCopy->retOurStation(ourStation);
 
-  setState(toCopy->getState());
-  formSCADA = toCopy->retForm();
-  arrFolder = toCopy->retArrDiFolder();
-  depFolder = toCopy->retDepDiFolder();
+    setState(toCopy->getState());
+    formSCADA = toCopy->retForm();
+    arrFolder = toCopy->retArrDiFolder();
+    depFolder = toCopy->retDepDiFolder();
 
-  //incidents and comments 
-  setInputIncidents(toCopy->getInputIncidents());
-  setOutputIncidents(toCopy->getOutputIncidents());
-  setInputComment(toCopy->getInputComment());
-  setOutputComment(toCopy->getOutputComment());
+    //incidents and comments 
+    setInputIncidents(toCopy->getInputIncidents());
+    setOutputIncidents(toCopy->getOutputIncidents());
+    setInputComment(toCopy->getInputComment());
+    setOutputComment(toCopy->getOutputComment());
 
-  //ERROR_ACCEPTED_WEIGHT
-  setErrorScale(toCopy->retErrorScale());
+    //ERROR_ACCEPTED_WEIGHT
+    setErrorScale(toCopy->retErrorScale());
 
-  //DRIVER
-  toCopy->ret_dep_driver(dep_driver);
-  //dep authorized costumer
-  try {
-    toCopy->retDepAuthCostumer(depAuthCostumer);
-  } catch(...) {
-    std::cout << "TODO: memory error in redDepAuthCostumer" << std::endl;
-    depAuthCostumer = new costumer();
-  }
+    //DRIVER
+    toCopy->ret_dep_driver(dep_driver);
+    //dep authorized costumer
+    try 
+    {
+        toCopy->retDepAuthCostumer(depAuthCostumer);
+    } 
+    catch(...) 
+    {
+        std::cout << "TODO: memory error in redDepAuthCostumer" << std::endl;
+        depAuthCostumer = new costumer();
+    }
 
-  return;
+    return;
 }
 
 void baseForm::resetForm(int departure)
 {
-  resetOurId();
-  if(!departure) //arrival
+    resetOurId();
+    if(!departure) //arrival
     {
-      formInicState=0;
-      //forzado producto   
-      iIncidents.clear();
-      iComment.clear();
-      clearMovement(myArrMovement);
-      resetArrOrigin();
-      resetArrDestination();
-      clearArrDiFolder();
+        formInicState=0;
+        //forzado producto   
+        iIncidents.clear();
+        iComment.clear();
+        clearMovement(myArrMovement);
+        resetArrOrigin();
+        resetArrDestination();
+        clearArrDiFolder();
     }
-  else //Departure
+    else //Departure
     {
-      //forced status
-      //
-      oIncidents.clear();
-      oComment.clear();
-      clearMovement(myDepMovement);
-      resetDepOrigin();
-      resetDepDestination();
-      clearDepDiFolder();
-      staff_in_charge->reset();
-      dep_driver->reset();
-    }  
+        //forced status
+        //
+        oIncidents.clear();
+        oComment.clear();
+        clearMovement(myDepMovement);
+        resetDepOrigin();
+        resetDepDestination();
+        clearDepDiFolder();
+        staff_in_charge->reset();
+        dep_driver->reset();
+    }
+    return;
 }
 
 void baseForm::clearMovement(struMovement & myMovement)
 {
-  std::string empty;
-  empty.clear();
-  myMovement.CODIGO_ORDEN= -1;
-  myMovement.ECOEMBES = -1;
-  myMovement.CODIGO_CLIENTE = -1;
-  myMovement.CLIENTE_NOMBRE.clear();
-  myMovement.CLIENTE_NIF.clear();
-  myMovement.CLIENTE_DIRECCION.clear();
-  myMovement.CLIENTE_PROVINCIA.clear();
-  myMovement.CLIENTE_POBLACION.clear();
-  myMovement.CLIENTE_CP = 0;
-  myMovement.CLIENTE_TIPO = -1;
-  myMovement.CLIENTE_TIPO_DEF = -1;
-  myMovement.CLIENTE_COMUNIDAD_AUTONOMA.clear();
-  myMovement.CLIENTE_NIMA = -1;
-  myMovement.CLIENTE_NUM_INSCRIPCION = -1;
-  myMovement.CLIENTE_TELEFONO = -1;
-  myMovement.CLIENTE_MAIL.clear();
+    std::string empty;
+    empty.clear();
+    myMovement.CODIGO_ORDEN= -1;
+    myMovement.ECOEMBES = -1;
+    myMovement.CODIGO_CLIENTE = -1;
+    myMovement.CLIENTE_NOMBRE.clear();
+    myMovement.CLIENTE_NIF.clear();
+    myMovement.CLIENTE_DIRECCION.clear();
+    myMovement.CLIENTE_PROVINCIA.clear();
+    myMovement.CLIENTE_POBLACION.clear();
+    myMovement.CLIENTE_CP = 0;
+    myMovement.CLIENTE_TIPO = -1;
+    myMovement.CLIENTE_TIPO_DEF = -1;
+    myMovement.CLIENTE_COMUNIDAD_AUTONOMA.clear();
+    myMovement.CLIENTE_NIMA = -1;
+    myMovement.CLIENTE_NUM_INSCRIPCION = -1;
+    myMovement.CLIENTE_TELEFONO = -1;
+    myMovement.CLIENTE_MAIL.clear();
 
-  myMovement.CLIENTE_PARTICULAR_NOMBRE.clear();
-  myMovement.CLIENTE_PARTICULAR_NIF.clear();
-  myMovement.CLIENTE_PARTICULAR_DIRECCION.clear();
-  myMovement.CLIENTE_PARTICULAR_PROVINCIA.clear();
-  myMovement.CLIENTE_PARTICULAR_POBLACION.clear();
-  myMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA.clear();
-  myMovement.CLIENTE_PARTICULAR_CP = 0;
-  myMovement.CLIENTE_PARTICULAR_TIPO = 0;
-  myMovement.CLIENTE_PARTICULAR_TIPO_DEF = 0;
-  myMovement.CLIENTE_PARTICULAR_NIMA = 0;
-  myMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = 0;
-  myMovement.CLIENTE_PARTICULAR_TELEFONO = 0;
-  myMovement.CLIENTE_PARTICULAR_MAIL.clear();
-  
-  myMovement.CODIGO_PRODUCTO = -1;
-  myMovement.PRODUCTO_LER = -1;
-  myMovement.PRODUCTO_NOMBRE.clear();
-  myMovement.PRODUCTO_NOMBRE2.clear();
-  myMovement.PRODUCTO_NOMBRE3.clear();
-  myMovement.PRODUCTO_PELIGROSIDAD.clear();
+    myMovement.CLIENTE_PARTICULAR_NOMBRE.clear();
+    myMovement.CLIENTE_PARTICULAR_NIF.clear();
+    myMovement.CLIENTE_PARTICULAR_DIRECCION.clear();
+    myMovement.CLIENTE_PARTICULAR_PROVINCIA.clear();
+    myMovement.CLIENTE_PARTICULAR_POBLACION.clear();
+    myMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA.clear();
+    myMovement.CLIENTE_PARTICULAR_CP = 0;
+    myMovement.CLIENTE_PARTICULAR_TIPO = 0;
+    myMovement.CLIENTE_PARTICULAR_TIPO_DEF = 0;
+    myMovement.CLIENTE_PARTICULAR_NIMA = 0;
+    myMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = 0;
+    myMovement.CLIENTE_PARTICULAR_TELEFONO = 0;
+    myMovement.CLIENTE_PARTICULAR_MAIL.clear();
+    
+    myMovement.CODIGO_PRODUCTO = -1;
+    myMovement.PRODUCTO_LER = -1;
+    myMovement.PRODUCTO_NOMBRE.clear();
+    myMovement.PRODUCTO_NOMBRE2.clear();
+    myMovement.PRODUCTO_NOMBRE3.clear();
+    myMovement.PRODUCTO_PELIGROSIDAD.clear();
 
-  myMovement.CLIENTE_PRODUCTO_NPT = -1; 
- 
-  myMovement.FECHA_FIRMA.clear();
-  myMovement.FECHA_PROGRAMADA.clear();
-  myMovement.PRECIO_TN = -1;
-  myMovement.FORMA_DE_PAGO = 0;  
-  myMovement.PESO_A_RETIRAR = 0;
+    myMovement.CLIENTE_PRODUCTO_NPT = -1; 
+    
+    myMovement.FECHA_FIRMA.clear();
+    myMovement.FECHA_PROGRAMADA.clear();
+    myMovement.PRECIO_TN = -1;
+    myMovement.FORMA_DE_PAGO = 0;  
+    myMovement.PESO_A_RETIRAR = 0;
 
-  myMovement.OPERACION_DE_TRATAMIENTO.clear();
+    myMovement.OPERACION_DE_TRATAMIENTO.clear();
 
-  myMovement.FECHA_HORA.clear();
-  myMovement.MATRICULA.clear();
-  myMovement.IMAGEN_MATRICULA.clear();
-  myMovement.REMOLQUE.clear();
-  myMovement.PERMISOS_PRODUCTO = resetPermits();
-  myMovement.DI.clear();
-  myMovement.PESO_ENTRADA = 0;
-  myMovement.PESO_SALIDA = 0;
-  myMovement.CODIGO_MOVIMIENTO.clear();
-  myMovement.TIPO_DE_MOVIMIENTO = -1;
-  myMovement.REPETIR = 0;
-  return;
+    myMovement.FECHA_HORA.clear();
+    myMovement.MATRICULA.clear();
+    myMovement.IMAGEN_MATRICULA.clear();
+    myMovement.REMOLQUE.clear();
+    myMovement.PERMISOS_PRODUCTO = resetPermits();
+    myMovement.DI.clear();
+    myMovement.PESO_ENTRADA = 0;
+    myMovement.PESO_SALIDA = 0;
+    myMovement.CODIGO_MOVIMIENTO.clear();
+    myMovement.TIPO_DE_MOVIMIENTO = -1;
+    myMovement.REPETIR = 0;
+    return;
 }
 /*!fucntion loading to movement our order information*/
 void baseForm::setArrMov(struMovement myOrder)
 {
-  clearMovement(myArrMovement);
-  myArrMovement = myOrder;
-  setArrDateTime(getCurrentDate());
+    clearMovement(myArrMovement);
+    myArrMovement = myOrder;
+    setArrDateTime(getCurrentDate());
+
+    return;
 }
 /*!prepare to save sql movement*/
 void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,station *& myStation, qtDatabase & localDatabase)
 {
-  char * sql;
+    char * sql = NULL;
 
-  //getting last movement code for this station and DI
-  std::string sCodigo_estacion = std::to_string(myStation->getCode());
-  selLastMovCode(sql,sCodigo_estacion.c_str());
-  localDatabase.query(NULL,sql);
-  delete sql;
-  std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-  std::string codigo_mov = "-1";
-  if(ourData.size())
+    //getting last movement code for this station and DI
+    std::string sCodigo_estacion = std::to_string(myStation->getCode());
+    selLastMovCode(sql,sCodigo_estacion.c_str());
+    localDatabase.query(NULL,sql);
+    if( sql != NULL)
+        delete [] sql;
+    std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
+    std::string codigo_mov = "-1";
+    if(ourData.size())
     {
-      codigo_mov = ourData.at(0).at(0);
+        codigo_mov = ourData.at(0).at(0);
     }	   
-  std::cout << "DEBUG: actualizando el código del movimiento!!, código de la estación:" << myStation->getCode() << " ,último código:" << codigo_mov << std::endl;
-  setMovCode(codigo_mov,myStation->getCode(),retDepMovType());
-	std::cout << "DEBUG: nuevo código:" << retDepMovCode();
-  //almacenamos en movimientos
-  sqliteQuery = "insert into MOVIMIENTOS (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOV,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE, SINCRONIZADO ) values (\"";
-  mysqlQuery = "insert into movimientos (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE) values (\"";
-  //codigo movimiento
-  std::string values = retDepMovCode();
-  values += "\",\"";
-  values +=  retDepDi();
-  values += "\",\"";  
-  values += retDepDateTime();
-  values += "\",\"";
-  setDepFinalDateTime(getCurrentDate());
-  values += retDepFinalDateTime();
-  values += "\",";
-  values += std::to_string(retDepMovType());
-  values += ",";
-  values += std::to_string(retDepCosCode());
-  values += ",";
-  values += std::to_string(retDepProdCode());
-  values += ",";
-  values += std::to_string(retDepDriCode());
-  values += ",";
-  values += std::to_string(staff_in_charge->get_code());
-  values += ",";
-  values += std::to_string(retDepTotalWeight()); //PESO NETO
-  values += ",";	    
-  values += std::to_string(retDepScaleIn());  // PESO TARA
-  values += ","; 
-  values += std::to_string(retDepScaleOut()); //PESO BRUTO
-  values += ",";
-  values += std::to_string(retDepPrice());
-  values += ",\"";
-  values += retDepPlate();
-  values += "\",\"";
-  values += retDepPlateAtt(); 
-  values += "\",";
-  values += std::to_string(depOriginStation->getCode());
-  values += ",";
-  values += std::to_string(depDestinationStation->getCode());
-  values += ",\"";
-  values += vectorToString(getOutputIncidents(),"; ");
-  values += "\",\"";
-  values += getOutputComment();
-  values += "\",\"";
-  values += retDepPCosName();
-  values += "\",\"";
-  values += retDepPCosNif();
-  values += "\",\""; 
-  values += retDepPCosAddr();
-  values += "\",\"";
-  values += retDepPCosProv(); 
-  values += "\",\"";
-  values += retDepPCosCity();
-  values += "\",";
-  values += std::to_string(retDepPCosZip());
-  values += ",\"";  
-  values += retDepPCosReg();
-  values += "\",";
-  values += std::to_string(retDepPCosNima());
-  values += ",";
-  values += std::to_string(retDepPCosNumIns());
-  values += ",";
-  values += std::to_string(retDepPCosPhone());
-  values += ",\"";    
-  values += retDepPCosMail();
-  values += "\",\"";
-  values += depDestinationStation->getName();
-  values += "\",\"";
-  values += depDestinationStation->getNif();  
-  values += "\",\"";
-  values += depDestinationStation->getAddress();
-  values += "\",\"";
-  values += depDestinationStation->getProvence();
-  values += "\",\"";
-  values += depDestinationStation->getCity();
-  values += "\",";
-  values += std::to_string(depDestinationStation->getZip());
-  values += ",\"";
-  values += depDestinationStation->getRegion();
-  values += "\",";
-  values += std::to_string(depDestinationStation->getNima());
-  values += ",";
-  values += std::to_string(depDestinationStation->getNumIns());
-  values += ",";
-  values += std::to_string(depDestinationStation->getPhone());
-  values += ",\"";
-  values += depDestinationStation->getMail();
-  values += "\",";
-  values += std::to_string(retDepCosType());  
+    std::cout << "DEBUG: actualizando el código del movimiento!!, código de la estación:" << myStation->getCode() << " ,último código:" << codigo_mov << std::endl;
+    setMovCode(codigo_mov,myStation->getCode(),retDepMovType());
+    std::cout << "DEBUG: nuevo código:" << retDepMovCode();
+    //almacenamos en movimientos
+    sqliteQuery = "insert into MOVIMIENTOS (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOV,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE, SINCRONIZADO ) values (\"";
+    mysqlQuery = "insert into movimientos (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE) values (\"";
+    //codigo movimiento
+    std::string values = retDepMovCode();
+    values += "\",\"";
+    values +=  retDepDi();
+    values += "\",\"";  
+    values += retDepDateTime();
+    values += "\",\"";
+    setDepFinalDateTime(getCurrentDate());
+    values += retDepFinalDateTime();
+    values += "\",";
+    values += std::to_string(retDepMovType());
+    values += ",";
+    values += std::to_string(retDepCosCode());
+    values += ",";
+    values += std::to_string(retDepProdCode());
+    values += ",";
+    values += std::to_string(retDepDriCode());
+    values += ",";
+    values += std::to_string(staff_in_charge->get_code());
+    values += ",";
+    values += std::to_string(retDepTotalWeight()); //PESO NETO
+    values += ",";	    
+    values += std::to_string(retDepScaleIn());  // PESO TARA
+    values += ","; 
+    values += std::to_string(retDepScaleOut()); //PESO BRUTO
+    values += ",";
+    values += std::to_string(retDepPrice());
+    values += ",\"";
+    values += retDepPlate();
+    values += "\",\"";
+    values += retDepPlateAtt(); 
+    values += "\",";
+    values += std::to_string(depOriginStation->getCode());
+    values += ",";
+    values += std::to_string(depDestinationStation->getCode());
+    values += ",\"";
+    values += vectorToString(getOutputIncidents(),"; ");
+    values += "\",\"";
+    values += getOutputComment();
+    values += "\",\"";
+    values += retDepPCosName();
+    values += "\",\"";
+    values += retDepPCosNif();
+    values += "\",\""; 
+    values += retDepPCosAddr();
+    values += "\",\"";
+    values += retDepPCosProv(); 
+    values += "\",\"";
+    values += retDepPCosCity();
+    values += "\",";
+    values += std::to_string(retDepPCosZip());
+    values += ",\"";  
+    values += retDepPCosReg();
+    values += "\",";
+    values += std::to_string(retDepPCosNima());
+    values += ",";
+    values += std::to_string(retDepPCosNumIns());
+    values += ",";
+    values += std::to_string(retDepPCosPhone());
+    values += ",\"";    
+    values += retDepPCosMail();
+    values += "\",\"";
+    values += depDestinationStation->getName();
+    values += "\",\"";
+    values += depDestinationStation->getNif();  
+    values += "\",\"";
+    values += depDestinationStation->getAddress();
+    values += "\",\"";
+    values += depDestinationStation->getProvence();
+    values += "\",\"";
+    values += depDestinationStation->getCity();
+    values += "\",";
+    values += std::to_string(depDestinationStation->getZip());
+    values += ",\"";
+    values += depDestinationStation->getRegion();
+    values += "\",";
+    values += std::to_string(depDestinationStation->getNima());
+    values += ",";
+    values += std::to_string(depDestinationStation->getNumIns());
+    values += ",";
+    values += std::to_string(depDestinationStation->getPhone());
+    values += ",\"";
+    values += depDestinationStation->getMail();
+    values += "\",";
+    values += std::to_string(retDepCosType());  
 
-  sqliteQuery += values;
-  sqliteQuery += ",0)"; 
-  mysqlQuery += values;
-  mysqlQuery += ")";
+    sqliteQuery += values;
+    sqliteQuery += ",0)"; 
+    mysqlQuery += values;
+    mysqlQuery += ")";
+
+    return;
 }
 
 /*!function for checking last movement stored, for redundancy purposes*/
 void baseForm::check_last(std::string& remoteSql,station *& myStation)
 {
-  remoteSql = "select * from movimientos where CODIGO_MOV = " + retDepMovCode();
-  return;
+    remoteSql = "select * from movimientos where CODIGO_MOV = " + retDepMovCode();
+    return;
 }
 
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
