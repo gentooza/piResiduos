@@ -1729,317 +1729,321 @@ std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
 /*! function for returning the product code of a product, searched by full name*/
 long baseForm::retProductCode(std::string fullName)
 {
+    std::vector<struProduct>::iterator iter;
+    int found = 0;
+    long productCode;
+    std::string fullNameToCompare;
 
-  std::vector<struProduct>::iterator iter;
-  int found = 0;
-  long productCode;
-  std::string fullNameToCompare;
-
-  for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
+    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
     {
-      fullNameToCompare.clear();
-      fullNameToCompare = iter->NOMBRE;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE2;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE3; 
-      if(!fullNameToCompare.compare(fullName))
-	{
-	  productCode = iter->CODIGO;
-	  found = 1;
-	}
+        fullNameToCompare.clear();
+        fullNameToCompare = iter->NOMBRE;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE2;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE3; 
+        if(!fullNameToCompare.compare(fullName))
+        {
+            productCode = iter->CODIGO;
+            found = 1;
+        }
     }
-  return productCode;
+    return productCode;
 }
 /*! function for returning the product full name, searched by its code*/
 std::string baseForm::retProductFullName(long code)
 {
-  std::vector<struProduct>::iterator iter;
-  int found = 0;
-  std::string fullName;
+    std::vector<struProduct>::iterator iter;
+    int found = 0;
+    std::string fullName;
 
-  for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
+    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
     {
-      if(iter->CODIGO == code)
-	{
-	  fullName = iter->NOMBRE;
-	  fullName += " ";
-	  fullName += iter->NOMBRE2;
-	  fullName += " ";
-	  fullName += iter->NOMBRE3; 
-	  found = 1;
-	}
+        if(iter->CODIGO == code)
+        {
+        fullName = iter->NOMBRE;
+        fullName += " ";
+        fullName += iter->NOMBRE2;
+        fullName += " ";
+        fullName += iter->NOMBRE3; 
+        found = 1;
+        }
     }
-  return fullName;
+    return fullName;
 }
 /*! function for returning the LER code of a product, searched by full name*/
 long baseForm::retProductLer(std::string fullName)
 {
+    std::vector<struProduct>::iterator iter;
+    int found = 0;
+    long productLer;
+    std::string fullNameToCompare;
 
-  std::vector<struProduct>::iterator iter;
-  int found = 0;
-  long productLer;
-  std::string fullNameToCompare;
-
-  for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
+    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
     {
-      fullNameToCompare.clear();
-      fullNameToCompare = iter->NOMBRE;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE2;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE3; 
-      if(!fullNameToCompare.compare(fullName))
-	{
-	  productLer = iter->CODIGO_LER;
-	  found = 1;
-	}
+        fullNameToCompare.clear();
+        fullNameToCompare = iter->NOMBRE;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE2;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE3; 
+        if(!fullNameToCompare.compare(fullName))
+        {
+            productLer = iter->CODIGO_LER;
+            found = 1;
+        }
     }
-  return productLer;
+    return productLer;
 }
 /*! function for returning the dangerous characteristic of a product, searched by full name*/
 std::string baseForm::retProductCaracteristica(std::string fullName)
 {
+    std::vector<struProduct>::iterator iter;
+    int found = 0;
+    std::string caracteristica;
+    std::string fullNameToCompare;
 
-  std::vector<struProduct>::iterator iter;
-  int found = 0;
-  std::string caracteristica;
-  std::string fullNameToCompare;
-
-  for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
+    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
     {
-      fullNameToCompare.clear();
-      fullNameToCompare = iter->NOMBRE;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE2;
-      fullNameToCompare += " ";
-      fullNameToCompare += iter->NOMBRE3; 
-      if(!fullNameToCompare.compare(fullName))
-	{
-	  caracteristica = iter->CARACTERISTICA_PELIGRO;
-	  found = 1;
-	}
+        fullNameToCompare.clear();
+        fullNameToCompare = iter->NOMBRE;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE2;
+        fullNameToCompare += " ";
+        fullNameToCompare += iter->NOMBRE3; 
+        if(!fullNameToCompare.compare(fullName))
+        {
+            caracteristica = iter->CARACTERISTICA_PELIGRO;
+            found = 1;
+        }
     }
-  return caracteristica;
+    return caracteristica;
 }
 
 int baseForm::setProductByCode(long code, struMovement& myMovement)
 {
-  //TODO
-  return 0;
+    //TODO
+    return 0;
 }
 int baseForm::setProductByIndex(long index, struMovement& myMovement)
 {
-  //TODO
-  return 0;
+    //TODO
+    return 0;
 }
 /*! function to refresh all prdouct data from product code*/
 int baseForm::setAllProductData(qtDatabase & myDatabase)
 {
-  char * sql;
-  int ret = -1;
-  std::vector<std::vector<std::string>> retData;
-    
-  selProdDataByCode(sql, retDepProdCode());
-  if(!myDatabase.query(NULL,sql))
+    char * sql = NULL;
+    int ret = -1;
+    std::vector<std::vector<std::string>> retData;
+        
+    selProdDataByCode(sql, retDepProdCode());
+    if(!myDatabase.query(NULL,sql))
     {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  setDepProdDATA(retData[0]);		 
-	  ret = 0;
-	}  
+        retData = myDatabase.retData2();
+        if(retData.size())
+        {
+            setDepProdDATA(retData[0]);		 
+            ret = 0;
+        }  
     }
-  return ret;
+    if (sql != NULL)
+        delete [] sql;
+    return ret;
 }
 void baseForm::setDepProdDATA(std::vector <std::string> newDATA)
 {
-  std::vector<std::string>::iterator iter;
-  int field=1;
-  for(iter=newDATA.begin();iter!=newDATA.end();++iter)
+    std::vector<std::string>::iterator iter;
+    int field=1;
+    for(iter=newDATA.begin();iter!=newDATA.end();++iter)
     {
-      if(field==1) //Nombre1
-	setDepProdName1(*iter);
-      else if(field==2) //Nombre2
-	setDepProdName2(*iter);
-      else if(field==3) //Nombre3
-	setDepProdName3(*iter);
-      else if(field==4) //Ler	
-	{
-	  try
-	    {
-	      setDepProdLER(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepProdLER(0);		
-	    }
-	}
-      else if(field==5) //Descripcion de peligro
-	setDepProdPeligro(*iter);
-      else if(field == 6) //default price
-	{
-	  try
-	    {
-	      setDepPrice(std::stof(*iter));
-	    }
-	  catch(...)
-	    {
-	      setDepPrice(1.0);
-	    }
-	}
-      field++;
+        if(field==1) //Nombre1
+            setDepProdName1(*iter);
+        else if(field==2) //Nombre2
+            setDepProdName2(*iter);
+        else if(field==3) //Nombre3
+            setDepProdName3(*iter);
+        else if(field==4) //Ler	
+        {
+            try
+            {
+                setDepProdLER(std::stoul(*iter));
+            }
+            catch (...)
+            {
+                setDepProdLER(0);		
+            }
+        }
+        else if(field==5) //Descripcion de peligro
+            setDepProdPeligro(*iter);
+        else if(field == 6) //default price
+        {
+            try
+            {
+                setDepPrice(std::stof(*iter));
+            }
+            catch(...)
+            {
+                setDepPrice(1.0);
+            }
+        }
+        field++;
     }
-  return;
+    return;
 }
 /*! function to refresh all prdouct data from product code*/
 int baseForm::setAllArrProductData(qtDatabase & myDatabase)
 {
-  char * sql;
-  int ret = -1;
-  std::vector<std::vector<std::string>> retData;
-    
-  selProdDataByCode(sql, retArrProdCode());
-  if(!myDatabase.query(NULL,sql))
+    char * sql = NULL;
+    int ret = -1;
+    std::vector<std::vector<std::string>> retData;
+        
+    selProdDataByCode(sql, retArrProdCode());
+    if(!myDatabase.query(NULL,sql))
     {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  setArrProdDATA(retData[0]);		 
-	  ret = 0;
-	}  
+        retData = myDatabase.retData2();
+        if(retData.size())
+        {
+            setArrProdDATA(retData[0]);		 
+            ret = 0;
+        }  
     }
-  return ret;
+    if (sql != NULL)
+        delete [] sql;
+    return ret;
 }
 void baseForm::setArrProdDATA(std::vector <std::string> newDATA)
 {
-  std::vector<std::string>::iterator iter;
-  int field=1;
-  for(iter=newDATA.begin();iter!=newDATA.end();++iter)
+    std::vector<std::string>::iterator iter;
+    int field=1;
+    for(iter=newDATA.begin();iter!=newDATA.end();++iter)
     {
-      if(field==1) //Nombre1
-	setArrProdName1(*iter);
-      else if(field==2) //Nombre2
-	setArrProdName2(*iter);
-      else if(field==3) //Nombre3
-	setArrProdName3(*iter);
-      else if(field==4) //Ler	
-	{
-	  try
-	    {
-	      setArrProdLER(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setArrProdLER(0);		
-	    }
-	}
-      else if(field==5) //Comunidad
-	setArrProdPeligro(*iter);   
-      field++;
+        if(field==1) //Nombre1
+            setArrProdName1(*iter);
+        else if(field==2) //Nombre2
+            setArrProdName2(*iter);
+        else if(field==3) //Nombre3
+            setArrProdName3(*iter);
+        else if(field==4) //Ler	
+        {
+            try
+            {
+                setArrProdLER(std::stoul(*iter));
+            }
+            catch (...)
+            {
+                setArrProdLER(0);		
+            }
+        }
+        else if(field==5) //Comunidad
+            setArrProdPeligro(*iter);   
+        field++;
     }
-  return;
+    return;
 }
 void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* type)
 {
-  char * sql;
-  std::vector<std::vector<std::string>> ourData;
-  int ret = 0;
+    char * sql = NULL;
+    std::vector<std::vector<std::string>> ourData;
+    int ret = 0;
 
-  resetArrProdPermits();
-  selProdPermits(sql, type, retArrProdCode());
-  if(!myDatabase.query(NULL,sql))
+    resetArrProdPermits();
+    selProdPermits(sql, type, retArrProdCode());
+    if(!myDatabase.query(NULL,sql))
     {      
-      ourData = myDatabase.retData2();
-      if(ourData.size())
-	{
-	  ret = setArrPermitsFlags(ourData[0]);
-	}
+        ourData = myDatabase.retData2();
+        if(ourData.size())
+        {
+            ret = setArrPermitsFlags(ourData[0]);
+        }
     }
-  delete sql;
-  if(!ret)
+    if(sql != NULL)
+        delete [] sql;
+    if(!ret)
     {
-      selProdCosPermits(sql, type, retArrProdCode(), retArrCosCode());
-       if(!myDatabase.query(NULL,sql))
-	 {      
-	   ourData = myDatabase.retData2();
-	   if(ourData.size())
-	     {
-	       ret = setArrPermits(ourData[0]);
-	     }
-	 }
-       delete sql;
+        selProdCosPermits(sql, type, retArrProdCode(), retArrCosCode());
+        if(!myDatabase.query(NULL,sql))
+        {      
+            ourData = myDatabase.retData2();
+            if(ourData.size())
+            {
+                ret = setArrPermits(ourData[0]);
+            }
+        }
+        if(sql != NULL)
+            delete [] sql;
     }
+    return;
 }
 int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
 {
-  int ret = 0;
-  if(ourData.size() == 6)
+    int ret = 0;
+    if(ourData.size() == 6)
     {
-      //GENERAL
-      try
-	{
-	  setArrPermitGralFlag(std::stoi(ourData[0]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitGralFlag(0);
-	}	      
-      //CONTRATO
-      try
-	{
-	  setArrPermitDateFlag(std::stoi(ourData[1]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitGralFlag(0);
-	}
-      //NPT
-      try
-	{
-	  setArrPermitNptFlag(std::stoi(ourData[2]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitNptFlag(0);
-	}	      
-      //CB
-      try
-	{
-	  setArrPermitCbFlag(std::stoi(ourData[3]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitCbFlag(0);
-	}	      
-      //CP
-      try
-	{
-	  setArrPermitCpFlag(std::stoi(ourData[4]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitCpFlag(0);
-	}	      
-      //DCP
-      try
-	{
-	  setArrPermitDcpFlag(std::stoi(ourData[5]));
-	}
-      catch(...)
-	{
-	  ret = 1;
-	  setArrPermitDcpFlag(0);
-	}
+        //GENERAL
+        try
+        {
+            setArrPermitGralFlag(std::stoi(ourData[0]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitGralFlag(0);
+        }	      
+        //CONTRATO
+        try
+        {
+            setArrPermitDateFlag(std::stoi(ourData[1]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitGralFlag(0);
+        }
+        //NPT
+        try
+        {
+            setArrPermitNptFlag(std::stoi(ourData[2]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitNptFlag(0);
+        }	      
+        //CB
+        try
+        {
+            setArrPermitCbFlag(std::stoi(ourData[3]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitCbFlag(0);
+        }	      
+        //CP
+        try
+        {
+            setArrPermitCpFlag(std::stoi(ourData[4]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitCpFlag(0);
+        }	      
+        //DCP
+        try
+        {
+            setArrPermitDcpFlag(std::stoi(ourData[5]));
+        }
+        catch(...)
+        {
+            ret = 1;
+            setArrPermitDcpFlag(0);
+        }
     }
-  else
-    ret = 1;
-  return ret;
+    else
+        ret = 1;
+    return ret;
 }
 int baseForm::setArrPermits(std::vector<std::string> ourData)
 {
