@@ -396,18 +396,14 @@ class  baseForm
   void insertDriver(std::vector<std::string> record);
 
   //costumers
+  // TODO: rename and / or move it out here
   std::vector<std::string> ret_all_cos_4_combo(qtDatabase & my_database);
-  std::vector<std::string> ret_all_cos_by_plate_4_combo(qtDatabase & my_database, std::string plate);
   //
   //products
   //TODO all accesing database by taking care of station, permits, etc.
   std::vector<std::string> retAllProds4Combo(qtDatabase & myDatabase);
   void insertProduct(std::vector<std::string> record);
   void resetProducts(){allProducts.clear(); return;};
-  long retProductCode(std::string name);
-  std::string retProductFullName(long code);
-  long retProductLer(std::string name);
-  std::string retProductCaracteristica(std::string name); 
   //
   ///////////////////////////////////////////////////
   //MOVEMENTS DATA RETURN/SET
@@ -555,12 +551,6 @@ class  baseForm
   ////
 
   ////PRODUCT DATA
-  int setDepProductByCode(long code){int ret =  setProductByCode(code, myDepMovement); return ret;};
-  int setDepProductByIndex(long index){int ret =  setProductByIndex(index, myDepMovement); return ret;};
-  int setArrProductByCode(long code){int ret =  setProductByCode(code, myArrMovement); return ret;};
-  int setArrProductByIndex(long index){int ret =  setProductByCode(index, myArrMovement); return ret;};
-  int setProductByCode(long code, struMovement& myMovement);
-  int setProductByIndex(long index, struMovement& myMovement);
   void setArrProdDATA(std::vector <std::string> newDATA);
   void setDepProdDATA(std::vector <std::string> newDATA);
   int setAllProductData(qtDatabase & myDatabase);

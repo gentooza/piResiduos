@@ -1583,102 +1583,51 @@ int indi20_chkd;int indi21_chkd;int indi22_chkd;int indi23_chkd;int indi24_chkd;
 populating comboboxes, from database*/
 std::vector<std::string> baseForm::ret_all_cos_4_combo(qtDatabase & my_database)
 {
-  char * sql =NULL;
-  std::vector <std::vector <std::string>> data_return;
-  std::vector <std::vector <std::string>>::iterator cos;
-  std::vector<std::string>::iterator cos_field;
-  int field = 0;
-  std::string full_name;
-  std::vector <std::string> costumers_name;
-  long code;
+    char * sql = NULL;
+    std::vector <std::vector <std::string>> data_return;
+    std::vector <std::vector <std::string>>::iterator cos;
+    std::vector<std::string>::iterator cos_field;
+    int field = 0;
+    std::string full_name;
+    std::vector <std::string> costumers_name;
+    long code;
 
-  selAllDatFrmCostumers(sql);
-  if(!my_database.query(NULL,sql))
+    selAllDatFrmCostumers(sql);
+    if(!my_database.query(NULL,sql))
     {
-      data_return = my_database.retData2();
-      for(cos = data_return.begin(); cos != data_return.end(); ++cos)
-	{
-	  full_name.clear();
-	  code = 0;
-	  for(cos_field = cos->begin(); cos_field != cos->end(); ++cos_field)
-	    {
-	      if(field == 0)
-		{
-		  try
-		    {
-		      code = std::stol(*cos_field);
-		    }
-		  catch(...)
-		    {
-		      code = 0;
-		    }
-		}
-	      else if (field == 1)
-		{
-		  full_name += *cos_field;
-		  full_name += " ";
-		}	      
-	      field++;
-	    }
-	  field = 0;
-	  full_name += std::to_string(code);
-	  costumers_name.push_back(full_name);
-	}
-	  	  	  
+        data_return = my_database.retData2();
+        for(cos = data_return.begin(); cos != data_return.end(); ++cos)
+        {
+            full_name.clear();
+            code = 0;
+            for(cos_field = cos->begin(); cos_field != cos->end(); ++cos_field)
+            {
+                if(field == 0)
+                {
+                    try
+                    {
+                        code = std::stol(*cos_field);
+                    }
+                    catch(...)
+                    {
+                        code = 0;
+                    }
+                }
+                else if (field == 1)
+                {
+                    full_name += *cos_field;
+                    full_name += " ";
+                }
+                field++;
+            }
+            field = 0;
+            full_name += std::to_string(code);
+            costumers_name.push_back(full_name);
+        }    
     }
-  delete sql;
-  return costumers_name;
-}
-
-/*! function for returning complete name of products + code for
-populating comboboxes, from database, selected by plate*/
-std::vector<std::string> baseForm::ret_all_cos_by_plate_4_combo(qtDatabase & my_database, std::string plate)
-{
-  char * sql =NULL;
-  std::vector <std::vector <std::string>> data_return;
-  std::vector <std::vector <std::string>>::iterator cos;
-  std::vector<std::string>::iterator cos_field;
-  int field = 0;
-  std::string full_name;
-  std::vector <std::string> costumers_name;
-  long code;
-
-  selAllDatFrmCostumers(sql);
-  if(!my_database.query(NULL,sql))
-    {
-      data_return = my_database.retData2();
-      for(cos = data_return.begin(); cos != data_return.end(); ++cos)
-	{
-	  full_name.clear();
-	  code = 0;
-	  for(cos_field = cos->begin(); cos_field != cos->end(); ++cos_field)
-	    {
-	      if(field == 0)
-		{
-		  try
-		    {
-		      code = std::stol(*cos_field);
-		    }
-		  catch(...)
-		    {
-		      code = 0;
-		    }
-		}
-	      else if (field == 1)
-		{
-		  full_name += *cos_field;
-		  full_name += " ";
-		}	      
-	      field++;
-	    }
-	  field = 0;
-	  full_name += std::to_string(code);
-	  costumers_name.push_back(full_name);
-	}
-	  	  	  
-    }
-  delete sql;
-  return costumers_name;
+    if (sql != NULL)
+        delete [] sql;
+    return costumers_name;
 }
 
 std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
@@ -1724,111 +1673,6 @@ std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
     if (sql != NULL)
         delete[] sql;
     return productsName;
-}
-
-/*! function for returning the product code of a product, searched by full name*/
-long baseForm::retProductCode(std::string fullName)
-{
-    std::vector<struProduct>::iterator iter;
-    int found = 0;
-    long productCode;
-    std::string fullNameToCompare;
-
-    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
-    {
-        fullNameToCompare.clear();
-        fullNameToCompare = iter->NOMBRE;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE2;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE3; 
-        if(!fullNameToCompare.compare(fullName))
-        {
-            productCode = iter->CODIGO;
-            found = 1;
-        }
-    }
-    return productCode;
-}
-/*! function for returning the product full name, searched by its code*/
-std::string baseForm::retProductFullName(long code)
-{
-    std::vector<struProduct>::iterator iter;
-    int found = 0;
-    std::string fullName;
-
-    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
-    {
-        if(iter->CODIGO == code)
-        {
-        fullName = iter->NOMBRE;
-        fullName += " ";
-        fullName += iter->NOMBRE2;
-        fullName += " ";
-        fullName += iter->NOMBRE3; 
-        found = 1;
-        }
-    }
-    return fullName;
-}
-/*! function for returning the LER code of a product, searched by full name*/
-long baseForm::retProductLer(std::string fullName)
-{
-    std::vector<struProduct>::iterator iter;
-    int found = 0;
-    long productLer;
-    std::string fullNameToCompare;
-
-    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
-    {
-        fullNameToCompare.clear();
-        fullNameToCompare = iter->NOMBRE;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE2;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE3; 
-        if(!fullNameToCompare.compare(fullName))
-        {
-            productLer = iter->CODIGO_LER;
-            found = 1;
-        }
-    }
-    return productLer;
-}
-/*! function for returning the dangerous characteristic of a product, searched by full name*/
-std::string baseForm::retProductCaracteristica(std::string fullName)
-{
-    std::vector<struProduct>::iterator iter;
-    int found = 0;
-    std::string caracteristica;
-    std::string fullNameToCompare;
-
-    for(iter = allProducts.begin(); iter != allProducts.end() && !found; iter++)
-    {
-        fullNameToCompare.clear();
-        fullNameToCompare = iter->NOMBRE;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE2;
-        fullNameToCompare += " ";
-        fullNameToCompare += iter->NOMBRE3; 
-        if(!fullNameToCompare.compare(fullName))
-        {
-            caracteristica = iter->CARACTERISTICA_PELIGRO;
-            found = 1;
-        }
-    }
-    return caracteristica;
-}
-
-int baseForm::setProductByCode(long code, struMovement& myMovement)
-{
-    //TODO
-    return 0;
-}
-int baseForm::setProductByIndex(long index, struMovement& myMovement)
-{
-    //TODO
-    return 0;
 }
 /*! function to refresh all prdouct data from product code*/
 int baseForm::setAllProductData(qtDatabase & myDatabase)
