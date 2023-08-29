@@ -102,41 +102,6 @@ static struPermits resetPermits()
   return myPermits;
 }
 
-
-struct struProduct
-{
-  long CODIGO;
-  long CODIGO_LER;
-  std::string NOMBRE;
-  std::string NOMBRE2;
-  std::string NOMBRE3;
-  int PERMISO_PT;
-  int CONTRATO_PT;
-  int NPT_PT;
-  int CB_PT;
-  int CP_PT;
-  int DCP_PT;
-  int PERMISO_ET;
-  int CONTRATO_ET;
-  int NPT_ET;
-  int CB_ET;
-  int CP_ET;
-  int DCP_ET;
-  int PERMISO_D5;
-  int CONTRATO_D5;
-  int NPT_D5;
-  int CB_D5;
-  int CP_D5;
-  int DCP_D5;
-  int PERMISO_SAL;
-  int CONTRATO_SAL;
-  int NPT_SAL;
-  int CB_SAL;
-  int CP_SAL;
-  int DCP_SAL;
-  std::string CARACTERISTICA_PELIGRO;
-};
-
 typedef struct struMovement
 {
   long CODIGO_CLIENTE;
@@ -402,8 +367,6 @@ class  baseForm
   //products
   //TODO all accesing database by taking care of station, permits, etc.
   std::vector<std::string> retAllProds4Combo(qtDatabase & myDatabase);
-  void insertProduct(std::vector<std::string> record);
-  void resetProducts(){allProducts.clear(); return;};
   //
   ///////////////////////////////////////////////////
   //MOVEMENTS DATA RETURN/SET
@@ -846,8 +809,6 @@ class  baseForm
   std::string depFolder;
   //
 
-  //al products
-  std::vector <struProduct> allProducts;
   //all Drivers
   std::vector <driver*> allDrivers;
   
