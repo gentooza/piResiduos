@@ -366,309 +366,313 @@ void baseForm::check_last(std::string& remoteSql,station *& myStation)
 
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
 {
-   int ret;
-  //std::cout << "debug: inside saveArrPlateImage()" << std::endl;
-  ret = system("mkdir saves");
+    int ret;
+    //std::cout << "debug: inside saveArrPlateImage()" << std::endl;
+    ret = system("mkdir saves");
 
-  std::string command = "mkdir \"";
-  command += arrFolder + "\"";
-  std::cout << "TERMINAL COMMAND: "<< command << std::endl;
-  ret = system(command.c_str());
-  
-  
-  command.clear();
-  command = "convert camera/capture";
-  command += std::to_string(pos);
-  command += ".jpg";
-  command += " -resize 50% \"";
-  command += arrFolder;
-  command += "/camara_";
-  command += entrada_salida;
-  command += ".png\"";
-  ret = system(command.c_str());
-  
-  espera(1);
-  
-  command.clear();
-  command = "rm  camera/capture";
-  command += std::to_string(pos);
-  command += ".jpg";
-  
-  return;
+    std::string command = "mkdir \"";
+    command += arrFolder + "\"";
+    std::cout << "TERMINAL COMMAND: "<< command << std::endl;
+    ret = system(command.c_str());
+    
+    
+    command.clear();
+    command = "convert camera/capture";
+    command += std::to_string(pos);
+    command += ".jpg";
+    command += " -resize 50% \"";
+    command += arrFolder;
+    command += "/camara_";
+    command += entrada_salida;
+    command += ".png\"";
+    ret = system(command.c_str());
+    
+    espera(1);
+    
+    command.clear();
+    command = "rm  camera/capture";
+    command += std::to_string(pos);
+    command += ".jpg";
+    
+    return;
 }
 
 void baseForm::saveSignature(int blank_signature)
 {
-   int ret;
-  ret = system("mkdir saves");
+    int ret;
+    ret = system("mkdir saves");
 
-  std::string command = "mkdir \"";
-  command += depFolder + "\"";
-  std::cout << "TERMINAL COMMAND: " << command << std::endl;
-  ret = system(command.c_str());
+    std::string command = "mkdir \"";
+    command += depFolder + "\"";
+    std::cout << "TERMINAL COMMAND: " << command << std::endl;
+    ret = system(command.c_str());
 
-  if(!blank_signature)
+    if(!blank_signature)
     {
-      command.clear();
-      command = "convert FIRMA.ppm \"";
-      command += depFolder;
-      command += "/firma.png\"";
-      std::cout << command << std::endl;
-      ret = system(command.c_str());
+        command.clear();
+        command = "convert FIRMA.ppm \"";
+        command += depFolder;
+        command += "/firma.png\"";
+        std::cout << command << std::endl;
+        ret = system(command.c_str());
     }
-  else
+    else
     {
-      std::string destination_path = depFolder + "/firma.png";
-      ret = tools_copy("./image/void.png",destination_path.c_str());
+        std::string destination_path = depFolder + "/firma.png";
+        ret = tools_copy("./image/void.png",destination_path.c_str());
     }
-  return;
+    return;
 }
 
 void baseForm::saveSignature(const char* file)
 {
-   int ret;
-  ret = system("mkdir saves");
+    int ret;
+    ret = system("mkdir saves");
 
-  std::string command = "mkdir ";
-  command += "\"" + depFolder + "\"";
-  std::cout << "TERMINAL COMMAND: " << command << std::endl;
-  ret = system(command.c_str());
-  
-  command.clear();
-  command = "cp ";
-  command += file;
-  command += " \"";
-  command += depFolder;
-  command += "/firma.png\"";
-  std::cout << command << std::endl;
-  ret = system(command.c_str());
- 
-  return;
+    std::string command = "mkdir ";
+    command += "\"" + depFolder + "\"";
+    std::cout << "TERMINAL COMMAND: " << command << std::endl;
+    ret = system(command.c_str());
+    
+    command.clear();
+    command = "cp ";
+    command += file;
+    command += " \"";
+    command += depFolder;
+    command += "/firma.png\"";
+    std::cout << command << std::endl;
+    ret = system(command.c_str());
+    
+    return;
 }
 
 int baseForm::isSignature()
 {
-  int exist = 0;
+    int exist = 0;
 
-  std::string path = depFolder + "/firma.png";
-  if( access( path.c_str(), F_OK ) != -1 )
-    exist = 1;
-    
-  return exist;
+    std::string path = depFolder + "/firma.png";
+    if( access( path.c_str(), F_OK ) != -1 )
+        exist = 1;
+        
+    return exist;
 }
 
 void baseForm::backupFiles(const char* movFolder)
 {
-   int ret;
-  ret = system("mkdir backup");
+    int ret;
+    ret = system("mkdir backup");
 
-  std::string command = "mkdir \"backup/";
-  command += movFolder;
-  command +="\"";
-  ret = system(command.c_str());
+    std::string command = "mkdir \"backup/";
+    command += movFolder;
+    command +="\"";
+    ret = system(command.c_str());
 
-  command = "cp -R \"";
-  command += depFolder;
-  command += "\"/* ";
-  command += "\"backup/";
-  command += movFolder;
-  command += "\"";
-  ret = system(command.c_str());
+    command = "cp -R \"";
+    command += depFolder;
+    command += "\"/* ";
+    command += "\"backup/";
+    command += movFolder;
+    command += "\"";
+    ret = system(command.c_str());
 
-  command = "rm -R \"";
-  command += depFolder + "\" &";
-  ret = system(command.c_str());
+    command = "rm -R \"";
+    command += depFolder + "\" &";
+    ret = system(command.c_str());
 
-  if((retDepMovType() != DEF_MOV_TRANSFER) || formLlegada)
+    if((retDepMovType() != DEF_MOV_TRANSFER) || formLlegada)
     {
-      //remote copying
-      copy_files_to_remote_server(movFolder);
+        //remote copying
+        copy_files_to_remote_server(movFolder);
     }
-  return;
+    return;
 }
 
 int baseForm::printType()
 {
-  int ret = -1;
-  switch(formType)
+    int ret = -1;
+    switch(formType)
     {
-    case(1):
-      std::cout << "formulario de Entrada a ET \n" << std::endl;
-      ret = 0;
-      break;
-    default:
-      std::cout << "formulario no definido \n" << std::endl;
-      break;
+        case(1):
+            std::cout << "formulario de Entrada a ET \n" << std::endl;
+            ret = 0;
+            break;
+        default:
+            std::cout << "formulario no definido \n" << std::endl;
+            break;
     };
-
-  return ret;
+    return ret;
 }
 
 void baseForm::setProductPermits(std::vector <std::string> permits)
 {
-  std::vector <std::string>::iterator iter;
-  int num;
-  productPermits.clear();
-  for(iter = permits.begin(); iter != permits.end(); ++iter)
+    std::vector <std::string>::iterator iter;
+    int num;
+    productPermits.clear();
+    for(iter = permits.begin(); iter != permits.end(); ++iter)
     {
-      num = 0;
-      num = stoi(*iter);
-      if(num == 0)
-	productPermits.push_back(false);
-      else
-	productPermits.push_back(true);
+        num = 0;
+        num = stoi(*iter);
+        if(num == 0)
+            productPermits.push_back(false);
+        else
+            productPermits.push_back(true);
     }
-
-  return;
+    return;
 }
-
+/*! TODO: function in spanish and for debugging purposes? */
 int baseForm::showPermisos()
 {
-  if(productPermits.size() == 6 && clientProductPermits.size() == 5)
+    int ret = 0;
+    if(productPermits.size() == 6 && clientProductPermits.size() == 5)
     {
-      for(int i=0; i < productPermits.size(); i++)
-	{
-	  std::cout << "permiso: " << i+1 << std::endl;
-	  if(i==0)
-	    {
-	      std::cout << "Producto permitido? " << (productPermits.at(i)==true ? "Sí!" : "No!");
-	      std::cout << std::endl;
-	    }
-	  else
-	    {
-	      std::cout << "Nos lo piden? " << (productPermits.at(i)==true ? "Sí!" : "No!");
-	      std::cout << std::endl;
-	      std::cout << "permisovalor: " << clientProductPermits.at(i-1) << std::endl;	  
-	    }	      
-	}
-
+        for(int i=0; i < productPermits.size(); i++)
+        {
+            std::cout << "permiso: " << i+1 << std::endl;
+            if(i==0)
+            {
+                std::cout << "Producto permitido? " << (productPermits.at(i)==true ? "Sí!" : "No!");
+                std::cout << std::endl;
+            }
+            else
+            {
+                std::cout << "Nos lo piden? " << (productPermits.at(i)==true ? "Sí!" : "No!");
+                std::cout << std::endl;
+                std::cout << "permisovalor: " << clientProductPermits.at(i-1) << std::endl;	  
+            }
+        }
     }
     else
-      std::cout << "no tienen el tamaño establecido!, permisos producto:" << productPermits.size() << ", permisos cliente-producto:" << clientProductPermits.size() << std::endl;
+    {
+        std::cout << "no tienen el tamaño establecido!, permisos producto:" << productPermits.size() << ", permisos cliente-producto:" << clientProductPermits.size() << std::endl;
+        ret = 1;
+    }
+    return ret;
 }
 
 int baseForm::checkPermisos()
 {
-  if(productPermits.size() == 6 && clientProductPermits.size() == 5)
+    int ret = 0;
+    if(productPermits.size() == 6 && clientProductPermits.size() == 5)
     {
-      for(int i=0; i < productPermits.size(); i++)
-	{
-	  //std::cout << "permiso: " << i+1 << std::endl;
-	  if(i==0)
-	    overallProductPermit = productPermits.at(i);
-	  else if (i==1) //fecha contrato
-	    {
-	      if(productPermits.at(1))
-		setDatePermit(clientProductPermits.at(0));
-	      else
-		contractDatePermit = true;
-	    }
-	  else if (i==2) //NPT
-	    {
-	      nptPermit=true;
-	      if(productPermits.at(2))
-		{
-		  if(std::stoi(clientProductPermits.at(1))==1)
-		    nptPermit=true;
-		  else
-		    nptPermit=false;		    
-		}
-	    }
-	  else if (i==3) //CB
-	    {
-	      cbPermit=true;
-	      if(productPermits.at(3))
-		{
-		  if(std::stoi(clientProductPermits.at(2))==1)
-		    cbPermit=true;
-		  else
-		    cbPermit=false;		    
-		}
-	    }
-	  else if (i==4) //CP
-	    {
-	      cpPermit=true;
-	      if(productPermits.at(4))
-		{
-		  if(std::stoi(clientProductPermits.at(3))==1)
-		    cpPermit=true;
-		  else
-		    cpPermit=false;		    
-		}
-	  
-	    }
-	  else if (i==5) //DCP
-	    {
-	      dcpPermit=true;
-	      if(productPermits.at(5))
-		{
-		  if(std::stoi(clientProductPermits.at(4))==1)
-		    dcpPermit=true;
-		  else
-		    dcpPermit=false;		    
-		}
-	  
-	    }
-	}
-
+        for(int i=0; i < productPermits.size(); i++)
+        {
+            //std::cout << "permiso: " << i+1 << std::endl;
+            if(i==0)
+                overallProductPermit = productPermits.at(i);
+            else if (i==1) //fecha contrato
+            {
+                if(productPermits.at(1))
+                    setDatePermit(clientProductPermits.at(0));
+                else
+                    contractDatePermit = true;
+            }
+            else if (i==2) //NPT
+            {
+                nptPermit=true;
+                if(productPermits.at(2))
+                {
+                    if(std::stoi(clientProductPermits.at(1))==1)
+                        nptPermit=true;
+                    else
+                        nptPermit=false;		    
+                }
+            }
+            else if (i==3) //CB
+            {
+                cbPermit=true;
+                if(productPermits.at(3))
+                {
+                    if(std::stoi(clientProductPermits.at(2))==1)
+                        cbPermit=true;
+                    else
+                        cbPermit=false;		    
+                }
+            }
+            else if (i==4) //CP
+            {
+                cpPermit=true;
+                if(productPermits.at(4))
+                {
+                    if(std::stoi(clientProductPermits.at(3))==1)
+                        cpPermit=true;
+                    else
+                        cpPermit=false;		    
+                }
+            }
+            else if (i==5) //DCP
+            {
+                dcpPermit=true;
+                if(productPermits.at(5))
+                {
+                    if(std::stoi(clientProductPermits.at(4))==1)
+                        dcpPermit=true;
+                    else
+                        dcpPermit=false;		    
+                }
+        
+            }
+        }
     }
-  else
-    std::cout << "no tienen el tamaño establecido!, permisos producto:" << productPermits.size() << ", permisos cliente-producto:" << clientProductPermits.size() << std::endl;
+    else
+    {
+        std::cout << "no tienen el tamaño establecido!, permisos producto:" << productPermits.size() << ", permisos cliente-producto:" << clientProductPermits.size() << std::endl;
+        ret = 1;
+    }
+    return ret;
 }
 
 void baseForm::setDatePermit(std::string strDate)
 {
+    bool permit = false;
+    time_t t = time(NULL);
+    tm* timePtr = localtime(&t);
+    
+    std::string strYear = strDate.substr(0,4);
+    std::string strMonth = strDate.substr(5,2);
+    std::string strDay = strDate.substr(8,2);
 
-  bool permit = false;
-  time_t t = time(NULL);
-  tm* timePtr = localtime(&t);
-  
-  std::string strYear = strDate.substr(0,4);
-  std::string strMonth = strDate.substr(5,2);
-  std::string strDay = strDate.substr(8,2);
+    int strYear_chkd;
+    int strMonth_chkd;
+    int strDay_chkd;
 
-  int strYear_chkd;
-  int strMonth_chkd;
-  int strDay_chkd;
-
-  try
+    try
     {
-      strYear_chkd = std::stoi(strYear);
+        strYear_chkd = std::stoi(strYear);
     }
-  catch(...)
+    catch(...)
     {
-      strYear_chkd = 0;
+        strYear_chkd = 0;
     }
-  try
+    try
     {
-      strMonth_chkd = std::stoi(strMonth);
+        strMonth_chkd = std::stoi(strMonth);
     }
-  catch(...)
+    catch(...)
     {
-      strMonth_chkd = 0;
+        strMonth_chkd = 0;
     }
-  try
+    try
     {
-      strDay_chkd = std::stoi(strDay);
+        strDay_chkd = std::stoi(strDay);
     }
-  catch(...)
+    catch(...)
     {
-      strDay_chkd = 0;
+        strDay_chkd = 0;
     }
-
-  if(strYear_chkd > (timePtr->tm_year + 1900))
-    permit = true;
-  else if(strYear_chkd == (timePtr->tm_year + 1900))
+    if(strYear_chkd > (timePtr->tm_year + 1900))
+        permit = true;
+    else if(strYear_chkd == (timePtr->tm_year + 1900))
     {
-      if( strMonth_chkd > (timePtr->tm_mon + 1))
-	permit = true;
-      else if(strMonth_chkd == (timePtr->tm_mon + 1))
-	{
-	  if( strDay_chkd >= (timePtr->tm_mday))
-	    permit = true;	  
-	}
+        if( strMonth_chkd > (timePtr->tm_mon + 1))
+            permit = true;
+        else if(strMonth_chkd == (timePtr->tm_mon + 1))
+        {
+            if( strDay_chkd >= (timePtr->tm_mday))
+                permit = true;	  
+        }
     }
-  contractDatePermit = permit;  
+    contractDatePermit = permit;
+    return;
 }
 
 std::string baseForm::createArrDi(qtDatabase & localDatabase)
