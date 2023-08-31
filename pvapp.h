@@ -1,7 +1,7 @@
 /*
  *  PiResiduos
  *
- *  Copyright 2016,2017 by it's authors. 
+ *  Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
  *
  *  Some rights reserved. See COPYING, AUTHORS.
  *  This file may be used under the terms of the GNU General Public
@@ -44,7 +44,7 @@ static int trace=1; // todo: set trace=0 if you do not want printf() within even
 #include "qtdatabase.h"
 #include "database.h"
 #include "bascula.h"
-#include "formulario.h"
+#include "baseForm.h"
 #include "inputForm.h"
 #include "outputForm.h"
 //#include "tableta.h"

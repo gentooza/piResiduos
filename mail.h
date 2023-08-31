@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +33,7 @@ If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 #include "SmtpClient-for-Qt/src/SmtpMime"
-#include "formulario.h"
+#include "baseForm.h"
 #include "station.h"
 
 

@@ -250,15 +250,7 @@ static int stateWork(PARAM *p, DATA *d)
 		      				d->allProductos3.push_back(*iCols);
 		    			col++;
 		  			}
-	      		}
-	    		formEntrada->allProductos2.clear();
-	    		formEntrada->allProductos2 = d->allProductos2;
-	    		formEntrada->allProductos3.clear();
-	    		formEntrada->allProductos3 = d->allProductos3;
-	    		formEntrada->allProductosCodes.clear();
-	    		formEntrada->allProductosCodes = d->allProductosCodes;
-	    		formEntrada->allProductosLers.clear();
-	    		formEntrada->allProductosLers = d->allProductosLers;	    
+	      		}	    
 	    		std::vector <std::string> allProdsCodes4Combo;
 	    		for (int i=0; i < d->allProductos.size(); i++)
 	      			allProdsCodes4Combo.push_back(d->allProductosLers[i]  + " " + d->allProductos[i] + " " + d->allProductos2[i] + " " + d->allProductos3[i]+ " " + d->allProductosCodes[i]);

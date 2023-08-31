@@ -43,12 +43,12 @@ HEADERS += pvapp.h      \
             mask2_data.h \
             mask2_slots.h \
             mask1_slots.h \
-	    qtdatabase.h \
+	        qtdatabase.h \
             database.h \
             bascula.h \
             outputForm.h \
             inputForm.h \
-            formulario.h \
+            baseForm.h \
             tableta.h \
             costumer.h \
             station.h \
@@ -61,34 +61,34 @@ HEADERS += pvapp.h      \
             printableTicket.h \
             printableDI.h
 SOURCES += main.cpp     \
-           mask10.cpp \
-           mask9.cpp \
-           mask8.cpp \
-           mask7.cpp \
-           mask6.cpp \
-           mask5.cpp \
-           mask4.cpp \
-           mask3.cpp \
-	   camera.cpp \
-           mask2.cpp \
-           mask1.cpp \
-	   qtdatabase.cpp \
-	   database.cpp  \
-	   bascula.cpp  \
-           outputForm.cpp \
-           inputForm.cpp \
-           formulario.cpp \
-	   tableta.cpp  \
-           station.cpp \
-	   costumer.cpp \
-	   ini.cpp \
-           mail.cpp \
-           generic_tools.cpp \
-	   staff.cpp \
-           driver.cpp \
-           printable.cpp \
-           printableTicket.cpp \
-           printableDI.cpp
+            mask10.cpp \
+            mask9.cpp \
+            mask8.cpp \
+            mask7.cpp \
+            mask6.cpp \
+            mask5.cpp \
+            mask4.cpp \
+            mask3.cpp \
+            camera.cpp \
+            mask2.cpp \
+            mask1.cpp \
+            qtdatabase.cpp \
+            database.cpp  \
+            bascula.cpp  \
+            outputForm.cpp \
+            inputForm.cpp \
+            baseForm.cpp \
+            tableta.cpp  \
+            station.cpp \
+            costumer.cpp \
+            ini.cpp \
+            mail.cpp \
+            generic_tools.cpp \
+            staff.cpp \
+            driver.cpp \
+            printable.cpp \
+            printableTicket.cpp \
+            printableDI.cpp
 
 QMAKE_LIBDIR += ./lib
 !macx {
