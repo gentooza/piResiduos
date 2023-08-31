@@ -1,19 +1,25 @@
 /*
- *  PiResiduos
- *
- *  Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
- *
- *  Some rights reserved. See COPYING, AUTHORS.
- *  This file may be used under the terms of the GNU General Public
- *  License version 3.0 ,or any later version of GPL, as published by the Free Software Foundation
- *  and appearing in the file COPYING included in the packaging of
- *  this file.
- *
- *  This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- *  WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- */
+This file is part of PiResiduos.
+
+Copyright 2017-2018, Prointegra SL.
+Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+
+PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+PiResiduos is distributed in the hope that it will 
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with PiResiduos.  
+If not, see <https://www.gnu.org/licenses/>.
+*/
 /**
-@file formulario.h
+@file outputForm.h
 */
 #ifndef _OUTPUT_FORM_
 #define _OUTPUT_FORM_
