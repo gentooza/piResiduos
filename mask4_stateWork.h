@@ -251,8 +251,6 @@ static int stateWork(PARAM *p, DATA *d)
 		    			col++;
 		  			}
 	      		}
-	    		formEntrada->allProductos.clear();
-	    		formEntrada->allProductos = d->allProductos;
 	    		formEntrada->allProductos2.clear();
 	    		formEntrada->allProductos2 = d->allProductos2;
 	    		formEntrada->allProductos3.clear();

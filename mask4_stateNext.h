@@ -231,7 +231,6 @@ static int stateNext(PARAM *p, DATA *d)
 	  formEntrada->resetArrCostumer();
 	  d->enFutEstado = 10;
 	  pvClear(p,COMBOPRODUCTOS);
-	  formEntrada->allClienteProds.clear();
 	}
       else if(d->cancelar) //cancel form
 	{
@@ -518,7 +517,6 @@ static int stateNext(PARAM *p, DATA *d)
 	  formEntrada->resetArrCostumer();
 	  d->enFutEstado = 110;
 	  pvClear(p,COMBOPRODUCTOS);
-	  formEntrada->allClienteProds.clear();
 	}
       if(d->cancelar) //cancel form
 	{
