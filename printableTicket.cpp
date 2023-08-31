@@ -114,38 +114,38 @@ int printableTicket::composeFile()
 /*! function helper for writting the ticket header */
 int printableTicket::composeHeader()
 {
-  std::cout << "prinrtableTicket::composeHeader()" << std::endl;
-  // TODO: error handling?
-  HPDF_Image logoImg = NULL;
-  HPDF_Image lineImg = NULL;
-  // logo
-  logoImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/logo_bioreciclaje_trans.png");
-  if (logoImg != NULL)
-      HPDF_Page_DrawImage (hpdfPage, logoImg, 10, currentLine - 55, 180, 53);
-  // code
-  HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_sm);
-  HPDF_Page_BeginText (hpdfPage);
-  if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 57, 140, (currentLine - 57 - 9), ticket_code.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-  {
-      std::cout << "TODO: not enough space" << std::endl;
-  }
-  HPDF_Page_EndText (hpdfPage);
+    std::cout << "prinrtableTicket::composeHeader()" << std::endl;
+    // TODO: error handling?
+    HPDF_Image logoImg = NULL;
+    HPDF_Image lineImg = NULL;
+    // logo
+    logoImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/logo_costumer_trans.png");
+    if (logoImg != NULL)
+        HPDF_Page_DrawImage (hpdfPage, logoImg, 10, currentLine - 55, 180, 53);
+    // code
+    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_sm);
+    HPDF_Page_BeginText (hpdfPage);
+    if(HPDF_Page_TextRect( hpdfPage, 10, currentLine - 57, 140, (currentLine - 57 - 9), ticket_code.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+    {
+        std::cout << "TODO: not enough space" << std::endl;
+    }
+    HPDF_Page_EndText (hpdfPage);
 
-  // cif
-  HPDF_Page_BeginText (hpdfPage);
-  if(HPDF_Page_TextRect( hpdfPage, 110, currentLine - 57, 190, (currentLine - 57 - 9), ticket_ourCIF.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-    std::cout << "TODO: not enough space" << std::endl;
-  HPDF_Page_EndText (hpdfPage);
+    // cif
+    HPDF_Page_BeginText (hpdfPage);
+    if(HPDF_Page_TextRect( hpdfPage, 110, currentLine - 57, 190, (currentLine - 57 - 9), ticket_ourCIF.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+        std::cout << "TODO: not enough space" << std::endl;
+    HPDF_Page_EndText (hpdfPage);
 
-  // horizontal line
-  lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
-  if (lineImg != NULL)
-    HPDF_Page_DrawImage (hpdfPage, lineImg, 10, (currentLine - 57 - 9 -2), 180, 2);
+    // horizontal line
+    lineImg = HPDF_LoadPngImageFromFile (hpdfDoc, "image/black_square.png");
+    if (lineImg != NULL)
+        HPDF_Page_DrawImage (hpdfPage, lineImg, 10, (currentLine - 57 - 9 -2), 180, 2);
 
-  //updating line
-  currentLine = currentLine - 57 - 9 - 2;
+    //updating line
+    currentLine = currentLine - 57 - 9 - 2;
 
-  return 0;
+    return 0;
 }
 /*! function helper for writting the ticket station name, and it's NIMA, with the second horizontal separation line */
 int printableTicket::composeStationTitle()
