@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -25,192 +26,38 @@ If not, see <https://www.gnu.org/licenses/>.
 
 station::station(long stationCode,qtDatabase& myDatabase)
 {
-  code = stationCode;
-  char * sql =NULL;
-  selAllDatFrmCenter(sql,code);
-  myDatabase.query(NULL,sql);	    
-  std::vector <std::vector <std::string>> dataReturn;
-  dataReturn = myDatabase.retData2();
-  if (dataReturn.size())
+    char * sql = NULL;
+    selAllDatFrmCenter(sql,code);
+    myDatabase.query(NULL,sql);	    
+    std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2();
+    if (dataReturn.size())
     {
-      std::vector <std::string>::iterator iter;
-      int i = 0;
-      for(iter = dataReturn.at(0).begin(); iter != dataReturn.at(0).end(); ++iter)
-	{
-	  //i==0) //CODE
-	  if(i==1) //TYPE
-	    {
-	      try
-		{
-		  type = std::stol(*iter);
-		}
-	      catch(const std::invalid_argument& ia)
-		{
-		  std::cerr << "Invalid argument: " << ia.what() << '\n';
-		  type = 0;
-		}
-	    }
-	  else if(i==2) //name	       
-	    name = *iter;
-	  else if(i==3) //nif
-	    nif = *iter;
-	  else if(i==4) //address
-	    address = *iter;
-	  else if(i==5) //provence
-	    provence = *iter;
-	  else if(i==6) //city
-	    city = *iter;
-	  else if(i==7) //postal code
-	    try
-	      {
-		cp = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		cp = 0;
-	      }
-	  else if(i==8) //region
-	    region = *iter;
-	  else if(i==9) //NIMA
-	    try
-	      {
-		nima = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		nima = 0;
-	      }
-	  else if(i==10) //num ins
-	    try
-	      {
-		num_ins = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		num_ins = 0;
-	      }	      
-	  else if(i==11) //phone
-	    try
-	      {
-		phone = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		phone = 0;
-	      }
-	  else if(i==12) //mail
-	    mail = *iter;
-	  i++;
-	}
+        this->setStation(dataReturn.at(0));
     }
-  else
+    else
     {
-      type = 0;
-      name.clear();
-      nif.clear();
-      address.clear();
-      provence.clear();
-      city.clear();
-      cp = 0;
-      region.clear();
-      nima = 0;
-      num_ins = 0;
-      phone = 0;
-      mail.clear();
+        type = 0;
+        name.clear();
+        nif.clear();
+        address.clear();
+        provence.clear();
+        city.clear();
+        cp = 0;
+        region.clear();
+        nima = 0;
+        num_ins = 0;
+        phone = 0;
+        mail.clear();
     }
-  refreshStationType();   
-  return;
+    refreshStationType();
+    if (sql != NULL)
+        delete [] sql;
+    return;
 }
 station::station(std::vector<std::string> databaseData)
 {
-  std::vector <std::string>::iterator iter;
-  int i = 0;
-  for(iter = databaseData.begin(); iter != databaseData.end(); ++iter)
-    {
-      if(i==0) //CODE
-	{
-	  try
-	    {
-	      code = std::stol(*iter);
-	    }
-	  catch(const std::invalid_argument& ia)
-	    {
-	      std::cerr << "Invalid argument: " << ia.what() << '\n';
-	      code = 0;
-	    }
-	}
-      if(i==1) //TYPE
-	{
-	  try
-	    {
-	      type = std::stol(*iter);
-	    }
-	  catch(const std::invalid_argument& ia)
-	    {
-	      std::cerr << "Invalid argument: " << ia.what() << '\n';
-	      type = 0;
-	    }
-	}
-      else if(i==2) //name	       
-	name = *iter;
-      else if(i==3) //nif
-	nif = *iter;
-      else if(i==4) //address
-	address = *iter;
-      else if(i==5) //provence
-	provence = *iter;
-      else if(i==6) //city
-	city = *iter;
-      else if(i==7) //postal code
-	try
-	  {
-	    cp = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    cp = 0;
-	  }
-      else if(i==8) //region
-	region = *iter;
-      else if(i==9) //NIMA
-	try
-	  {
-	    nima = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    nima = 0;
-	  }
-      else if(i==10) //num ins
-	try
-	  {
-	    num_ins = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    num_ins = 0;
-	  }	      
-      else if(i==11) //phone
-	try
-	  {
-	    phone = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    phone = 0;
-	  }
-      else if(i==12) //mail
-	mail = *iter;
-      i++;
-    }
+    this->setStation(databaseData);
+    return;
 }
 station::station()
 {
@@ -264,193 +111,135 @@ void station::reset()
 }
 void station::setStation(long stationCode, qtDatabase& myDatabase)
 {
- code = stationCode;
-  char * sql =NULL;
-  selAllDatFrmCenter(sql,code);
-  myDatabase.query(NULL,sql);	    
-  std::vector <std::vector <std::string>> dataReturn;
-  dataReturn = myDatabase.retData2();
-  if (dataReturn.size())
+    char * sql = NULL;
+    selAllDatFrmCenter(sql,code);
+    myDatabase.query(NULL,sql);    
+    std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2();
+    if (dataReturn.size())
     {
-      std::vector <std::string>::iterator iter;
-      int i = 0;
-      for(iter = dataReturn.at(0).begin(); iter != dataReturn.at(0).end(); ++iter)
-	{
-	  //i==0) //CODE
-	  if(i==1) //TYPE
-	    {
-	      try
-		{
-		  type = std::stol(*iter);
-		}
-	      catch(const std::invalid_argument& ia)
-		{
-		  std::cerr << "Invalid argument: " << ia.what() << '\n';
-		  type = 0;
-		}
-	    }
-	  else if(i==2) //name	       
-	    name = *iter;
-	  else if(i==3) //nif
-	    nif = *iter;
-	  else if(i==4) //address
-	    address = *iter;
-	  else if(i==5) //provence
-	    provence = *iter;
-	  else if(i==6) //city
-	    city = *iter;
-	  else if(i==7) //postal code
-	    try
-	      {
-		cp = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		cp = 0;
-	      }
-	  else if(i==8) //region
-	    region = *iter;
-	  else if(i==9) //NIMA
-	    try
-	      {
-		nima = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		nima = 0;
-	      }
-	  else if(i==10) //num ins
-	    try
-	      {
-		num_ins = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		num_ins = 0;
-	      }	      
-	  else if(i==11) //phone
-	    try
-	      {
-		phone = std::stol(*iter);
-	      }
-	    catch(const std::invalid_argument& ia)
-	      {
-		std::cerr << "Invalid argument: " << ia.what() << '\n';
-		phone = 0;
-	      }
-	  else if(i==12) //mail
-	    mail = *iter;
-	  i++;
-	}
+        this->setStation(dataReturn.at(0));
     }
-  else
+    else
     {
-      type = 0;
-      name.clear();
-      nif.clear();
-      address.clear();
-      provence.clear();
-      city.clear();
-      cp = 0;
-      region.clear();
-      nima = 0;
-      num_ins = 0;
-      phone = 0;
-      mail.clear();
+        type = 0;
+        name.clear();
+        nif.clear();
+        address.clear();
+        provence.clear();
+        city.clear();
+        cp = 0;
+        region.clear();
+        nima = 0;
+        num_ins = 0;
+        phone = 0;
+        mail.clear();
     }
-  refreshStationType();   
-  return;
+    refreshStationType();
+    if (sql != NULL)
+        delete [] sql;
+    return;
 }
 void station::setStation(std::vector<std::string> databaseData)
 {
-  std::vector <std::string>::iterator iter;
-  int i = 0;
-  for(iter = databaseData.begin(); iter != databaseData.end(); ++iter)
+    std::vector <std::string>::iterator iter;
+    int i = 0;
+    for(iter = databaseData.begin(); iter != databaseData.end(); ++iter)
     {
-      if(i==0) //CODE
-	{
-	  try
-	    {
-	      code = std::stol(*iter);
-	    }
-	  catch(const std::invalid_argument& ia)
-	    {
-	      std::cerr << "Invalid argument: " << ia.what() << '\n';
-	      code = 0;
-	    }
-	}
-      if(i==1) //TYPE
-	{
-	  try
-	    {
-	      type = std::stol(*iter);
-	    }
-	  catch(const std::invalid_argument& ia)
-	    {
-	      std::cerr << "Invalid argument: " << ia.what() << '\n';
-	      type = 0;
-	    }
-	}
-      else if(i==2) //name	       
-	name = *iter;
-      else if(i==3) //nif
-	nif = *iter;
-      else if(i==4) //address
-	address = *iter;
-      else if(i==5) //provence
-	provence = *iter;
-      else if(i==6) //city
-	city = *iter;
-      else if(i==7) //postal code
-	try
-	  {
-	    cp = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    cp = 0;
-	  }
-      else if(i==8) //region
-	region = *iter;
-      else if(i==9) //NIMA
-	try
-	  {
-	    nima = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    nima = 0;
-	  }
-      else if(i==10) //num ins
-	try
-	  {
-	    num_ins = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    num_ins = 0;
-	  }	      
-      else if(i==11) //phone
-	try
-	  {
-	    phone = std::stol(*iter);
-	  }
-	catch(const std::invalid_argument& ia)
-	  {
-	    std::cerr << "Invalid argument: " << ia.what() << '\n';
-	    phone = 0;
-	  }
-      else if(i==12) //mail
-	mail = *iter;
-      i++;
+        if(i==0) //CODE
+        {
+            try
+            {
+                code = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station CODE field 0 = " << *iter <<  '\n';
+                code = 0;
+            }
+        }
+        if(i==1) //TYPE
+        {
+            try
+            {
+                type = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station TYPE field 0 = " << *iter <<  '\n';
+                type = 0;
+            }
+        }
+        else if(i==2) //name	       
+            name = *iter;
+        else if(i==3) //nif
+            nif = *iter;
+        else if(i==4) //address
+            address = *iter;
+        else if(i==5) //provence
+            provence = *iter;
+        else if(i==6) //city
+            city = *iter;
+        else if(i==7) //postal code
+            try
+            {
+                cp = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station POSTAL_CODE field 7 = " << *iter <<  '\n';
+                cp = 0;
+            }
+        else if(i==8) //region
+            region = *iter;
+        else if(i==9) //NIMA
+        {
+            try
+            {
+                nima = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station NIMA field 9 = " << *iter <<  '\n';
+                nima = 0;
+            }
+        }
+        else if(i==10) //num ins
+        {
+            try
+            {
+                num_ins = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station NUM_INS field 10 = " << *iter <<  '\n';
+                num_ins = 0;
+            }
+        }
+        else if(i==11) //phone
+        {
+            try
+            {
+                phone = std::stol(*iter);
+            }
+            catch(const std::invalid_argument& ia)
+            {
+                std::cerr << "Invalid argument: " << ia.what() << '\n';
+                std::cerr << "station::setStation In station PHONE field 11 = " << *iter <<  '\n';
+                phone = 0;
+            }
+        }
+        else if(i==12) //mail
+            mail = *iter;
+        i++;
     }
+    return;
 }
+
 void  station::refreshStationType()
 {
 
