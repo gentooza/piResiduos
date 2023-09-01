@@ -1,8 +1,9 @@
 /*
 This file is part of PixResiduos.
 
-Copyright 2017-2018, Prointegra SL.
+Copyright 2017-2018 Prointegra SL.
 Copyright 2019-2021 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
