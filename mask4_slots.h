@@ -56,97 +56,96 @@ extern bascula* testBascula;
 
 static int slotInit(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
+    if(p == NULL || d == NULL) return -1;
 
-  //
-  pvResize(p,0,1910,1020);
-  //memset(d,0,sizeof(DATA));
-  std::string wholeTitle = getTitle();
-  pvSetText(p,LABTYPE,wholeTitle.c_str());
+    //
+    pvResize(p,0,1910,1020);
+    //memset(d,0,sizeof(DATA));
+    std::string wholeTitle = getTitle();
+    pvSetText(p,LABTYPE,wholeTitle.c_str());
 
-  //console
-  consoleRefresh(p,d);
-  //camion elegido reseteado
-  d->camionElegido = -1;
-  if(formEntrada == NULL)
+    consoleRefresh(p,d);
+    d->camionElegido = -1;
+    if(formEntrada == NULL)
     {
-      //por defecto entrada descarga 
-      if(!type.compare("PT"))
-	formEntrada = new inputForm(PT);
-      else
-	formEntrada = new inputForm(ET);	
-      formEntrada->setState(-99999);
+        if(!type.compare("PT"))
+            formEntrada = new inputForm(PT);
+        else
+            formEntrada = new inputForm(ET);	
+        formEntrada->setState(-99999);
+        d->enFutEstado = -99999;
     }
-  else
-    { //recuperamos el formulario
-      d->enFutEstado = formEntrada->getState();
-      formEntrada->setState(-100); //estado nueva llegada desde otra pantalla    
+    else
+    {
+        d->enFutEstado = formEntrada->getState();
+        formEntrada->setState(-100);
+        d->enFutEstado = -100;
     }
-  formEntrada->setOurStation(myStation);
-  
-  //reset triggers  
-  d->plateTaking=0;
-  d->retroceder=0;
-  d->cancelar = 0;
-  d->pesaje1 = 0;
-  d->pesaje2 = 0;
-  d->firmar = 0;
-  d->proceder=0;
-  d->test=0;
-  d->editDI=0;
-  
-  return 0;
+    formEntrada->setOurStation(myStation);
+    
+    //reset triggers  
+    d->plateTaking=0;
+    d->retroceder=0;
+    d->cancelar = 0;
+    d->pesaje1 = 0;
+    d->pesaje2 = 0;
+    d->firmar = 0;
+    d->proceder=0;
+    d->test=0;
+    d->editDI=0;
+    
+    return 0;
 }
 
 static int slotNullEvent(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  //máquina de cambio de estados Entrada PT
-  std::cout << "#####DEBUG DESCARGA MATERIAL#####" << std::endl;
-  std::cout << "ESTADO ACTUAL:\"" << (formEntrada?std::to_string(formEntrada->getState()):"null") << "\", ESTADO FUTURO:\"" << d->enFutEstado << "\""<< std::endl;
-  std::cout << "--DATOS ENTRADA A PLANTA--" << std::endl;
-  std::cout << "MATRICULA:\"" << (formEntrada?formEntrada->retArrPlate():"null") << "\"";
-  std::cout << " TIPO DE MOVIMIENTO:\"" << (formEntrada?std::to_string(formEntrada->retArrMovType()):"null") << "\""; 
-  std::cout << " CLIENTE CÓDIGO:\"" <<   (formEntrada?std::to_string(formEntrada->retArrCosCode()):"null")<<"\"";
-  std::cout << std::endl;
-  std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retArrProdCode()):"null") << "\" Permitido?:\"" << (formEntrada?(formEntrada->isArrProdPermit()?"si!":"no!"):"null") << "\"";
-  std::cout << std::endl;
-  std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getInputIncidents(),"  || ")  << std::endl;
-  std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getInputComment():"null") << "\"" << std::endl;
-  std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retArrDiFolder():"null") << std::endl;
-  std::cout << "D->COMBOPRODUCTO:" << d->comboProducto << std::endl;
-  std::cout << "**********" << std::endl;
-  std::cout << "--DATOS SALIDA DE PLANTA--" << std::endl;
-  std::cout << " MATRICULA:\"" << (formEntrada?formEntrada->retDepPlate():"null") << "\"";
-  std::cout << " TIPO DE MOVIMIENTO:\"" << (formEntrada?std::to_string(formEntrada->retDepMovType()):"null") << "\"";  
-  std::cout << " CLIENTE CÓDIGO:\"" <<   (formEntrada?std::to_string(formEntrada->retDepCosCode()):"null")<<"\"";
-  std::cout << std::endl;
-  std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retDepProdCode()):"null") << "\"";
-  std::cout << std::endl;
-  std::cout << "TRANSPORTISTA:\"" << (formEntrada?std::to_string(formEntrada->retDepDriCode()):"null")  << "\"" << std::endl;
-  std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getOutputIncidents(),"||")  << std::endl;
-  std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getOutputComment():"null") << "\"" << std::endl;
-  std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retDepDiFolder():"null") << std::endl;
-  std::cout << "----" << std::endl;
-  std::cout << "############" << std::endl;
-  stateNext(p,d);
-  stateWork(p,d);
-  //semaphores
-  cameraSemaphore(1, -1,globalConfiguration.traffic_lights_enabled);
-  cameraSemaphore(2, -1,globalConfiguration.traffic_lights_enabled);
-  refreshSemaphores(p,d);
-  //console
-  consoleRefresh(p,d);
-  //date and Time
-  setDate(p,d,LABDATE);
-  setTime(p,d,LABTIME);
+    if(p == NULL || d == NULL) return -1;
+    //máquina de cambio de estados Entrada PT
+    std::cout << "#####DEBUG DESCARGA MATERIAL#####" << std::endl;
+    std::cout << "ESTADO ACTUAL:\"" << ((formEntrada)?std::to_string(formEntrada->getState()):"null") << "\", ESTADO FUTURO:\"" << d->enFutEstado << "\""<< std::endl;
+    std::cout << "--DATOS ENTRADA A PLANTA--" << std::endl;
+    std::cout << "MATRICULA:\"" << (formEntrada?formEntrada->retArrPlate():"null") << "\"";
+    std::cout << " TIPO DE MOVIMIENTO:\"" << (formEntrada?std::to_string(formEntrada->retArrMovType()):"null") << "\""; 
+    std::cout << " CLIENTE CÓDIGO:\"" <<   (formEntrada?std::to_string(formEntrada->retArrCosCode()):"null")<<"\"";
+    std::cout << std::endl;
+    std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retArrProdCode()):"null") << "\" Permitido?:\"" << (formEntrada?(formEntrada->isArrProdPermit()?"si!":"no!"):"null") << "\"";
+    std::cout << std::endl;
+    std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getInputIncidents(),"  || ")  << std::endl;
+    std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getInputComment():"null") << "\"" << std::endl;
+    std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retArrDiFolder():"null") << std::endl;
+    std::cout << "D->COMBOPRODUCTO:" << d->comboProducto << std::endl;
+    std::cout << "**********" << std::endl;
+    std::cout << "--DATOS SALIDA DE PLANTA--" << std::endl;
+    std::cout << " MATRICULA:\"" << (formEntrada?formEntrada->retDepPlate():"null") << "\"";
+    std::cout << " TIPO DE MOVIMIENTO:\"" << (formEntrada?std::to_string(formEntrada->retDepMovType()):"null") << "\"";  
+    std::cout << " CLIENTE CÓDIGO:\"" <<   (formEntrada?std::to_string(formEntrada->retDepCosCode()):"null")<<"\"";
+    std::cout << std::endl;
+    std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retDepProdCode()):"null") << "\"";
+    std::cout << std::endl;
+    std::cout << "TRANSPORTISTA:\"" << (formEntrada?std::to_string(formEntrada->retDepDriCode()):"null")  << "\"" << std::endl;
+    std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getOutputIncidents(),"||")  << std::endl;
+    std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getOutputComment():"null") << "\"" << std::endl;
+    std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retDepDiFolder():"null") << std::endl;
+    std::cout << "----" << std::endl;
+    std::cout << "############" << std::endl;
+    stateNext(p,d);
+    stateWork(p,d);
+    //semaphores
+    cameraSemaphore(1, -1,globalConfiguration.traffic_lights_enabled);
+    cameraSemaphore(2, -1,globalConfiguration.traffic_lights_enabled);
+    refreshSemaphores(p,d);
+    //console
+    consoleRefresh(p,d);
+    //date and Time
+    setDate(p,d,LABDATE);
+    setTime(p,d,LABTIME);
     //syncronization
-  int i = reconnectSSH(&my_ssh_syncro_data);
-  if(i == -1)
-    console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
-  else if (i>=0)
-    console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
-  return 0;
+    int i = reconnectSSH(&my_ssh_syncro_data);
+    if(i == -1)
+        console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
+    else if (i>=0)
+        console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
+    return 0;
 }
 
 static int slotButtonEvent(PARAM *p, int id, DATA *d)

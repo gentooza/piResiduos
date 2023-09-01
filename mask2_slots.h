@@ -56,170 +56,165 @@ extern GLOBAL_DATA globalConfiguration;
 
 static int slotInit(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  pvResize(p,0,1910,1020);
-  //memset(d,0,sizeof(DATA));
-  std::string wholeTitle = getTitle();
-  pvSetText(p,LABTYPE,wholeTitle.c_str());
+    if(p == NULL || d == NULL) return -1;
+    pvResize(p,0,1910,1020);
+    //memset(d,0,sizeof(DATA));
+    std::string wholeTitle = getTitle();
+    pvSetText(p,LABTYPE,wholeTitle.c_str());
 
-  //stations
-  retrieveStations(p);
-  popteComboStations(p,COMBOSTATIONS, allStations, 1);
-  
-  std::vector <std::string> strTipos;
-  strTipos.push_back("PT");
-  strTipos.push_back("ET");
-  strTipos.push_back("D5");
-  strTipos.push_back("PL"); 
-  populateCombo(p,COMBOSTTYPE, strTipos,0);
-  setStationData(p,myStation->getCode(), allStations,1);
-  d->selectedStation = myStation->getCode();
-  //
-  //cameras
-  if(globalConfiguration.traffic_lights_enabled)
-    pvSetChecked(p,CHCKTRAFFIC,1);
-  std::vector <std::string> strCameras;
-  strCameras.push_back("posición 1");
-  strCameras.push_back("posición 2");
-  strCameras.push_back("posición 3");
-  strCameras.push_back("posición 4");
-  populateCombo(p,COMBOCAMERAS, strCameras,1);
+    //stations
+    retrieveStations(p);
+    popteComboStations(p,COMBOSTATIONS, allStations, 1);
+    
+    std::vector <std::string> strTipos;
+    strTipos.push_back("PT");
+    strTipos.push_back("ET");
+    strTipos.push_back("D5");
+    strTipos.push_back("PL"); 
+    populateCombo(p,COMBOSTTYPE, strTipos,0);
+    setStationData(p,myStation->getCode(), allStations,1);
+    d->selectedStation = myStation->getCode();
+    //
+    //cameras
+    if(globalConfiguration.traffic_lights_enabled)
+        pvSetChecked(p,CHCKTRAFFIC,1);
+    std::vector <std::string> strCameras;
+    strCameras.push_back("posición 1");
+    strCameras.push_back("posición 2");
+    strCameras.push_back("posición 3");
+    strCameras.push_back("posición 4");
+    populateCombo(p,COMBOCAMERAS, strCameras,1);
 
-  std::vector <std::string> possibleRelays;
-  possibleRelays.push_back("1");
-  possibleRelays.push_back("2");
-  possibleRelays.push_back("3");
-  possibleRelays.push_back("4");
-  possibleRelays.push_back("N/A");
-  populateCombo(p,COMBORELAY, possibleRelays,0);
-  populateCombo(p,COMBORELAYB, possibleRelays,0);
-  //
-  //basculas
-  std::vector <std::string> strBas;
-  strBas.push_back("posición 1");
-  strBas.push_back("posición 2");
-  strBas.push_back("posición 3");
-  strBas.push_back("posición 4");
+    std::vector <std::string> possibleRelays;
+    possibleRelays.push_back("1");
+    possibleRelays.push_back("2");
+    possibleRelays.push_back("3");
+    possibleRelays.push_back("4");
+    possibleRelays.push_back("N/A");
+    populateCombo(p,COMBORELAY, possibleRelays,0);
+    populateCombo(p,COMBORELAYB, possibleRelays,0);
+    //
+    //basculas
+    std::vector <std::string> strBas;
+    strBas.push_back("posición 1");
+    strBas.push_back("posición 2");
+    strBas.push_back("posición 3");
+    strBas.push_back("posición 4");
 
-  populateCombo(p,COMBOBAS, strBas,1);
+    populateCombo(p,COMBOBAS, strBas,1);
 
-  std::vector <std::string> strBaudios;
-  strBaudios.push_back("19200");
-  strBaudios.push_back("9600");
-  strBaudios.push_back("4800");
-  populateCombo(p,COMBOBAUDS, strBaudios,0);
+    std::vector <std::string> strBaudios;
+    strBaudios.push_back("19200");
+    strBaudios.push_back("9600");
+    strBaudios.push_back("4800");
+    populateCombo(p,COMBOBAUDS, strBaudios,0);
 
-  std::vector <std::string> strParity;
-  strParity.push_back("ninguna");
-  strParity.push_back("impar");
-  strParity.push_back("par");
-  populateCombo(p,COMBOPARITY,strParity,0);
+    std::vector <std::string> strParity;
+    strParity.push_back("ninguna");
+    strParity.push_back("impar");
+    strParity.push_back("par");
+    populateCombo(p,COMBOPARITY,strParity,0);
 
-  std::vector <std::string> strStop;
-  strStop.push_back("1");
-  strStop.push_back("1.5");
-  strStop.push_back("2");
-  populateCombo(p,COMBOSTOP,strStop,0);
+    std::vector <std::string> strStop;
+    strStop.push_back("1");
+    strStop.push_back("1.5");
+    strStop.push_back("2");
+    populateCombo(p,COMBOSTOP,strStop,0);
 
-  std::vector <std::string> strFlujo;
-  strFlujo.push_back("ninguno");
-  strFlujo.push_back("software");
-  strFlujo.push_back("hardware");
-  populateCombo(p,COMBOFLUJO,strFlujo,0);
+    std::vector <std::string> strFlujo;
+    strFlujo.push_back("ninguno");
+    strFlujo.push_back("software");
+    strFlujo.push_back("hardware");
+    populateCombo(p,COMBOFLUJO,strFlujo,0);
 
-  d->error_scale = DEF_ERROR_SCALES;
-  pvSetText(p,EDITERRPES,std::to_string(DEF_ERROR_SCALES).c_str());
-  //
-  //SMTP
-  d->smtpServer = mailData.smtpServer;
-  pvSetText(p,EDITSMTP,mailData.smtpServer.c_str());
-  char text[16];
-  sprintf(text,"%d",mailData.smtpPort);
-  d->smtpPort = mailData.smtpPort;
-  pvSetText(p,EDITSMTPPORT,text);
-  d->mailUser = mailData.mailUser;
-  pvSetText(p,EDITMAIL,mailData.mailUser.c_str());
-  d->mailPass = mailData.mailPass;  
-  pvSetText(p,EDITMAILPASS,mailData.mailPass.c_str());
-  d->mailName = mailData.mailSenderName;  
-  pvSetText(p,EDITMAILNAME,mailData.mailSenderName.c_str());
-  populateMailRecipients(p,EDITMAILRECIPIENTS,mailData.mailRecipients,"\n");
-  d->recipients = vectorToString(mailData.mailRecipients,"\n");
-  //
-  //our identity
-  ourId = NULL;
-  retrieveCostumers(p);
-  popteComboCostumers(p,COMBOOURID, allCostumers, 1);
+    d->error_scale = DEF_ERROR_SCALES;
+    pvSetText(p,EDITERRPES,std::to_string(DEF_ERROR_SCALES).c_str());
+    //
+    //SMTP
+    d->smtpServer = mailData.smtpServer;
+    pvSetText(p,EDITSMTP,mailData.smtpServer.c_str());
+    char text[16];
+    sprintf(text,"%d",mailData.smtpPort);
+    d->smtpPort = mailData.smtpPort;
+    pvSetText(p,EDITSMTPPORT,text);
+    d->mailUser = mailData.mailUser;
+    pvSetText(p,EDITMAIL,mailData.mailUser.c_str());
+    d->mailPass = mailData.mailPass;  
+    pvSetText(p,EDITMAILPASS,mailData.mailPass.c_str());
+    d->mailName = mailData.mailSenderName;  
+    pvSetText(p,EDITMAILNAME,mailData.mailSenderName.c_str());
+    populateMailRecipients(p,EDITMAILRECIPIENTS,mailData.mailRecipients,"\n");
+    d->recipients = vectorToString(mailData.mailRecipients,"\n");
+    //
+    //our identity
+    ourId = NULL;
+    retrieveCostumers(p);
+    popteComboCostumers(p,COMBOOURID, allCostumers, 1);
 
-  ourId = new costumer(DEF_BIORECICLAJE_CODE,localDatabase);
-  setCostumerData(p,ourId->getCode(), allCostumers,1);
-  d->selectedId = ourId->getCode();
-  // default transport
-  defTrans = NULL;
-  retrieveTransports(p);
-  popteComboCostumers(p,COMBOOURTRANS, allTransports, 1);
+    ourId = new costumer(DEF_BIORECICLAJE_CODE,localDatabase);
+    setCostumerData(p,ourId->getCode(), allCostumers,1);
+    d->selectedId = ourId->getCode();
+    // default transport
+    defTrans = NULL;
+    retrieveTransports(p);
+    popteComboCostumers(p,COMBOOURTRANS, allTransports, 1);
 
-  defTrans = new driver(DEF_TRANS_CODE,localDatabase);
-  setTransData(p,defTrans->get_code(), allTransports,1);
-  d->selectedTrans = defTrans->get_code();
-  //
-  //printers
-  std::vector <std::string> strPrintersPos;
-  strPrintersPos.push_back("impresora de DIs");
-  strPrintersPos.push_back("impresora de tickets");
-  populateCombo(p,COMBOIMP, strPrintersPos,1);
-  populateCombo(p, COMBOACTUALIMP, retPrinters(), 1);
-  /*
-  miIni->retPrinterId(d->actualPrinter);
-  if(!d->actualPrinter.empty())
-    pvSetText(p,EDITACTUALIMP,d->actualPrinter.c_str());
-  */
-  //
-  //auto-syncronization
-  std::string str_minutes = std::to_string(my_syncro_data.minutes);
-  d->syncro_minutes = my_syncro_data.minutes;
-  pvSetText(p,EDITASYNCROMIN,str_minutes.c_str());
-  //
-  d->estadoFuturo=-1;
-  //triggers
-  d->f1Unloads=1;
-  d->f2Loads=1;
-  
-  return 0;
+    defTrans = new driver(DEF_TRANS_CODE,localDatabase);
+    setTransData(p,defTrans->get_code(), allTransports,1);
+    d->selectedTrans = defTrans->get_code();
+    //
+    //printers
+    std::vector <std::string> strPrintersPos;
+    strPrintersPos.push_back("impresora de DIs");
+    strPrintersPos.push_back("impresora de tickets");
+    populateCombo(p,COMBOIMP, strPrintersPos,1);
+    populateCombo(p, COMBOACTUALIMP, retPrinters(), 1);
+    //auto-syncronization
+    std::string str_minutes = std::to_string(my_syncro_data.minutes);
+    d->syncro_minutes = my_syncro_data.minutes;
+    pvSetText(p,EDITASYNCROMIN,str_minutes.c_str());
+    //
+    d->estadoActual = -1;
+    d->estadoFuturo = -1;
+    //triggers
+    d->f1Unloads=1;
+    d->f2Loads=1;
+    
+    return 0;
 }
 
 static int slotNullEvent(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  std::cout << "estado actual:" << d->estadoActual << std::endl;
-  std::cout << "estado futuro:" << d->estadoFuturo << std::endl;
-  maquinaEstados(p,d);
-  actualizaEstado(p,d);
+    if(p == NULL || d == NULL) return -1;
+    // std::cout << "estado actual:" << d->estadoActual << std::endl;
+    // std::cout << "estado futuro:" << d->estadoFuturo << std::endl;
+    maquinaEstados(p,d);
+    actualizaEstado(p,d);
 
-  if(d->selectedStation == 0)
-    pvSetEnabled(p,BUTSETSTATION,0);
-  else
-    pvSetEnabled(p,BUTSETSTATION,1);
+    if(d->selectedStation == 0)
+        pvSetEnabled(p,BUTSETSTATION,0);
+    else
+        pvSetEnabled(p,BUTSETSTATION,1);
 
-  //console
-  consoleRefresh(p,d);
-  //date and Time
-  setDate(p,d,LABDATE);
-  setTime(p,d,LABTIME);
-  //syncronization
-  int i = reconnectSSH(&my_ssh_syncro_data);
-  if(i == -1)
-    console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
-  else if (i>=0)
-    console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
- 
-  cameraSemaphore(1,-1,globalConfiguration.traffic_lights_enabled);
-  cameraSemaphore(2,-1,globalConfiguration.traffic_lights_enabled);
-  cameraSemaphore(3,-1,globalConfiguration.traffic_lights_enabled);
-  cameraSemaphore(4,-1,globalConfiguration.traffic_lights_enabled);
-  refreshSemaphores(p,d);
+    //console
+    consoleRefresh(p,d);
+    //date and Time
+    setDate(p,d,LABDATE);
+    setTime(p,d,LABTIME);
+    //syncronization
+    int i = reconnectSSH(&my_ssh_syncro_data);
+    if(i == -1)
+        console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
+    else if (i>=0)
+        console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
     
-  return 0;
+    cameraSemaphore(1,-1,globalConfiguration.traffic_lights_enabled);
+    cameraSemaphore(2,-1,globalConfiguration.traffic_lights_enabled);
+    cameraSemaphore(3,-1,globalConfiguration.traffic_lights_enabled);
+    cameraSemaphore(4,-1,globalConfiguration.traffic_lights_enabled);
+    refreshSemaphores(p,d);
+        
+    return 0;
 }
 
 static int slotButtonEvent(PARAM *p, int id, DATA *d)

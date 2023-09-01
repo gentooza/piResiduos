@@ -53,50 +53,45 @@ extern bascula* testBascula;
 
 static int slotInit(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  //memset(d,0,sizeof(DATA));
-  pvResize(p,0,1910,1020);
-  //memset(d,0,sizeof(DATA));
-  std::string wholeTitle = getTitle();
-  pvSetText(p,LABTYPE,wholeTitle.c_str());
-
-  //console
-  consoleRefresh(p,d);
-  //camion elegido reseteado
-  d->camionElegido = -1;
-  if(formSalida == NULL)
+    if(p == NULL || d == NULL) return -1;
+    //memset(d,0,sizeof(DATA));
+    pvResize(p,0,1910,1020);
+    //memset(d,0,sizeof(DATA));
+    std::string wholeTitle = getTitle();
+    pvSetText(p,LABTYPE,wholeTitle.c_str());
+    consoleRefresh(p,d);
+    d->camionElegido = -1;
+    if(formSalida == NULL)
     {
-      //por defecto entrada descarga 
-      //std::cout << "***DEBUG SALIDAS PT: retornando SIN formulario previo" << std::endl;
-      if(!type.compare("PT"))
-	formSalida = new outputForm(PT);
-      else
-	formSalida = new outputForm(ET);
-      //by default
-      formSalida->setDepMovType(DEF_MOV_SALIDA);
-      formSalida->setState(-99999);
+        if(!type.compare("PT"))
+        formSalida = new outputForm(PT);
+        else
+        formSalida = new outputForm(ET);
+        formSalida->setDepMovType(DEF_MOV_SALIDA);
+        formSalida->setState(-99999);
+        d->enFutEstado = -99999;
     }
-  else
-    { //recuperamos el formulario
-      //std::cout << "***DEBUG SALIDAS PT: retornando CON formulario previo" << std::endl;
-      d->enFutEstado = formSalida->getState();
-      formSalida->setState(-100); //estado nueva llegada desde otra pantalla    
+    else
+    {
+        d->enFutEstado = formSalida->getState();
+        formSalida->setState(-100); 
+        d->enFutEstado = -100;  
     }
-  formSalida->setOurStation(myStation);
-  formSalida->setErrorScale(DEF_ERROR_SCALES);
-       
-  //reset triggers  
-  d->plateTaking=0;
-  d->retroceder=0;
-  d->cancelar = 0;
-  d->pesaje1 = 0;
-  d->pesaje2 = 0;
-  d->firmar = 0;
-  d->proceder=0;
-  d->test=0;
-  d->editDI=0;
-  
-  return 0;
+    formSalida->setOurStation(myStation);
+    formSalida->setErrorScale(DEF_ERROR_SCALES);
+        
+    //reset triggers  
+    d->plateTaking=0;
+    d->retroceder=0;
+    d->cancelar = 0;
+    d->pesaje1 = 0;
+    d->pesaje2 = 0;
+    d->firmar = 0;
+    d->proceder=0;
+    d->test=0;
+    d->editDI=0;
+    
+    return 0;
 }
 
 static int slotNullEvent(PARAM *p, DATA *d)
