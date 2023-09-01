@@ -8,6 +8,8 @@
 
 ## code improvement
 + code cleaning, fixing functions with no return statement, etc.
++ formulario files to baseForm renaming
++ removed unused staff in baseForm class.
 
 
 # 2022/04/28 version 0.2rc1 
