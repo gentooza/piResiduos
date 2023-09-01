@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -23,159 +24,107 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 #include "staff.h"
 
-/*!building entity data from database and id*/
-staff::staff(long id_code,qtDatabase& my_database)
+/*! Class constructor, building entity data from database and id */
+staff::staff(long id_code, qtDatabase& my_database)
 {
-  
-  code = id_code;
-  char * sql =NULL;
-  std::vector <std::vector <std::string>> data;
-
-  sel_staff_data_by_code(sql,code);
-  my_database.query(NULL,sql);
-  data = my_database.retData2();
-
-  if(data.size())
-    {
-      if (data[0].size()>=2) //we have returned data with minimun expected data
-	{
-	  status=1;
-	  //nombre
-	  try
-	    {
-	      name = data[0][0];
-	    }
-	  catch(...)
-	    {
-	      std::cerr << "Error using returned name from table staff" << '\n';
-	      name="";
-	      status = 0;
-	    }
-	  //nif
-	  try
-	    {
-	      nif = data[0][1];
-	    }
-	  catch(...)
-	    {
-	      std::cerr << "Error using returned nif from table staff" << '\n';
-	      nif="";
-	      status=0;
-	    }
-	}
-    }
-  else
-    {
-      reset();
-    }
-  return;
-  
+    this->setStaff(id_code, my_database);
+    return;
 }
-void staff::set_staff(long id_code,qtDatabase& my_database)
-{
-  
-  code = id_code;
-  char * sql =NULL;
-  std::vector <std::vector <std::string>> data;
-
-  sel_staff_data_by_code(sql,code);
-  my_database.query(NULL,sql);
-  data = my_database.retData2();
-
-  if(data.size())
-    {
-      if (data[0].size()>=2) //we have returned data with minimun expected data
-	{
-	  status=1;
-	  //nombre
-	  try
-	    {
-	      name = data[0][0];
-	    }
-	  catch(...)
-	    {
-	      std::cerr << "Error using returned name from table staff" << '\n';
-	      name="";
-	      status = 0;
-	    }
-	  //nif
-	  try
-	    {
-	      nif = data[0][1];
-	    }
-	  catch(...)
-	    {
-	      std::cerr << "Error using returned nif from table staff" << '\n';
-	      nif="";
-	      status=0;
-	    }
-	}
-    }
-  else
-    {
-      reset();
-    }
-  return;
-  
-}
-/*!building entity data from data vector*/
+/*! Class constructor, building entity data from data vector */
 staff::staff(std::vector<std::string> data)
 {
-  if (data.size()>=2) //we have returned data with minimun expected data
-    {
-      status = 1;
-      //nombre
-      try
-	{
-	  name = data[0];
-	}
-      catch(...)
-	{
-	  std::cerr << "Error using returned name from table staff" << '\n';
-	  name="";
-	  status=0;
-	}
-      //nif
-      try
-	{
-	  nif = data[1];
-	}
-      catch(...)
-	{
-	  std::cerr << "Error using returned nif from table staff" << '\n';
-	  nif="";
-	  status=0;
-	}
-    }
-  else
-    {
-      reset();
-    }
-  return; 
+    this->setStaff(data);
+    return; 
 }
-/*!building empty entity data*/
+/*! Class constructor, building empty entity data */
 staff::staff()
 {
-  code = 0;
-  name = "";
-  nif = "";
-  status=0;
+    code = 0;
+    name = "";
+    nif = "";
+    status=0;
+    return;
 }
-/*!building entity from other entity*/
+/*! Class constructor, building entity from other entity */
 staff::staff(staff * reference)
 {
-  
-  code = reference->get_code();
-  name = reference->get_name();
-  nif = reference->get_nif();
-  status = reference->get_status(); 
+    code = reference->get_code();
+    name = reference->get_name();
+    nif = reference->get_nif();
+    status = reference->get_status();
+    return;
 }
-/*!reset values*/
+/*! reset values */
 void staff::reset()
 {
-  code = 0;
-  name.clear();
-  nif.clear();
-  status=0;
+    code = 0;
+    name.clear();
+    nif.clear();
+    status=0;
+    return;
 }
 
+/*! building entity data from database and id */
+void staff::setStaff(long id_code, qtDatabase& my_database)
+{
+    char *sql = NULL;
+
+    selAllStaffData(sql,id_code);
+    my_database.query(NULL,sql);
+    std::vector <std::vector <std::string>> data = my_database.retData2();
+
+    if(data.size())
+    {
+        this->setStaff(data.at(0));
+    }
+    else
+    {
+        reset();
+    }
+    if (sql != NULL)
+        delete [] sql;
+    return;
+}
+
+/*! building entity data from data vector */
+void staff::setStaff(std::vector<std::string> data)
+{
+    // minimun expected data
+    if (data.size()>=3) 
+    {
+        std::vector <std::string>::iterator iter;
+        int i = 0;
+        // staff status always 1
+        status = 1;
+        for(iter = data.begin(); iter != data.end(); ++iter)
+        {
+            if(i==0) // CODE
+            {
+                try
+                {
+                    code = std::stol(*iter);
+                }
+                catch(const std::invalid_argument& ia)
+                {
+                    std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    std::cerr << "staff::setStaff In station CODE field 0 = " << *iter <<  '\n';
+                    code = 0;
+                }
+            }
+            if(i==1) // NAME
+            {
+                name = *iter;
+            }
+            if(i==2) // NIFF
+            {
+                nif = *iter;
+            }
+            i++;
+        }
+    }
+    else
+    {
+        reset();
+    }
+    return; 
+}

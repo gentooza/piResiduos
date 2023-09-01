@@ -3,6 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018 Prointegra SL.
 Copyright 2019-2020 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -446,27 +447,6 @@ void rmt_sel_last_movement(char *& sql,long station_code,int year)
   return;
 }
 
-///remote///
-/*! special, remote select of last movement from EVERY RELATION BETWEEN COSTUMER & PRODUCT
-  for DI codes loseless*/
-/*
-void rmt_sel_last_movement(char *& sql,long station_code,int year)
-{
-  std::string from_mov_code, to_mov_code;
-  from_mov_code = std::to_string(year) + std::to_string(station_code) + "0000000";
-  to_mov_code = std::to_string(year) + std::to_string(station_code) + "9999999";
-  //TODO REVCODES
-  //  from_mov_code = std::to_string(year)+ (station_code < 10 && station_code >= 1?"0":"") + std::to_string(station_code) + "0000000";
-  //  to_mov_code = std::to_string(year)+ (station_code < 10 && station_code >= 1?"0":"") + std::to_string(station_code) + "9999999";
-
-   sql = new char[sizeof("select CODIGO_MOV, DI, FECHA_HORA_INICIO, MAX(FECHA_HORA_FINAL), TIPO_MOVIMIENTO, CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, CODIGO_BASCULISTA, PESO_NETO, PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN, CENTRO_DESTINO, INCIDENCIAS, COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, CLIENTE_PARTICULAR_DOMICILIO, CLIENTE_PARTICULAR_PROVINCIA, CLIENTE_PARTICULAR_POBLACION, CLIENTE_PARTICULAR_CODIGO_POSTAL, CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA, CLIENTE_PARTICULAR_NIMA, CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO, CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO from movimientos where (CODIGO_MOV >= 2018160000000 and CODIGO_MOV < 2018169999999) group by CODIGO_CLIENTE, CODIGO_PRODUCTO ORDER BY FECHA_HORA_FINAL;") + 64];
-
-   sprintf(sql,"select CODIGO_MOV, DI, FECHA_HORA_INICIO, MAX(FECHA_HORA_FINAL), TIPO_MOVIMIENTO, CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, CODIGO_BASCULISTA, PESO_NETO, PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN, CENTRO_DESTINO, INCIDENCIAS, COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, CLIENTE_PARTICULAR_DOMICILIO, CLIENTE_PARTICULAR_PROVINCIA, CLIENTE_PARTICULAR_POBLACION, CLIENTE_PARTICULAR_CODIGO_POSTAL, CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA, CLIENTE_PARTICULAR_NIMA, CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO, CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO from movimientos where (CODIGO_MOV >= %s and CODIGO_MOV < %s) group by CODIGO_CLIENTE, CODIGO_PRODUCTO ORDER BY FECHA_HORA_FINAL;",from_mov_code.c_str(), to_mov_code.c_str());
-
-  return;
-}
-*/
-
 ////////
 ////****TABLE TRANSITO****////
 void  updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias)
@@ -646,6 +626,14 @@ void sel_staff_data_by_code(char*& sql,long code)
 {
   sql = new char[sizeof("select nombre,nif from basculistas where codigo = XXXXXXX and (borrado is null or borrado = 0) ")+32];
   sprintf(sql,"select nombre,nif from basculistas where codigo = \"%lu\" and (borrado is null or borrado = 0)",code);
+  return;
+}
+
+void selAllStaffData(char*& sql,long code)
+{
+  sql = new char[sizeof("select codigo,nombre,nif from basculistas where codigo = XXXXXXX and (borrado is null or borrado = 0) ")+32];
+  sprintf(sql,"select codigo,nombre,nif from basculistas where codigo = \"%lu\" and (borrado is null or borrado = 0)",code);
+  return;
 }
 
 void load_staff(char*& sql, std::vector<std::vector<std::string>> load_data)

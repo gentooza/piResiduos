@@ -3,6 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
 Copyright 2019-2020, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -117,6 +118,7 @@ void rmt_sel_all_cars(char*&sql);
 
 //TABLE STAFF
 void sel_staff_data_by_code(char *&sql, long code);
+void selAllStaffData(char*& sql,long code);
 void load_staff(char*& sql, std::vector<std::vector<std::string>> load_data);
 
 void rmt_sel_all_staff(char *& sql);

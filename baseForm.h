@@ -304,7 +304,7 @@ class  baseForm
 
         //OPERATOR INFO
         int isStaffConfigured(){return staff_in_charge->get_status();};
-        void setStaff(long code,qtDatabase & localDatabase){staff_in_charge->set_staff(code,localDatabase);};
+        void setStaff(long code, qtDatabase & localDatabase){staff_in_charge->setStaff(code, localDatabase); return;};
         void unsetStaff(){staff_in_charge->set_status(-1);};
         long ret_staff_code(){long my_id; (staff_in_charge?my_id = staff_in_charge->get_code():my_id=-1); return my_id;};
         
