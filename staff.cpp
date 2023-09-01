@@ -79,6 +79,7 @@ void staff::setStaff(long id_code, qtDatabase& my_database)
     }
     else
     {
+        std::cerr << "ERROR: staff::setStaff wrong number of fields passed to constructor, NO DATA PASSED " << '\n';
         reset();
     }
     if (sql != NULL)
@@ -124,6 +125,7 @@ void staff::setStaff(std::vector<std::string> data)
     }
     else
     {
+        std::cerr << "ERROR: staff::setStaff wrong number of fields passed to constructor, needed 3, received " << data.size() <<  '\n';
         reset();
     }
     return; 
