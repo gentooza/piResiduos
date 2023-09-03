@@ -1,14 +1,27 @@
-# Pixelada S. Coop. and. Fork of piResiduos
+# piResiduos
 
-garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server.
-developed using pvbrowser(https://github.com/pvbrowser/pvb) SCADA framework.
+Garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server -no source code available for this pieze ;-(-.
 
-## dependencies
+This is the source code for every local node. It's developed using C++ and [pvbrowser](https://github.com/pvbrowser/pvb) SCADA framework.
 
-+ libharu >= 2.3.0
-+ SmtpClient-for-Qt (https://github.com/bluetiger9/SmtpClient-for-Qt) as submodule inside lib folder.
-+ pvbrowser (pvslib and rllib)
+## History
+
+It was created at 2016 by the industrial, and now defunct, company [Pro Integra S.L.](http://prointegra.es/) , afterwards, development was moved at 2019 to the Software Development Company [Pixelada S. Coop. And.](https://pixelada.org)
+
+Since 2023, It's developed under collaboration between the costumer, El Alambre Estudio Creativo S. Coop. And. and the University of Córdoba.
+
+## Dependencies
+
++ [libharu](https://github.com/libharu/libharu) >= 2.3.0
++ [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt) as submodule inside lib folder.
++ [pvbrowser](https://pvbrowser.de) (pvslib and rllib)
 + boost
++ cups
++ QT5 -sqlite3, mysql... modules-
++ -optional- valgrind for debugging.
+
+Version 0.2 is intended to work under Ubuntu GNU/Linux 16.04 -QT4 version of pvbrowser-
+Version 0.3, the currently active main branch, is developed for working under Ubuntu GNU/Linux 22.04 using QT5 and the last pvbrowser version.
 
 ## remote database connection and web administration page
 
@@ -16,11 +29,17 @@ pixResiduos is developed for working with a central remote MySQL database in min
 
 Also there will be files app will backup via SSH tunneling.
 
-You'll have to configure this connection in config.ini, in piResiduos.sh, in extra/scripts... files and in generic_tools.cpp (function int copy_files_to_remote_server(std::string folder_in_backup))
+You'll have to configure this connection in: *config.ini*, *piResiduos.sh*, */extra/scripts...* files and in *generic_tools.cpp* -function *int copy_files_to_remote_server(std::string folder_in_backup)*-
 
-put the ssh key for example in extras/ .
+put the ssh key for example in *extras/*.
 
-for building the local database execute in terminal it's creations cript
+We are currently working in using an API for avoiding this old method.
+
+## Local Database
+
+For syncing and store middle data the app uses a sqlite3 database.
+
+For building the local database execute in terminal it's creations cript:
 
 ```
 sqlite3 bio.db < bio.sqlite3
@@ -28,7 +47,7 @@ sqlite3 bio.db < bio.sqlite3
 
 ## remote server database structure
 
-see file bio.remote.
+see file *bio.remote*. -Maybe is not updated enough!-
 
 ## hardware needed
 
@@ -36,18 +55,28 @@ It was first designed using a privative signing pad, it has been removed in this
 
 It uses scales, and we communicate it using a basic rs232 serial protocol, sending a command and receiving the weight. (we use boost, is easy to understand it protocol seeing source code) You can bypass it inserting plate by hand.
 
-It uses privative cameras for taking plates from trucks, they are from a (now vanished) Spanish company bad for free software but also technical support, so we have developed our own library using it's http API. You can bypass it inserting plate by hand.
+It uses privative cameras for taking plates from trucks, they are from a (now vanished) Spanish company with null intereset in free software and no technical support, so we have developed our own library using it's http API. You can bypass it inserting plate by hand.
 
 ## Compile and execute
 
-It has been developed only for GNU/Linux, it's working now for real under ubuntu 16.04 (xenial)
+It has been developed only for GNU/Linux, it's working now for real under ubuntu 22.04 -jammy-
 
 Once dependencies are installed or compiled and linked.
+```
+qmake
+make
+sh piResiduos.sh
+```
 
-    qmake
-    make
-    sh piResiduos.sh
+Alternatively, you can debug using valgrind with the script:
+```
+sh piResiduos-DEBUG.sh
+```
 
+And opening the client in another terminal
+```
+pvbrowser
+```
 Happy Hacking!
 
 ## license and copyright
@@ -55,7 +84,7 @@ Happy Hacking!
  This file is part of PixResiduos.
 
  Copyright 2021, Pixelada S. Coop. And.
- Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) uco (dot) es>
+ Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) riseup (dot) net>
 
  PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
