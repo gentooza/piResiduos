@@ -23,7 +23,7 @@ Since 2023, It's developed under collaboration between the costumer, El Alambre 
 Version 0.2 is intended to work under Ubuntu GNU/Linux 16.04 -QT4 version of pvbrowser-
 Version 0.3, the currently active main branch, is developed for working under Ubuntu GNU/Linux 22.04 using QT5 and the last pvbrowser version.
 
-## remote database connection and web administration page
+## Remote database connection and web administration page
 
 pixResiduos is developed for working with a central remote MySQL database in mind, you'll need a VPS and it's connections for tunneling the database (SSH) and being able to syncronize, update, share, etc.
 
@@ -45,11 +45,11 @@ For building the local database execute in terminal it's creations cript:
 sqlite3 bio.db < bio.sqlite3
 ```
 
-## remote server database structure
+## Remote server database structure
 
 see file *bio.remote*. -Maybe is not updated enough!-
 
-## hardware needed
+## Hardware needed
 
 It was first designed using a privative signing pad, it has been removed in this free version, now I think I would use a software signing pad using dual screens.
 
@@ -79,7 +79,7 @@ pvbrowser
 ```
 Happy Hacking!
 
-## license and copyright
+## License and copyright
 ```
  This file is part of PixResiduos.
 
