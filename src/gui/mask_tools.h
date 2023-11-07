@@ -309,14 +309,14 @@ static int syncCars(PARAM *p)
     if(remoteDatabase.isOpen())
     {
         std::vector <std::vector <std::string>> dataReturn;
-        char* sql;
+        std::string sql;
         rmtSelAllCars(sql);
         str_log_message = "(SINCRO) BD remota -> ";
         str_log_message += sql;
         log_message(str_log_message, 1);
-        if(!remoteDatabase.query(p,sql))
+        if(!remoteDatabase.query(p,sql.c_str()))
 	    {
-	        delete[] sql;
+	        sql.clear();
 	        log_message("(SINCRO) BD local -> delete from vehiculos", 1);
 	        if(localDatabase.query(p,"delete from vehiculos"))
 	            log_message("(SINCRO) Error BD local", 2);
@@ -325,7 +325,7 @@ static int syncCars(PARAM *p)
 	        str_log_message = "(SINCRO) BD local -> ";
 	        str_log_message += sql;
 	        log_message(str_log_message, 1);
-	        if(localDatabase.query(p,sql))
+	        if(localDatabase.query(p,sql.c_str()))
 	            log_message("(SINCRO)(vehículos) Error BD local", 2);
 	    }
         else
@@ -333,7 +333,6 @@ static int syncCars(PARAM *p)
 	        log_message("(SINCRO)(vehículos) Error BD remota (query)", 2);
 	        ret = -2;
 	    }
-        delete[] sql;
     }
     else
     {

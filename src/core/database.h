@@ -113,8 +113,8 @@ void sqlLoadTransitoSalidas(char*& sql,std::vector<std::vector<std::string>> dat
 //TABLE CARS
 void sel_all_cars(char *& sql);
 void sel_all_cos_from_car(char *&sql, const char *matricula);
-void loadCars(char*& sql,std::vector<std::vector<std::string>> dataReturn);
-void rmtSelAllCars(char*&sql);
+void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
+void rmtSelAllCars(std::string& sql);
 
 //TABLE STAFF
 void sel_staff_data_by_code(char *&sql, long code);
