@@ -46,7 +46,9 @@ extern GLOBAL_DATA globalConfiguration;
 #include "mask5_data.h"
 #include "mask_tools.h"
 #include "mask5_tools.h"
-#include "mask5_actualiza.h"
+#include "mask5_stateGUI.h"
+#include "mask5_stateNext.h"
+#include "mask5_stateWork.h"
 
 
 extern bascula* testBascula;
@@ -137,8 +139,8 @@ static int slotNullEvent(PARAM *p, DATA *d)
   std::cout << "----" << std::endl;
   std::cout << "############" << std::endl;
   //maquina de estados
-  maquinaEstados(p,d);
-  actualizaEstado(p,d);
+  stateNext(p,d);
+  stateWork(p,d);
   //semaphores
   cameraSemaphore(3, -1,globalConfiguration.traffic_lights_enabled);
   cameraSemaphore(4, -1,globalConfiguration.traffic_lights_enabled);
