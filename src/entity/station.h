@@ -78,12 +78,12 @@ class station
         void setRegion(std::string newRegion){region = newRegion; };
         long getZip(){return cp;}
         void setZip(long newZip){cp = newZip; };
-        long getNima(){return nima;};
-        void setNima(long newNima){nima = newNima;};
-        long getNumIns(){return num_ins;};
-        void setNumIns(long newNumIns){num_ins = newNumIns;};
-        long getPhone(){return phone;};
-        void setPhone(long newPhone){phone = newPhone;};
+        std::string  getNima(){return nima;};
+        void setNima(std::string newNima){nima = newNima;};
+        std::string  getNumIns(){return num_ins;};
+        void setNumIns(std::string newNumIns){num_ins = newNumIns;};
+        std::string  getPhone(){return phone;};
+        void setPhone(std::string newPhone){phone = newPhone;};
         std::string getMail(){return mail;};
         void setMail(std::string newMail){mail=newMail;};
     
@@ -98,9 +98,9 @@ class station
         std::string city;
         std::string region;
         long cp;
-        long nima;
-        long num_ins;
-        long phone;
+        std::string nima;
+        std::string num_ins;
+        std::string phone;
         std::string mail;
 };
 

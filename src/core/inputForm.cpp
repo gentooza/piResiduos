@@ -1295,7 +1295,7 @@ void inputForm::createPdf(std::string printerId)
 
      //NIMA
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(localOrigin->getNima());
+     myText = localOrigin->getNima();
      HPDF_Page_MoveTextPos (page1, 188, 562);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1310,7 +1310,7 @@ void inputForm::createPdf(std::string printerId)
 
      //Nº INSC REGISTRO
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(localOrigin->getNumIns());
+     myText = localOrigin->getNumIns();
      HPDF_Page_MoveTextPos (page1, 465, 562);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1605,7 +1605,7 @@ void inputForm::createPdf(std::string printerId)
 
  //NIMA
  HPDF_Page_BeginText (page1);
- myText = std::to_string(localDestination->getNima());
+ myText = localDestination->getNima();
  HPDF_Page_MoveTextPos (page1, 188, 240);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
@@ -1620,7 +1620,7 @@ void inputForm::createPdf(std::string printerId)
 
  //Nº INSC REGISTRO
  HPDF_Page_BeginText (page1);
- myText = std::to_string(localDestination->getNumIns());
+ myText = localDestination->getNumIns();
  HPDF_Page_MoveTextPos (page1, 465, 240);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
@@ -2128,7 +2128,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     station * localDestination = NULL;
     retDepDestinationStation(localDestination);
     myTicket->setStationName(localDestination->getName());
-    myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
+    myTicket->setStationNIMA(localDestination->getNima());
     if (localDestination != NULL)
         delete localDestination;
     myTicket->setMovCode(retDepMovCode());

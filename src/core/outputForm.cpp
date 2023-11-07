@@ -874,357 +874,333 @@ int outputForm::getFzCurrentProduct()
 // TODO: error handling not implemented
 void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode)
 {
-  //common data
-  //product information
-  if(retDepProdCode()>0)
-  {
-    if(setAllProductData(localDatabase)) // TODO: error handling
-	    std::cout << "*ERROR*" << std::endl;
-  }
-  //costumer information
-  if(retDepCosCode()>0)
-  {
-    if(setAllDepCostumerData(localDatabase))
-	    std::cout << "*ERROR*" << std::endl;
-  }
-  //costumer-product information
-  if(retDepProdCode()>0 && retDepCosCode()>0)
-  {
-    if(setAllDepCosProdData(localDatabase,myStation))
-	    std::cout << "*ERROR*" << std::endl;
-  }
-  //billing method and price
-  if(set_all_billing_info(localDatabase))
-    std::cout << "*ERROR*" << std::endl; 
-  // output movement
-  if(retDepMovType() == DEF_MOV_SALIDA)
-  {
-    // origin station, us!
-    if(myStation)
-      setDepOrigStation(myStation);
-    if(ourId)
+    //common data
+    //product information
+    if(retDepProdCode()>0)
     {
-      depOriginStation->setName(ourId->getName());
-      depOriginStation->setNif(ourId->getNif());
-      depOriginStation->setAddress(ourId->getAddress());
-      depOriginStation->setProvence(ourId->getProvence());
-      depOriginStation->setCity(ourId->getCity());
-      depOriginStation->setRegion(ourId->getRegion());
-      depOriginStation->setZip(ourId->getCp());
-      depOriginStation->setNima(ourId->getNima());
-      depOriginStation->setNumIns(ourId->getNumIns());
-      depOriginStation->setPhone(ourId->getPhone());
-      depOriginStation->setMail(ourId->getMail());
+        if(setAllProductData(localDatabase)) // TODO: error handling
+	        std::cout << "*ERROR*" << std::endl;
     }
-    getAllOrderInfo(localDatabase, myDepMovement.CODIGO_ORDEN);
-  }
-  else
-  {
-    // origin station, us!
-    if(myStation)
-      setDepOrigStation(myStation);
-    // destination station
-    if (depDestinationStation)
+    //costumer information
+    if(retDepCosCode()>0)
     {
-      int value;
-      depDestinationStation->getType(value);
-      if(value == DEF_STATION_DEPOSIT) //movement to deposit
+        if(setAllDepCostumerData(localDatabase))
+	        std::cout << "*ERROR*" << std::endl;
+    }
+    //costumer-product information
+    if(retDepProdCode()>0 && retDepCosCode()>0)
+    {
+        if(setAllDepCosProdData(localDatabase,myStation))
+	        std::cout << "*ERROR*" << std::endl;
+    }
+    //billing method and price
+    if(set_all_billing_info(localDatabase))
+        std::cout << "*ERROR*" << std::endl; 
+    // output movement
+    if(retDepMovType() == DEF_MOV_SALIDA)
+    {
+        // origin station, us!
+        if(myStation)
+            setDepOrigStation(myStation);
+        if(ourId)
+        {
+            depOriginStation->setName(ourId->getName());
+            depOriginStation->setNif(ourId->getNif());
+            depOriginStation->setAddress(ourId->getAddress());
+            depOriginStation->setProvence(ourId->getProvence());
+            depOriginStation->setCity(ourId->getCity());
+            depOriginStation->setRegion(ourId->getRegion());
+            depOriginStation->setZip(ourId->getCp());
+            depOriginStation->setNima(std::to_string(ourId->getNima()));
+            depOriginStation->setNumIns(std::to_string(ourId->getNumIns()));
+            depOriginStation->setPhone(std::to_string(ourId->getPhone()));
+            depOriginStation->setMail(ourId->getMail());
+        }
+        getAllOrderInfo(localDatabase, myDepMovement.CODIGO_ORDEN);
+    }
+    else
+    {
+        // origin station, us!
+        if(myStation)
+            setDepOrigStation(myStation);
+        // destination station
+        if (depDestinationStation)
+        {
+            int value;
+            depDestinationStation->getType(value);
+            if(value == DEF_STATION_DEPOSIT) //movement to deposit
+	        {
+	            setDepMovType(DEF_MOV_INTERNOD5);
+	            setDepCosCode(defDriverCode);
+	            setAllDepCostumerData(localDatabase);
+	            setDepCosType(3);
+	        }
+            if(value == DEF_STATION_TRANSFER || value == DEF_STATION_MASTER) //movement of transference
+	        {
+	            setDepMovType(DEF_MOV_TRANSFER);
+	            setDepCosCode(ourCode);
+	            setAllDepCostumerData(localDatabase);
+	            setDepCosType(2);
+	        }
+        }
+        // default driver loaded
+        if (defDriverCode > 0) // if default driver configured
 	    {
-	      setDepMovType(DEF_MOV_INTERNOD5);
-	      setDepCosCode(defDriverCode);
-	      setAllDepCostumerData(localDatabase);
-	      setDepCosType(3);
-	    }
-      if(value == DEF_STATION_TRANSFER || value == DEF_STATION_MASTER) //movement of transference
-	    {
-	      setDepMovType(DEF_MOV_TRANSFER);
-	      setDepCosCode(ourCode);
-	      setAllDepCostumerData(localDatabase);
-	      setDepCosType(2);
+	        if (retDepDriCode() <= 0)
+	        {
+	            setDriverByCode(defDriverCode, localDatabase);
+	        }
 	    }
     }
-    // default driver loaded
-    if (defDriverCode > 0) // if default driver configured
-	  {
-	    if (retDepDriCode() <= 0)
-	    {
-	      setDriverByCode(defDriverCode, localDatabase);
-	    }
-	  }
-  }
 }
 /*! function for managing all new information preset by the order*/
 int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
 {
-  char * sql;
-  int numCol=0;
-  long costumer_code = 0;
-  long station_code = 0;
+    char * sql = NULL;
+    int numCol=0;
+    long costumer_code = 0;
+    long station_code = 0;
 
-  selOrderById(sql,order_code);
-  localDatabase.query(NULL,sql);
+    selOrderById(sql,order_code);
+    localDatabase.query(NULL,sql);
+    if (sql)
+        delete [] sql;
 
-  std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-  std::vector<std::string>::iterator col;
-  // CODIGO_ORDEN, ECOEMBES, CODIGO_CLIENTE, CODIGO_PRODUCTO, FECHA_FIRMA, FECHA_PROGRAMADA, PRECIO_TN, PESO_RETIRAR , CODIGO_DESTINO , OPERACION_TRATAMIENTO , REPETIR, TIPO_OPERADOR, CODIGO_INFO_ORIGEN_CENTRO, CODIGO_INFO_ORIGEN_AUTORIZADO, CODIGO_INFO_DESTINO_CENTRO, CODIGO_INFO_DESTINO_AUTORIZADO, INFO_DESTINO_CENTRO_NOMBRE, INFO_DESTINO_CENTRO_NIF, INFO_DESTINO_CENTRO_DIRECCION, INFO_DESTINO_CENTRO_CP, INFO_DESTINO_CENTRO_MUNICIPIO, INFO_DESTINO_CENTRO_PROVINCIA, INFO_DESTINO_CENTRO_COMUNIDAD_AUTONOMA, INFO_DESTINO_CENTRO_NIMA, INFO_DESTINO_CENTRO_N_INSC_REGISTRO, INFO_DESTINO_CENTRO_TELEFONO, INFO_DESTINO_CENTRO_EMAIL, INFO_DESTINO_AUTORIZADO_NOMBRE, INFO_DESTINO_AUTORIZADO_NIF, INFO_DESTINO_AUTORIZADO_DIRECCION, INFO_DESTINO_AUTORIZADO_CP, INFO_DESTINO_AUTORIZADO_MUNICIPIO, INFO_DESTINO_AUTORIZADO_PROVINCIA, INFO_DESTINO_AUTORIZADO_COMUNIDAD_AUTONOMA, INFO_DESTINO_AUTORIZADO_NIMA, INFO_DESTINO_AUTORIZADO_N_INSC_REGISTRO, INFO_DESTINO_AUTORIZADO_TELEFONO, INFO_DESTINO_AUTORIZADO_EMAIL
-  for(col=ourData.at(0).begin(); col != ourData.at(0).end(); ++col)
+    std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
+    std::vector<std::string>::iterator col;
+    // CODIGO_ORDEN, ECOEMBES, CODIGO_CLIENTE, CODIGO_PRODUCTO, FECHA_FIRMA, FECHA_PROGRAMADA, PRECIO_TN, PESO_RETIRAR , CODIGO_DESTINO , OPERACION_TRATAMIENTO , REPETIR, TIPO_OPERADOR, CODIGO_INFO_ORIGEN_CENTRO, CODIGO_INFO_ORIGEN_AUTORIZADO, CODIGO_INFO_DESTINO_CENTRO, CODIGO_INFO_DESTINO_AUTORIZADO, INFO_DESTINO_CENTRO_NOMBRE, INFO_DESTINO_CENTRO_NIF, INFO_DESTINO_CENTRO_DIRECCION, INFO_DESTINO_CENTRO_CP, INFO_DESTINO_CENTRO_MUNICIPIO, INFO_DESTINO_CENTRO_PROVINCIA, INFO_DESTINO_CENTRO_COMUNIDAD_AUTONOMA, INFO_DESTINO_CENTRO_NIMA, INFO_DESTINO_CENTRO_N_INSC_REGISTRO, INFO_DESTINO_CENTRO_TELEFONO, INFO_DESTINO_CENTRO_EMAIL, INFO_DESTINO_AUTORIZADO_NOMBRE, INFO_DESTINO_AUTORIZADO_NIF, INFO_DESTINO_AUTORIZADO_DIRECCION, INFO_DESTINO_AUTORIZADO_CP, INFO_DESTINO_AUTORIZADO_MUNICIPIO, INFO_DESTINO_AUTORIZADO_PROVINCIA, INFO_DESTINO_AUTORIZADO_COMUNIDAD_AUTONOMA, INFO_DESTINO_AUTORIZADO_NIMA, INFO_DESTINO_AUTORIZADO_N_INSC_REGISTRO, INFO_DESTINO_AUTORIZADO_TELEFONO, INFO_DESTINO_AUTORIZADO_EMAIL
+    for(col=ourData.at(0).begin(); col != ourData.at(0).end(); ++col)
 	{
-    // info_Destino_centro
-    // info_destino_autorizado
-	  if(numCol == 6) // PRICE
-	  {
-	    try
-		  {
-		    setDepPrice(std::stof(*col));
-		  }
-	    catch(...)
-		  {
-		    // do nothing
-		  }
-	  }
-	  else if(numCol == 11) // OPERATOR TYPE
-	  {
-	    try
-      {
-        setDepCosType(std::stoi(*col));
-		  }
-	    catch(...)
-		  {
-		    setDepCosType(1);
-		  }
-	  }
-    else if(numCol == 12)  //CODIGO_INFO_ORIGEN_CENTRO
-    {}
-    else if(numCol == 13)  //CODIGO_INFO_ORIGEN_AUTORIZADO
-    {}
-    else if(numCol == 14)  //CODIGO_INFO_DESTINO_CENTRO
-    {
-      try
-		  {
-        station_code = std::stoul(*col);
-        if(station_code > 0)
+        // info_Destino_centro
+        // info_destino_autorizado
+	    if(numCol == 6) // PRICE
+	    {
+	        try
+		    {
+		        setDepPrice(std::stof(*col));
+		    }
+	        catch(...)
+		    {
+		        // do nothing
+		    }
+	    }
+	    else if(numCol == 11) // OPERATOR TYPE
+	    {
+	        try
+            {
+                setDepCosType(std::stoi(*col));
+		    }
+	        catch(...)
+		    {
+		        setDepCosType(1);
+		    }
+	    }
+        else if(numCol == 14)  //CODIGO_INFO_DESTINO_CENTRO
         {
-          if (depDestinationStation)
-            delete depDestinationStation;
-          depDestinationStation = new station(station_code, localDatabase);
+            try
+		    {
+                station_code = std::stoul(*col);
+                if(station_code > 0)
+                {
+                    if (depDestinationStation)
+                        delete depDestinationStation;
+                    depDestinationStation = new station(station_code, localDatabase);
+                }
+		    }
+	        catch(...)
+		    {
+		        // do nothing
+                station_code = 0;
+		    }
         }
-		  }
-	    catch(...)
-		  {
-		    // do nothing
-        station_code = 0;
-		  }
-    }
-    else if(numCol == 15) // CODIGO_INFO_DESTINO_AUTORIZADO
-	  {
-      try
-		  {
-        costumer_code = std::stoul(*col);
-        if(costumer_code > 0)
-        {
-          if(depAuthCostumer)
-            delete depAuthCostumer;
-          depAuthCostumer = new costumer(costumer_code, localDatabase);
-        }
-		  }
-	    catch(...)
-		  {
-		    // do nothing
-        costumer_code = 0;
-		  }
-	  }
-    else if(numCol == 16) // INFO_DESTINO_CENTRO_NOMBRE
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setName(*col);
-	  }
-    else if(numCol == 17) // INFO_DESTINO_CENTRO_NIF
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setNif(*col);
-	  }
-    else if(numCol == 18) // INFO_DESTINO_CENTRO_DIRECCION
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setAddress(*col);
-	  }
-    else if(numCol == 19) // INFO_DESTINO_CENTRO_CP
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      try
-		  {
-        depDestinationStation->setZip(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 20) // INFO_DESTINO_CENTRO_MUNICIPIO
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setCity(*col);
-	  }
-    else if(numCol == 21) // INFO_DESTINO_CENTRO_PROVINCIA
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setProvence(*col);
-	  }
-    else if(numCol == 22) // INFO_DESTINO_CENTRO_COMUNIDAD_AUTONOMA
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setRegion(*col);
-	  }
-    else if(numCol == 23) // INFO_DESTINO_CENTRO_NIMA
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      try
-		  {
-        depDestinationStation->setNima(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 24) // INFO_DESTINO_CENTRO_N_INSC_REGISTRO
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      try
-		  {
-        depDestinationStation->setNumIns(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 25) // INFO_DESTINO_CENTRO_TELEFONO
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      try
-		  {
-        depDestinationStation->setPhone(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 26) // INFO_DESTINO_CENTRO_EMAIL
-	  {
-      if(!depDestinationStation)
-        depDestinationStation = new station();
-      depDestinationStation->setMail(*col);
-	  }
-    else if(numCol == 27) // INFO_DESTINO_AUTORIZADO_NOMBRE
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setName(*col);
-	  }
-    else if(numCol == 28) // INFO_DESTINO_AUTORIZADO_NIF
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setNif(*col);
-	  }
-    else if(numCol == 29) // INFO_DESTINO_AUTORIZADO_DIRECCION
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setAddress(*col);
-	  }
-    else if(numCol == 30) // INFO_DESTINO_AUTORIZADO_CP
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      try
-		  {
-        depAuthCostumer->setCp(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 31) // INFO_DESTINO_AUTORIZADO_MUNICIPIO
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setCity(*col);
-	  }
-    else if(numCol == 32) // INFO_DESTINO_AUTORIZADO_PROVINCIA
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setProvence(*col);
-	  }
-    else if(numCol == 33) // INFO_DESTINO_AUTORIZADO_COMUNIDAD_AUTONOMA
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setRegion(*col);
-	  }
-    else if(numCol == 34) // INFO_DESTINO_AUTORIZADO_NIMA
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      try
-		  {
-        depAuthCostumer->setNima(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 35) // INFO_DESTINO_AUTORIZADO_N_INSC_REGISTRO
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      try
-		  {
-        depAuthCostumer->setNumIns(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 36) // INFO_DESTINO_AUTORIZADO_TELEFONO
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      try
-		  {
-        depAuthCostumer->setPhone(std::stoul(*col));
-      }
-      catch(...)
-      {
-        // do nothing
-      }
-	  }
-    else if(numCol == 37) // INFO_DESTINO_AUTORIZADO_EMAIL
-	  {
-      if(!depAuthCostumer)
-        depAuthCostumer = new costumer();
-      depAuthCostumer->setMail(*col);
-	  }
-	  numCol++;
+        else if(numCol == 15) // CODIGO_INFO_DESTINO_AUTORIZADO
+	    {
+            try
+		    {
+                costumer_code = std::stoul(*col);
+                if(costumer_code > 0)
+                {
+                    if(depAuthCostumer)
+                        delete depAuthCostumer;
+                    depAuthCostumer = new costumer(costumer_code, localDatabase);
+                }
+		    }
+	        catch(...)
+		    {
+		        // do nothing
+                costumer_code = 0;
+		    }
+	    }
+        else if(numCol == 16) // INFO_DESTINO_CENTRO_NOMBRE
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setName(*col);
+	    }
+        else if(numCol == 17) // INFO_DESTINO_CENTRO_NIF
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setNif(*col);
+	    }
+        else if(numCol == 18) // INFO_DESTINO_CENTRO_DIRECCION
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setAddress(*col);
+	    }
+        else if(numCol == 19) // INFO_DESTINO_CENTRO_CP
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            try
+		    {
+                depDestinationStation->setZip(std::stoul(*col));
+            }
+            catch(...)
+            {
+                // do nothing
+            }
+	    }
+        else if(numCol == 20) // INFO_DESTINO_CENTRO_MUNICIPIO
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setCity(*col);
+	    }
+        else if(numCol == 21) // INFO_DESTINO_CENTRO_PROVINCIA
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setProvence(*col);
+	    }
+        else if(numCol == 22) // INFO_DESTINO_CENTRO_COMUNIDAD_AUTONOMA
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setRegion(*col);
+	    }
+        else if(numCol == 23) // INFO_DESTINO_CENTRO_NIMA
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setNima(*col);
+	    }
+        else if(numCol == 24) // INFO_DESTINO_CENTRO_N_INSC_REGISTRO
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setNumIns(*col);
+	    }
+        else if(numCol == 25) // INFO_DESTINO_CENTRO_TELEFONO
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setPhone(*col);
+	    }
+        else if(numCol == 26) // INFO_DESTINO_CENTRO_EMAIL
+	    {
+            if(!depDestinationStation)
+                depDestinationStation = new station();
+            depDestinationStation->setMail(*col);
+	    }
+        else if(numCol == 27) // INFO_AUTHORIZED_COSTUMER_NOMBRE
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setName(*col);
+	    }
+        else if(numCol == 28) // INFO_AUTHORIZED_COSTUMER_NIF
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setNif(*col);
+	    }
+        else if(numCol == 29) // INFO_DESTINO_AUTORIZADO_DIRECCION
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setAddress(*col);
+	    }
+        else if(numCol == 30) // INFO_DESTINO_AUTORIZADO_CP
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            try
+		    {
+                depAuthCostumer->setCp(std::stoul(*col));
+            }
+            catch(...)
+            {
+                // do nothing
+            }
+	    }
+        else if(numCol == 31) // INFO_DESTINO_AUTORIZADO_MUNICIPIO
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setCity(*col);
+	    }
+        else if(numCol == 32) // INFO_DESTINO_AUTORIZADO_PROVINCIA
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setProvence(*col);
+	    }
+        else if(numCol == 33) // INFO_DESTINO_AUTORIZADO_COMUNIDAD_AUTONOMA
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setRegion(*col);
+	    }
+        else if(numCol == 34) // INFO_DESTINO_AUTORIZADO_NIMA
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            try
+		    {
+                depAuthCostumer->setNima(std::stoul(*col));
+            }
+            catch(...)
+            {
+                // do nothing
+            }
+	    }
+        else if(numCol == 35) // INFO_DESTINO_AUTORIZADO_N_INSC_REGISTRO
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            try
+		    {
+              depAuthCostumer->setNumIns(std::stoul(*col));
+            }
+            catch(...)
+            {
+                // do nothing
+            }
+	    }
+        else if(numCol == 36) // INFO_DESTINO_AUTORIZADO_TELEFONO
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            try
+		    {
+                depAuthCostumer->setPhone(std::stoul(*col));
+            }
+            catch(...)
+            {
+                // do nothing
+            }
+	    }
+        else if(numCol == 37) // INFO_DESTINO_AUTORIZADO_EMAIL
+	    {
+            if(!depAuthCostumer)
+                depAuthCostumer = new costumer();
+            depAuthCostumer->setMail(*col);
+	    }
+	    numCol++;
 	}
-
-  return 0;
+    return 0;
 }
 
 
@@ -1570,7 +1546,7 @@ if(retDepCosName().compare("OTROS"))
 
      //NIMA
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(localOrigin->getNima());
+     myText = localOrigin->getNima();
      HPDF_Page_MoveTextPos (page1, 188, 562);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1585,7 +1561,7 @@ if(retDepCosName().compare("OTROS"))
 
      //Nº INSC REGISTRO
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(localOrigin->getNumIns());
+     myText = localOrigin->getNumIns();
      HPDF_Page_MoveTextPos (page1, 465, 562);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1888,7 +1864,7 @@ if(retDepCosName().compare("OTROS"))
 
  //NIMA
  HPDF_Page_BeginText (page1);
- myText = std::to_string(localDestination->getNima());
+ myText = localDestination->getNima();
  HPDF_Page_MoveTextPos (page1, 188, 240);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
@@ -1903,7 +1879,7 @@ if(retDepCosName().compare("OTROS"))
 
  //Nº INSC REGISTRO
  HPDF_Page_BeginText (page1);
- myText = std::to_string(localDestination->getNumIns());
+ myText = localDestination->getNumIns();
  HPDF_Page_MoveTextPos (page1, 465, 240);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
@@ -2488,7 +2464,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
   station * localDestination;
   retDepOriginStation(localDestination);
   myTicket->setStationName(localDestination->getName());
-  myTicket->setStationNIMA(std::to_string(localDestination->getNima()));
+  myTicket->setStationNIMA(localDestination->getNima());
   delete localDestination;
   myTicket->setMovCode(retDepMovCode());
   myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));

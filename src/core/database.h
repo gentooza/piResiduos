@@ -45,7 +45,7 @@ enum {
 
 
 //TABLE CENTERS
-void selAllDatFrmCenter(char *& sql,long code);
+void selAllDatFrmCenter(std::string& sql,long code);
 void selAllDatFrmLocalCenters(char *& sql);
 void selExtCentersNameCode(char *& sql);
 void selIntCentersNameCode(char *& sql);

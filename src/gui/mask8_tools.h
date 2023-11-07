@@ -100,22 +100,17 @@ static void saveStation(PARAM * p, DATA* d,baseForm *& myForm,station *&myStatio
 /*! FUNCTION for set all text data from selected station*/
 static void  refStationData(PARAM * p, DATA* d,station *&myStation)
 {
-  std::string temp;
-  pvSetText(p,EDITNOMBRE_A,myStation->getName().c_str());
-  pvSetText(p,EDITDIREC_A,myDestStation->getAddress().c_str());
-  pvSetText(p,EDITPRO_A,myDestStation->getProvence().c_str());
-  pvSetText(p,EDITNIF_A,myDestStation->getNif().c_str());
-  pvSetText(p,EDITCA_A,myDestStation->getRegion().c_str());
-  pvSetText(p,EDITMUNI_A,myDestStation->getCity().c_str());
-
-  temp = std::to_string(myDestStation->getNima());
-  pvSetText(p,EDITNIMA_A,temp.c_str());
-  temp = std::to_string(myDestStation->getNumIns());
-  pvSetText(p,EDITREG_A,temp.c_str());
-  temp = std::to_string(myDestStation->getZip());
-  pvSetText(p,EDITCP_A,temp.c_str());
+    pvSetText(p, EDITNOMBRE_A, myStation->getName().c_str());
+    pvSetText(p, EDITDIREC_A, myStation->getAddress().c_str());
+    pvSetText(p, EDITPRO_A, myStation->getProvence().c_str());
+    pvSetText(p, EDITNIF_A, myStation->getNif().c_str());
+    pvSetText(p, EDITCA_A, myStation->getRegion().c_str());
+    pvSetText(p, EDITMUNI_A, myStation->getCity().c_str());
+    pvSetText(p, EDITNIMA_A, myStation->getNima().c_str());
+    pvSetText(p, EDITREG_A, myStation->getNumIns().c_str());
+    std::string temp = std::to_string(myStation->getZip());
+    pvSetText(p, EDITCP_A,temp.c_str());
 }
-
 
 static int setFrame(PARAM *p,DATA* d, int id, int state)
 {

@@ -340,11 +340,11 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += ",\"";
     values += depDestinationStation->getRegion();
     values += "\",";
-    values += std::to_string(depDestinationStation->getNima());
+    values += depDestinationStation->getNima();
     values += ",";
-    values += std::to_string(depDestinationStation->getNumIns());
+    values += depDestinationStation->getNumIns();
     values += ",";
-    values += std::to_string(depDestinationStation->getPhone());
+    values += depDestinationStation->getPhone();
     values += ",\"";
     values += depDestinationStation->getMail();
     values += "\",";

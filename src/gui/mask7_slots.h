@@ -45,144 +45,131 @@ extern GLOBAL_DATA globalconfiguration;
 
 static int slotInit(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  //
-  pvResize(p,0,1910,1020);
-  std::string wholeTitle = getTitle();
-  pvSetText(p,LABTYPE,wholeTitle.c_str());
-  //memset(d,0,sizeof(DATA));
+    if(p == NULL || d == NULL) return -1;
+    //
+    pvResize(p,0,1910,1020);
+    std::string wholeTitle = getTitle();
+    pvSetText(p,LABTYPE,wholeTitle.c_str());
+    //memset(d,0,sizeof(DATA));
   
-  //dynamic GUI construction
-  if(formDI->retDepMovType() == DEF_MOV_TRANSFER || formDI->retDepMovType() == DEF_MOV_SALIDA)
+    //dynamic GUI construction
+    if(formDI->retDepMovType() == DEF_MOV_TRANSFER || formDI->retDepMovType() == DEF_MOV_SALIDA)
     {
-      //a) centro nuestro centro de origen
-
-      std::string temp;
-      station * localOrigin;
-      formDI->retDepOriginStation(localOrigin);
-      pvSetText(p,EDITNOMBRE_A,localOrigin->getName().c_str());
-      pvSetText(p,EDITNIF_A,localOrigin->getNif().c_str());
-      pvSetText(p,EDITDIREC_A,localOrigin->getAddress().c_str());
-      temp = std::to_string(localOrigin->getZip());
-      pvSetText(p,EDITCP_A,temp.c_str());
-      pvSetText(p,EDITMUNI_A,localOrigin->getCity().c_str());
-      pvSetText(p,EDITPRO_A,localOrigin->getProvence().c_str());
-      pvSetText(p,EDITCA_A,localOrigin->getRegion().c_str());
-      temp = std::to_string(localOrigin->getNima());
-      pvSetText(p,EDITNIMA_A,temp.c_str());
-      temp = std::to_string(localOrigin->getNumIns());
-      pvSetText(p,EDITREG_A,temp.c_str());
-      delete localOrigin;
-
-      //b) cliente, bioreciclaje
-
-      costumer * bio;
-      formDI->retOurId(bio);
-
-      pvSetText(p,EDITNOMBRE_B,bio->getName().c_str());
-      pvSetText(p,EDITNIF_B,bio->getNif().c_str());
-      pvSetText(p,EDITDIREC_B,bio->getAddress().c_str());
-	temp = std::to_string(bio->getCp());
-      pvSetText(p,EDITCP_B,temp.c_str());
-      pvSetText(p,EDITMUNI_B,bio->getCity().c_str());
-      pvSetText(p,EDITPRO_B,bio->getProvence().c_str());
-      pvSetText(p,EDITCA_B,bio->getRegion().c_str());
-	temp = std::to_string(bio->getNima());
-      pvSetText(p,EDITNIMA_B,temp.c_str());
-	temp = std::to_string(bio->getNumIns());
-      pvSetText(p,EDITREG_B,temp.c_str());
-	temp = std::to_string(bio->getPhone());
-      pvSetText(p,EDITTFN_B,temp.c_str());
-      pvSetText(p,EDITEMAIL_B,bio->getMail().c_str());
-
-      delete bio;
+        //a) centro nuestro centro de origen
+        std::string temp;
+        station * localOrigin;
+        formDI->retDepOriginStation(localOrigin);
+        pvSetText(p, EDITNOMBRE_A, localOrigin->getName().c_str());
+        pvSetText(p, EDITNIF_A, localOrigin->getNif().c_str());
+        pvSetText(p, EDITDIREC_A, localOrigin->getAddress().c_str());
+        temp = std::to_string(localOrigin->getZip());
+        pvSetText(p, EDITCP_A, temp.c_str());
+        pvSetText(p, EDITMUNI_A, localOrigin->getCity().c_str());
+        pvSetText(p, EDITPRO_A, localOrigin->getProvence().c_str());
+        pvSetText(p, EDITCA_A, localOrigin->getRegion().c_str());
+        pvSetText(p, EDITNIMA_A, localOrigin->getNima().c_str());
+        pvSetText(p, EDITREG_A, localOrigin->getNumIns().c_str());
+        delete localOrigin;
+        //b) cliente, ours
+        costumer * bio;
+        formDI->retOurId(bio);
+        pvSetText(p,EDITNOMBRE_B,bio->getName().c_str());
+        pvSetText(p,EDITNIF_B,bio->getNif().c_str());
+        pvSetText(p,EDITDIREC_B,bio->getAddress().c_str());
+	    temp = std::to_string(bio->getCp());
+        pvSetText(p,EDITCP_B,temp.c_str());
+        pvSetText(p,EDITMUNI_B,bio->getCity().c_str());
+        pvSetText(p,EDITPRO_B,bio->getProvence().c_str());
+        pvSetText(p,EDITCA_B,bio->getRegion().c_str());
+	    temp = std::to_string(bio->getNima());
+        pvSetText(p,EDITNIMA_B,temp.c_str());
+	    temp = std::to_string(bio->getNumIns());
+        pvSetText(p,EDITREG_B,temp.c_str());
+	    temp = std::to_string(bio->getPhone());
+        pvSetText(p,EDITTFN_B,temp.c_str());
+        pvSetText(p,EDITEMAIL_B,bio->getMail().c_str());
+        delete bio;
     }
-  else
+    else
     {
-      //b) cliente, nuestro cliente
-      if(formDI->retDepCosName().compare("OTROS"))
-	{
-	  std::string temp;
-	  // a paragraph (production Center) choose one
-	  // pvShow(p,COMBOCENTER); //undone!
-	  station* originStation = NULL;
-	  formDI->retArrOriginStation(originStation);
-	  // already have an origin station
-	  if(originStation)
+        //b) cliente
+        if(formDI->retDepCosName().compare("OTROS"))
 	    {
-	      pvSetText(p, EDITNOMBRE_A, originStation->getName().c_str());
-	      pvSetText(p, EDITNIF_A, originStation->getNif().c_str());
-	      pvSetText(p, EDITDIREC_A, originStation->getAddress().c_str());
-	      temp = std::to_string(originStation->getZip());
-	      pvSetText(p, EDITCP_A, temp.c_str());
-	      pvSetText(p, EDITMUNI_A, originStation->getCity().c_str());
-	      pvSetText(p, EDITPRO_A, originStation->getProvence().c_str());
-	      pvSetText(p, EDITCA_A, originStation->getRegion().c_str());
-	      temp = std::to_string(originStation->getNima());
-	      pvSetText(p, EDITNIMA_A, temp.c_str());
-	      temp = std::to_string(originStation->getNumIns());
-	      pvSetText(p, EDITREG_A, temp.c_str());
-	      delete originStation;
+	        std::string temp;
+	        // a paragraph (production Center) choose one
+	        // pvShow(p,COMBOCENTER); //undone!
+	        station* originStation = NULL;
+	        formDI->retArrOriginStation(originStation);
+	        // already have an origin station
+	        if(originStation)
+	        {
+	            pvSetText(p, EDITNOMBRE_A, originStation->getName().c_str());
+	            pvSetText(p, EDITNIF_A, originStation->getNif().c_str());
+	            pvSetText(p, EDITDIREC_A, originStation->getAddress().c_str());
+	            temp = std::to_string(originStation->getZip());
+	            pvSetText(p, EDITCP_A, temp.c_str());
+	            pvSetText(p, EDITMUNI_A, originStation->getCity().c_str());
+	            pvSetText(p, EDITPRO_A, originStation->getProvence().c_str());
+	            pvSetText(p, EDITCA_A, originStation->getRegion().c_str());
+	            pvSetText(p, EDITNIMA_A, originStation->getNima().c_str());
+	            pvSetText(p, EDITREG_A, originStation->getNumIns().c_str());
+	            delete originStation;
+	        }
+	        std::vector<std::string> myStationsList = formDI->retStationsLst(localDatabase, 0);
+	        populateCombo(p,COMBOCENTER,myStationsList);
+	        // b paragraph (company) editable
+	        pvSetText(p,EDITNOMBRE_B,formDI->retDepCosName().c_str());
+	        pvSetText(p,EDITNIF_B,formDI->retDepCosNif().c_str());
+	        pvSetText(p,EDITDIREC_B,formDI->retDepCosAddr().c_str());
+	        temp = std::to_string(formDI->retDepCosZip());
+	        pvSetText(p,EDITCP_B,temp.c_str());
+	        pvSetText(p,EDITMUNI_B,formDI->retDepCosCity().c_str());
+	        pvSetText(p,EDITPRO_B,formDI->retDepCosProv().c_str());
+	        pvSetText(p,EDITCA_B,formDI->retDepCosReg().c_str());
+	        temp = std::to_string(formDI->retDepCosNima());
+	        pvSetText(p,EDITNIMA_B,temp.c_str());
+	        temp = std::to_string(formDI->retDepCosNumIns());
+	        pvSetText(p,EDITREG_B,temp.c_str());
+	        temp = std::to_string(formDI->retDepCosPhone());
+	        pvSetText(p,EDITTFN_B,temp.c_str());
+	        pvSetText(p,EDITEMAIL_B,formDI->retDepCosMail().c_str());
 	    }
-	  std::vector<std::string> myStationsList = formDI->retStationsLst(localDatabase, 0);
-	  populateCombo(p,COMBOCENTER,myStationsList);
-
-	  // b paragraph (company) editable
-	  pvSetText(p,EDITNOMBRE_B,formDI->retDepCosName().c_str());
-	  pvSetText(p,EDITNIF_B,formDI->retDepCosNif().c_str());
-	  pvSetText(p,EDITDIREC_B,formDI->retDepCosAddr().c_str());
-	  temp = std::to_string(formDI->retDepCosZip());
-	  pvSetText(p,EDITCP_B,temp.c_str());
-	  pvSetText(p,EDITMUNI_B,formDI->retDepCosCity().c_str());
-	  pvSetText(p,EDITPRO_B,formDI->retDepCosProv().c_str());
-	  pvSetText(p,EDITCA_B,formDI->retDepCosReg().c_str());
-	  temp = std::to_string(formDI->retDepCosNima());
-	  pvSetText(p,EDITNIMA_B,temp.c_str());
-	  temp = std::to_string(formDI->retDepCosNumIns());
-	  pvSetText(p,EDITREG_B,temp.c_str());
-	  temp = std::to_string(formDI->retDepCosPhone());
-	  pvSetText(p,EDITTFN_B,temp.c_str());
-	  pvSetText(p,EDITEMAIL_B,formDI->retDepCosMail().c_str());
-	}
-      else //CLIENTE PARTICULAR
-	{
-	  // a paragraph (production Center)
-	  // empty
-	  // b paragraph (company)
-	  std::string temp;
-
-	  pvSetText(p,EDITNOMBRE_B,formDI->retDepPCosName().c_str());
-	  pvSetText(p,EDITNIF_B,formDI->retDepPCosNif().c_str());
-	  pvSetText(p,EDITDIREC_B,formDI->retDepPCosAddr().c_str());
-	  temp = std::to_string(formDI->retDepPCosZip());
-	  pvSetText(p,EDITCP_B,temp.c_str());
-	  pvSetText(p,EDITMUNI_B,formDI->retDepPCosCity().c_str());
-	  pvSetText(p,EDITPRO_B,formDI->retDepPCosProv().c_str());
-	  pvSetText(p,EDITCA_B,formDI->retDepPCosReg().c_str());
-	  temp = std::to_string(formDI->retDepPCosNima());
-	  pvSetText(p,EDITNIMA_B,temp.c_str());
-	  temp = std::to_string(formDI->retDepPCosNumIns());
-	  pvSetText(p,EDITREG_B,temp.c_str());
-          temp = std::to_string(formDI->retDepPCosPhone());
-	  pvSetText(p,EDITTFN_B,temp.c_str());
-	  pvSetText(p,EDITEMAIL_B,formDI->retDepPCosMail().c_str());
-
-	  pvSetEditable(p,EDITNOMBRE_B,1);
-	  pvSetEditable(p,EDITNIF_B,1);
-	  pvSetEditable(p,EDITDIREC_B,1);
-	  pvSetEditable(p,EDITCP_B,1);
-	  pvSetEditable(p,EDITMUNI_B,1);
-	  pvSetEditable(p,EDITPRO_B,1);
-	  pvSetEditable(p,EDITCA_B,1);
-	  pvSetEditable(p,EDITNIMA_B,1);
-	  pvSetEditable(p,EDITREG_B,1);
-	  pvSetEditable(p,EDITCNAE_A,1);
-	}
+        else //CLIENTE PARTICULAR
+	    {
+	        // a paragraph (production Center)
+	        // empty
+	        // b paragraph (company)
+	        std::string temp;
+	        pvSetText(p,EDITNOMBRE_B,formDI->retDepPCosName().c_str());
+	        pvSetText(p,EDITNIF_B,formDI->retDepPCosNif().c_str());
+	        pvSetText(p,EDITDIREC_B,formDI->retDepPCosAddr().c_str());
+	        temp = std::to_string(formDI->retDepPCosZip());
+	        pvSetText(p,EDITCP_B,temp.c_str());
+	        pvSetText(p,EDITMUNI_B,formDI->retDepPCosCity().c_str());
+	        pvSetText(p,EDITPRO_B,formDI->retDepPCosProv().c_str());
+	        pvSetText(p,EDITCA_B,formDI->retDepPCosReg().c_str());
+	        temp = std::to_string(formDI->retDepPCosNima());
+	        pvSetText(p,EDITNIMA_B,temp.c_str());
+	        temp = std::to_string(formDI->retDepPCosNumIns());
+	        pvSetText(p,EDITREG_B,temp.c_str());
+            temp = std::to_string(formDI->retDepPCosPhone());
+	        pvSetText(p,EDITTFN_B,temp.c_str());
+	        pvSetText(p,EDITEMAIL_B,formDI->retDepPCosMail().c_str());
+	        pvSetEditable(p,EDITNOMBRE_B,1);
+	        pvSetEditable(p,EDITNIF_B,1);
+	        pvSetEditable(p,EDITDIREC_B,1);
+	        pvSetEditable(p,EDITCP_B,1);
+	        pvSetEditable(p,EDITMUNI_B,1);
+	        pvSetEditable(p,EDITPRO_B,1);
+	        pvSetEditable(p,EDITCA_B,1);
+	        pvSetEditable(p,EDITNIMA_B,1);
+	        pvSetEditable(p,EDITREG_B,1);
+	        pvSetEditable(p,EDITCNAE_A,1);
+	    }
     }
-  //console
-  consoleRefresh(p,d);
-  
-  return 0;
+    //console
+    consoleRefresh(p,d);
+    return 0;
 }
 
 static int slotNullEvent(PARAM *p, DATA *d)

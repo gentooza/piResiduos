@@ -45,9 +45,9 @@ station::station()
     city = "";
     cp = 0;
     region = "";
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima = "";
+    num_ins = "";
+    phone = "";
     mail = "";
     return;
 }
@@ -80,17 +80,17 @@ void station::reset()
     city.clear();
     cp = 0;
     region.clear();
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima.clear();
+    num_ins.clear();
+    phone.clear();
     mail.clear();
     return;
 }
 void station::setStation(long stationCode, qtDatabase& myDatabase)
 {
-    char * sql = NULL;
+    std::string sql = NULL;
     selAllDatFrmCenter(sql, stationCode);
-    myDatabase.query(NULL,sql);    
+    myDatabase.query(NULL,sql.c_str());    
     std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2();
     if (dataReturn.size())
     {
@@ -102,8 +102,6 @@ void station::setStation(long stationCode, qtDatabase& myDatabase)
         this->reset();
     }
     refreshStationType();
-    if (sql != NULL)
-        delete [] sql;
     return;
 }
 void station::setStation(std::vector<std::string> databaseData)
@@ -164,44 +162,11 @@ void station::setStation(std::vector<std::string> databaseData)
             else if(i==8) //region
                 region = *iter;
             else if(i==9) //NIMA
-            {
-                try
-                {
-                    nima = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "station::setStation In station NIMA field 9 = " << *iter <<  '\n';
-                    nima = 0;
-                }
-            }
+                nima = *iter;
             else if(i==10) //num ins
-            {
-                try
-                {
-                    num_ins = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "station::setStation In station NUM_INS field 10 = " << *iter <<  '\n';
-                    num_ins = 0;
-                }
-            }
+                num_ins = *iter;
             else if(i==11) //phone
-            {
-                try
-                {
-                    phone = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "station::setStation In station PHONE field 11 = " << *iter <<  '\n';
-                    phone = 0;
-                }
-            }
+                phone = *iter;
             else if(i==12) //mail
                 mail = *iter;
             i++;
@@ -217,31 +182,29 @@ void station::setStation(std::vector<std::string> databaseData)
 
 void  station::refreshStationType()
 {
-
-  if(type == 1)
-    sType = "PT";
-  else if(type == 2)
-    sType = "ET";
-  else if(type == 3)
-    sType = "D5";
-  else if(type == 4)
-    sType = "PL";
-  else if(type == 5)
-    sType = "EXTERNO";
-  else
-    sType = "undefined";
-
-  return;
+    if(type == 1)
+        sType = "PT";
+    else if(type == 2)
+        sType = "ET";
+    else if(type == 3)
+        sType = "D5";
+    else if(type == 4)
+        sType = "PL";
+    else if(type == 5)
+        sType = "EXTERNO";
+    else
+        sType = "undefined";
+    return;
 }
 int station::isManuallyEdited()
 {
-  int ret = 0;
-  if(code == 0)
+    int ret = 0;
+    if(code == 0)
     {
-      if(!name.empty() || !nif.empty() || !address.empty() || !provence.empty() || !city.empty() || !region.empty() || !mail.empty())
-	ret = 1;
-      if(cp != 0 || nima != 0 || num_ins != 0 || phone != 0)
-	ret = 1;
+        if(!name.empty() || !nif.empty() || !address.empty() || !provence.empty() || !city.empty() || !region.empty() || !mail.empty())
+	        ret = 1;
+        if(cp != 0 || nima != "" || num_ins != "" || phone != "")
+	        ret = 1;
     }
-  return ret;
+    return ret;
 }

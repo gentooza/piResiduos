@@ -125,7 +125,7 @@ static int slotInit(PARAM *p, DATA *d)
     std::cout << "OPENING DB:" <<remoteDatabaseData.db_type<< " ," << remoteDatabaseData.local_db_host << std::endl;
     ret = remoteDatabase.open(remoteDatabaseData.db_type.c_str(),remoteDatabaseData.local_db_host.c_str(),remoteDatabaseData.db_name.c_str(),remoteDatabaseData.db_user.c_str(),remoteDatabaseData.db_pass.c_str(),dbport);
     checkSchema(p,d);
-    /*station info*/
+    /* station info */
     syncStations(p);
     DEF_BIORECICLAJE_CODE = 0;
     long station_code = 0;
