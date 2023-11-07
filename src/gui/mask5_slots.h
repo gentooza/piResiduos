@@ -263,7 +263,7 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
     popteOrders(p,d,TABORDERS,formSalida);
     //commons       
     popteTransito(p,d,TABLATRANSITO,formSalida);
-    actualizaForm(p,d, formSalida->getState());
+    stateGUI(p,d, formSalida->getState());
   }
   else if(id == BUTDELETRANS)
   {

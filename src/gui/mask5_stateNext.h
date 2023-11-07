@@ -24,62 +24,62 @@ If not, see <https://www.gnu.org/licenses/>.
 
 static int stateNext(PARAM *p, DATA *d)
 {
-  int ret = -1;
-  switch(formSalida->getState()) 
+    int ret = -1;
+    switch(formSalida->getState()) 
     {
-      case -100:
-      {
-	//selection checkbox arrives vs departures
-	if(d->enFutEstado >=1100) //departures
-	  {
-	    d->llegada=0;
-	    pvSetChecked(p,CHKSALIDA,1);
-	    pvSetChecked(p,CHKENTRADA,0);
-	    d->camionElegido = -1;
-	    if(formSalida->retDepMovType() == DEF_MOV_TRANSFER)	      
-	      pvSetChecked(p,CHKTRANSFERENCIA,1);	      
-	    else
-		pvSetChecked(p,CHKTRANSITO,1);
-	    if(!formSalida->retDepDi().empty())
-	      pvSetText(p,EDITDIDEF, formSalida->retDepDi().c_str());
-	    if(formSalida->retDepScaleOut())	      
-	      pvSetText(p,EDITPESOSAL, std::to_string(formSalida->retDepScaleOut()).c_str());
-	    if(!formSalida->retDepPlate().empty())
-	       pvSetText(p,EDITCAM_E2,formSalida->retDepPlate().c_str());	    	
-	  }
-	else //entrada a planta
-	  {
-	    d->llegada=1;
-	    pvSetChecked(p,CHKSALIDA,0);
-	    pvSetChecked(p,CHKENTRADA,1);
-	    if(d->enFutEstado >= 501) //order selected
-	      {
-		popteTransito(p,d,TABLATRANSITO, formSalida);
-		popteOrders(p,d,TABORDERS,formSalida);
-		//COSTUMER NAME
-		pvSetText(p,EDITCLIENT,formSalida->retArrCosName().c_str());
-		//PRODUCT NAME
-		pvSetText(p,EDITPRODUCT,formSalida->retArrProdFullName().c_str());
-		//PERMITS
-		formSalida->setArrCosProdPermits(localDatabase);
-		refreshLerPerms(p,d,1,formSalida);
-		if(formSalida->getFzCurrentProduct())
-		  pvSetChecked(p,CHKFORZARPROD,1);
-		else
-		  pvSetChecked(p,CHKFORZARPROD,0);
-		//plate
-		pvSetText(p,EDITCAM,formSalida->retArrPlate().c_str());
-		//DI and weight
-		if(d->enFutEstado >= 520 && d->enFutEstado != 610)
-		  {
-		    pvSetText(p,EDITDIPROV,formSalida->retArrDi().c_str());
-		    std::string sPeso = std::to_string(formSalida->retArrScaleIn());
-		    pvSetText(p,EDITPESOENT,sPeso.c_str());
-		  }
-	      }
-	  }
-	break;
-      }
+        case(-100):
+        {
+            //selection checkbox arrives vs departures
+            if(d->enFutEstado >=1100) //departures
+            {
+                d->llegada=0;
+                pvSetChecked(p,CHKSALIDA,1);
+                pvSetChecked(p,CHKENTRADA,0);
+                d->camionElegido = -1;
+                if(formSalida->retDepMovType() == DEF_MOV_TRANSFER)	      
+                    pvSetChecked(p,CHKTRANSFERENCIA,1);	      
+                else
+                    pvSetChecked(p,CHKTRANSITO,1);
+                if(!formSalida->retDepDi().empty())
+                    pvSetText(p,EDITDIDEF, formSalida->retDepDi().c_str());
+                if(formSalida->retDepScaleOut())	      
+                    pvSetText(p,EDITPESOSAL, std::to_string(formSalida->retDepScaleOut()).c_str());
+                if(!formSalida->retDepPlate().empty())
+                    pvSetText(p,EDITCAM_E2,formSalida->retDepPlate().c_str());	    	
+            }
+            else //entrada a planta
+            {
+                d->llegada=1;
+                pvSetChecked(p,CHKSALIDA,0);
+                pvSetChecked(p,CHKENTRADA,1);
+                if(d->enFutEstado >= 501) //order selected
+                {
+                    popteTransito(p,d,TABLATRANSITO, formSalida);
+                    popteOrders(p,d,TABORDERS,formSalida);
+                    //COSTUMER NAME
+                    pvSetText(p,EDITCLIENT,formSalida->retArrCosName().c_str());
+                    //PRODUCT NAME
+                    pvSetText(p,EDITPRODUCT,formSalida->retArrProdFullName().c_str());
+                    //PERMITS
+                    formSalida->setArrCosProdPermits(localDatabase);
+                    refreshLerPerms(p,d,1,formSalida);
+                    if(formSalida->getFzCurrentProduct())
+                        pvSetChecked(p,CHKFORZARPROD,1);
+                    else
+                        pvSetChecked(p,CHKFORZARPROD,0);
+                    //plate
+                    pvSetText(p,EDITCAM,formSalida->retArrPlate().c_str());
+                    //DI and weight
+                    if(d->enFutEstado >= 520 && d->enFutEstado != 610)
+                    {
+                        pvSetText(p,EDITDIPROV,formSalida->retArrDi().c_str());
+                        std::string sPeso = std::to_string(formSalida->retArrScaleIn());
+                        pvSetText(p,EDITPESOENT,sPeso.c_str());
+                    }
+                }
+            }
+            break;
+        }
     case -2:
       //LLegamos nuevos!
       d->llegada=1;
