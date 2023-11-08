@@ -568,13 +568,13 @@ void sel_all_cars(char *& sql)
   sprintf(sql,"select matricula from vehiculos where borrado is null or borrado = 0");
 }
 
-void sel_all_cos_from_car(char *&sql, const char *matricula)
+void selCostumersFromCar(std::string&sql, std::string matricula)
 {
-  sql = new char[sizeof("select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE1 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE2 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE3 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE4 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE5 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE6 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE7 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE8 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE9 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"\" THEN CODIGO_CLIENTE10 END) R1 from VEHICULOS")+strlen(matricula)*10+32];
-
-  sprintf(sql,"select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE1 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE2 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE3 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE4 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE5 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE6 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE7 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE8 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE9 END) R1 from VEHICULOS UNION select MAX(CASE WHEN MATRICULA = \"%s\" THEN CODIGO_CLIENTE10 END) R1 from VEHICULOS",matricula,matricula,matricula,matricula,matricula,matricula,matricula,matricula,matricula,matricula);
-
-  return;
+    sql = "select CODIGO_CLIENTE1, CODIGO_CLIENTE2, CODIGO_CLIENTE3, CODIGO_CLIENTE4, CODIGO_CLIENTE5, CODIGO_CLIENTE6, CODIGO_CLIENTE7, CODIGO_CLIENTE8, CODIGO_CLIENTE9, CODIGO_CLIENTE10";
+    sql += ", CODIGO_CLIENTE11, CODIGO_CLIENTE12, CODIGO_CLIENTE13, CODIGO_CLIENTE14, CODIGO_CLIENTE15, CODIGO_CLIENTE16, CODIGO_CLIENTE17, CODIGO_CLIENTE18, CODIGO_CLIENTE19, CODIGO_CLIENTE20";
+    sql += ", CODIGO_CLIENTE21, CODIGO_CLIENTE22, CODIGO_CLIENTE23, CODIGO_CLIENTE24, CODIGO_CLIENTE25, CODIGO_CLIENTE26, CODIGO_CLIENTE27, CODIGO_CLIENTE28, CODIGO_CLIENTE29, CODIGO_CLIENTE30 ";
+    sql += "from VEHICULOS WHERE MATRICULA = \"" + matricula + "\"";
+    return;
 }
 
 void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
@@ -805,12 +805,10 @@ void selProdsPermsFromProductosByCode(char *& sql, std::vector <std::string> pro
   return;
 }
 
-void selectClientNameByCode(char *& sql, const char* code)
+void selCostumerNameByCode(std::string& sql, std::string code)
 {
-  sql = new char[sizeof("SELECT NOMBRE from CLIENTES WHERE (CODIGO_CLIENTE=XXXXX)")+12];
-  sprintf(sql,"SELECT NOMBRE from CLIENTES WHERE (CODIGO_CLIENTE=%s)",code);
-  
-  return;
+    sql = "SELECT NOMBRE from CLIENTES WHERE (CODIGO_CLIENTE = " + code + ")";
+    return;
 }
 
 void selectProductDataByCode(char *& sql, const char* code)
@@ -820,19 +818,11 @@ void selectProductDataByCode(char *& sql, const char* code)
   
   return; 
 }
-void selectProductBasisByCode(char *& sql, const char* code)
+void selProductBasisByCode(std::string& sql, std::string code)
 {  
-  sql = new char[sizeof("SELECT CODIGO_LER,NOMBRE,NOMBRE2,NOMBRE3,DESCRIPCION_PELIGRO from PRODUCTOS WHERE (CODIGO_PRODUCTO=XXXXX)")+12];
-  sprintf(sql,"SELECT CODIGO_LER,NOMBRE,NOMBRE2,NOMBRE3,DESCRIPCION_PELIGRO from PRODUCTOS WHERE (CODIGO_PRODUCTO=%s)",code);
-  
-  return; 
-}
-void selectProductBasisByCode(char *& sql, long code)
-{  
-  sql = new char[sizeof("SELECT CODIGO_LER,NOMBRE,NOMBRE2,NOMBRE3,DESCRIPCION_PELIGRO from PRODUCTOS WHERE (CODIGO_PRODUCTO=XXXXX)")+12];
-  sprintf(sql,"SELECT CODIGO_LER,NOMBRE,NOMBRE2,NOMBRE3,DESCRIPCION_PELIGRO from PRODUCTOS WHERE (CODIGO_PRODUCTO=%ld)",code);
-  
-  return; 
+    sql = "SELECT CODIGO_LER,NOMBRE,NOMBRE2,NOMBRE3,DESCRIPCION_PELIGRO from PRODUCTOS";
+    sql += " WHERE (CODIGO_PRODUCTO =" + code + ")";
+    return; 
 }
 
 void selPermitsFromClientAndProd(char *& sql,const char* tipoEstacion, const char* codigoCliente, const char* codigoProducto)

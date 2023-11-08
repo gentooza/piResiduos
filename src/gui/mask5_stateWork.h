@@ -334,23 +334,21 @@ static int stateWork(PARAM *p, DATA *d)
                 //REMOVE DATABASE QUERY FROM HERE
                 std::string cname;
                 std::string productText;
-                char * sql = NULL;
+                std::string sql;
                 //COSTUMER
                 std::string clientCode = std::to_string(formSalida->retDepCosCode());
-                selectClientNameByCode(sql,clientCode.c_str());
-                localDatabase.query(p,sql);
+                selCostumerNameByCode(sql, clientCode);
+                localDatabase.query(p,sql.c_str());
                 std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
                 if(ourData.size() >= 1)
                 {
                     cname = ourData.at(0).at(0);		
                 }
-                if (sql != NULL)
-                    delete [] sql;
                 //
                 //PRODUCT
                 std::string productCode = std::to_string(formSalida->retDepProdCode());
-                selectProductBasisByCode(sql,productCode.c_str());
-                localDatabase.query(p,sql);
+                selProductBasisByCode(sql, productCode);
+                localDatabase.query(p, sql.c_str());
                 ourData.clear();
                 ourData = localDatabase.retData2();
                 if(ourData.size() >= 1)
@@ -360,11 +358,6 @@ static int stateWork(PARAM *p, DATA *d)
                     std::string pname2 = ourData.at(0).at(2);
                     std::string pname3 = ourData.at(0).at(3);
                     productText = "(" + ler + ") " + pname + " " + pname2 + " " + pname3; 		
-                }
-                if (sql != NULL)
-                {
-                    delete [] sql;
-                    sql = NULL;
                 }
                 //
                 int error = 0;

@@ -65,6 +65,7 @@ void rmt_updt_transfers(char *& sql, std::vector< std::vector <std::string>> dat
 //TABLE PRODUCTS
 void selProdPermits(char *& sql, const char* type, long product_code);
 void selProdDataByCode(char *& sql, long code);
+void selProductBasisByCode(std::string& sql, std::string code);
 void selProdsAllowedToClient(char *& sql, const char* codigoCliente, const char* tipoEstacion, bool temporal);
 void selAllProds(char*&sql);
 void sqlLoadProducts(char*& sql,std::vector<std::vector<std::string>> dataReturn);
@@ -72,7 +73,7 @@ void sqlLoadProducts(char*& sql,std::vector<std::vector<std::string>> dataReturn
 //TABLE COSTUMERS
 void selCosDataByCode(char *& sql, long code);
 void selAllDatFrmCostumers(char *& sql);
-void sel_all_costumers_from_car(char *& sql, char * plate);
+void selCostumerNameByCode(std::string& sql, std::string code);
 void sel_default_driver(char *& sql, long code);
 
 void rmt_sel_all_costumers(char *& sql);
@@ -111,7 +112,7 @@ void sqlLoadTransitoSalidas(char*& sql,std::vector<std::vector<std::string>> dat
 
 //TABLE CARS
 void sel_all_cars(char *& sql);
-void sel_all_cos_from_car(char *&sql, const char *matricula);
+void selCostumersFromCar(std::string& sql, std::string matricula);
 void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
 void rmtSelAllCars(std::string& sql);
 
@@ -142,10 +143,7 @@ void selPermitsTypeClientProd(char *& sql,const char* tipoEstacion, const char* 
 void selPermitsFromClientAndProd(char *& sql,const char* tipoEstacion, const char* codigoCliente, const char* codigoProducto);
 void selProdsCodesPermsFromClienteProductos(char *& sql, const char* cliente , const char* estacion);
 void selProdsPermsFromProductosByCode(char *& sql, std::vector <std::string> prodCodes, const char* estacion);
-void selectClientNameByCode(char *& sql, const char* code);
 void selectProductDataByCode(char *& sql, const char* code);
-void selectProductBasisByCode(char *& sql, const char* code);
-void selectProductBasisByCode(char *& sql, long code);
 void selLastDiFromMovementsByClientProduct(char *& sql, const char* codigoCliente, const char* codigoProducto);
 void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente);
 

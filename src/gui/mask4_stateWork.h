@@ -66,29 +66,34 @@ static int stateWork(PARAM *p, DATA *d)
 	  		{
 	    		//TODO, va fuera!!
 	    		//seleccionamos clientes para la matrícula seleccionada
-	    		char * sql =NULL;
-	    		sel_all_cos_from_car(sql,formEntrada->retArrPlate().c_str());
-	    		localDatabase.query(p,sql);
+	    		std::string sql;
+	    		selCostumersFromCar(sql, formEntrada->retArrPlate());
+	    		localDatabase.query(p,sql.c_str());
 	    		d->allClientes.clear();
 	    		d->allClientesCodes.clear();	    
-	    		std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();	 
-	    		for(int i=0;i<dataReturn.size();i++)
-	      		{
-					if(dataReturn[i][0].compare("0"))
-		  				d->allClientesCodes.push_back(dataReturn[i][0]);
-	      		}
-	    		delete sql;
+	    		std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+                if(dataReturn.size())
+                {
+                    for(std::vector <std::string>::iterator iter = dataReturn[0].begin(); iter != dataReturn[0].end(); ++iter)
+                    {
+                        std::cout << "storing value:" << *iter << std::endl;
+					    if(iter->compare("0"))
+		  				    d->allClientesCodes.push_back(*iter);
+
+                    }
+                }
 	    		for(std::vector <std::string>::iterator iter = d->allClientesCodes.begin(); iter != d->allClientesCodes.end(); ++iter)
 	      		{
+                    std::cout << "iteration: sql for value:" << *iter << std::endl;
 					if(!iter->empty())
 		  			{
-		    			selectClientNameByCode(sql,iter->c_str());
-		    			localDatabase.query(p,sql);
+                        sql.clear();
+		    			selCostumerNameByCode(sql, *iter);
+		    			localDatabase.query(p, sql.c_str());
 		    			dataReturn.clear();
 		    			dataReturn = localDatabase.retData2();
 		    			if(dataReturn.size())
 		      				d->allClientes.push_back(dataReturn[0][0]);
-		    			delete sql;
 		  			}
 	      		}
 	    		d->allClientes.push_back("OTROS");
@@ -542,22 +547,22 @@ static int stateWork(PARAM *p, DATA *d)
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTSAL);
 	    		std::string cname;
 	    		std::string productText;
-	    		char * sql;
+	    		std::string sql;
 	    		//COSTUMER
 	    		std::string clientCode = std::to_string(formEntrada->retDepCosCode());
-	    		selectClientNameByCode(sql,clientCode.c_str());
-	    		localDatabase.query(p,sql);
+	    		selCostumerNameByCode(sql, clientCode);
+	    		localDatabase.query(p, sql.c_str());
 	    		std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
 	    		if(ourData.size() >= 1)
 	      		{
 	        		cname = ourData.at(0).at(0);		
 	      		}	   
-	    		delete sql;
 	    		//
 	    		//PRODUCT
 	    		std::string productCode = std::to_string(formEntrada->retDepProdCode());
-	    		selectProductBasisByCode(sql,productCode.c_str());
-	    		localDatabase.query(p,sql);
+                sql.clear();
+	    		selProductBasisByCode(sql, productCode);
+	    		localDatabase.query(p,sql.c_str());
 	    		ourData.clear();
 	    		ourData = localDatabase.retData2();
 	    		if(ourData.size() >= 1)
@@ -568,7 +573,6 @@ static int stateWork(PARAM *p, DATA *d)
 					std::string pname3 = ourData.at(0).at(3);
 	        		productText = "(" + ler + ") " + pname + " " + pname2 + " " + pname3; 		
 	      		}
-	    		delete sql;
 	    		//
 	    		int error = 0;	    
 	    		d->miTableta = new tableta(error);
@@ -625,9 +629,11 @@ static int stateWork(PARAM *p, DATA *d)
 				break;	
 	  		}
 			case 1097:
+            {
 	  			formEntrada->unsetStaff();
 	  			pvInputDialog(p,BUTPROCEDER_E1,"Inserte el código de basculista para proceder:","");
 	  			break;
+            }
 			case 1099: //almacenaje del movimiento, impresión del pdf
 	  		{
 	    		//copia archivo firma
