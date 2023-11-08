@@ -87,7 +87,7 @@ void load_cos_prod(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void rmt_sel_all_cos_prod(char*&sql);
 
 //TABLE MOVEMENTS
-void selLastDiFromMovementsByClientProduct(char *& sql, long costumer_code, long product_code);
+void selLastDiFromMovementsByClientProduct(std::string& sql, long costumer_code, long product_code);
 void sel_all_unsyncro_movements(char *& sql);
 void upd_all_unsyncro_movements(char *& sql);
 void upd_syncro_movements(char*& sql,std::vector<std::vector<std::string>> dataReturn);
@@ -144,7 +144,6 @@ void selPermitsFromClientAndProd(char *& sql,const char* tipoEstacion, const cha
 void selProdsCodesPermsFromClienteProductos(char *& sql, const char* cliente , const char* estacion);
 void selProdsPermsFromProductosByCode(char *& sql, std::vector <std::string> prodCodes, const char* estacion);
 void selectProductDataByCode(char *& sql, const char* code);
-void selLastDiFromMovementsByClientProduct(char *& sql, const char* codigoCliente, const char* codigoProducto);
 void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente);
 
 void selLastMovCode(char *& sql,const char* codigo_estacion);

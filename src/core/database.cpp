@@ -367,11 +367,11 @@ void rmt_sel_all_cos_prod(char*&sql)
 
 //////// 
 ////****table movements****////
-void selLastDiFromMovementsByClientProduct(char *& sql, long costumer_code, long product_code)
+void selLastDiFromMovementsByClientProduct(std::string& sql, long costumer_code, long product_code)
 {
-  sql = new char[sizeof("select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE=XXXXX AND CODIGO_PRODUCTO=XXXXX ORDER BY DATETIME(FECHA_HORA_FINAL) DESC;") + 64];
-
-  sprintf(sql,"select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE=%lu AND CODIGO_PRODUCTO=%lu ORDER BY DATETIME(FECHA_HORA_FINAL) DESC", costumer_code,product_code);
+  sql = "select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE = " + std::to_string(costumer_code);
+  sql += "AND CODIGO_PRODUCTO = " + std::to_string(product_code);
+  sql += " ORDER BY DATETIME(FECHA_HORA_FINAL) DESC";
 
   return;
 }
@@ -832,15 +832,6 @@ void selPermitsFromClientAndProd(char *& sql,const char* tipoEstacion, const cha
   sprintf(sql,"select case when PRODUCTOS.PERMISO_%s > 0 then 1 else 0 end,case when PRODUCTOS.CONTRATO_%s>0 and CLIENTES_PRODUCTOS.CONTRATO_%s >= CURRENT_DATE then 1 when PRODUCTOS.CONTRATO_%s=0 then 1 else 0 end,case when PRODUCTOS.NPT_%s>0 and CLIENTES_PRODUCTOS.NPT_%s >0 then 1 when PRODUCTOS.NPT_%s=0 then 1 else 0 end, case when PRODUCTOS.CB_%s>0 and CLIENTES_PRODUCTOS.CB_%s >0 then 1 when PRODUCTOS.CB_%s=0 then 1 else 0 end, case when PRODUCTOS.CP_%s>0 and CLIENTES_PRODUCTOS.CP_%s >0 THEN 1 when PRODUCTOS.CP_%s=0 then 1 else 0 end,case when PRODUCTOS.DCP_%s>0 and CLIENTES_PRODUCTOS.DCP_%s >0 then 1 when PRODUCTOS.DCP_%s=0 then 1 else 0 end from CLIENTES_PRODUCTOS inner join PRODUCTOS on CLIENTES_PRODUCTOS.CODIGO_PRODUCTO = %s and PRODUCTOS.CODIGO_PRODUCTO = %s and CLIENTES_PRODUCTOS.CODIGO_CLIENTE = %s",tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,tipoEstacion,codigoProducto,codigoProducto,codigoCliente);
 
   return;
-}
-
-void selLastDiFromMovementsByClientProduct(char *& sql, const char* codigoCliente, const char* codigoProducto)
-{
- sql = new char[sizeof("select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE=XXXXX AND CODIGO_PRODUCTO=XXXXX ORDER BY DATETIME(FECHA_HORA) DESC;") + 32];
-
- sprintf(sql,"select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE=%s AND CODIGO_PRODUCTO=%s ORDER BY DATETIME(FECHA_HORA_FINAL) DESC", codigoCliente,codigoProducto);
-
- return;
 }
 
 void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente)
