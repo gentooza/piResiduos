@@ -80,14 +80,14 @@ class costumer
         int getCbc(){return cbc;};
         void setCbc(int newCbc){cbc=newCbc;};
         
-        long getNima(){return nima;};
-        void setNima(long newNima){nima = newNima;};
+        std::string getNima(){return nima;};
+        void setNima(std::string newNima){nima = newNima;};
         
-        long getNumIns(){return num_ins;};
-        void setNumIns(long newNumIns){num_ins = newNumIns;};
+        std::string getNumIns(){return num_ins;};
+        void setNumIns(std::string newNumIns){num_ins = newNumIns;};
         
-        long getPhone(){return phone;};
-        void setPhone(long newPhone){phone = newPhone;};
+        std::string getPhone(){return phone;};
+        void setPhone(std::string newPhone){phone = newPhone;};
         
         std::string getMail(){return mail;};
         void setMail(std::string newMail){mail=newMail;};
@@ -104,9 +104,9 @@ class costumer
         long billin_code;
         int cbc;
         int type;
-        long nima;
-        long num_ins;
-        long phone;
+        std::string nima;
+        std::string num_ins;
+        std::string phone;
         std::string mail;
 };
 

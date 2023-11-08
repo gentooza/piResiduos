@@ -1677,14 +1677,14 @@ void inputForm::createPdf(std::string printerId)
 
  //NIMA
  HPDF_Page_BeginText (page1);
- myText = std::to_string(our_costumer->getNima());
+ myText = our_costumer->getNima();
  HPDF_Page_MoveTextPos (page1, 188, 112);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
 
  //TELEFONO
  HPDF_Page_BeginText (page1);
- myText = std::to_string(our_costumer->getPhone());
+ myText = our_costumer->getPhone();
  HPDF_Page_MoveTextPos (page1, 188, 86);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
@@ -1699,7 +1699,7 @@ void inputForm::createPdf(std::string printerId)
 
  //Nº INSC REGISTRO
  HPDF_Page_BeginText (page1);
- myText = std::to_string(our_costumer->getNumIns());
+ myText = our_costumer->getNumIns();
  HPDF_Page_MoveTextPos (page1, 465, 112);
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);

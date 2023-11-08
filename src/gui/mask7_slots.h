@@ -71,24 +71,21 @@ static int slotInit(PARAM *p, DATA *d)
         pvSetText(p, EDITREG_A, localOrigin->getNumIns().c_str());
         delete localOrigin;
         //b) cliente, ours
-        costumer * bio;
-        formDI->retOurId(bio);
-        pvSetText(p,EDITNOMBRE_B,bio->getName().c_str());
-        pvSetText(p,EDITNIF_B,bio->getNif().c_str());
-        pvSetText(p,EDITDIREC_B,bio->getAddress().c_str());
-	    temp = std::to_string(bio->getCp());
-        pvSetText(p,EDITCP_B,temp.c_str());
-        pvSetText(p,EDITMUNI_B,bio->getCity().c_str());
-        pvSetText(p,EDITPRO_B,bio->getProvence().c_str());
-        pvSetText(p,EDITCA_B,bio->getRegion().c_str());
-	    temp = std::to_string(bio->getNima());
-        pvSetText(p,EDITNIMA_B,temp.c_str());
-	    temp = std::to_string(bio->getNumIns());
-        pvSetText(p,EDITREG_B,temp.c_str());
-	    temp = std::to_string(bio->getPhone());
-        pvSetText(p,EDITTFN_B,temp.c_str());
-        pvSetText(p,EDITEMAIL_B,bio->getMail().c_str());
-        delete bio;
+        costumer * us;
+        formDI->retOurId(us);
+        pvSetText(p, EDITNOMBRE_B, us->getName().c_str());
+        pvSetText(p, EDITNIF_B, us->getNif().c_str());
+        pvSetText(p, EDITDIREC_B, us->getAddress().c_str());
+	    temp = std::to_string(us->getCp());
+        pvSetText(p, EDITCP_B, temp.c_str());
+        pvSetText(p, EDITMUNI_B, us->getCity().c_str());
+        pvSetText(p, EDITPRO_B, us->getProvence().c_str());
+        pvSetText(p, EDITCA_B, us->getRegion().c_str());
+        pvSetText(p, EDITNIMA_B, us->getNima().c_str());
+        pvSetText(p, EDITREG_B, us->getNumIns().c_str());
+        pvSetText(p, EDITTFN_B, us->getPhone().c_str());
+        pvSetText(p, EDITEMAIL_B, us->getMail().c_str());
+        delete us;
     }
     else
     {

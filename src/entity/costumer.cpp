@@ -46,9 +46,9 @@ costumer::costumer()
     billin_code = 0;
     cbc = 0;
     type = 0;
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima = "";
+    num_ins = "";
+    phone = "";
     mail = "";
     return;
 }
@@ -88,9 +88,9 @@ void costumer::reset()
     billin_code = 0;
     cbc = 0;
     type = 0;
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima.clear();
+    num_ins.clear();
+    phone.clear();
     mail.clear();
     return;
 }
@@ -110,6 +110,8 @@ void costumer::setCostumer(long cosCode, qtDatabase& myDatabase)
         std::cerr << "ERROR: costumer::setCostumer wrong number of fields passed to constructor, needed 15, NO DATA RECEIVED" <<  '\n';
         reset();
     }
+    if (sql)
+        delete [] sql;
     return;
 }
 void costumer::setCostumer(std::vector<std::string> databaseData)
@@ -128,9 +130,9 @@ void costumer::setCostumer(std::vector<std::string> databaseData)
                 }
                 catch(const std::invalid_argument& ia)
                 {
-                std::cerr << "Invalid argument: " << ia.what() << '\n';
-                std::cerr << "costumer::setCostumer In costumer CODE field 0 = " << *iter <<  '\n';
-                code = 0;
+                    std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    std::cerr << "costumer::setCostumer In costumer CODE field 0 = " << *iter <<  '\n';
+                    code = 0;
                 }
             }
             if(i==1) //NAME
@@ -198,44 +200,11 @@ void costumer::setCostumer(std::vector<std::string> databaseData)
             else if(i==10) //region
                 region = *iter;
             else if(i==11) //NIMA
-            {
-                try
-                {
-                    nima = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "costumer::setCostumer In costumer NIMA field 11 = " << *iter <<  '\n';
-                    nima = 0;
-                }
-            }
+                nima = *iter;
             else if(i==12) //num ins
-            {
-                try
-                {
-                    num_ins = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "costumer::setCostumer In costumer NUM_INS field 12 = " << *iter <<  '\n';
-                    num_ins = 0;
-                }
-            }	      
+                num_ins = *iter;
             else if(i==13) //phone
-            {
-                try
-                {
-                    phone = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "costumer::setCostumer In costumer PHONE field 13 = " << *iter <<  '\n';
-                    phone = 0;
-                }
-            }
+                phone = *iter;
             else if(i==14) //mail
                 mail = *iter;
             i++;
