@@ -72,24 +72,15 @@ void selectAllFromOrders(char *& sql, long station_code)
   return;
 }
 
-void delOrder(char *& sltQuery, char *& myQuery,long destiny,long costumer,long product)
+void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer,long product)
 {
-  sltQuery = new char[sizeof("DELETE FROM ordenes WHERE CODIGO_CLIENTE = XXXXX AND CODIGO_DESTINO = XXXXX AND CODIGO_PRODUCTO = XXXXXX AND (REPETIR is null or REPETIR = 0) order by FECHA_HORA asc LIMIT 1") + 32];
-
-  myQuery = new char[sizeof("DELETE FROM ordenes WHERE CODIGO_CLIENTE = XXXXX AND CODIGO_DESTINO = XXXXX AND CODIGO_PRODUCTO = XXXXXX AND (REPETIR is null or REPETIR = 0) order by FECHA_HORA asc LIMIT 1") + 32];
-  
-  sprintf(sltQuery,"DELETE FROM ordenes WHERE CODIGO_CLIENTE = %lu AND CODIGO_DESTINO = %lu AND CODIGO_PRODUCTO = %lu AND (REPETIR is null or REPETIR = 0) order by FECHA_PROGRAMADA asc LIMIT 1",costumer,destiny,product);
-
-  sprintf(myQuery,"DELETE FROM ordenes WHERE CODIGO_CLIENTE = %lu AND CODIGO_DESTINO = %lu AND CODIGO_PRODUCTO = %lu AND (REPETIR is null or REPETIR = 0) order by FECHA_PROGRAMADA asc LIMIT 1",costumer,destiny,product);
+  sltQuery = "DELETE FROM ordenes WHERE CODIGO_CLIENTE =" + std::to_string(costumer);
+  sltQuery += " AND CODIGO_DESTINO = " + std::to_string(destiny);
+  sltQuery += " AND CODIGO_PRODUCTO = " + std::to_string(product);
+  sltQuery += " AND (REPETIR is null or REPETIR = 0) order by FECHA_PROGRAMADA asc LIMIT 1";
+  myQuery = sltQuery;
 }
 
-/*! function for deleting an order by order code */
-void delOrder(char *& myQuery, long order_code)
-{
-  myQuery = new char[sizeof("DELETE FROM ordenes WHERE CODIGO_ORDEN = XXXXXXXXXXX") + 32];
-
-  sprintf(myQuery,"DELETE FROM ordenes WHERE CODIGO_ORDEN = %lu", order_code);
-}
 /*! select all order data by it's order code*/
 void selOrderById(char *& sql, long order_code)
 {

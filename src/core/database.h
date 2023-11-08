@@ -52,8 +52,7 @@ void selIntCentersNameCode(char *& sql);
 
 //TABLE ORDERS
 void selectAllFromOrders(char *& sql, long station_code);
-void delOrder(char *& sltQuery, char *& myQuery,long destiny,long costumer_code, long product);
-void delOrder(char *& myQuery, long order_code);
+void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer_code, long product);
 void selOrderById(char *& myQuery, long order_code);
 
 //TABLE TRANSFERS

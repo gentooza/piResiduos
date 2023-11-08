@@ -29,156 +29,147 @@ If not, see <https://www.gnu.org/licenses/>.
 
 int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase,int remote_host_connected)
 {
-  int ret = -1;
-  std::string sqliteQuery,mysqlQuery;
-  std::string str_log_message;
+    int ret = -1;
+    std::string sqliteQuery, mysqlQuery;
+    std::string str_log_message;
   
-  //getting sql queries
-  storeMov(sqliteQuery,mysqlQuery,depOriginStation,localDatabase);
+    //getting sql queries
+    storeMov(sqliteQuery, mysqlQuery, depOriginStation, localDatabase);
 
-  //trying to remote save
-  if(remote_host_connected)
+    //trying to remote save
+    if(remote_host_connected)
     {
-      str_log_message = "(CARGA) remote db -> ";
-      str_log_message += mysqlQuery;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(NULL,mysqlQuery.c_str()))
-	{
-	  log_message("(CARGA) registro en BD remota parece OK", 1);
-	  int sync=1;
-	  //RECHECK!
-	  check_last(mysqlQuery,depDestinationStation);
-	  str_log_message = "(CARGA) chequeo redundante en BD remota -> ";
-	  str_log_message += mysqlQuery;
-	  log_message(str_log_message, 1);
-	  if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
-	    sync=0;
-	  else
+        str_log_message = "(CARGA) remote db -> ";
+        str_log_message += mysqlQuery;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(NULL,mysqlQuery.c_str()))
 	    {
-	      if(remoteDatabase.retData2().empty())
-		sync=0;
-	    }
-	  
-	  if(sync)
-	    {
-	      log_message("(CARGA) chequeo redundante en BD remota parece OK", 1);
-	      sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
-	    }
-	  else
-	    log_message("(CARGA) chequeo redundante en BD remota parece que FALLÓ", 1);
+	        log_message("(CARGA) registro en BD remota parece OK", 1);
+	        int sync=1;
+	        //RECHECK!
+	        check_last(mysqlQuery, depDestinationStation);
+	        str_log_message = "(CARGA) chequeo redundante en BD remota -> ";
+	        str_log_message += mysqlQuery;
+	        log_message(str_log_message, 1);
+	        if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
+	            sync=0;
+	        else
+	        {
+	            if(remoteDatabase.retData2().empty())
+		            sync=0;
+	        }
+	        if(sync)
+	        {
+	            log_message("(CARGA) chequeo redundante en BD remota parece OK", 1);
+	            sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
+	        }
+	        else
+	            log_message("(CARGA) chequeo redundante en BD remota parece que FALLÓ", 1);
 
-	  str_log_message = "(CARGA) local db -> ";
-	  str_log_message += sqliteQuery;
-	  log_message(str_log_message, 1);
-	  if(!localDatabase.query(NULL,sqliteQuery.c_str())) //saving in local server
-	    {
-	      //deleting from transit
-	      ret = 0;
-	      mysqlQuery.clear();
-	      mysqlQuery = "delete from transito_salidas where (FECHA_HORA =\"";
-	      mysqlQuery += retDepDateTime();
-	      mysqlQuery += "\" and CODIGO_ESTACION=";
-	      mysqlQuery += std::to_string(depOriginStation->getCode());
-	      mysqlQuery += ")";
-	      str_log_message = "(CARGA) db remota -> ";
-	      str_log_message += mysqlQuery;
-	      log_message(str_log_message, 1);	      
-	      if(remoteDatabase.query(NULL,mysqlQuery.c_str()))
-		log_message("(CARGA) registro en BD remota parece ERROR", 2);
-	      else
-		log_message("(CARGA) registro en BD remota parece OK", 2);		
-
-	      sqliteQuery.clear();
-	      sqliteQuery = "delete from TRANSITO_SALIDAS where (FECHA_HORA =\"";
-	      sqliteQuery += retDepDateTime();
-	      sqliteQuery += "\")";
-	      str_log_message = "(CARGA) db local -> ";
-	      str_log_message += sqliteQuery;
-	      log_message(str_log_message, 1);
-	      if(localDatabase.query(NULL,sqliteQuery.c_str()))
-		log_message("(CARGA) registro en BD local parece ERROR", 2);
-	      else
-		log_message("(CARGA) registro en BD local parece OK", 2);		
-
-	      //if order, clean
-	      if(!ret && retDepMovType() == DEF_MOV_SALIDA)
-		{
-		  char * sqlite;
-		  char * mysql;
-		  delOrder(sqlite,mysql,depOriginStation->getCode(),retDepCosCode(),retDepProdCode());
-		  str_log_message = "(CARGA) db local -> ";
-		  str_log_message += sqlite;
-		  log_message(str_log_message, 1);
-		  if(localDatabase.query(NULL,sqlite))
-		    {
-		      ret=-10;
-		      log_message("(CARGA) registro en BD local parece ERROR", 2);
-		    }
-		  else
-		    {
-		      log_message("(CARGA) registro en BD local parece OK", 2);		
-		    }
-		  str_log_message = "(CARGA) db remota -> ";
-		  str_log_message += mysql;
-		  log_message(str_log_message, 1); 
-		  if(remoteDatabase.query(NULL,mysql))
-		    {
-		      ret = -100;
-		      log_message("(CARGA) registro en BD remota parece ERROR", 2);
-		    }
-		  else
-		    {
-		      log_message("(CARGA) registro en BD remota parece OK", 2);	
-		    }
-		  delete sqlite;
-		  delete mysql;
-		}   
+	        str_log_message = "(CARGA) local db -> ";
+	        str_log_message += sqliteQuery;
+	        log_message(str_log_message, 1);
+	        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //saving in local server
+	        {
+	            //deleting from transit
+	            ret = 0;
+	            mysqlQuery.clear();
+	            mysqlQuery = "delete from transito_salidas where (FECHA_HORA =\"";
+	            mysqlQuery += retDepDateTime();
+	            mysqlQuery += "\" and CODIGO_ESTACION=";
+	            mysqlQuery += std::to_string(depOriginStation->getCode());
+	            mysqlQuery += ")";
+	            str_log_message = "(CARGA) db remota -> ";
+	            str_log_message += mysqlQuery;
+	            log_message(str_log_message, 1);	      
+	            if(remoteDatabase.query(NULL,mysqlQuery.c_str()))
+		            log_message("(CARGA) registro en BD remota parece ERROR", 2);
+	            else
+		            log_message("(CARGA) registro en BD remota parece OK", 2);		
+	            sqliteQuery.clear();
+	            sqliteQuery = "delete from TRANSITO_SALIDAS where (FECHA_HORA =\"";
+	            sqliteQuery += retDepDateTime();
+	            sqliteQuery += "\")";
+	            str_log_message = "(CARGA) db local -> ";
+	            str_log_message += sqliteQuery;
+	            log_message(str_log_message, 1);
+	            if(localDatabase.query(NULL,sqliteQuery.c_str()))
+		            log_message("(CARGA) registro en BD local parece ERROR", 2);
+	            else
+		            log_message("(CARGA) registro en BD local parece OK", 2);		
+	            //if order, clean
+	            if(!ret && retDepMovType() == DEF_MOV_SALIDA)
+		        {
+                    sqliteQuery.clear();
+                    mysqlQuery.clear();
+		            delOrder(sqliteQuery, mysqlQuery, depOriginStation->getCode(), retDepCosCode(), retDepProdCode());
+		            str_log_message = "(CARGA) db local -> ";
+		            str_log_message += sqliteQuery;
+		            log_message(str_log_message, 1);
+		            if(localDatabase.query(NULL, sqliteQuery.c_str()))
+		            {
+		                ret=-10;
+		                log_message("(CARGA) registro en BD local parece ERROR", 2);
+		            }
+		            else
+		            {
+		                log_message("(CARGA) registro en BD local parece OK", 2);		
+		            }
+		            str_log_message = "(CARGA) db remota -> ";
+		            str_log_message += mysqlQuery;
+		            log_message(str_log_message, 1); 
+		            if(remoteDatabase.query(NULL, mysqlQuery.c_str()))
+		            {
+		                ret = -100;
+		                log_message("(CARGA) registro en BD remota parece ERROR", 2);
+		            }
+		            else
+		            {
+		                log_message("(CARGA) registro en BD remota parece OK", 2);	
+		            }
+		        }   
+	        }
+	        else //local fail, is cathastrophic!
+	        {
+	            log_message("(CARGA) registro en BD local parece ERROR, es catastrófico!", 2);
+	            ret = -2;
+	        }
 	    }
-	  else //local fail, is cathastrophic!
+        else //Remote fail, is bad
 	    {
-	      log_message("(CARGA) registro en BD local parece ERROR, es catastrófico!", 2);
-	      ret = -2;
+	        log_message("(CARGA)(guardando movimiento) BD remota ERROR(query)", 2);
+	        ret = -1;
 	    }
-	}
-      else //Remote fail, is bad
-	{
-	  log_message("(CARGA)(guardando movimiento) BD remota ERROR(query)", 2);
-	  ret = -1;
-	}
     }
-  else
+    else
     {
-      log_message("(CARGA)(guardando movimiento)  BD remota ERROR(connection)", 2);
-      ret = -1;
+        log_message("(CARGA)(guardando movimiento)  BD remota ERROR(connection)", 2);
+        ret = -1;
     }
-  
-  if(ret < 0) //no remote saving
+    if(ret < 0) //no remote saving
     {
-      str_log_message = "(CARGA) db local -> ";
-      str_log_message += sqliteQuery;
-      log_message(str_log_message, 1); 
-      if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
-	{
-	  //DELETING TRANSIT
-	  sqliteQuery.clear();
-	  sqliteQuery = "delete from TRANSITO_SALIDAS where (FECHA_HORA =\"";
-	  sqliteQuery += retDepDateTime();
-	  sqliteQuery += "\")";
-	  str_log_message = "(CARGA) db local -> ";
-	  str_log_message += sqliteQuery;
-	  log_message(str_log_message, 1); 	  
-	  localDatabase.query(NULL,sqliteQuery.c_str());
-	      
-	}
-      else
-	{
-	  log_message("(CARGA) registro en BD local parece ERROR, es catastrófico!", 2);
-	  ret = -2;
-	}
+        str_log_message = "(CARGA) db local -> ";
+        str_log_message += sqliteQuery;
+        log_message(str_log_message, 1); 
+        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
+	    {
+	        //DELETING TRANSIT
+	        sqliteQuery.clear();
+	        sqliteQuery = "delete from TRANSITO_SALIDAS where (FECHA_HORA =\"";
+	        sqliteQuery += retDepDateTime();
+	        sqliteQuery += "\")";
+	        str_log_message = "(CARGA) db local -> ";
+	        str_log_message += sqliteQuery;
+	        log_message(str_log_message, 1); 	  
+	        localDatabase.query(NULL,sqliteQuery.c_str());	      
+	    }
+        else
+	    {
+	        log_message("(CARGA) registro en BD local parece ERROR, es catastrófico!", 2);
+	        ret = -2;
+	    }
     }
-
-  
-  return ret;
+    return ret;
 }
 int outputForm::storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my_remote_database, int remote_host_connected)
 {
@@ -911,9 +902,9 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
             depOriginStation->setCity(ourId->getCity());
             depOriginStation->setRegion(ourId->getRegion());
             depOriginStation->setZip(ourId->getCp());
-            depOriginStation->setNima(std::to_string(ourId->getNima()));
-            depOriginStation->setNumIns(std::to_string(ourId->getNumIns()));
-            depOriginStation->setPhone(std::to_string(ourId->getPhone()));
+            depOriginStation->setNima(ourId->getNima());
+            depOriginStation->setNumIns(ourId->getNumIns());
+            depOriginStation->setPhone(ourId->getPhone());
             depOriginStation->setMail(ourId->getMail());
         }
         getAllOrderInfo(localDatabase, myDepMovement.CODIGO_ORDEN);
@@ -1157,40 +1148,19 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
 	    {
             if(!depAuthCostumer)
                 depAuthCostumer = new costumer();
-            try
-		    {
-                depAuthCostumer->setNima(std::stoul(*col));
-            }
-            catch(...)
-            {
-                // do nothing
-            }
+            depAuthCostumer->setNima(*col);
 	    }
         else if(numCol == 35) // INFO_DESTINO_AUTORIZADO_N_INSC_REGISTRO
 	    {
             if(!depAuthCostumer)
                 depAuthCostumer = new costumer();
-            try
-		    {
-              depAuthCostumer->setNumIns(std::stoul(*col));
-            }
-            catch(...)
-            {
-                // do nothing
-            }
+            depAuthCostumer->setNumIns(*col);
 	    }
         else if(numCol == 36) // INFO_DESTINO_AUTORIZADO_TELEFONO
 	    {
             if(!depAuthCostumer)
                 depAuthCostumer = new costumer();
-            try
-		    {
-                depAuthCostumer->setPhone(std::stoul(*col));
-            }
-            catch(...)
-            {
-                // do nothing
-            }
+            depAuthCostumer->setPhone(*col);
 	    }
         else if(numCol == 37) // INFO_DESTINO_AUTORIZADO_EMAIL
 	    {
@@ -1620,14 +1590,14 @@ if(retDepCosName().compare("OTROS"))
 
      //NIMA
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(our_company->getNima());
+     myText = our_company->getNima();
      HPDF_Page_MoveTextPos (page1, 188, 437);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
 		 
      //TELEFON0
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(our_company->getPhone());
+     myText = our_company->getPhone();
      HPDF_Page_MoveTextPos (page1, 188, 411);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1642,7 +1612,7 @@ if(retDepCosName().compare("OTROS"))
 
      //Nº INSC REGISTRO
      HPDF_Page_BeginText (page1);
-     myText = std::to_string(our_company->getNumIns());
+     myText = our_company->getNumIns();
      HPDF_Page_MoveTextPos (page1, 465, 437);
      HPDF_Page_ShowText (page1, myText.c_str());
      HPDF_Page_EndText (page1);
@@ -1913,101 +1883,101 @@ if(retDepCosName().compare("OTROS"))
  HPDF_Page_ShowText (page1, myText.c_str());
  HPDF_Page_EndText (page1);
 
-delete localDestination;
+    delete localDestination;
 
-  // B) Costumer
-  //  -> tags
-  std::string s6b_name;
-  std::string s6b_address;
-  std::string s6b_city;
-  std::string s6b_nima;
-  std::string s6b_phone;
-  std::string s6b_province;
-  std::string s6b_num_ins;
-  std::string s6b_email;
-  std::string s6b_nif;
-  std::string s6b_zip;
-  std::string s6b_region;
-  //  -> logic
-  if(retDepMovType() == DEF_MOV_SALIDA && (retDepCosType() == 4 || retDepCosType() == 1)) // special cases
-  {
-    // NAME
-    s6b_name = depAuthCostumer->getName();
-    // ADDRESS
-    s6b_address = depAuthCostumer->getAddress();
-    // CITY
-    s6b_city = depAuthCostumer->getCity();
-    // NIMA
-    s6b_nima = std::to_string(depAuthCostumer->getNima());
-    // PHONE
-    s6b_phone = std::to_string(depAuthCostumer->getPhone());
-    // PROVINCE
-    s6b_province = depAuthCostumer->getProvence();
-    // REGISTRATION NUMBER
-    s6b_num_ins = std::to_string(depAuthCostumer->getNumIns());
-    // EMAIL
-    s6b_email = depAuthCostumer->getMail();
-    // NIF
-    s6b_nif = depAuthCostumer->getNif();
-    // ZIP
-    s6b_zip = std::to_string(depAuthCostumer->getCp());
-    // region
-    s6b_region = depAuthCostumer->getRegion();
-  }
-  else
-  {
-    if(retDepCosName().compare("OTROS")) //Cliente registrado
+    // B) Costumer
+    //  -> tags
+    std::string s6b_name;
+    std::string s6b_address;
+    std::string s6b_city;
+    std::string s6b_nima;
+    std::string s6b_phone;
+    std::string s6b_province;
+    std::string s6b_num_ins;
+    std::string s6b_email;
+    std::string s6b_nif;
+    std::string s6b_zip;
+    std::string s6b_region;
+    //  -> logic
+    if(retDepMovType() == DEF_MOV_SALIDA && (retDepCosType() == 4 || retDepCosType() == 1)) // special cases
     {
-      // NAME
-      s6b_name = retDepCosName();
-      // ADDRESS
-      s6b_address = retDepCosAddr();
-      // CITY
-      s6b_city = retDepCosCity();
-      // NIMA
-      s6b_nima = std::to_string(retDepCosNima());
-      // PHONE
-      s6b_phone = std::to_string(retDepCosPhone());
-      // PROVINCE
-      s6b_province = retDepCosProv();
-      // REGISTRATION NUMBER
-      s6b_num_ins = std::to_string(retDepCosNumIns());
-      // EMAIL
-      s6b_email = retDepCosMail();
-      // NIF
-      s6b_nif = retDepCosNif();
-      // ZIP
-      s6b_zip = std::to_string(retDepCosZip());
-      // REGION
-      s6b_region = retDepCosReg();
+        // NAME
+        s6b_name = depAuthCostumer->getName();
+        // ADDRESS
+        s6b_address = depAuthCostumer->getAddress();
+        // CITY
+        s6b_city = depAuthCostumer->getCity();
+        // NIMA
+        s6b_nima = depAuthCostumer->getNima();
+        // PHONE
+        s6b_phone = depAuthCostumer->getPhone();
+        // PROVINCE
+        s6b_province = depAuthCostumer->getProvence();
+        // REGISTRATION NUMBER
+        s6b_num_ins = depAuthCostumer->getNumIns();
+        // EMAIL
+        s6b_email = depAuthCostumer->getMail();
+        // NIF
+        s6b_nif = depAuthCostumer->getNif();
+        // ZIP
+        s6b_zip = std::to_string(depAuthCostumer->getCp());
+        // region
+        s6b_region = depAuthCostumer->getRegion();
     }
-    else //PARTICULAR COSTUMER
+    else
     {
-      // NAME
-      s6b_name = retDepPCosName();
-      // ADDRESS
-      s6b_address = retDepPCosAddr();
-      // CITY
-      s6b_city = retDepPCosCity();
-      // NIMA
-      s6b_nima = std::to_string(retDepPCosNima());
-      // PHONE
-      s6b_phone = std::to_string(retDepPCosPhone());
-      // PROVINCE
-      s6b_province = retDepPCosProv();
-      // REGISTRATION NUMBER
-      s6b_num_ins = std::to_string(retDepPCosNumIns());
-      // EMAIL
-      s6b_email = retDepPCosMail();
-      // NIF
-      s6b_nif = retDepPCosNif();
-      // ZIP
-      s6b_zip = std::to_string(retDepPCosZip());
-      // REGION
-      s6b_region = retDepPCosReg();
+        if(retDepCosName().compare("OTROS")) //Cliente registrado
+        {
+            // NAME
+            s6b_name = retDepCosName();
+            // ADDRESS
+            s6b_address = retDepCosAddr();
+            // CITY
+            s6b_city = retDepCosCity();
+            // NIMA
+            s6b_nima = std::to_string(retDepCosNima());
+            // PHONE
+            s6b_phone = std::to_string(retDepCosPhone());
+            // PROVINCE
+            s6b_province = retDepCosProv();
+            // REGISTRATION NUMBER
+            s6b_num_ins = std::to_string(retDepCosNumIns());
+            // EMAIL
+            s6b_email = retDepCosMail();
+            // NIF
+            s6b_nif = retDepCosNif();
+            // ZIP
+            s6b_zip = std::to_string(retDepCosZip());
+            // REGION
+            s6b_region = retDepCosReg();
+        }
+        else //PARTICULAR COSTUMER
+        {
+            // NAME
+            s6b_name = retDepPCosName();
+            // ADDRESS
+            s6b_address = retDepPCosAddr();
+            // CITY
+            s6b_city = retDepPCosCity();
+            // NIMA
+            s6b_nima = std::to_string(retDepPCosNima());
+            // PHONE
+            s6b_phone = std::to_string(retDepPCosPhone());
+            // PROVINCE
+            s6b_province = retDepPCosProv();
+            // REGISTRATION NUMBER
+            s6b_num_ins = std::to_string(retDepPCosNumIns());
+            // EMAIL
+            s6b_email = retDepPCosMail();
+            // NIF
+            s6b_nif = retDepPCosNif();
+            // ZIP
+            s6b_zip = std::to_string(retDepPCosZip());
+            // REGION
+            s6b_region = retDepPCosReg();
+        }
     }
-  }
-  //  -> printing
+    //  -> printing
   // NAME
   set_di_text(page1,fsize,47,font,s6b_name,188,187);
   // ADDRESS
