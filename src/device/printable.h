@@ -106,6 +106,14 @@ class printable
     virtual int composeComment(){return 0;};
     virtual int composeStaff(){return 0;};
 
+    // only PDF
+    virtual void setProductLer(std::string productLer){ return; };
+    virtual void setProductDanger(std::string productDanger){ return; };
+    virtual void setDiCode(std::string diCode){ return; };
+    virtual void setDiNpt(std::string diNpt){ return; };
+    virtual void setDiDateTime(std::string diDateTime){ return; };
+
+    // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };
     virtual void setTicketCode(std::string code) { return; };
     virtual void setTicketType(std::string type) { return; };

@@ -1203,32 +1203,39 @@ int outputForm::isDiComplete()
 //////////////////////////////////////////////////////////////////
 /*! function for creating our document with all the stored info 
   about our movement*/
-
-
-
 void outputForm::createPdf(std::string printerId)
 {
-  std::cout << "entrando en el método novedosísimo y patentadísimo de CREATE PDF!! es brooma ;-)" << std::endl;
-  
-  std::string titulo = "Ticket cliente: ";
-  //rodri: const char *page_title = titulo.c_str();
+    printable *myDi;
 
-  HPDF_Doc  pdf;
-  HPDF_Font font;
-  HPDF_Page page1,page2;
-  HPDF_Image templatePage1,templatePage2;
-  char fname[512];
-  char signature[512];
+    std::string fileName = retDepDiFolder() + "/ticket.pdf";
+    myDi = new printableDi(fileName, printerId);
 
-  //rodri: float tw;
-  float fsize = 14;
-  //rodri: int i;
-  //rodri: int len;
+    myDi->setProductLer(std::to_string(retDepProdLER()));
+    myDi->setProductDanger(retDepProdPeligro());
+    myDi->setDiCode(retDepDi());
+    myDi->setDiNpt(std::to_string(retDepPermitNPT()));
+    myDi->setDiDateTime(removeTime(retDepDateTime()));
 
+    myDi->composeFile();
+    myDi->saveFile();
+    myDi->printFile();
+    delete myDi;
 
-  std::string myText = retDepDiFolder();
-  strcpy (fname, myText.c_str());
-  strcat (fname, "/ticket.pdf");
+    // everything now is deprecated
+    std::string titulo = "Ticket cliente: ";
+    
+    HPDF_Doc  pdf;
+    HPDF_Font font;
+    HPDF_Page page1,page2;
+    HPDF_Image templatePage1,templatePage2;
+    char fname[512];
+    char signature[512];
+
+    float fsize = 14;
+
+    std::string myText = retDepDiFolder();
+    strcpy (fname, myText.c_str());
+    strcat (fname, "/ticket.pdf");
   myText.clear();
 
   pdf = HPDF_New (error_handler, NULL);
@@ -1304,7 +1311,7 @@ void outputForm::createPdf(std::string printerId)
   HPDF_Page_ShowText (page1, removeTime(myText).c_str());
   HPDF_Page_EndText (page1);
 
-  		//4. COSTUMER DATA
+    //4. COSTUMER DATA
 
  //Posiciones de la X
  HPDF_Page_BeginText (page1);

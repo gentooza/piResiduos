@@ -52,7 +52,7 @@ Facade class for managing every entity in database
 #include "driver.h"
 #include "printable.h"
 #include "printableTicket.h"
-#include "printableDI.h"
+#include "printableDi.h"
 
 
 enum
