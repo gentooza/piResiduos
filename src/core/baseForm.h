@@ -349,6 +349,13 @@ class  baseForm
         struMovement retArrMovement(){return myArrMovement;};
         struMovement retDepMovement(){return myDepMovement;};  
         ////COSTUMER DATA
+        costumer* arrCostumer;
+        costumer* depCostumer;
+        void setArrCostumer(costumer* newCostumer){if(arrCostumer) delete arrCostumer; arrCostumer = new costumer(); *arrCostumer = *newCostumer; return;}; 
+        void setDepCostumer(costumer* newCostumer){if(depCostumer) delete depCostumer; depCostumer = new costumer(); *depCostumer = *newCostumer; return;};
+        void retArrCostumer(costumer *& newCostumer){ (arrCostumer?newCostumer = new costumer(arrCostumer):newCostumer = new costumer());};
+        void retDepCostumer(costumer *& newCostumer){ (depCostumer?newCostumer = new costumer(depCostumer):newCostumer = new costumer());};
+
         void setOurCosDATA(long code, qtDatabase &myDatabase);
         void setDepCosDATA(std::vector <std::string> newDATA);
         int set_dep_p_costumer_data(qtDatabase & myDatabase, long code);

@@ -695,96 +695,99 @@ int inputForm::delTransit(int index,std::string plate, qtDatabase & myDatabase, 
 }
 int inputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDatabase)
 {
-  int ret = -1, num_of_row = 0;
-  std::vector<std::vector<std::string>>::iterator row;
-  row = vctAllTransit.begin();
+    int ret = -1, num_of_row = 0;
+    std::vector<std::vector<std::string>>::iterator row;
+    row = vctAllTransit.begin();
  
-  while(row != vctAllTransit.end())
+    while(row != vctAllTransit.end())
     {
-      if(row->size() > 7) //DATABASE DEPENDANT
-	{
-	  if(!byPlate.compare(row->at(7))&& (num_of_row >= index || index == -1) ) //DATABASE DEPENDANT
+        if(row->size() > 7) //DATABASE DEPENDANT
 	    {
-	      clearDepMov();
-	      setDepDi(row->at(0)); //DI
-	      setDepDateTime(row->at(1)); //FECHA_HORA
-	      try
-		{
-		  setDepMovType(std::stoi(row->at(2))); //TIPO_MOVIMIENTO
-		}
-	      catch(...)
-		{
-		  setDepMovType(DEF_MOV_ENTRADA);
-		}
-	      try
-		{
-		  setDepCosCode(std::stol(row->at(3))); //CODIGO_CLIENTE
-		}
-	      catch(...)
-		{
-		  setDepCosCode(0);
-		}
-	      try
-		{
-		  setDepProdCode(std::stol(row->at(4))); //CODIGO PRODUCTO
-		}
-	      catch(...)
-		{
-		  setDepProdCode(0);
-		}
-	      try
-		{
-		  setDepScaleIn(std::stoul(row->at(5))); //PESO_ENTRADA
-		}
-	      catch(...)
-		{
-		  setDepScaleIn(0); //PESO_ENTRADA
-		}
-	      try
-		{
-		  setDepPrice(std::stof(row->at(6))); //PRECIO
-		}
-	      catch(...)
-		{
-		  setDepPrice(0.0);
-		}
-	      setDepPlate(row->at(7)); //MATRICULA
-	      setDepPlateAtt(row->at(8)); //REMOLQUE
-	      try//ORIGEN
-		{
-		  if(depOriginStation)
-		    delete depOriginStation;
-		  depOriginStation = new station(std::stol(row->at(9)),myDatabase);
-		}
-	      catch(...)
-		{
-		  if(depOriginStation)
-		    delete depOriginStation;
-		  depOriginStation = new station();
-		}
-	      //incidents
-	      std::vector<std::string> newIncidents = getOutputIncidents();
-	      setOutputIncidents( stringToVector(row->at(10),";"));
-	      outputConcatenate(newIncidents);
-	      //
-	      setOutputComment(row->at(11));  //COMENTARIO OPERADOR
-	      try
-		{
-		  setDepScaleOut(std::stoul(row->at(12))); //PESO_SALIDA
-		}
-	      catch(...)
-		{
-		  setDepScaleOut(0);
-		}
-	      ret = 0;
-	      break;
+	        if(!byPlate.compare(row->at(7))&& (num_of_row >= index || index == -1) ) //DATABASE DEPENDANT
+	        {
+	            clearDepMov();
+	            setDepDi(row->at(0)); //DI
+	            setDepDateTime(row->at(1)); //FECHA_HORA
+	            try
+		        {
+		            setDepMovType(std::stoi(row->at(2))); //TIPO_MOVIMIENTO
+		        }
+	            catch(...)
+		        {
+		            setDepMovType(DEF_MOV_ENTRADA);
+		        }
+                try // COSTUMER
+		        {
+		            if(depCostumer)
+		                delete depCostumer;
+		            depCostumer = new costumer(std::stol(row->at(3)),myDatabase);
+		        }
+	            catch(...)
+		        {
+		            if(depCostumer)
+		                delete depCostumer;
+		            depCostumer = new costumer();
+		        }
+	            try
+		        {
+		            setDepProdCode(std::stol(row->at(4))); //CODIGO PRODUCTO
+		        }
+	            catch(...)
+		        {
+		            setDepProdCode(0);
+		        }
+	            try
+		        {
+		            setDepScaleIn(std::stoul(row->at(5))); //PESO_ENTRADA
+		        }
+	            catch(...)
+		        {
+		            setDepScaleIn(0); //PESO_ENTRADA
+		        }
+	            try
+		        {
+		            setDepPrice(std::stof(row->at(6))); //PRECIO
+		        }
+	            catch(...)
+		        {
+		            setDepPrice(0.0);
+		        }
+	            setDepPlate(row->at(7)); //MATRICULA
+	            setDepPlateAtt(row->at(8)); //REMOLQUE
+	            try//ORIGEN
+		        {
+		            if(depOriginStation)
+		                delete depOriginStation;
+		            depOriginStation = new station(std::stol(row->at(9)),myDatabase);
+		        }
+	            catch(...)
+		        {
+		            if(depOriginStation)
+		                delete depOriginStation;
+		            depOriginStation = new station();
+		        }
+	            //incidents
+	            std::vector<std::string> newIncidents = getOutputIncidents();
+	            setOutputIncidents( stringToVector(row->at(10),";"));
+	            outputConcatenate(newIncidents);
+	            //
+	            setOutputComment(row->at(11));  //COMENTARIO OPERADOR
+	            try
+		        {
+		            setDepScaleOut(std::stoul(row->at(12))); //PESO_SALIDA
+		        }
+	            catch(...)
+		        {
+		            setDepScaleOut(0);
+		        }
+	            ret = 0;
+	            break;
+	        }
 	    }
-	}
-      ++row;
-      num_of_row++;
+        ++row;
+        num_of_row++;
     }
-
-  return ret;
+    return ret;
 }
 //TODO
 //costumer functions

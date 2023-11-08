@@ -939,76 +939,79 @@ static int stateNext(PARAM *p, DATA *d)
     case 326: //pesaje báscula puesto 1
       d->enFutEstado = 321;
       break;
-    case 1000: //salida de descargar
-      //auto-syncronization
-      if(syncro_needed(&my_syncro_data))
-	{
-	  globalSyncronization(p,d,formEntrada);
-	  stateGUI(p,d, formEntrada->getState());
-	  //commons
-	  popteTransito(p,d,TABLATRANSITO, formEntrada);
-	  syncro_done(&my_syncro_data);
-	}
-      /////////////////////
-      if(d->entrarDescargar) //selector a salirDescargar
-	{
-	  d->enFutEstado = 0;
-	}
-      else if(formEntrada->isPlateInTransit(formEntrada->retDepPlate()))
-	{
-	  formEntrada->setTransitMov(d->camionElegido,formEntrada->retDepPlate(),localDatabase);
-	  if(formEntrada->retDepMovType() == DEF_MOV_TRANSFER)
-	    formEntrada->incDepPlateEdited(0);
-	  d->enFutEstado = 1020;
-	}
-       
-      else if(d->plateTaking) //si pulsamos en tomar maricula pasamos a capturarla
-	{
-	  formEntrada->incDepPlateEdited(0);
-	  pvSetText(p,EDITCAM_E2,"");
-	  formEntrada->setDepPlate("");
-	  d->plateTaking = 0;
-	  d->processTag = 0;
-	  d->enFutEstado=1010;
-	  d->camionElegido=-1;
-	}
-      else if(!d->transito_plate.empty())
-	{
-	  formEntrada->setDepPlate(d->transito_plate);
-	  pvSetText(p,EDITCAM_E2,d->transito_plate.c_str());
-	}
-       
-      break;
-    case 1010: //carga matricula cámara 1
-      d->enFutEstado = 1011;
-      break; 
-    case 1011:     
-      if(d->processTag != 0) //fin del proceso de toma de matrículas
-	{
-	  d->plateTaking = 0;
-	  d->processTag = 0;
-	  d->enFutEstado = 1000;
-	}
-      ret = 0;
-      break;
-    case 1020: //camión elegido
-      //correctamente tarado o no?
-      if(formEntrada->isDepPesoOk())	
-	d->enFutEstado = 1021; //correctamente tarado
-      else if(d->pesaje2) //pesaje de tara
-	{
-	  d->pesaje2 = 0;
-	  d->enFutEstado = 1025;
-	}
-      //cancelamos o retrocedemos
-      else if(d->cancelar || d->retroceder)
-	{
-	  pvSetText(p,EDITCAM_E2,"");
-	  d->cancelar = d->retroceder = 0;
-	  d->enFutEstado = 1000; //cancelamos
-	  resetForm(p,d,formEntrada);
-	}
-      break;
+        case 1000: //salida de descargar
+        {
+            //auto-syncronization
+            if(syncro_needed(&my_syncro_data))
+    	    {
+	            globalSyncronization(p,d,formEntrada);
+	            stateGUI(p,d, formEntrada->getState());
+	            //commons
+	            popteTransito(p,d,TABLATRANSITO, formEntrada);
+	            syncro_done(&my_syncro_data);
+	        }
+            /////////////////////
+            if(d->entrarDescargar) //selector a salirDescargar
+	        {
+	            d->enFutEstado = 0;
+	        }
+            else if(formEntrada->isPlateInTransit(formEntrada->retDepPlate()))
+	        {
+	            d->enFutEstado = 1020;
+	        }
+            else if(d->plateTaking) //si pulsamos en tomar maricula pasamos a capturarla
+	        {
+	            formEntrada->incDepPlateEdited(0);
+	            pvSetText(p,EDITCAM_E2,"");
+	            formEntrada->setDepPlate("");
+	            d->plateTaking = 0;
+	            d->processTag = 0;
+	            d->enFutEstado=1010;
+	            d->camionElegido=-1;
+	        }
+            else if(!d->transito_plate.empty())
+	        {
+	            formEntrada->setDepPlate(d->transito_plate);
+	            pvSetText(p,EDITCAM_E2,d->transito_plate.c_str());
+	        }
+            break;
+        }
+        case 1010: //carga matricula cámara 1
+        {
+            d->enFutEstado = 1011;
+            break; 
+        }
+        case 1011:
+        {
+            if(d->processTag != 0) //fin del proceso de toma de matrículas
+	        {
+	            d->plateTaking = 0;
+	            d->processTag = 0;
+	            d->enFutEstado = 1000;
+	        }
+            ret = 0;
+            break;
+        }
+        case 1020: //camión elegido
+        {
+            //correctamente tarado o no?
+            if(formEntrada->isDepPesoOk())	
+	            d->enFutEstado = 1021; //correctamente tarado
+            else if(d->pesaje2) //pesaje de tara
+	        {
+	            d->pesaje2 = 0;
+	            d->enFutEstado = 1025;
+	        }
+            //cancelamos o retrocedemos
+            else if(d->cancelar || d->retroceder)
+	        {
+	            pvSetText(p,EDITCAM_E2,"");
+	            d->cancelar = d->retroceder = 0;
+	            d->enFutEstado = 1000; //cancelamos
+	            resetForm(p,d,formEntrada);
+	        }
+            break;
+        }
     case 1021: //truck scaled
       if(formEntrada->isSignature())
 	d->enFutEstado = 1023; //it' s signed

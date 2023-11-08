@@ -430,6 +430,9 @@ static int stateWork(PARAM *p, DATA *d)
 	  		{
 	    		//operator comment
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTSAL);
+                formEntrada->setTransitMov(d->camionElegido,formEntrada->retDepPlate(), localDatabase);
+	            if(formEntrada->retDepMovType() == DEF_MOV_TRANSFER)
+	                formEntrada->incDepPlateEdited(0);
 	    		//load DI
 	    		formEntrada->createDepDi(localDatabase);	    
 	    		pvSetText(p,EDITDIDEF,formEntrada->retDepDi().c_str());

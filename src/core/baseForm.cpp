@@ -29,6 +29,8 @@ baseForm::baseForm(int type, int entrance)
     clearMovement(myArrMovement);
     clearMovement(myDepMovement);
     //pointers
+    arrCostumer = new costumer();
+    depCostumer = new costumer();
     arrOriginStation = new station();
     depOriginStation = new station ();
     arrDestinationStation = new station ();
@@ -61,6 +63,8 @@ baseForm::baseForm()
 {
     clearMovement(myArrMovement);
     clearMovement(myDepMovement);
+    arrCostumer = NULL;
+    depCostumer = NULL;
     arrOriginStation = NULL;
     depOriginStation = NULL;
     arrDestinationStation = NULL;
@@ -74,6 +78,10 @@ baseForm::baseForm()
 }
 baseForm::~baseForm()
 {
+    if (arrCostumer)
+        delete arrCostumer;
+    if (depCostumer)
+        delete depCostumer;
     if(arrOriginStation)
         delete arrOriginStation;
     if(depOriginStation)
@@ -100,6 +108,8 @@ void baseForm::copyFrom(baseForm * toCopy)
     myArrMovement = toCopy->retArrMovement();
     myDepMovement = toCopy->retDepMovement();
 
+    toCopy->retArrCostumer(arrCostumer);
+    toCopy->retDepCostumer(depCostumer);
     toCopy->retArrOriginStation(arrOriginStation);
     toCopy->retDepOriginStation(depOriginStation);
     toCopy->retArrDestinationStation(arrDestinationStation);
@@ -147,6 +157,7 @@ void baseForm::resetForm(int departure)
         iIncidents.clear();
         iComment.clear();
         clearMovement(myArrMovement);
+        resetArrCostumer();
         resetArrOrigin();
         resetArrDestination();
         clearArrDiFolder();
@@ -158,6 +169,7 @@ void baseForm::resetForm(int departure)
         oIncidents.clear();
         oComment.clear();
         clearMovement(myDepMovement);
+        resetDepCostumer();
         resetDepOrigin();
         resetDepDestination();
         clearDepDiFolder();
@@ -679,26 +691,24 @@ void baseForm::setDatePermit(std::string strDate)
 std::string baseForm::createArrDi(qtDatabase & localDatabase)
 {
     std::string di;
+    std::string sql;
     //our year
     time_t myTime = time(NULL);
     struct tm *aTime = localtime(&myTime);
     int year = aTime->tm_year + 1900;
-            
-    char * sql = NULL;
+
     std::string temporalDI;
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovementsByClientProduct(sql,retArrCosCode(),retArrProdCode());  
-    localDatabase.query(NULL,sql);
+    selLastDiFromMovementsByClientProduct(sql, retArrCosCode(), retArrProdCode());  
+    localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())
     {
         temporalDI = ourData.at(0).at(0);
         temporalDIDate = ourData.at(0).at(1);
     }
-    if (sql != NULL)
-        delete [] sql;
     //REFRESH COSTUMER NIF
     setAllArrCostumerData(localDatabase);	   
     if(isNewYear(temporalDIDate,year)) //new year, new DI
@@ -718,29 +728,26 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
 {
     std::string oldDi = retDepDi();
     std::string di;
+    std::string sql;
     //our year
     time_t myTime = time(NULL);
     struct tm *aTime = localtime(&myTime);
     int year = aTime->tm_year + 1900;
             
-    char * sql = NULL;
+
     std::string temporalDI;
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovementsByClientProduct(sql,retDepCosCode(),retDepProdCode());  
-    localDatabase.query(NULL,sql);
+    selLastDiFromMovementsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());  
+    localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())
     {
         temporalDI = ourData.at(0).at(0);
         temporalDIDate = ourData.at(0).at(1);
     }
-    if (sql != NULL)
-    {
-        delete[] sql;
-    }
-    
+   
     //REFRESH COSTUMER NIF
     setAllDepCostumerData(localDatabase);	   
     if(isNewYear(temporalDIDate,year)) //new year, new DI
@@ -2385,6 +2392,11 @@ void baseForm::resetArrCostumer()
   myArrMovement.CLIENTE_NUM_INSCRIPCION = 0;
   myArrMovement.CLIENTE_TELEFONO = 0;
   myArrMovement.CLIENTE_MAIL.clear();
+
+    if(arrCostumer != NULL)
+        arrCostumer->reset();
+    else    
+        arrCostumer = new costumer();
 }
 void baseForm::resetDepCostumer()
 {
@@ -2402,6 +2414,11 @@ void baseForm::resetDepCostumer()
   myDepMovement.CLIENTE_NUM_INSCRIPCION = 0;
   myDepMovement.CLIENTE_TELEFONO = 0;
   myDepMovement.CLIENTE_MAIL.clear();
+
+    if(depCostumer != NULL)
+        depCostumer->reset();
+    else    
+        depCostumer = new costumer();
 }
 void baseForm::resetArrProduct()
 {
