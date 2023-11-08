@@ -144,34 +144,6 @@ typedef struct struMovement
 
     long CLIENTE_PRODUCTO_NPT;
 
-    //station origStation;
-    long CODIGO_ORIGEN;
-    long CODIGO_DESTINO;
-    std::string DESTINO_NOMBRE;
-    std::string DESTINO_NIF;
-    std::string DESTINO_DOMICILIO;
-    std::string DESTINO_PROVINCIA;
-    std::string DESTINO_POBLACION;
-    unsigned int DESTINO_CP;
-    std::string DESTINO_COMUNIDAD_AUTONOMA;
-    long DESTINO_NIMA;
-    long DESTINO_NUM_INSCRIPCION;
-    long DESTINO_TELEFONO;
-    std::string DESTINO_MAIL;
-
-    long CODIGO_DESTINO_AUT;
-    std::string DESTINO_AUT_NOMBRE;
-    std::string DESTINO_AUT_NIF;
-    std::string DESTINO_AUT_DOMICILIO;
-    std::string DESTINO_AUT_PROVINCIA;
-    std::string DESTINO_AUT_POBLACION;
-    unsigned int DESTINO_AUT_CP;
-    std::string DESTINO_AUT_COMUNIDAD_AUTONOMA;
-    long DESTINO_AUT_NIMA;
-    long DESTINO_AUT_NUM_INSCRIPCION;
-    long DESTINO_AUT_TELEFONO;
-    std::string DESTINO_AUT_MAIL;
-
     long CODIGO_ORDEN;
     int ECOEMBES;
     std::string FECHA_FIRMA;
@@ -193,6 +165,8 @@ typedef struct struMovement
     std::string CODIGO_MOVIMIENTO;
     int TIPO_DE_MOVIMIENTO;
     int REPETIR;
+
+    long CODIGO_ORIGEN;
 };
 
 class  baseForm 
