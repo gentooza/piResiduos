@@ -88,7 +88,7 @@ void station::reset()
 }
 void station::setStation(long stationCode, qtDatabase& myDatabase)
 {
-    std::string sql = NULL;
+    std::string sql;
     selAllDatFrmCenter(sql, stationCode);
     myDatabase.query(NULL,sql.c_str());    
     std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2();
