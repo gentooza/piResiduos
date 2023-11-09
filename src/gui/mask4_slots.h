@@ -119,7 +119,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << "--DATOS SALIDA DE PLANTA--" << std::endl;
     std::cout << " MATRICULA:\"" << (formEntrada?formEntrada->retDepPlate():"null") << "\"";
     std::cout << " TIPO DE MOVIMIENTO:\"" << (formEntrada?std::to_string(formEntrada->retDepMovType()):"null") << "\"";  
-    std::cout << " CLIENTE CÓDIGO:\"" <<   (formEntrada?std::to_string(formEntrada->retDepCosCode()):"null")<<"\"";
+    std::cout << " CLIENTE CÓDIGO:\"" << (formEntrada?std::to_string(formEntrada->depCostumer->getCode()):"null")<<"\"";
     std::cout << std::endl;
     std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retDepProdCode()):"null") << "\"";
     std::cout << std::endl;

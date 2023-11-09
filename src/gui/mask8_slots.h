@@ -3,6 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
 Copyright 2019-2020, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -385,7 +386,7 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
 	            pvSetEditable(p,EDITDIREC_A,1);
 	            pvSetEditable(p,EDITPRO_A,1);
 	            pvSetEditable(p,EDITNIF_A,1);
-	                pvSetEditable(p,EDITCA_A,1);
+	            pvSetEditable(p,EDITCA_A,1);
 	            pvSetEditable(p,EDITMUNI_A,1);
 	            pvSetEditable(p,EDITNIMA_A,1);
 	            pvSetEditable(p,EDITREG_A,1);

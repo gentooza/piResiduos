@@ -99,39 +99,38 @@ static int slotInit(PARAM *p, DATA *d)
 
 static int slotNullEvent(PARAM *p, DATA *d)
 {
-  if(p == NULL || d == NULL) return -1;
-  std::cout << "#####DEBUG SALIDA DE MATERIAL#####" << std::endl;
-  std::cout << "ESTADO ACTUAL:\"" << (formSalida?std::to_string(formSalida->getState()):"null") << "\", ESTADO FUTURO:\"" << d->enFutEstado << "\""<< std::endl;
-  std::cout << "--DATOS ENTRADA A PLANTA--" << std::endl;
-  std::cout << "MATRICULA:\"" << (formSalida?formSalida->retArrPlate():"null") << "\"";
-  std::cout << " TIPO DE MOVIMIENTO:\"" << (formSalida?std::to_string(formSalida->retArrMovType()):"null") << "\"";
-  std::cout << " CLIENTE CÓDIGO:\"" <<   (formSalida?std::to_string(formSalida->retArrCosCode()):"null")<<"\", CLIENTE NOMBRE:\""<<  (formSalida?formSalida->retArrCosName():"null")<<"\"";
-  std::cout << std::endl;
-  std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retArrProdCode()):"null") << "\" Permitido?:\"" << (formSalida?(formSalida->isArrProdPermit()?"si!":"no!"):"null") << "\" ," ;
-  std::cout <<  std::endl;
-  std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getInputIncidents(),"  || ")  << std::endl;
-  std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getInputComment():"null") << "\"" << std::endl;
-  std::cout << "CARPETA:\"" << (formSalida?formSalida->retArrDiFolder():"null") << std::endl;  
-  std::cout << "**********" << std::endl;
-  std::cout << "--DATOS SALIDA DE PLANTA--" << std::endl;
-  std::cout << "MATRICULA:\"" << (formSalida?formSalida->retDepPlate():"null") << "\"";
-  std::cout << " TIPO DE MOVIMIENTO:\"" << (formSalida?std::to_string(formSalida->retDepMovType()):"null") << "\"";
-  std::cout << " CÓDIGO CLIENTE:\"" <<   (formSalida?std::to_string(formSalida->retDepCosCode()):"null")<<"\"";
-  std::cout << std::endl;
-  std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retDepProdCode()):"null") << "\"";
-  std::cout << std::endl;
-  std::cout << "TRANSPORTISTA:\"" << (formSalida?std::to_string(formSalida->retDepDriCode()):"null")  << "\"" << std::endl;
-  //STATIONS
-  station* origin = NULL;
-  station* destination = NULL;
-  formSalida->retDepOriginStation(origin);
-  formSalida->retDepDestinationStation(destination); 
-  std::cout << "ORIGEN:" << std::to_string(origin->getCode()) << "  DESTINATION:" << std::to_string(destination->getCode()) << std::endl;
-  if (origin)
-    delete origin;
-  if(destination)
-    delete destination;
-
+    if(p == NULL || d == NULL) return -1;
+    std::cout << "#####DEBUG SALIDA DE MATERIAL#####" << std::endl;
+    std::cout << "ESTADO ACTUAL:\"" << (formSalida?std::to_string(formSalida->getState()):"null") << "\", ESTADO FUTURO:\"" << d->enFutEstado << "\""<< std::endl;
+    std::cout << "--DATOS ENTRADA A PLANTA--" << std::endl;
+    std::cout << "MATRICULA:\"" << (formSalida?formSalida->retArrPlate():"null") << "\"";
+    std::cout << " TIPO DE MOVIMIENTO:\"" << (formSalida?std::to_string(formSalida->retArrMovType()):"null") << "\"";
+    std::cout << " CLIENTE CÓDIGO:\"" <<   (formSalida?std::to_string(formSalida->retArrCosCode()):"null")<<"\", CLIENTE NOMBRE:\""<<  (formSalida?formSalida->retArrCosName():"null")<<"\"";
+    std::cout << std::endl;
+    std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retArrProdCode()):"null") << "\" Permitido?:\"" << (formSalida?(formSalida->isArrProdPermit()?"si!":"no!"):"null") << "\" ," ;
+    std::cout <<  std::endl;
+    std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getInputIncidents(),"  || ")  << std::endl;
+    std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getInputComment():"null") << "\"" << std::endl;
+    std::cout << "CARPETA:\"" << (formSalida?formSalida->retArrDiFolder():"null") << std::endl;  
+    std::cout << "**********" << std::endl;
+    std::cout << "--DATOS SALIDA DE PLANTA--" << std::endl;
+    std::cout << "MATRICULA:\"" << (formSalida?formSalida->retDepPlate():"null") << "\"";
+    std::cout << " TIPO DE MOVIMIENTO:\"" << (formSalida?std::to_string(formSalida->retDepMovType()):"null") << "\"";
+    std::cout << " CÓDIGO CLIENTE:\"" <<   (formSalida?std::to_string(formSalida->depCostumer->getCode()):"null")<<"\"";
+    std::cout << std::endl;
+    std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retDepProdCode()):"null") << "\"";
+    std::cout << std::endl;
+    std::cout << "TRANSPORTISTA:\"" << (formSalida?std::to_string(formSalida->retDepDriCode()):"null")  << "\"" << std::endl;
+    //STATIONS
+    station* origin = NULL;
+    station* destination = NULL;
+    formSalida->retDepOriginStation(origin);
+    formSalida->retDepDestinationStation(destination); 
+    std::cout << "ORIGEN:" << std::to_string(origin->getCode()) << "  DESTINATION:" << std::to_string(destination->getCode()) << std::endl;
+    if (origin)
+        delete origin;
+    if(destination)
+        delete destination;
     //
   std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getOutputIncidents(),"||")  << std::endl;
   std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getOutputComment():"null") << "\"" << std::endl;

@@ -184,7 +184,9 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(1200):
             {
                 //tipo de movimiento transferencia!
-                formSalida->setTransferMov(DEF_BIORECICLAJE_CODE,myStation);	  
+                costumer* us = new costumer(DEF_BIORECICLAJE_CODE, localDatabase);
+                formSalida->setTransferMov(us, myStation);
+                delete us;
                 break;
             }
 	        case(1211):
@@ -335,21 +337,14 @@ static int stateWork(PARAM *p, DATA *d)
                 std::string cname;
                 std::string productText;
                 std::string sql;
+                std::vector <std::vector <std::string>> ourData;
                 //COSTUMER
-                std::string clientCode = std::to_string(formSalida->retDepCosCode());
-                selCostumerNameByCode(sql, clientCode);
-                localDatabase.query(p,sql.c_str());
-                std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-                if(ourData.size() >= 1)
-                {
-                    cname = ourData.at(0).at(0);		
-                }
+                cname = formSalida->depCostumer->getName();
                 //
                 //PRODUCT
                 std::string productCode = std::to_string(formSalida->retDepProdCode());
                 selProductBasisByCode(sql, productCode);
                 localDatabase.query(p, sql.c_str());
-                ourData.clear();
                 ourData = localDatabase.retData2();
                 if(ourData.size() >= 1)
                 {
