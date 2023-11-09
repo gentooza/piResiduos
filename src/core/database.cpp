@@ -481,12 +481,14 @@ void rmt_del_transito(char *& sql, int fromStation)
 /////
 ///////////////////////////////////
 /**** TABLE TRANSITO_SALIDAS *****/
-void  updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias)
+void  updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, std::string comentario, std::string incidencias)
 {
-  
-  sql = new char[sizeof("UPDATE TRANSITO_SALIDAS SET PESO_SALIDA = XXXXXXXXX , comentario_operador = \"XXXXXXXX\", incidencias = \"XXXXXXXXX\" WHERE (FECHA_HORA = (XXXX-XX-XX XX:XX:XX) AND CODIGO_CLIENTE=XXXXXX AND CODIGO_PRODUCTO=XXXXXX)")+32 + strlen(comentario) + strlen(incidencias) ];
-
-  sprintf(sql,"update transito_salidas set PESO_RETIRADO = %u , comentario_operador = \"%s\", incidencias = \"%s\" WHERE (FECHA_HORA = \"%s\" AND CODIGO_CLIENTE = \"%lu\" AND CODIGO_PRODUCTO = \"%lu\")",peso_salida,comentario, incidencias, fecha_hora,codigo_cliente,codigo_producto);
+  sql = "update transito_salidas set PESO_RETIRADO = " + std::to_string(peso_salida);
+  sql += ", comentario_operador = \" " + comentario;
+  sql += "\", incidencias = \"" + incidencias;
+  sql += "\" WHERE (FECHA_HORA = \"" + fecha_hora;
+  sql += "\" AND CODIGO_CLIENTE = \"" + std::to_string(codigo_cliente);
+  sql += "\" AND CODIGO_PRODUCTO = \"" + std::to_string(codigo_producto) +"\")";
 
   return;
 }

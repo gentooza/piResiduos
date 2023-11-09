@@ -95,7 +95,7 @@ void upd_syncro_movements(char*& sql,std::vector<std::vector<std::string>> dataR
 void rmt_sel_last_movement(char *& sql,long codigo_estacion,int year);
 
 //TABLE ARRIVING TRANSIT
-void updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
+void updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, std::string comentario, std::string incidencias);
 void sel_all_unsyncro_transito(char *& sql, int codigo_estacion);
 void sel_all_transito(char *& sql, int codigo_estacion);
 void sel_all_transito(char *& sql);
@@ -103,7 +103,7 @@ void rmt_del_transito(char *& sql, int fromStation);
 
 //TABLE DEPARTURE TRANSIT
 void updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
-void  updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_orden, unsigned int peso_salida, const char* comentario, const char * incidencias);
+void updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_orden, unsigned int peso_salida, const char* comentario, const char * incidencias);
 void sel_all_unsyncro_transito_dep(char *& sql,long codigo_estacion);
 void sel_all_transito_dep(char *& sql);
 void rmt_selAllFromTransitoSalidas(char *& sql,long fromStation);
