@@ -288,7 +288,7 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += "\",";
     values += std::to_string(retDepMovType());
     values += ",";
-    values += std::to_string(retDepCosCode());
+    values += std::to_string(depCostumer->getCode());
     values += ",";
     values += std::to_string(retDepProdCode());
     values += ",";
@@ -316,27 +316,27 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += "\",\"";
     values += getOutputComment();
     values += "\",\"";
-    values += retDepPCosName();
+    values += (depCostumer->isParticular()?depCostumer->getName():"");
     values += "\",\"";
-    values += retDepPCosNif();
+    values += (depCostumer->isParticular()?depCostumer->getNif():"");
     values += "\",\""; 
-    values += retDepPCosAddr();
+    values += (depCostumer->isParticular()?depCostumer->getAddress():"");
     values += "\",\"";
-    values += retDepPCosProv(); 
+    values += (depCostumer->isParticular()?depCostumer->getProvence():""); 
     values += "\",\"";
-    values += retDepPCosCity();
+    values += (depCostumer->isParticular()?depCostumer->getCity():"");
     values += "\",";
-    values += std::to_string(retDepPCosZip());
+    values += (depCostumer->isParticular()?std::to_string(depCostumer->getZip()):"");
     values += ",\"";  
-    values += retDepPCosReg();
+    values += (depCostumer->isParticular()?depCostumer->getRegion():"");
     values += "\",";
-    values += std::to_string(retDepPCosNima());
+    values += (depCostumer->isParticular()?depCostumer->getNima():"");
     values += ",";
-    values += std::to_string(retDepPCosNumIns());
+    values += (depCostumer->isParticular()?depCostumer->getNumIns():"");
     values += ",";
-    values += std::to_string(retDepPCosPhone());
+    values += (depCostumer->isParticular()?depCostumer->getPhone():"");
     values += ",\"";    
-    values += retDepPCosMail();
+    values += (depCostumer->isParticular()?depCostumer->getMail():"");
     values += "\",\"";
     values += depDestinationStation->getName();
     values += "\",\"";
@@ -360,7 +360,7 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += ",\"";
     values += depDestinationStation->getMail();
     values += "\",";
-    values += std::to_string(retDepCosType());  
+    values += std::to_string(depCostumer->getType());  
 
     sqliteQuery += values;
     sqliteQuery += ",0)"; 
@@ -747,9 +747,7 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
         temporalDI = ourData.at(0).at(0);
         temporalDIDate = ourData.at(0).at(1);
     }
-   
-    //REFRESH COSTUMER NIF
-    setAllDepCostumerData(localDatabase);	   
+      
     if(isNewYear(temporalDIDate,year)) //new year, new DI
         temporalDI.clear();	    
     di = generateDi(temporalDI, 0);
@@ -785,44 +783,47 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
 
 std::string baseForm::generateDi(std::string lastDi, int arrive)
 {
-  std::string di;
-  std::string NIF;
+    std::string di;
+    std::string NIF;
+    std::string actualYear = getCurrentDate().substr(0,4);
 
-  std::string actualYear = getCurrentDate().substr(0,4);
-  if(arrive)
-     NIF = retArrCosNif();
-  else
-    NIF = retDepCosNif();
-  if (NIF.empty())
-    NIF = "AXXXXXXXX";
-  if(!lastDi.empty())
+    if(arrive)
+        NIF = retArrCosNif();
+    else
+        NIF = depCostumer->getNif();
+    if (NIF.empty())
+        NIF = "AXXXXXXXX";
+    if(!lastDi.empty())
     {
-      if(lastDi.length()>= 18) //DI(2)+NIF(9)+YYYY+XXXXXXX(7)
-	{
-	  int lastnumber_chkd;
-	  try
+        if(lastDi.length() >= 18) //DI(2)+NIF(9)+YYYY+XXXXXXX(7)
 	    {
-	      lastnumber_chkd = std::stoi(lastDi.substr(lastDi.length() - 7));
+	        int lastnumber_chkd;
+	        try
+	        {
+	            lastnumber_chkd = std::stoi(lastDi.substr(lastDi.length() - 7));
+	        }
+	        catch(...)
+	        {
+	            lastnumber_chkd = 0;
+	        }
+	        int lastNumber = lastnumber_chkd;
+	        lastNumber++;
+	        if(lastNumber > 9999999)
+            {
+	            lastNumber = 9999999;
+            }
+	        di = "di"+NIF+actualYear+zeroPadNumber(lastNumber,7);	  
 	    }
-	  catch(...)
-	    {
-	      lastnumber_chkd = 0;
-	    }
-
-
-	  int lastNumber = lastnumber_chkd;
-	  lastNumber++;
-	  if(lastNumber > 9999999)
-	    lastNumber = 9999999;
-	  di = "di"+NIF+actualYear+zeroPadNumber(lastNumber,7);	  
-	}
-      else
-	di = "di"+NIF+actualYear+"0000001";
+        else
+        {
+	        di = "di"+NIF+actualYear+"0000001";
+        }
     }
-  else
-      di = "di"+NIF+actualYear+"0000001";
-  
-  return di;
+    else
+    {
+        di = "di"+NIF+actualYear+"0000001";
+    }
+    return di;
 }
 /******************************/
 //INCIDENTS GENERATION FUNCTIONS
@@ -1747,45 +1748,7 @@ int baseForm::isArrProdDcpPermit()
     }
   return ret;
 }
-////COSTUMER DATA
-/*! functions to refresh all costumer data from costumer code*/
-int baseForm::set_dep_p_costumer_data(qtDatabase & myDatabase, long code)
-{
-  char * sql;
-  int ret = -1;
-  std::vector<std::vector<std::string>> retData;
-    
-  selCosDataByCode(sql, code);
-  if(!myDatabase.query(NULL,sql))
-    {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  set_dep_p_costumer_data(retData[0]);
-	  ret = 0;
-	}  
-    }
-  return ret;
 
-}
-int baseForm::setAllDepCostumerData(qtDatabase & myDatabase)
-{
-  char * sql;
-  int ret = -1;
-  std::vector<std::vector<std::string>> retData;
-    
-  selCosDataByCode(sql, retDepCosCode());
-  if(!myDatabase.query(NULL,sql))
-    {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  setDepCosDATA(retData[0]);
-	  ret = 0;
-	}  
-    }
-  return ret;
-}
 int baseForm::setAllArrCostumerData(qtDatabase & myDatabase)
 {
   char * sql;
@@ -1810,47 +1773,50 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
 {
     int ret = -1;
     char * sql = NULL;
+    std::vector<std::vector<std::string>> retData;
+    float price;
+
     std::string station_type;
     myStation->getType(station_type);
-    sel_DIbasis_cos_prod(sql,station_type.c_str(), retDepCosCode(), retDepProdCode());
+    sel_DIbasis_cos_prod(sql, station_type.c_str(), depCostumer->getCode(), retDepProdCode());
     if(!myDatabase.query(NULL,sql))
     {
-        std::vector<std::vector<std::string>> retData = myDatabase.retData2();
+        retData = myDatabase.retData2();
         if(retData.size())
-        {
-            float price;
-            std::vector <std::string> result = retData.at(0);
-            try //NPT
-            {
-                setDepPermitNPT(std::stoul(result.at(0)));
-            }
-            catch(...)
-            {
-                setDepPermitNPT(0);	    
-            }
-            try //price
-            {
-                price = std::stof(result.at(1));
-            }
-            catch(...)
-            {
-                price = 0.0;
-            }
-            if(price > 0.0)
-                setDepPrice(price);
-            ret=0;
-        }
+	    {
+	        std::vector <std::string> result = retData.at(0);
+	        try //NPT
+	        {
+	            setDepPermitNPT(std::stoul(result.at(0)));
+	        }
+	        catch(...)
+	        {
+	            setDepPermitNPT(0);	    
+	        }
+	        try //price
+	        {
+	            price = std::stof(result.at(1));
+	        }
+	        catch(...)
+	        {
+	            price = 0.0;
+	        }
+	        if(price > 0.0)
+	            setDepPrice(price);
+	        ret=0;
+	    }
         else
-        {
-            setDepPermitNPT(0);
-            //no costumer - product price defined
-        }
+	    {
+	        setDepPermitNPT(0);
+	        //no costumer - product price defined
+	    }
     }
-    if (sql != NULL)
+    if (sql)
     {
-        delete[] sql;
+        delete [] sql;
+        sql = NULL;
     }
-    return ret;
+    return 0;
 }
 int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
 {
@@ -1883,171 +1849,7 @@ int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
     }
   delete sql;
 }
-/*!
-database dependant
- */
-void baseForm::set_dep_p_costumer_data(std::vector <std::string> newDATA)
-{
-  std::vector<std::string>::iterator iter;
-  int field=1;
-  
-  for(iter=newDATA.begin();iter!=newDATA.end();++iter)
-    {
-      if(field==1) //NOmbre
-	setDepPCosName(*iter);
-      else if(field==2) //NIF
-	setDepPCosNif(*iter);
-      else if(field==3) //DIRECCION
-	setDepPCosAddr(*iter);
-      else if(field==4) //PROVINCIA
-	setDepPCosProv(*iter);
-      else if(field==5) //POBLACIÓN
-	setDepPCosCity(*iter);
-      else if(field==6) //CP	
-	{
-	  try
-	    {
-	      setDepPCosZip(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepPCosZip(0);		
-	    }
-	}
-      //  else if(field==9) //Type
-      //	{
-	  /*particular costumer has no type defined
-	  try
-	    {
-	      setDepPCosTypeDef(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepPCosTypeDef(0);		
-	    }
-	  */
-      //	}
-      else if(field==10) //Comunidad
-	setDepPCosReg(*iter);
-      else if(field==11) //NIMA
-	{
-	  try
-	    {
-	      setDepPCosNima(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepPCosNima(0);		
-	    }
-	}
-      else if(field==12) //NUM INSCRIPCIÓN EN EL REGISTRO
-	{
-	  try
-	    {
-	      setDepPCosNumIns(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepPCosNumIns(0);		
-	    }
-	}
-      else if(field==13) //TELEFONO
-	{
-	  try
-	    {
-	      setDepPCosPhone(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepPCosPhone(0);		
-	    }
-	}     
-      else if(field==14) //MAIL
-        setDepPCosMail(*iter);     
-      field++;
-    }
-  return;
-}
 
-void baseForm::setDepCosDATA(std::vector <std::string> newDATA)
-{
-  std::vector<std::string>::iterator iter;
-  int field=1;
-  for(iter=newDATA.begin();iter!=newDATA.end();++iter)
-    {
-      if(field==1) //NOmbre
-	setDepCosName(*iter);
-      else if(field==2) //NIF
-	setDepCosNif(*iter);
-      else if(field==3) //DIRECCION
-	setDepCosAddr(*iter);
-      else if(field==4) //PROVINCIA
-	setDepCosProv(*iter);
-      else if(field==5) //POBLACIÓN
-	setDepCosCity(*iter);
-      else if(field==6) //CP	
-	{
-	  try
-	    {
-	      setDepCosZip(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepCosZip(0);		
-	    }
-	}
-      else if(field==9) //Type
-	{
-	  try
-	    {
-	      setDepCosTypeDef(std::stoul(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepCosTypeDef(0);		
-	    }
-	}
-      else if(field==10) //Comunidad
-	setDepCosReg(*iter);
-      else if(field==11) //NIMA
-	{
-	  try
-	    {
-	      setDepCosNima(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepCosNima(0);		
-	    }
-	}
-      else if(field==12) //NUM INSCRIPCIÓN EN EL REGISTRO
-	{
-	  try
-	    {
-	      setDepCosNumIns(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepCosNumIns(0);		
-	    }
-	}
-      else if(field==13) //TELEFONO
-	{
-	  try
-	    {
-	      setDepCosPhone(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setDepCosPhone(0);		
-	    }
-	}     
-      else if(field==14) //MAIL
-        setDepCosMail(*iter);     
-      field++;
-    }
-  return;
-}
 void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
 {
   std::vector<std::string>::iterator iter;
@@ -2255,13 +2057,14 @@ int baseForm::setDriverByCode(long code,qtDatabase & local_database)
 int baseForm::default_driver(qtDatabase & local_database)
 {
     int set = 0;
+    long costumerCode = depCostumer->getCode();
 
-    if(retDepCosCode()>0)
+    if(costumerCode > 0)
     {
         char * sql = NULL;
         long driver_code = 0;
         std::vector< std::vector< std::string>> ret_data;
-        sel_default_driver(sql,retDepCosCode());
+        sel_default_driver(sql, costumerCode);
         if(!local_database.query(NULL,sql))
         {
             ret_data = local_database.retData2();
@@ -2287,7 +2090,11 @@ int baseForm::default_driver(qtDatabase & local_database)
                 }
             }
         }
-        delete [] sql;
+        if (sql) 
+        {
+            delete [] sql;
+            sql = NULL;
+        }
     }   
     return set;
 }
@@ -2332,47 +2139,51 @@ std::vector<std::string> baseForm::retStationsLst(qtDatabase & myDatabase, int i
 /*!function for getting the billing method*/
 int baseForm::set_all_billing_info(qtDatabase & local_database)
 {
-  char* sql;
-  unsigned int paying_method = 1; //paying method by cash
-  std::string str_log_message;
-  std::vector< std::vector< std::string>> returned_data;
-  
-  //paying method;
-  if(retDepCosCode()>0)
+    unsigned int paying_method = 1; //paying method by cash
+    long costumerCode = depCostumer->getCode();
+
+    if(costumerCode > 0)
     {
-      sel_fp_by_cos_code(sql,retDepCosCode());
-      str_log_message = "(DI DATA) local db -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!local_database.query(NULL,sql))
-	{
-	  log_message("(DI DATA) local OK", 1);
-	  returned_data = local_database.retData2();
-	  if(returned_data.size())
+        char* sql = NULL;
+        std::string str_log_message;
+        std::vector< std::vector< std::string>> returned_data;
+
+        sel_fp_by_cos_code(sql, costumerCode);
+        str_log_message = "(DI DATA) local db -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!local_database.query(NULL, sql))
 	    {
-	      if(returned_data[0].size())
-		 {
-		   try
-		     {
-		       paying_method = std::stoi(returned_data[0][0]);
-		     }
-		   catch(...)
-		     {
-		       paying_method = 1;
-
-		     }
-		 }
+	        log_message("(DI DATA) local OK", 1);
+	        returned_data = local_database.retData2();
+	        if(returned_data.size())
+	        {
+	            if(returned_data[0].size())
+		        {
+		            try
+		            {
+		                paying_method = std::stoi(returned_data[0][0]);
+		            }
+		            catch(...)
+		            {
+		                paying_method = 1;
+		            }
+		        }
+	        }
 	    }
-	}
-      else
-	{
-	  log_message("(DI DATA) local ERROR", 2);
-	}
+        else
+	    {
+	        log_message("(DI DATA) local ERROR", 2);
+	    }
+        if(sql)
+        {
+            delete [] sql;
+            sql = NULL;
+        }
     }
-  //setting paying method;
-  setDepPayProcedure(paying_method);
-
-  return 0;
+    //setting paying method;
+    setDepPayProcedure(paying_method);
+    return 0;
 }
 
 /****RESET FUNCTIONS****/
