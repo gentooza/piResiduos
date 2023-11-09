@@ -102,7 +102,7 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 		        {
                     sqliteQuery.clear();
                     mysqlQuery.clear();
-		            delOrder(sqliteQuery, mysqlQuery, depOriginStation->getCode(), retDepCosCode(), retDepProdCode());
+		            delOrder(sqliteQuery, mysqlQuery, depOriginStation->getCode(), depCostumer->getCode(), retDepProdCode());
 		            str_log_message = "(CARGA) db local -> ";
 		            str_log_message += sqliteQuery;
 		            log_message(str_log_message, 1);
@@ -407,16 +407,14 @@ struMovement outputForm::selOrder(unsigned int index)
 }
 
 //!creating a transfer movement
-void outputForm::setTransferMov(long myCode, station *& myStation)
+void outputForm::setTransferMov(costumer *& myCostumer, station *& myStation)
 {
-  //MOV TYPE
-  setDepMovType(DEF_MOV_TRANSFER);
-  
-  setDepCosCode(myCode);
-  setDepProdCode(0);
-
-  setDepOrigStation(myStation);
-  setDepDateTime(getCurrentDate());
+    //MOV TYPE
+    setDepMovType(DEF_MOV_TRANSFER);
+    setDepCostumer(myCostumer);
+    setDepProdCode(0);
+    setDepOrigStation(myStation);
+    setDepDateTime(getCurrentDate());
 }
 
 /*! void outputForm::isArrMov()
@@ -475,28 +473,23 @@ void outputForm::setAndCalcScaleOut(unsigned int scale)
 /*! function to save scale out in database*/
 int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort )
 {
-  char *sql = NULL;
-  std::string another_sql;
-  //rodri: int port;
-  int ret = 1;
+    std::string sql;
+    int ret = 1;
 
-  setAndCalcScaleOut(retDepScaleOut());
+    setAndCalcScaleOut(retDepScaleOut());
+    updtScaleOutTransSal(sql, retDepDateTime(), depCostumer->getCode(), retDepProdCode(), retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
   
-  updtScaleOutTransSal(sql, retDepDateTime().c_str(), retDepCosCode(), retDepProdCode(), retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-  
-  if(!myDatabase.query(NULL,sql))
+    if(!myDatabase.query(NULL, sql.c_str()))
     {
-      ret = 0;     
-      if(isConnected(remoteHost, remotePort))
-	{
-	  remote_updatePesoSalidaTransitoSalida(another_sql, retDepCosCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-	  myRemoteDatabase.query(NULL,another_sql.c_str());
-	}
+        ret = 0;
+        if(isConnected(remoteHost, remotePort))
+	    {
+	        remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+	        myRemoteDatabase.query(NULL, sql.c_str());
+	    }
 
     }
-  delete sql;
-
-  return ret;
+    return ret;
 }
 //
 int outputForm::setMovCode(std::string sLastCode, int stationCode, int movementTypeCode)
@@ -718,103 +711,90 @@ int outputForm::delTransit(int index,std::string plate, qtDatabase & myDatabase,
 }
 int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDatabase)
 {
-  int ret = -1, num_of_row = 0;
-  std::vector<std::vector<std::string>>::iterator row;
-  row = vctAllTransit.begin();
-  int type = 0;
+    int ret = -1, num_of_row = 0;
+    std::vector<std::vector<std::string>>::iterator row;
+    row = vctAllTransit.begin();
+    int type = 0;
 
-  while(row != vctAllTransit.end())
-  {
-    if(row->size() >= 13) //DATABASE DEPENDANT
-	  {
-	    if(!byPlate.compare(row->at(5)) && (num_of_row >= index || index == -1)) //DATABASE DEPENDANT
+    while(row != vctAllTransit.end())
+    {
+        if(row->size() >= 13) //DATABASE DEPENDANT
 	    {
-	      type = retDepMovType();
-	      clearDepMov();
-	      setDepDi(row->at(0)); //DI
-	      setDepDateTime(row->at(1)); //FECHA_HORA
-	      try
-		    {
-		      setDepCosCode(std::stol(row->at(2))); //CODIGO_CLIENTE
-		    }
-	      catch(...)
-		    {
-		      setDepCosCode(0);
-		    }
-	      try
-		    {
-		      setDepProdCode(std::stol(row->at(3))); //CODIGO PRODUCTO
-		    }
-	      catch(...)
-		    {
-		      setDepProdCode(0);
-		    }
-	      try
-		    {
-		      setDepScaleIn(std::stoul(row->at(4))); //PESO_ENTRADA
-		    }
-	      catch(...)
-		    {
-		      setDepScaleIn(0); //PESO_ENTRADA
-		    }
-	      setDepPlate(row->at(5)); //MATRICULA
-	      setDepPlateAtt(row->at(6)); //REMOLQUE
-	      try
-		    {
-		      setDepWeightToTakeAway(std::stoul(row->at(7))); //PESO_PARA_LLEVAR
-		    }
-	      catch(...)
-		    {
-		      setDepWeightToTakeAway(0);
-		    }
-	      try
-		    {
-		      setDepTotalWeight(std::stoul(row->at(8))); //PESO_CARGA
-		    }
-	      catch(...)
-		    {
-		      setDepTotalWeight(0); //PESO_CARGA
-		    }
-        /* this is not destination, this is our station
-	      try//destination
-		    {
-		      if(depDestinationStation)
-		        delete depDestinationStation;
-		      depDestinationStation = new station(std::stol(row->at(9)),myDatabase);
-		    }
-	      catch(...)
-		    {
-		      if(depDestinationStation)
-		        delete depDestinationStation;
-		      depDestinationStation = new station();
-		    }*/
-	      try
-		    {
-		      myDepMovement.CODIGO_ORDEN = std::stol(row->at(10)); //ORDER CODE
-		    }
-	      catch(...)
-		    {
-		      myDepMovement.CODIGO_ORDEN = 0;
-		    }
-	      //incidents
-	      std::vector<std::string> newIncidents = getOutputIncidents();
-	      setOutputIncidents( stringToVector(row->at(11),";"));
-	      outputConcatenate(newIncidents);	     
-	      //
-	      setOutputComment(row->at(12));  //COMENTARIO OPERADOR
-	      setDepMovType(type);
-	      /*TODO best with it's scaling own class
-		    peso salida:*/
-	      setDepScaleOut(retDepScaleIn()+retDepTotalWeight());
-	      /**/
-	      ret = 0;
-	      break;
+	        if(!byPlate.compare(row->at(5)) && (num_of_row >= index || index == -1)) //DATABASE DEPENDANT
+	        {
+	            type = retDepMovType();
+	            clearDepMov();
+	            setDepDi(row->at(0)); //DI
+	            setDepDateTime(row->at(1)); //FECHA_HORA
+	            try
+		        {
+		            depCostumer->setCostumer(std::stol(row->at(2)), myDatabase); // Costumer
+		        }
+	            catch(...)
+		        {
+		            depCostumer->reset();
+		        }
+	            try
+		        {
+		            setDepProdCode(std::stol(row->at(3))); //CODIGO PRODUCTO
+		        }
+	            catch(...)
+		        {
+		            setDepProdCode(0);
+		        }
+	            try
+		        {
+		            setDepScaleIn(std::stoul(row->at(4))); //PESO_ENTRADA
+		        }
+	            catch(...)
+		        {
+		            setDepScaleIn(0); //PESO_ENTRADA
+		        }
+	            setDepPlate(row->at(5)); //MATRICULA
+	            setDepPlateAtt(row->at(6)); //REMOLQUE
+	            try
+		        {
+		            setDepWeightToTakeAway(std::stoul(row->at(7))); //PESO_PARA_LLEVAR
+		        }
+	            catch(...)
+		        {
+		            setDepWeightToTakeAway(0);
+		        }
+	            try
+		        {
+		            setDepTotalWeight(std::stoul(row->at(8))); //PESO_CARGA
+		        }
+	            catch(...)
+		        {
+		            setDepTotalWeight(0); //PESO_CARGA
+		        }
+	            try
+		        {
+		            myDepMovement.CODIGO_ORDEN = std::stol(row->at(10)); //ORDER CODE
+		        }
+	            catch(...)
+		        {
+		            myDepMovement.CODIGO_ORDEN = 0;
+		        }
+	            //incidents
+	            std::vector<std::string> newIncidents = getOutputIncidents();
+	            setOutputIncidents( stringToVector(row->at(11),";"));
+	            outputConcatenate(newIncidents);	     
+	            //
+	            setOutputComment(row->at(12));  //COMENTARIO OPERADOR
+	            setDepMovType(type);
+	            /*TODO best with it's scaling own class
+		        peso salida:*/
+	            setDepScaleOut(retDepScaleIn()+retDepTotalWeight());
+	            /**/
+	            ret = 0;
+	            break;
+	        }
 	    }
-	  }
-    ++row;
-    num_of_row++;
-  }
-  return ret;
+        ++row;
+        num_of_row++;
+    }
+    return ret;
 }
 void outputForm::forceCurrentProduct()
 {
@@ -873,13 +853,9 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
 	        std::cout << "*ERROR*" << std::endl;
     }
     //costumer information
-    if(retDepCosCode()>0)
-    {
-        if(setAllDepCostumerData(localDatabase))
-	        std::cout << "*ERROR*" << std::endl;
-    }
+    // pass
     //costumer-product information
-    if(retDepProdCode()>0 && retDepCosCode()>0)
+    if(retDepProdCode()>0 && depCostumer->getCode()>0)
     {
         if(setAllDepCosProdData(localDatabase,myStation))
 	        std::cout << "*ERROR*" << std::endl;
@@ -901,7 +877,7 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
             depOriginStation->setProvence(ourId->getProvence());
             depOriginStation->setCity(ourId->getCity());
             depOriginStation->setRegion(ourId->getRegion());
-            depOriginStation->setZip(ourId->getCp());
+            depOriginStation->setZip(ourId->getZip());
             depOriginStation->setNima(ourId->getNima());
             depOriginStation->setNumIns(ourId->getNumIns());
             depOriginStation->setPhone(ourId->getPhone());
@@ -922,16 +898,14 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
             if(value == DEF_STATION_DEPOSIT) //movement to deposit
 	        {
 	            setDepMovType(DEF_MOV_INTERNOD5);
-	            setDepCosCode(defDriverCode);
-	            setAllDepCostumerData(localDatabase);
-	            setDepCosType(3);
+                depCostumer->setCostumer(defDriverCode, localDatabase);
+	            depCostumer->setType(3);
 	        }
             if(value == DEF_STATION_TRANSFER || value == DEF_STATION_MASTER) //movement of transference
 	        {
 	            setDepMovType(DEF_MOV_TRANSFER);
-	            setDepCosCode(ourCode);
-	            setAllDepCostumerData(localDatabase);
-	            setDepCosType(2);
+                depCostumer->setCostumer(ourCode, localDatabase);
+	            depCostumer->setType(2);
 	        }
         }
         // default driver loaded
@@ -979,11 +953,11 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
 	    {
 	        try
             {
-                setDepCosType(std::stoi(*col));
+                depCostumer->setType(std::stoi(*col));
 		    }
 	        catch(...)
 		    {
-		        setDepCosType(1);
+		        depCostumer->setType(1);
 		    }
 	    }
         else if(numCol == 14)  //CODIGO_INFO_DESTINO_CENTRO
@@ -1119,7 +1093,7 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
                 depAuthCostumer = new costumer();
             try
 		    {
-                depAuthCostumer->setCp(std::stoul(*col));
+                depAuthCostumer->setZip(std::stoul(*col));
             }
             catch(...)
             {
@@ -1188,8 +1162,8 @@ int outputForm::isDiComplete()
   if(retDepDriCode() <= 0)
     ret = 0;
   //CODIGO_CLIENTE
-  if(retDepCosCode() <= 0)
-     ret = 0;
+  if(depCostumer->getCode() <= 0)
+    ret = 0;
   //DESTINATION
   if(depDestinationStation->getCode() <= 0 && !depDestinationStation->isManuallyEdited())
     ret = 0;
@@ -1313,583 +1287,272 @@ void outputForm::createPdf(std::string printerId)
 
     //4. COSTUMER DATA
 
- //Posiciones de la X
- HPDF_Page_BeginText (page1);
- myText = "X";
-
-	if(retDepCosType()==1)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 183, 925);
-	    }
-	else if(retDepCosType()==2)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 290, 913);
-	    }
-	else if(retDepCosType()==3)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 509, 925);
-	    }	  
-	else if(retDepCosType()==4)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 183, 880);	
-	    }	  
-	else if(retDepCosType()==5)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 290, 880);
-	    }
-	else if(retDepCosType()==6)
-	    {
-		  HPDF_Page_MoveTextPos (page1, 509, 880);
-	    }
-		 
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
-
-if(retDepCosName().compare("OTROS"))
-  {
-    //NAME
-    myText = retDepCosName();
-    set_di_text(page1,fsize,47,font,myText,188,841);
-
-    //NIF
+    //Posiciones de la X
     HPDF_Page_BeginText (page1);
-    myText = retDepCosNif();
-    HPDF_Page_MoveTextPos (page1, 648, 841);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
+    myText = "X";
 
-    //CP
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepCosZip());
-    HPDF_Page_MoveTextPos (page1, 648, 816);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //COMUNIDAD AUTONOMA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepCosReg();
-    HPDF_Page_MoveTextPos (page1, 648, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //DIRECCION
-    myText = retDepCosAddr();
-    set_di_text(page1,fsize,47,font,myText,188,816);
-
-    //MUNICIPIO
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepCosCity();
-    HPDF_Page_MoveTextPos (page1, 188, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //NIMA
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepCosNima());
-    HPDF_Page_MoveTextPos (page1, 188, 764);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //TELEFONO
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepCosPhone());
-    HPDF_Page_MoveTextPos (page1, 188, 737);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //PROVINCIA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepCosProv();
-    HPDF_Page_MoveTextPos (page1, 465, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //Nº INSC REGISTRO
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepCosNumIns());
-    HPDF_Page_MoveTextPos (page1, 465, 764);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //EMAIL
-    HPDF_Page_BeginText (page1);
-    myText = retDepCosMail();
-    HPDF_Page_MoveTextPos (page1, 465, 737);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-  }
- else //PARTICULAR COSTUMER
-  {
-    //NAME
-    myText = retDepPCosName();
-    set_di_text(page1,fsize,47,font,myText,188,841);
-
-    //NIF
-    HPDF_Page_BeginText (page1);
-    myText = retDepPCosNif();
-    HPDF_Page_MoveTextPos (page1, 648, 841);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //CP
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepPCosZip());
-    HPDF_Page_MoveTextPos (page1, 648, 816);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //COMUNIDAD AUTONOMA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepPCosReg();
-    HPDF_Page_MoveTextPos (page1, 648, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-    
-    //DIRECCION
-    myText = retDepPCosAddr();
-    set_di_text(page1,fsize,47,font,myText,188,816);
-
-    //MUNICIPIO
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepPCosCity();
-    HPDF_Page_MoveTextPos (page1, 188, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //NIMA
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepPCosNima());
-    HPDF_Page_MoveTextPos (page1, 188, 764);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //TELEFONO
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepPCosPhone());
-    HPDF_Page_MoveTextPos (page1, 188, 737);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //PROVINCIA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page1);
-    myText = retDepPCosProv();
-    HPDF_Page_MoveTextPos (page1, 465, 792);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //Nº INSC REGISTRO
-    HPDF_Page_BeginText (page1);
-    myText = std::to_string(retDepPCosNumIns());
-    HPDF_Page_MoveTextPos (page1, 465, 764);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-
-    //EMAIL
-    HPDF_Page_BeginText (page1);
-    myText = retDepPCosMail();
-    HPDF_Page_MoveTextPos (page1, 465, 737);
-    HPDF_Page_ShowText (page1, myText.c_str());
-    HPDF_Page_EndText (page1);
-  }
- 
-// 5.ORIGIN DATA
- if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_SALIDA)
-   {
-     // A) PRODUCT CENTER (CENTRO ACTUAL)
-     station * localOrigin;
-     retDepOriginStation(localOrigin);
-     //NAME
-     myText = localOrigin->getName();
-     set_di_text(page1,fsize,47,font,myText,188,638);
-     
-     //DIRECCION
-     myText = localOrigin->getAddress();
-     set_di_text(page1,fsize,47,font,myText,188,614);
-     
-     //MUNICIPIO
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getCity();
-     HPDF_Page_MoveTextPos (page1, 188, 589);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //NIMA
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getNima();
-     HPDF_Page_MoveTextPos (page1, 188, 562);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //PROVINCIA
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getProvence();
-     HPDF_Page_MoveTextPos (page1, 465, 589);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //Nº INSC REGISTRO
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getNumIns();
-     HPDF_Page_MoveTextPos (page1, 465, 562);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //NIF
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getNif();
-     HPDF_Page_MoveTextPos (page1, 648, 638);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-		  
-     //CP
-     HPDF_Page_BeginText (page1);
-     myText = std::to_string(localOrigin->getZip());
-     HPDF_Page_MoveTextPos (page1, 648, 614);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //COMUNIDAD AUTONOMA
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = localOrigin->getRegion();
-     HPDF_Page_MoveTextPos (page1, 648, 589);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //CNAE
-     HPDF_Page_BeginText (page1);
-     myText = "";
-     HPDF_Page_MoveTextPos (page1, 648, 562);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-		 
-     delete localOrigin;
-
-     // B) COMPANY, in transfer and output movements is ours
-
-     costumer * our_company;
-     retOurId(our_company);
-
-     //NAME
-     myText = our_company->getName();
-     set_di_text(page1,fsize,47,font,myText,188,512);
-
-     //DIRECCION
-     myText = our_company->getAddress();
-     set_di_text(page1,fsize,47,font,myText,188,487);
-     
-     //MUNICIPIO
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getCity();
-     HPDF_Page_MoveTextPos (page1, 188, 462);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //NIMA
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getNima();
-     HPDF_Page_MoveTextPos (page1, 188, 437);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-		 
-     //TELEFON0
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getPhone();
-     HPDF_Page_MoveTextPos (page1, 188, 411);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-		 
-     //PROVINCIA
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getProvence();
-     HPDF_Page_MoveTextPos (page1, 465, 462);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //Nº INSC REGISTRO
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getNumIns();
-     HPDF_Page_MoveTextPos (page1, 465, 437);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //EMAIL
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getMail();
-     HPDF_Page_MoveTextPos (page1, 465, 411);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //NIF
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getNif();
-     HPDF_Page_MoveTextPos (page1, 648, 512);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-		  
-     //CP
-     HPDF_Page_BeginText (page1);
-     myText = std::to_string(our_company->getCp());
-     HPDF_Page_MoveTextPos (page1, 648, 487);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     //COMUNIDAD AUTONOMA
-     //TODO: to adjust with new set_di_text function
-     HPDF_Page_BeginText (page1);
-     myText = our_company->getRegion();
-     HPDF_Page_MoveTextPos (page1, 648, 462);
-     HPDF_Page_ShowText (page1, myText.c_str());
-     HPDF_Page_EndText (page1);
-
-     delete our_company;
+	if(depCostumer->getType() == 1)
+	{
+	    HPDF_Page_MoveTextPos (page1, 183, 925);
+	}
+	else if(depCostumer->getType()==2)
+	{
+		HPDF_Page_MoveTextPos (page1, 290, 913);
     }
-  else  
+	else if(depCostumer->getType()==3)
+	{
+		HPDF_Page_MoveTextPos (page1, 509, 925);
+    }	  
+	else if(depCostumer->getType()==4)
+	{
+		HPDF_Page_MoveTextPos (page1, 183, 880);	
+	}	  
+	else if(depCostumer->getType()==5)
+	{
+		HPDF_Page_MoveTextPos (page1, 290, 880);
+	}
+	else if(depCostumer->getType()==6)
+	{
+		HPDF_Page_MoveTextPos (page1, 509, 880);
+	} 
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+
+    costumer* myCostumer4;
+    retDepCostumer(myCostumer4);
+    //NAME
+    set_di_text(page1, fsize, 47, font, myCostumer4->getName(), 188, 841);
+    //NIF
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 841);
+    HPDF_Page_ShowText (page1, myCostumer4->getNif().c_str());
+    HPDF_Page_EndText (page1);
+    // ZIP
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 816);
+    HPDF_Page_ShowText (page1, std::to_string(myCostumer4->getZip()).c_str());
+    HPDF_Page_EndText (page1);
+    //COMUNIDAD AUTONOMA
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 792);
+    HPDF_Page_ShowText (page1, myCostumer4->getRegion().c_str());
+    HPDF_Page_EndText (page1);
+    //DIRECCION
+    set_di_text(page1, fsize, 47, font, myCostumer4->getAddress(), 188, 816);
+    //MUNICIPIO
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 792);
+    HPDF_Page_ShowText (page1, myCostumer4->getCity().c_str());
+    HPDF_Page_EndText (page1);
+    //NIMA
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 764);
+    HPDF_Page_ShowText (page1, myCostumer4->getNima().c_str());
+    HPDF_Page_EndText (page1);
+    //TELEFONO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 737);
+    HPDF_Page_ShowText (page1, myCostumer4->getPhone().c_str());
+    HPDF_Page_EndText (page1);
+    //PROVINCIA
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 792);
+    HPDF_Page_ShowText (page1, myCostumer4->getProvence().c_str());
+    HPDF_Page_EndText (page1);
+    //Nº INSC REGISTRO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 764);
+    HPDF_Page_ShowText (page1, myCostumer4->getNumIns().c_str());
+    HPDF_Page_EndText (page1);
+    //EMAIL
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 737);
+    HPDF_Page_ShowText (page1, myCostumer4->getMail().c_str());
+    HPDF_Page_EndText (page1);
+    delete myCostumer4;
+
+    // 5.ORIGIN DATA
+    station *localOrigin;
+    costumer *myCostumer;
+    if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_SALIDA)
     {
-      // A) EMPTY
-
-     if(retDepCosName().compare("OTROS")) //REGISTERED COSTUMER
-       {	
-	 // B) COSTUMER
-
-	 //NAME
-	 myText = retDepCosName();
-	 set_di_text(page1,fsize,47,font,myText,188,512);
-	 
-	 //DIRECCION
-	 myText = retDepCosAddr();
-	 set_di_text(page1,fsize,47,font,myText,188,487);
-	 
-	 //MUNICIPIO
-	 //TODO: to adjust with new set_di_text function
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepCosCity();
-	 HPDF_Page_MoveTextPos (page1, 188, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //NIMA
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepCosNima());
-	 HPDF_Page_MoveTextPos (page1, 188, 437);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-		 
-	 //TELEFON0
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepCosPhone());
-	 HPDF_Page_MoveTextPos (page1, 188, 411);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-		 
-	 //PROVINCIA
-	 //TODO: to adjust with new set_di_text function 
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepCosProv();
-	 HPDF_Page_MoveTextPos (page1, 465, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //Nº INSC REGISTRO
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepCosNumIns());
-	 HPDF_Page_MoveTextPos (page1, 465, 437);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //EMAIL
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepCosMail();
-	 HPDF_Page_MoveTextPos (page1, 465, 411);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //NIF
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepCosNif();
-	 HPDF_Page_MoveTextPos (page1, 648, 512);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-		  
-	 //CP
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepCosZip());
-	 HPDF_Page_MoveTextPos (page1, 648, 487);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //COMUNIDAD AUTONOMA
-	 //TODO: to adjust with new set_di_text function 
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepCosReg();
-	 HPDF_Page_MoveTextPos (page1, 648, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-       }
-     else //PARTICULAR COSTUMER
-       {
-
-	 //NAME
-	 myText = retDepPCosName();
-	 set_di_text(page1,fsize,47,font,myText,188,512);
-	 
-	 //DIRECCION
-	 myText = retDepPCosAddr();
-	 set_di_text(page1,fsize,47,font,myText,188,487);
-	 
-	 //MUNICIPIO
-	 //TODO: to adjust with new set_di_text function 
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepPCosCity();
-	 HPDF_Page_MoveTextPos (page1, 188, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //NIMA
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepPCosNima());
-	 HPDF_Page_MoveTextPos (page1, 188, 437);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-		 
-	 //TELEFON0
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepPCosPhone());
-	 HPDF_Page_MoveTextPos (page1, 188, 411);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //PROVINCIA
-	 //TODO: to adjust with new set_di_text function 
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepPCosProv();
-	 HPDF_Page_MoveTextPos (page1, 465, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //Nº INSC REGISTRO
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepPCosNumIns());
-	 HPDF_Page_MoveTextPos (page1, 465, 437);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //EMAIL
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepPCosMail();
-	 HPDF_Page_MoveTextPos (page1, 465, 411);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //NIF
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepPCosNif();
-	 HPDF_Page_MoveTextPos (page1, 648, 512);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-		  
-	 //CP
-	 HPDF_Page_BeginText (page1);
-	 myText = std::to_string(retDepPCosZip());
-	 HPDF_Page_MoveTextPos (page1, 648, 487);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-
-	 //COMUNIDAD AUTONOMA
-	 //TODO: to adjust with new set_di_text function 
-	 HPDF_Page_BeginText (page1);
-	 myText = retDepPCosReg();
-	 HPDF_Page_MoveTextPos (page1, 648, 462);
-	 HPDF_Page_ShowText (page1, myText.c_str());
-	 HPDF_Page_EndText (page1);
-       }
+        // station ours (actual local station indeed)
+        retDepOriginStation(localOrigin);
+        // costumer is us, we are managing the transport
+        retOurId(myCostumer);
     }
+    else
+    {
+        // station empty
+        localOrigin = new station();
+        // costumer is the departure costumer
+        retDepCostumer(myCostumer);
+    }
+    // A) PRODUCT CENTER (CENTRO ACTUAL)
+    //NAME
+    set_di_text(page1, fsize, 47, font, localOrigin->getName(), 188, 638);
+    //DIRECCION
+    set_di_text(page1, fsize, 47, font, localOrigin->getAddress(), 188, 614);
+    //MUNICIPIO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 589);
+    HPDF_Page_ShowText (page1, localOrigin->getCity().c_str());
+    HPDF_Page_EndText (page1);
+    //NIMA
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 562);
+    HPDF_Page_ShowText (page1, localOrigin->getNima().c_str());
+    HPDF_Page_EndText (page1);
+    //PROVINCIA
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 589);
+    HPDF_Page_ShowText (page1, localOrigin->getProvence().c_str());
+    HPDF_Page_EndText (page1);
+    //Nº INSC REGISTRO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 562);
+    HPDF_Page_ShowText (page1, localOrigin->getNumIns().c_str());
+    HPDF_Page_EndText (page1);
+    //NIF
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 638);
+    HPDF_Page_ShowText (page1, localOrigin->getNif().c_str());
+    HPDF_Page_EndText (page1);  
+    //CP
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 614);
+    HPDF_Page_ShowText (page1, std::to_string(localOrigin->getZip()).c_str());
+    HPDF_Page_EndText (page1);
+    //COMUNIDAD AUTONOMA        
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 589);
+    HPDF_Page_ShowText (page1, localOrigin->getRegion().c_str());
+    HPDF_Page_EndText (page1);
+    //CNAE
+    HPDF_Page_BeginText (page1);
+    myText = "";
+    HPDF_Page_MoveTextPos (page1, 648, 562);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1); 
+    delete localOrigin;     
+    
+    // B) COMPANY
+    //NAME
+    set_di_text(page1, fsize, 47, font, myCostumer->getName(), 188, 512);
+    //DIRECCION
+    set_di_text(page1, fsize, 47, font, myCostumer->getAddress(), 188, 487);
+    //MUNICIPIO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 462);
+    HPDF_Page_ShowText (page1, myCostumer->getCity().c_str());
+    HPDF_Page_EndText (page1);
+    //NIMA
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 437);
+    HPDF_Page_ShowText (page1, myCostumer->getNima().c_str());
+    HPDF_Page_EndText (page1);		 
+    //TELEFON0
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 188, 411);
+    HPDF_Page_ShowText (page1, myCostumer->getPhone().c_str());
+    HPDF_Page_EndText (page1); 
+    //PROVINCIA
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 462);
+    HPDF_Page_ShowText (page1, myCostumer->getProvence().c_str());
+    HPDF_Page_EndText (page1);
+    //Nº INSC REGISTRO
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 437);
+    HPDF_Page_ShowText (page1, myCostumer->getNumIns().c_str());
+    HPDF_Page_EndText (page1);
+    //EMAIL
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 465, 411);
+    HPDF_Page_ShowText (page1, myCostumer->getMail().c_str());
+    HPDF_Page_EndText (page1);
+    //NIF
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 512);
+    HPDF_Page_ShowText (page1, myCostumer->getNif().c_str());
+    HPDF_Page_EndText (page1);  
+    // ZIP
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 487);
+    HPDF_Page_ShowText (page1, std::to_string(myCostumer->getZip()).c_str());
+    HPDF_Page_EndText (page1);
+    //COMUNIDAD AUTONOMA
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page1);
+    HPDF_Page_MoveTextPos (page1, 648, 462);
+    HPDF_Page_ShowText (page1, myCostumer->getRegion().c_str());
+    HPDF_Page_EndText (page1);
+    delete myCostumer;
 		
- //6. DESTINATION INFO
- // A) Insta. Info
-
- station * localDestination;
- retDepDestinationStation(localDestination);
-
- //NAME
- myText = localDestination->getName();
- set_di_text(page1,fsize,47,font,myText,188,315);
-
- //DIRECCION
- myText = localDestination->getAddress();
- set_di_text(page1,fsize,47,font,myText,188,290);
- 
- //MUNICIPIO
- //TODO: to adjust with new set_di_text function 
- HPDF_Page_BeginText (page1);
- myText = localDestination->getCity();
- HPDF_Page_MoveTextPos (page1, 188, 265);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
- //NIMA
- HPDF_Page_BeginText (page1);
- myText = localDestination->getNima();
- HPDF_Page_MoveTextPos (page1, 188, 240);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
- 
- //PROVINCIA
- //TODO: to adjust with new set_di_text function 
- HPDF_Page_BeginText (page1);
- myText = localDestination->getProvence();
- HPDF_Page_MoveTextPos (page1, 465, 265);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
- //Nº INSC REGISTRO
- HPDF_Page_BeginText (page1);
- myText = localDestination->getNumIns();
- HPDF_Page_MoveTextPos (page1, 465, 240);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
- //NIF
- HPDF_Page_BeginText (page1);
- myText = localDestination->getNif();
- HPDF_Page_MoveTextPos (page1, 648, 315);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-  
- //CP
- HPDF_Page_BeginText (page1);
- myText = std::to_string(localDestination->getZip());
- HPDF_Page_MoveTextPos (page1, 648, 290);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
- //COMUNIDAD AUTONOMA
- //TODO: to adjust with new set_di_text function 
- HPDF_Page_BeginText (page1);
- myText = localDestination->getRegion();
- HPDF_Page_MoveTextPos (page1, 648, 265);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
- // DR
- HPDF_Page_BeginText (page1);
- myText = retDepDestStationDR();
- HPDF_Page_MoveTextPos (page1, 686, 240);
- HPDF_Page_ShowText (page1, myText.c_str());
- HPDF_Page_EndText (page1);
-
+    //6. DESTINATION INFO
+    // A) Insta. Info
+    station * localDestination;
+    retDepDestinationStation(localDestination);
+    //NAME
+    myText = localDestination->getName();
+    set_di_text(page1,fsize,47,font,myText,188,315);
+    //DIRECCION
+    myText = localDestination->getAddress();
+    set_di_text(page1,fsize,47,font,myText,188,290);
+    //MUNICIPIO
+    //TODO: to adjust with new set_di_text function 
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getCity();
+    HPDF_Page_MoveTextPos (page1, 188, 265);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //NIMA
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getNima();
+    HPDF_Page_MoveTextPos (page1, 188, 240);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //PROVINCIA
+    //TODO: to adjust with new set_di_text function 
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getProvence();
+    HPDF_Page_MoveTextPos (page1, 465, 265);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //Nº INSC REGISTRO
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getNumIns();
+    HPDF_Page_MoveTextPos (page1, 465, 240);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //NIF
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getNif();
+    HPDF_Page_MoveTextPos (page1, 648, 315);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //CP
+    HPDF_Page_BeginText (page1);
+    myText = std::to_string(localDestination->getZip());
+    HPDF_Page_MoveTextPos (page1, 648, 290);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    //COMUNIDAD AUTONOMA
+    //TODO: to adjust with new set_di_text function 
+    HPDF_Page_BeginText (page1);
+    myText = localDestination->getRegion();
+    HPDF_Page_MoveTextPos (page1, 648, 265);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
+    // DR
+    HPDF_Page_BeginText (page1);
+    myText = retDepDestStationDR();
+    HPDF_Page_MoveTextPos (page1, 686, 240);
+    HPDF_Page_ShowText (page1, myText.c_str());
+    HPDF_Page_EndText (page1);
     delete localDestination;
 
     // B) Costumer
@@ -1906,7 +1569,8 @@ if(retDepCosName().compare("OTROS"))
     std::string s6b_zip;
     std::string s6b_region;
     //  -> logic
-    if(retDepMovType() == DEF_MOV_SALIDA && (retDepCosType() == 4 || retDepCosType() == 1)) // special cases
+    if(retDepMovType() == DEF_MOV_SALIDA && 
+    (depCostumer->getType() == 4 || depCostumer->getType() == 1)) // special cases
     {
         // NAME
         s6b_name = depAuthCostumer->getName();
@@ -1927,62 +1591,34 @@ if(retDepCosName().compare("OTROS"))
         // NIF
         s6b_nif = depAuthCostumer->getNif();
         // ZIP
-        s6b_zip = std::to_string(depAuthCostumer->getCp());
+        s6b_zip = std::to_string(depAuthCostumer->getZip());
         // region
         s6b_region = depAuthCostumer->getRegion();
     }
     else
     {
-        if(retDepCosName().compare("OTROS")) //Cliente registrado
-        {
-            // NAME
-            s6b_name = retDepCosName();
-            // ADDRESS
-            s6b_address = retDepCosAddr();
-            // CITY
-            s6b_city = retDepCosCity();
-            // NIMA
-            s6b_nima = std::to_string(retDepCosNima());
-            // PHONE
-            s6b_phone = std::to_string(retDepCosPhone());
-            // PROVINCE
-            s6b_province = retDepCosProv();
-            // REGISTRATION NUMBER
-            s6b_num_ins = std::to_string(retDepCosNumIns());
-            // EMAIL
-            s6b_email = retDepCosMail();
-            // NIF
-            s6b_nif = retDepCosNif();
-            // ZIP
-            s6b_zip = std::to_string(retDepCosZip());
-            // REGION
-            s6b_region = retDepCosReg();
-        }
-        else //PARTICULAR COSTUMER
-        {
-            // NAME
-            s6b_name = retDepPCosName();
-            // ADDRESS
-            s6b_address = retDepPCosAddr();
-            // CITY
-            s6b_city = retDepPCosCity();
-            // NIMA
-            s6b_nima = std::to_string(retDepPCosNima());
-            // PHONE
-            s6b_phone = std::to_string(retDepPCosPhone());
-            // PROVINCE
-            s6b_province = retDepPCosProv();
-            // REGISTRATION NUMBER
-            s6b_num_ins = std::to_string(retDepPCosNumIns());
-            // EMAIL
-            s6b_email = retDepPCosMail();
-            // NIF
-            s6b_nif = retDepPCosNif();
-            // ZIP
-            s6b_zip = std::to_string(retDepPCosZip());
-            // REGION
-            s6b_region = retDepPCosReg();
-        }
+        // NAME
+        s6b_name = depCostumer->getName();
+        // ADDRESS
+        s6b_address = depCostumer->getAddress();
+        // CITY
+        s6b_city = depCostumer->getCity();
+        // NIMA
+        s6b_nima = depCostumer->getNima();
+        // PHONE
+        s6b_phone = depCostumer->getPhone();
+        // PROVINCE
+        s6b_province = depCostumer->getProvence();
+        // REGISTRATION NUMBER
+        s6b_num_ins = depCostumer->getNumIns();
+        // EMAIL
+        s6b_email = depCostumer->getMail();
+        // NIF
+        s6b_nif = depCostumer->getNif();
+        // ZIP
+        s6b_zip = std::to_string(depCostumer->getZip());
+        // REGION
+        s6b_region = depCostumer->getRegion();;
     }
     //  -> printing
   // NAME

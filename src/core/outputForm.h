@@ -75,7 +75,7 @@ class outputForm: public baseForm
   int delTransit(int index,std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code);
 
   /*TRANSFERS*/
-  void setTransferMov(long myCode, station *& myStation);
+  void setTransferMov(costumer *& myCostumer, station *& myStation);
   
   int isArrMov();
  
