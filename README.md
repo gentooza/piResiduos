@@ -8,7 +8,7 @@ This is the source code for every local node. It's developed using C++ and [pvbr
 
 It was created at 2016 by the industrial, and now defunct, company [Pro Integra S.L.](http://prointegra.es/) , afterwards, development was moved at 2019 to the Software Development Company [Pixelada S. Coop. And.](https://pixelada.org)
 
-Since 2023, It's developed under collaboration between the costumer, El Alambre Estudio Creativo S. Coop. And. and the University of Córdoba.
+Since 2023, It's developed under collaboration between the main costumer, [El Alambre Estudio Creativo S. Coop. And.](https://elalambre.org/) and the [University of Córdoba](https://www.uco.es/).
 
 ## Dependencies
 
