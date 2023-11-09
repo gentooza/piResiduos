@@ -80,12 +80,12 @@ static int slotInit(PARAM *p, DATA *d)
 		//EDITDR_A falta
 		//}
 		//b) nuestro cliente NO EDITABLE
-		if (formDI->retDepCosType() == 4 || formDI->retDepCosType() == 1) //special cases in orders
+		if (formDI->depCostumer->getType() == 4 || formDI->depCostumer->getType() == 1) //special cases in orders
 		{
 			pvSetText(p, EDITNOMBRE_B, myAuthCostumer->getName().c_str());
 			pvSetText(p, EDITNIF_B, myAuthCostumer->getNif().c_str());
 			pvSetText(p, EDITDIREC_B, myAuthCostumer->getAddress().c_str());
-			temp = std::to_string(myAuthCostumer->getCp());
+			temp = std::to_string(myAuthCostumer->getZip());
 			pvSetText(p, EDITCP_B, temp.c_str());
 			pvSetText(p, EDITMUNI_B, myAuthCostumer->getCity().c_str());
 			pvSetText(p, EDITPRO_B, myAuthCostumer->getProvence().c_str());
@@ -97,21 +97,21 @@ static int slotInit(PARAM *p, DATA *d)
 		}
 		else
 		{
-			pvSetText(p,EDITNOMBRE_B,formDI->retDepCosName().c_str());
-			pvSetText(p,EDITNIF_B,formDI->retDepCosNif().c_str());
-			pvSetText(p,EDITDIREC_B,formDI->retDepCosAddr().c_str());
-			temp = std::to_string(formDI->retDepCosZip());
-			pvSetText(p,EDITCP_B,temp.c_str());
-			pvSetText(p,EDITMUNI_B,formDI->retDepCosCity().c_str());
-			pvSetText(p,EDITPRO_B,formDI->retDepCosProv().c_str());
-			pvSetText(p,EDITCA_B,formDI->retDepCosReg().c_str());
-			temp = std::to_string(formDI->retDepCosNima());
-			pvSetText(p,EDITNIMA_B,temp.c_str());
-			temp = std::to_string(formDI->retDepCosNumIns());
-			pvSetText(p,EDITREG_B,temp.c_str());
-			temp = std::to_string(formDI->retDepCosPhone());
-			pvSetText(p,EDITTFN_B,temp.c_str());
-			pvSetText(p,EDITEMAIL_B,formDI->retDepCosMail().c_str());
+            costumer* myCostumer;
+            formDI->retArrCostumer(myCostumer);
+			pvSetText(p, EDITNOMBRE_B, myCostumer->getName().c_str());
+			pvSetText(p, EDITNIF_B, myCostumer->getNif().c_str());
+			pvSetText(p, EDITDIREC_B, myCostumer->getAddress().c_str());
+			temp = std::to_string(myCostumer->getZip());
+			pvSetText(p, EDITCP_B, temp.c_str());
+			pvSetText(p, EDITMUNI_B, myCostumer->getCity().c_str());
+			pvSetText(p, EDITPRO_B, myCostumer->getProvence().c_str());
+			pvSetText(p, EDITCA_B, myCostumer->getRegion().c_str());
+			pvSetText(p, EDITNIMA_B, myCostumer->getNima().c_str());
+			pvSetText(p, EDITREG_B, myCostumer->getNumIns().c_str());
+			pvSetText(p, EDITTFN_B, myCostumer->getPhone().c_str());
+			pvSetText(p, EDITEMAIL_B, myCostumer->getMail().c_str());
+            delete myCostumer;
 		}
     }
 	else if(formDI->retDepMovType() == DEF_MOV_TRANSFER)
@@ -143,7 +143,7 @@ static int slotInit(PARAM *p, DATA *d)
         pvSetText(p, EDITNOMBRE_B, us->getName().c_str());
         pvSetText(p, EDITNIF_B, us->getNif().c_str());
         pvSetText(p, EDITDIREC_B, us->getAddress().c_str());
-        temp = std::to_string(us->getCp());
+        temp = std::to_string(us->getZip());
         pvSetText(p, EDITCP_B, temp.c_str());
         pvSetText(p, EDITMUNI_B, us->getCity().c_str());
         pvSetText(p, EDITPRO_B, us->getProvence().c_str());
@@ -177,7 +177,7 @@ static int slotInit(PARAM *p, DATA *d)
         pvSetText(p, EDITNOMBRE_B, us->getName().c_str());
         pvSetText(p, EDITNIF_B, us->getNif().c_str());
         pvSetText(p, EDITDIREC_B, us->getAddress().c_str());
-	    temp = std::to_string(us->getCp());
+	    temp = std::to_string(us->getZip());
         pvSetText(p, EDITCP_B, temp.c_str());
         pvSetText(p, EDITMUNI_B, us->getCity().c_str());
         pvSetText(p, EDITPRO_B, us->getProvence().c_str());
@@ -232,94 +232,106 @@ static int slotButtonPressedEvent(PARAM *p, int id, DATA *d)
 
 static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 {
-  if(p == NULL || id == 0 || d == NULL) return -1;
-      if(id == BUT1) //salvar
+    if(p == NULL || id == 0 || d == NULL) return -1;
+    if(id == BUT1) //salvar
     {
-      saveStation(p, d, formDI, myDestStation);
-      std::cout << "form save" << std::endl;
-      switch(formDI->retForm())
-	{
-	case(1): //unloading
-	  if(formEntrada)
-	    delete formEntrada;
-	  formEntrada = new inputForm();
-	  formEntrada->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2)://loading
-	  if(formSalida)
-	    delete formSalida;
-	  formSalida = new outputForm();	  
-	  formSalida->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default://unknown
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+        saveStation(p, d, formDI, myDestStation);
+        std::cout << "form save" << std::endl;
+        switch(formDI->retForm())
+	    {
+	        case(1): //unloading
+            {
+	            if(formEntrada)
+	                delete formEntrada;
+	            formEntrada = new inputForm();
+	            formEntrada->copyFrom(formDI);
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	        case(2)://loading
+            {
+	            if(formSalida)
+	                delete formSalida;
+	            formSalida = new outputForm();	  
+	            formSalida->copyFrom(formDI);
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask5(p);
+	            break;
+            }
+	        default://unknown
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	    }
     }
     else if(id == BUT2) //CANCEL
     {
-      if(myDestStation)
-	delete myDestStation;
-      std::cout << "form reset" << std::endl;
-      switch(formDI->retForm())
-	{
-	case(1):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default:
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+        if(myDestStation)
+	        delete myDestStation;
+        std::cout << "form reset" << std::endl;
+        switch(formDI->retForm())
+	    {
+	        case(1):
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	        case(2):
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask5(p);
+	            break;
+            }
+	        default:
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	    }
     }
     else if(id == BUT1234)
-      {
-	saveStation(p, d, formDI, myDestStation);
-	show_mask6(p);
-      }
+    {
+	    saveStation(p, d, formDI, myDestStation);
+	    show_mask6(p);
+    }
     else if(id == BUT5)
-      {
-	saveStation(p, d, formDI, myDestStation);
-	show_mask7(p);
-      }
+    {
+	    saveStation(p, d, formDI, myDestStation);
+	    show_mask7(p);
+    }
     else if(id == BUT6)
-      {
-	saveStation(p, d, formDI, myDestStation);
-	show_mask8(p);
-      }
+    {
+	    saveStation(p, d, formDI, myDestStation);
+	    show_mask8(p);
+    }
     else if(id == BUT78)
-      {
-	saveStation(p, d, formDI, myDestStation);
-	show_mask9(p);
-      }
+    {
+	    saveStation(p, d, formDI, myDestStation);
+	    show_mask9(p);
+    }
     else if(id == BUT910)
-      {
-	saveStation(p, d, formDI, myDestStation);
-	show_mask10(p);
-      }
-      return 0;
+    {
+	    saveStation(p, d, formDI, myDestStation);
+	    show_mask10(p);
+    }
+    return 0;
 }
 
 static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)

@@ -32,6 +32,11 @@ If not, see <https://www.gnu.org/licenses/>.
 #include "database.h"
 #include "qtdatabase.h"
 
+enum
+{
+    PARTICULAR_COSTUMER = 10000,
+};
+
 
 class costumer
 {
@@ -46,6 +51,7 @@ class costumer
         void setCostumer(long cosCode, qtDatabase& myDatabase);
         void setCostumer(std::vector<std::string> databaseData);
         int isManuallyEdited();
+        int isParticular(){ int ret = -1; ((code == PARTICULAR_COSTUMER)?ret = 1:ret = 0);return ret;};
         
         //values
         long getCode(){return code;};
@@ -71,8 +77,8 @@ class costumer
         std::string getRegion(){return region;};
         void setRegion(std::string newRegion){region = newRegion; };
         
-        long getCp(){return cp;}
-        void setCp(long newZip){cp = newZip; };
+        long getZip(){return cp;}
+        void setZip(long newZip){cp = newZip; };
 
         long getBillin(){return billin_code;}
         void setBillin(long newBillinCode){billin_code = newBillinCode; };
@@ -104,6 +110,7 @@ class costumer
         long billin_code;
         int cbc;
         int type;
+        int particular;
         std::string nima;
         std::string num_ins;
         std::string phone;

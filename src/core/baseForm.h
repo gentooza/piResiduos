@@ -357,140 +357,140 @@ class  baseForm
         void retDepCostumer(costumer *& newCostumer){ (depCostumer?newCostumer = new costumer(depCostumer):newCostumer = new costumer());};
 
         void setOurCosDATA(long code, qtDatabase &myDatabase);
-        void setDepCosDATA(std::vector <std::string> newDATA);
-        int set_dep_p_costumer_data(qtDatabase & myDatabase, long code);
-        void set_dep_p_costumer_data(std::vector <std::string> new_data);
-        int setAllDepCostumerData(qtDatabase & myDatabase);
+        // void setDepCosDATA(std::vector <std::string> newDATA);
+        // int set_dep_p_costumer_data(qtDatabase & myDatabase, long code);
+        // void set_dep_p_costumer_data(std::vector <std::string> new_data);
+        // int setAllDepCostumerData(qtDatabase & myDatabase);
         void setArrCosDATA(std::vector <std::string> newDATA);
         int setAllArrCostumerData(qtDatabase & myDatabase);
-        int setAllDepCosProdData(qtDatabase & myDatabase, station* myStation);
+        // int setAllDepCosProdData(qtDatabase & myDatabase, station* myStation);
         int setAllArrCosProdData(qtDatabase & myDatabase, station* myStation); 
         //costumer's code
-        long retDepCosCode(){return  myDepMovement.CODIGO_CLIENTE;};
-        void setDepCosCode(long code){myDepMovement.CODIGO_CLIENTE = code; return;};
+        // long retDepCosCode(){return  myDepMovement.CODIGO_CLIENTE;};
+        // void setDepCosCode(long code){myDepMovement.CODIGO_CLIENTE = code; return;};
         long retArrCosCode(){return  myArrMovement.CODIGO_CLIENTE;};
         void setArrCosCode(long code){myArrMovement.CODIGO_CLIENTE = code; return;};
         ////particular
-        void set_dep_p_costumer_code(long code){ myDepMovement.CLIENTE_PARTICULAR_CODIGO_CLIENTE = code;};
-        long ret_dep_p_costumer_code(){return myDepMovement.CLIENTE_PARTICULAR_CODIGO_CLIENTE;};
+        // void set_dep_p_costumer_code(long code){ myDepMovement.CLIENTE_PARTICULAR_CODIGO_CLIENTE = code;};
+        // long ret_dep_p_costumer_code(){return myDepMovement.CLIENTE_PARTICULAR_CODIGO_CLIENTE;};
         //costumer's name
-        std::string retDepCosName(){return myDepMovement.CLIENTE_NOMBRE;};
-        void setDepCosName(std::string name){myDepMovement.CLIENTE_NOMBRE = name;};
+        // std::string retDepCosName(){return myDepMovement.CLIENTE_NOMBRE;};
+        // void setDepCosName(std::string name){myDepMovement.CLIENTE_NOMBRE = name;};
         std::string retArrCosName(){return myArrMovement.CLIENTE_NOMBRE;};
         void setArrCosName(std::string name){myArrMovement.CLIENTE_NOMBRE = name;};
         ////particular
-        std::string retDepPCosName(){return myDepMovement.CLIENTE_PARTICULAR_NOMBRE;};
-        void setDepPCosName(std::string name){myDepMovement.CLIENTE_PARTICULAR_NOMBRE = name;};
+        // std::string retDepPCosName(){return myDepMovement.CLIENTE_PARTICULAR_NOMBRE;};
+        // void setDepPCosName(std::string name){myDepMovement.CLIENTE_PARTICULAR_NOMBRE = name;};
         std::string retArrPCosName(){return myArrMovement.CLIENTE_PARTICULAR_NOMBRE;};
         void setArrPCosName(std::string name){myArrMovement.CLIENTE_PARTICULAR_NOMBRE = name;}; 
         //costumer's nif
-        std::string retDepCosNif(){return myDepMovement.CLIENTE_NIF;};
-        void setDepCosNif(std::string nif){myDepMovement.CLIENTE_NIF = nif;};
+        // std::string retDepCosNif(){return myDepMovement.CLIENTE_NIF;};
+        // void setDepCosNif(std::string nif){myDepMovement.CLIENTE_NIF = nif;};
         std::string retArrCosNif(){return myArrMovement.CLIENTE_NIF;};
         void setArrCosNif(std::string nif){myArrMovement.CLIENTE_NIF = nif;};
         ////particular
-        std::string retDepPCosNif(){return myDepMovement.CLIENTE_PARTICULAR_NIF;};
-        void setDepPCosNif(std::string nif){myDepMovement.CLIENTE_PARTICULAR_NIF = nif;};
+        // std::string retDepPCosNif(){return myDepMovement.CLIENTE_PARTICULAR_NIF;};
+        // void setDepPCosNif(std::string nif){myDepMovement.CLIENTE_PARTICULAR_NIF = nif;};
         std::string retArrPCosNif(){return myArrMovement.CLIENTE_PARTICULAR_NIF;};
         void setArrPCosNif(std::string nif){myArrMovement.CLIENTE_PARTICULAR_NIF = nif;};  
         //costumer's address
-        std::string retDepCosAddr(){return myDepMovement.CLIENTE_DIRECCION;};
-        void setDepCosAddr(std::string address){myDepMovement.CLIENTE_DIRECCION = address;};
+        // std::string retDepCosAddr(){return myDepMovement.CLIENTE_DIRECCION;};
+        // void setDepCosAddr(std::string address){myDepMovement.CLIENTE_DIRECCION = address;};
         std::string retArrCosAddr(){return myArrMovement.CLIENTE_DIRECCION;};
         void setArrCosAddr(std::string address){myArrMovement.CLIENTE_DIRECCION = address;};
         ////particular
-        std::string retDepPCosAddr(){return myDepMovement.CLIENTE_PARTICULAR_DIRECCION;};
-        void setDepPCosAddr(std::string address){myDepMovement.CLIENTE_PARTICULAR_DIRECCION = address;};
+        // std::string retDepPCosAddr(){return myDepMovement.CLIENTE_PARTICULAR_DIRECCION;};
+        // void setDepPCosAddr(std::string address){myDepMovement.CLIENTE_PARTICULAR_DIRECCION = address;};
         std::string retArrPCosAddr(){return myArrMovement.CLIENTE_PARTICULAR_DIRECCION;};
         void setArrPCosAddr(std::string address){myArrMovement.CLIENTE_PARTICULAR_DIRECCION = address;};  
         //costumer's provence
-        std::string retDepCosProv(){return myDepMovement.CLIENTE_PROVINCIA;};
-        void setDepCosProv(std::string provence){myDepMovement.CLIENTE_PROVINCIA = provence;};
+        // std::string retDepCosProv(){return myDepMovement.CLIENTE_PROVINCIA;};
+        // void setDepCosProv(std::string provence){myDepMovement.CLIENTE_PROVINCIA = provence;};
         std::string retArrCosProv(){return myArrMovement.CLIENTE_PROVINCIA;};
         void setArrCosProv(std::string provence){myArrMovement.CLIENTE_PROVINCIA = provence;};
         ////particular
-        std::string retDepPCosProv(){return myDepMovement.CLIENTE_PARTICULAR_PROVINCIA;};
-        void setDepPCosProv(std::string provence){myDepMovement.CLIENTE_PARTICULAR_PROVINCIA = provence;};
+        // std::string retDepPCosProv(){return myDepMovement.CLIENTE_PARTICULAR_PROVINCIA;};
+        // void setDepPCosProv(std::string provence){myDepMovement.CLIENTE_PARTICULAR_PROVINCIA = provence;};
         std::string retArrPCosProv(){return myArrMovement.CLIENTE_PARTICULAR_PROVINCIA;};
         void setArrPCosProv(std::string provence){myArrMovement.CLIENTE_PARTICULAR_PROVINCIA = provence;};
         //costumer's city
-        std::string retDepCosCity(){return myDepMovement.CLIENTE_POBLACION;};
-        void setDepCosCity(std::string city){myDepMovement.CLIENTE_POBLACION = city;};
+        // std::string retDepCosCity(){return myDepMovement.CLIENTE_POBLACION;};
+        // void setDepCosCity(std::string city){myDepMovement.CLIENTE_POBLACION = city;};
         std::string retArrCosCity(){return myArrMovement.CLIENTE_POBLACION;};
         void setArrCosCity(std::string city){myArrMovement.CLIENTE_POBLACION = city;};
         ////particular
-        std::string retDepPCosCity(){return myDepMovement.CLIENTE_PARTICULAR_POBLACION;};
-        void setDepPCosCity(std::string city){myDepMovement.CLIENTE_PARTICULAR_POBLACION = city;};
+        // std::string retDepPCosCity(){return myDepMovement.CLIENTE_PARTICULAR_POBLACION;};
+        // void setDepPCosCity(std::string city){myDepMovement.CLIENTE_PARTICULAR_POBLACION = city;};
         std::string retArrPCosCity(){return myArrMovement.CLIENTE_PARTICULAR_POBLACION;};
         void setArrPCosCity(std::string city){myArrMovement.CLIENTE_PARTICULAR_POBLACION = city;};  
         //costumer's region
-        std::string retDepCosReg(){return myDepMovement.CLIENTE_COMUNIDAD_AUTONOMA;};
-        void setDepCosReg(std::string region){myDepMovement.CLIENTE_COMUNIDAD_AUTONOMA = region;};
+        // std::string retDepCosReg(){return myDepMovement.CLIENTE_COMUNIDAD_AUTONOMA;};
+        // void setDepCosReg(std::string region){myDepMovement.CLIENTE_COMUNIDAD_AUTONOMA = region;};
         std::string retArrCosReg(){return myArrMovement.CLIENTE_COMUNIDAD_AUTONOMA;};
         void setArrCosReg(std::string region){myArrMovement.CLIENTE_COMUNIDAD_AUTONOMA = region;};
         ////particular
-        std::string retDepPCosReg(){return myDepMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA;};
-        void setDepPCosReg(std::string region){myDepMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA = region;};
+        // std::string retDepPCosReg(){return myDepMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA;};
+        // void setDepPCosReg(std::string region){myDepMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA = region;};
         std::string retArrPCosReg(){return myArrMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA;};
         void setArrPCosReg(std::string region){myArrMovement.CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA = region;}; 
         //costumer's zip
-        long retDepCosZip(){return  myDepMovement.CLIENTE_CP;};
-        void setDepCosZip(long zip){myDepMovement.CLIENTE_CP = zip;};
+        // long retDepCosZip(){return  myDepMovement.CLIENTE_CP;};
+        // void setDepCosZip(long zip){myDepMovement.CLIENTE_CP = zip;};
         long retArrCosZip(){return  myArrMovement.CLIENTE_CP;};
         void setArrCosZip(long zip){myArrMovement.CLIENTE_CP = zip;};
         ////particular
-        long retDepPCosZip(){return  myDepMovement.CLIENTE_PARTICULAR_CP;};
-        void setDepPCosZip(long zip){myDepMovement.CLIENTE_PARTICULAR_CP = zip;};
+        // long retDepPCosZip(){return  myDepMovement.CLIENTE_PARTICULAR_CP;};
+        // void setDepPCosZip(long zip){myDepMovement.CLIENTE_PARTICULAR_CP = zip;};
         long retArrPCosZip(){return  myArrMovement.CLIENTE_PARTICULAR_CP;};
         void setArrPCosZip(long zip){myArrMovement.CLIENTE_PARTICULAR_CP = zip;};  
         //costumer type
-        int retDepCosType(){return  myDepMovement.CLIENTE_TIPO;};
-        void setDepCosType(long type){myDepMovement.CLIENTE_TIPO = type;};
+        // int retDepCosType(){return  myDepMovement.CLIENTE_TIPO;};
+        // void setDepCosType(long type){myDepMovement.CLIENTE_TIPO = type;};
         int retArrCosType(){return  myArrMovement.CLIENTE_TIPO;};
         void setArrCosType(long type){myArrMovement.CLIENTE_TIPO = type;};
         //costumer type by default
-        int retDepCosTypeDef(){return  myDepMovement.CLIENTE_TIPO_DEF;};
-        void setDepCosTypeDef(long type){myDepMovement.CLIENTE_TIPO_DEF = type;};
+        // int retDepCosTypeDef(){return  myDepMovement.CLIENTE_TIPO_DEF;};
+        // void setDepCosTypeDef(long type){myDepMovement.CLIENTE_TIPO_DEF = type;};
         int retArrCosTypeDef(){return  myArrMovement.CLIENTE_TIPO_DEF;};
         void setArrCosTypeDef(long type){myArrMovement.CLIENTE_TIPO_DEF = type;};
         //costumer's nima
-        long retDepCosNima(){return  myDepMovement.CLIENTE_NIMA;};
-        void setDepCosNima(long nima){myDepMovement.CLIENTE_NIMA = nima;};
+        // long retDepCosNima(){return  myDepMovement.CLIENTE_NIMA;};
+        // void setDepCosNima(long nima){myDepMovement.CLIENTE_NIMA = nima;};
         long retArrCosNima(){return  myArrMovement.CLIENTE_NIMA;};
         void setArrCosNima(long nima){myArrMovement.CLIENTE_NIMA = nima;};
         ////particular
-        long retDepPCosNima(){return  myDepMovement.CLIENTE_PARTICULAR_NIMA;};
-        void setDepPCosNima(long nima){myDepMovement.CLIENTE_PARTICULAR_NIMA = nima;};
+        // long retDepPCosNima(){return  myDepMovement.CLIENTE_PARTICULAR_NIMA;};
+        // void setDepPCosNima(long nima){myDepMovement.CLIENTE_PARTICULAR_NIMA = nima;};
         long retArrPCosNima(){return  myArrMovement.CLIENTE_PARTICULAR_NIMA;};
         void setArrPCosNima(long nima){myArrMovement.CLIENTE_PARTICULAR_NIMA = nima;};  
         //costumer's apply number
-        long retDepCosNumIns(){return  myDepMovement.CLIENTE_NUM_INSCRIPCION;};
-        void setDepCosNumIns(long num){myDepMovement.CLIENTE_NUM_INSCRIPCION = num;};
+        // long retDepCosNumIns(){return  myDepMovement.CLIENTE_NUM_INSCRIPCION;};
+        // void setDepCosNumIns(long num){myDepMovement.CLIENTE_NUM_INSCRIPCION = num;};
         long retArrCosNumIns(){return  myArrMovement.CLIENTE_NUM_INSCRIPCION;};
         void setArrCosNumIns(long num){myArrMovement.CLIENTE_NUM_INSCRIPCION = num;};
         ////particular
-        long retDepPCosNumIns(){return  myDepMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION;};
-        void setDepPCosNumIns(long num){myDepMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = num;};
+        // long retDepPCosNumIns(){return  myDepMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION;};
+        // void setDepPCosNumIns(long num){myDepMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = num;};
         long retArrPCosNumIns(){return  myArrMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION;};
         void setArrPCosNumIns(long num){myArrMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = num;};  
         //costumer's telephone
-        long retDepCosPhone(){return  myDepMovement.CLIENTE_TELEFONO;};
-        void setDepCosPhone(long num){myDepMovement.CLIENTE_TELEFONO = num;};
+        // long retDepCosPhone(){return  myDepMovement.CLIENTE_TELEFONO;};
+        // void setDepCosPhone(long num){myDepMovement.CLIENTE_TELEFONO = num;};
         long retArrCosPhone(){return  myArrMovement.CLIENTE_TELEFONO;};
         void setArrCosPhone(long num){myArrMovement.CLIENTE_TELEFONO = num;};
         ////particular
-        long retDepPCosPhone(){return  myDepMovement.CLIENTE_PARTICULAR_TELEFONO;};
-        void setDepPCosPhone(long num){myDepMovement.CLIENTE_PARTICULAR_TELEFONO = num;};
+        // long retDepPCosPhone(){return  myDepMovement.CLIENTE_PARTICULAR_TELEFONO;};
+        // void setDepPCosPhone(long num){myDepMovement.CLIENTE_PARTICULAR_TELEFONO = num;};
         long retArrPCosPhone(){return  myArrMovement.CLIENTE_PARTICULAR_TELEFONO;};
         void setArrPCosPhone(long num){myArrMovement.CLIENTE_PARTICULAR_TELEFONO = num;};  
         //costumer's mail
-        std::string retDepCosMail(){return myDepMovement.CLIENTE_MAIL;};
-        void setDepCosMail(std::string mail){myDepMovement.CLIENTE_MAIL = mail;};
+        // std::string retDepCosMail(){return myDepMovement.CLIENTE_MAIL;};
+        // void setDepCosMail(std::string mail){myDepMovement.CLIENTE_MAIL = mail;};
         std::string retArrCosMail(){return myArrMovement.CLIENTE_MAIL;};
         void setArrCosMail(std::string mail){myArrMovement.CLIENTE_MAIL = mail;};
         ////particular
-        std::string retDepPCosMail(){return myDepMovement.CLIENTE_PARTICULAR_MAIL;};
-        void setDepPCosMail(std::string mail){myDepMovement.CLIENTE_PARTICULAR_MAIL = mail;};
+        // std::string retDepPCosMail(){return myDepMovement.CLIENTE_PARTICULAR_MAIL;};
+        // void setDepPCosMail(std::string mail){myDepMovement.CLIENTE_PARTICULAR_MAIL = mail;};
         std::string retArrPCosMail(){return myArrMovement.CLIENTE_PARTICULAR_MAIL;};
         void setArrPCosMail(std::string mail){myArrMovement.CLIENTE_PARTICULAR_MAIL = mail;};
         ////
