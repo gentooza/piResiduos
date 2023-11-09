@@ -3,6 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2019, Pro Integra SL
 Copyright 2019,2020 Pixelada S. Coop. And <info (at) pixelada (dot) org>
+Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -134,9 +135,9 @@ int myMail::buildMessage( MimeText &text, station *& myStation, baseForm *& myFo
   
   std::string costumer ="CLIENTE:\n";
   costumer += "  código: ";
-  costumer += std::to_string(myForm->retDepCosCode());
+  costumer += std::to_string(myForm->depCostumer->getCode());
   costumer += "   nombre: ";
-  costumer += myForm->retDepCosName();
+  costumer += myForm->depCostumer->getName();
   costumer += "\n\n";
   
   std::string product ="PRODUCTO:\n";
