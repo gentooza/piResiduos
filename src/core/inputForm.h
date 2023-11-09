@@ -96,7 +96,6 @@ class inputForm: public baseForm
   //DI INFORMATION
   void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
   int isDiComplete();
-  int isDiCostumerDefined();
   
   std::vector <std::string> allClientes;
   std::vector <std::string> allClientesCodes;
