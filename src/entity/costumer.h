@@ -52,6 +52,7 @@ class costumer
         void setCostumer(std::vector<std::string> databaseData);
         int isManuallyEdited();
         int isParticular(){ int ret = -1; ((code == PARTICULAR_COSTUMER)?ret = 1:ret = 0);return ret;};
+        int isDefined();
         
         //values
         long getCode(){return code;};
@@ -77,8 +78,8 @@ class costumer
         std::string getRegion(){return region;};
         void setRegion(std::string newRegion){region = newRegion; };
         
-        long getZip(){return cp;}
-        void setZip(long newZip){cp = newZip; };
+        long getZip(){return zip;}
+        void setZip(long newZip){zip = newZip; };
 
         long getBillin(){return billin_code;}
         void setBillin(long newBillinCode){billin_code = newBillinCode; };
@@ -106,7 +107,7 @@ class costumer
         std::string provence;
         std::string city;
         std::string region;
-        long cp;
+        long zip;
         long billin_code;
         int cbc;
         int type;

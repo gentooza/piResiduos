@@ -42,7 +42,7 @@ costumer::costumer()
     provence = "";
     city = "";
     region = "";
-    cp = 0;
+    zip = 0;
     billin_code = 0;
     cbc = 0;
     type = 0;
@@ -65,7 +65,7 @@ costumer::costumer(costumer * reference)
     provence = reference->getProvence();  
     city = reference->getCity();
     region = reference->getRegion();
-    cp = reference->getCp();
+    zip = reference->getZip();
     billin_code = reference->getBillin();
     cbc = reference->getCbc();   
     type = reference->getType();
@@ -84,7 +84,7 @@ void costumer::reset()
     provence.clear();
     city.clear();
     region.clear();
-    cp = 0;
+    zip = 0;
     billin_code = 0;
     cbc = 0;
     type = 0;
@@ -149,13 +149,13 @@ void costumer::setCostumer(std::vector<std::string> databaseData)
             {
                 try
                 {
-                    cp = std::stol(*iter);
+                    zip = std::stol(*iter);
                 }
                 catch(const std::invalid_argument& ia)
                 {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
                     std::cerr << "costumer::setCostumer In costumer POSTAL_CODE field 6 = " << *iter <<  '\n';
-                    cp = 0;
+                    zip = 0;
                 }
             }
             else if(i==7) //billing id
@@ -225,6 +225,40 @@ int costumer::isManuallyEdited()
     if(code == 0)
     {
         ret = 1;
+    }
+    return ret;
+}
+
+int costumer::isDefined()
+{
+    int ret = 1;
+
+    if(code < PARTICULAR_COSTUMER)
+        ret = 0;
+    else if(isParticular())
+    {
+        if(!name.compare("OTROS"))
+            ret = 0;
+        if(nif.empty())
+            ret = 0;
+        if(address.empty())
+            ret = 0;
+        if(provence.empty())
+            ret = 0;
+        if(city.empty())
+            ret = 0;
+        if(region.empty())
+            ret = 0;
+        if(zip == 0)
+            ret = 0;
+        if(nima.empty())
+            ret = 0;
+        if(num_ins.empty())
+            ret = 0;
+        if(phone.empty())
+            ret = 0;
+        if(mail.empty())
+            ret = 0;
     }
     return ret;
 }
