@@ -489,66 +489,64 @@ check if server connection is possible, elementId from enum in pvapp.h
 returns 0 if unavailable*/
 int isConnected(const char* address, int port)
 {//https://stackoverflow.com/questions/26365575/gethostbyname-h-addr-list-incorrect-first-bit
-  int ret = 0;
-  int sockfd, n;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  struct in_addr ipv4addr;
+    int ret = 0;
+    int sockfd, n;
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
+    struct in_addr ipv4addr;
 
-  int method = 0;
-  int i;
-  const int len = strlen(address);
-  for (i = 0; i < len; i++)
-  {
-    if (!isdigit(address[i]) && address[i] != '.')
-	    method=1;
-  }
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd >= 0) //we have network
-  {
-    if(method) // by address
-	  {
-	    server = gethostbyname(address);
-	    if(server!=NULL)
+    int method = 0;
+    int i;
+    const int len = strlen(address);
+    for (i = 0; i < len; i++)
+    {
+        if (!isdigit(address[i]) && address[i] != '.')
+	        method=1;
+    }
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd >= 0) //we have network
+    {
+        if(method) // by address
 	    {
-	      //bzero((char *) &serv_addr, sizeof(serv_addr));
-	      memset((char *) &serv_addr,0, sizeof(serv_addr));
-	      serv_addr.sin_family = AF_INET;
-	      memmove((char *)server->h_addr, 
-		      (char *)&serv_addr.sin_addr.s_addr,
-		      server->h_length);
-	      serv_addr.sin_port = htons(port);
-	      if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) >= 0)
-		    {
-		      //SUCCESS!
-		      ret = 1;
-		      close(sockfd);
-		    }
-	      else
-		      std::cout << "CONNECT FAIL! : "<< strerror(errno) << " to host:" <<  (char *)server->h_addr <<std::endl;
+	        server = gethostbyname(address);
+	        if(server!=NULL)
+	        {
+	            //bzero((char *) &serv_addr, sizeof(serv_addr));
+	            memset((char *) &serv_addr,0, sizeof(serv_addr));
+	            serv_addr.sin_family = AF_INET;
+	            memmove((char *)server->h_addr, 
+		            (char *)&serv_addr.sin_addr.s_addr,
+		            server->h_length);
+	            serv_addr.sin_port = htons(port);
+	            if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) >= 0)
+		        {
+		            //SUCCESS!
+		            ret = 1;
+		            close(sockfd);
+		        }
+	            else
+		            std::cout << "CONNECT FAIL! : "<< strerror(errno) << " to host:" <<  inet_ntoa(*(struct in_addr*)server->h_addr) <<std::endl;
+	        }
+	        else
+	            std::cout << "CONNECT method 1 FAIL!!\n" << std::endl;
 	    }
-	    else
-	      std::cout << "CONNECT method 1 FAIL!!\n" << std::endl;
-	  }
-    else
-	  {
-	    struct sockaddr_in sin;
-	    sin.sin_family = AF_INET;
-	    sin.sin_port   = htons(port);  // Could be anything
-	    inet_pton(AF_INET, address, &sin.sin_addr);
-	    if (connect(sockfd,(struct sockaddr *) &sin,sizeof(sin)) >= 0)
+        else
 	    {
-	      //SUCCESS!
-	      ret = 1;
-	      close(sockfd);
+	        struct sockaddr_in sin;
+	        sin.sin_family = AF_INET;
+	        sin.sin_port   = htons(port);  // Could be anything
+	        inet_pton(AF_INET, address, &sin.sin_addr);
+	        if (connect(sockfd,(struct sockaddr *) &sin,sizeof(sin)) >= 0)
+	        {
+	            //SUCCESS!
+	            ret = 1;
+	            close(sockfd);
+	        }
+	        else
+	            std::cout << "CONNECT method 2 FAIL!\n" <<std::endl;
 	    }
-	    else
-	      std::cout << "CONNECT method 2 FAIL!\n" <<std::endl;
-	  }
-  }
-  return ret;
-  // temporal bypass
-  // return 1;
+    }
+    return ret;
 }
 
 std::string fromBufferAPeso(char * buffer)
