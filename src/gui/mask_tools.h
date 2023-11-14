@@ -408,134 +408,120 @@ static int syncTransfers(PARAM *p, long codigo_estacion)
 
 static int syncOrders(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing orders table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message;
+    str_log_message = "(SINCRO) syncing orders table... ";
+    log_message(str_log_message, 1);
+    if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> dataReturn;
-      char * sql;
-      std::string str_codigo_estacion = std::to_string(myStation->getCode());
-      remote_selectAllOrders(sql,str_codigo_estacion.c_str());
-      str_log_message = "(SINCRO) remote BD -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  localDatabase.query(p,"delete from ordenes");
-	  log_message("(SINCRO) local BD -> delete from ordenes", 1);
-	  dataReturn = remoteDatabase.retData2();
-	  if(dataReturn.size())
-	   {
-	     delete sql;
-	     sqlLoadOrders(sql,dataReturn);
-	     str_log_message = "(SINCRO) local BD  -> ";
-	     str_log_message += sql;
-	     log_message(str_log_message, 1);
-	     if(localDatabase.query(p,sql))
-	       ret = -1;
-	    }
-	  else
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        rmtSelAllOrders(sql, myStation->getCode());
+        str_log_message = "(SINCRO) remote BD -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(p, sql.c_str()))
 	    {
-	      log_message("(SINCRO)(orders) NO ORDERS TO SYNC!", 2);
+	        localDatabase.query(p, "delete from ordenes");
+	        log_message("(SINCRO) local BD -> delete from ordenes", 1);
+	        dataReturn = remoteDatabase.retData2();
+	        if(dataReturn.size())
+	        {
+	            loadOrders(sql, dataReturn);
+	            str_log_message = "(SINCRO) local BD  -> ";
+	            str_log_message += sql;
+	            log_message(str_log_message, 1);
+	            if(localDatabase.query(p, sql.c_str()))
+	                ret = -1;
+	        }
+	        else
+	        {
+	            log_message("(SINCRO)(orders) NO ORDERS TO SYNC!", 2);
+	        }
 	    }
-	}
-      else
-	{
-	  log_message("(SINCRO)(orders) Error remote BD (query?)", 2);
-	  ret = -2;
-	}
-      delete sql;
+        else
+	    {
+	        log_message("(SINCRO)(orders) Error remote BD (query?)", 2);
+	        ret = -2;
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(orders) Error remote DB(connection?)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(orders) Error remote DB(connection?)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  return ret;
+    return ret;
 }
 
 static int syncDrivers(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing drivers table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message;
+    str_log_message = "(SINCRO) syncing drivers table... ";
+    log_message(str_log_message, 1);
+    if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> dataReturn;
-      //clientes
-      char* sql;
-      remote_selectAllDrivers(sql);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  delete sql;
-	  localDatabase.query(p,"delete from transportistas");
-	  log_message("(SINCRO) BD local -> delete from transportistas", 1);
-	  dataReturn = remoteDatabase.retData2();
-	  sqlLoadDrivers(sql,dataReturn);
-	  str_log_message = "(SINCRO) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  localDatabase.query(p,sql);
-	}
-      else
-	{
-	  log_message("(SINCRO)(conductoras) Error BD remota (query)", 2);
-	  ret = -2;
-	}
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        rmtSelAllDrivers(sql);
+        str_log_message = "(SINCRO) BD remota -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(p, sql.c_str()))
+	    {
+	        localDatabase.query(p, "delete from transportistas");
+	        log_message("(SINCRO) BD local -> delete from transportistas", 1);
+	        dataReturn = remoteDatabase.retData2();
+	        loadDrivers(sql, dataReturn);
+	        str_log_message = "(SINCRO) BD local -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        localDatabase.query(p, sql.c_str());
+	    }
+        else
+	    {
+	        log_message("(SINCRO)(conductoras) Error BD remota (query)", 2);
+	        ret = -2;
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(conductoras) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(conductoras) Error BD remota (conexión)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  return ret;
+    return ret;
 }
 
 static int syncStaff(PARAM *p)
 {
 	int ret = 0;
-	char* sql = NULL;
-  	std::string str_log_message;
-  	str_log_message = "(SINCRO) syncing staff table... ";
+  	std::string str_log_message = "(SINCRO) syncing staff table... ";
+    log_message(str_log_message, 1);
   	if(remoteDatabase.isOpen())
     {
+        std::string sql;
       	std::vector <std::vector <std::string>> data_return;
-      	//clientes
-      	rmt_sel_all_staff(sql);
+      	rmtSelAllStaff(sql);
       	str_log_message = "(SINCRO)(basculistas) BD remota -> ";
       	str_log_message += sql;
       	log_message(str_log_message, 1);
-      	if(!remoteDatabase.query(p,sql))
+      	if(!remoteDatabase.query(p, sql.c_str()))
 		{
-	  		if (sql)
-			{
-				delete[] sql;
-				sql = NULL;
-			}
 	  		localDatabase.query(p,"delete from BASCULISTAS");
 	  		log_message("(SINCRO)(basculistas) BD local -> delete from BASCULISTAS", 1);
 	  		data_return = remoteDatabase.retData2();
-	  		load_staff(sql,data_return);
+	  		loadStaff(sql, data_return);
 	  		str_log_message = "(SINCRO)(basculistas) BD local -> ";
 	  		str_log_message += sql;
 	  		log_message(str_log_message, 1);
-	  		localDatabase.query(p,sql);
+	  		localDatabase.query(p, sql.c_str());
 		}
       	else
 		{
 	  		log_message("(SINCRO)(basculistas) Error BD remota (query)", 2);
 	  		ret = -2;
-		}
-		if (sql)
-		{
-			delete[] sql;
-			sql = NULL;
 		}
     }
   	else
@@ -552,27 +538,27 @@ static int syncMovements(PARAM *p,long codigo_estacion)
 	int ret = 0;
 	std::string str_log_message;
 	str_log_message = "(SINCRO) syncing movements table... ";
+    log_message(str_log_message, 1);
   	if(remoteDatabase.isOpen())
     {
       	//1 - choosing all unsyncronized local movements
       	std::vector <std::vector <std::string>> dataReturn;
-      	char* sql;
-      	sel_all_unsyncro_movements(sql);
+      	std::string sql;
+      	selAllUnsyncroMovs(sql);
       	str_log_message = "(SINCRO) BD local -> ";
       	str_log_message += sql;
       	log_message(str_log_message, 1);
-      	if(!localDatabase.query(p,sql))
+      	if(!localDatabase.query(p, sql.c_str()))
 		{
 	  		dataReturn = localDatabase.retData2();
 	  		if(dataReturn.size()) //if there is local movements to sync
 	    	{
-	      		delete sql;
 	      		//1b - udpdating remote movements table
-	      		rmt_updtMovements(sql,dataReturn);
+	      		rmtUpdtMovs(sql, dataReturn);
 	      		str_log_message = "(SINCRO) BD remota -> ";
 	      		str_log_message += sql;
 	      		log_message(str_log_message, 1);
-	      		if(remoteDatabase.query(p,sql))
+	      		if(remoteDatabase.query(p, sql.c_str()))
 				{
 		  			log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
 		  			ret = -2;
@@ -580,14 +566,13 @@ static int syncMovements(PARAM *p,long codigo_estacion)
 	      		else //if sincronizing remote movements with local's success
 				{
 		  			//uploading files!
-		  			upload_movement_files_from_sql(dataReturn,0);
+		  			upload_movement_files_from_sql(dataReturn, 0);
 		  			//1c - set local movements as syncronized
-		  			delete sql;
-		  			upd_all_unsyncro_movements(sql);
+		  			updtAllUnsyncroMovs(sql);
 		  			str_log_message = "(SINCRO) BD local -> ";
 		  			str_log_message += sql;
 		  			log_message(str_log_message, 1);
-		  			localDatabase.query(p,sql);
+		  			localDatabase.query(p, sql.c_str());
 				}
 	    	}
 		}
@@ -596,36 +581,32 @@ static int syncMovements(PARAM *p,long codigo_estacion)
 	  		log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
 	  		ret = -2;
 		}
-		delete sql;
       	//2 - only selecting last movement in station, in remote database
       	time_t t = time(NULL);
       	tm* timePtr = localtime(&t);
       	int year =  timePtr->tm_year+1900;
-      	rmt_sel_last_movement(sql,codigo_estacion,year);
+      	rmtSelLastMov(sql, codigo_estacion, year);
       	str_log_message = "(SINCRO) BD remota -> ";
       	str_log_message += sql;
       	log_message(str_log_message, 1);
-      	if(!remoteDatabase.query(p,sql))
+      	if(!remoteDatabase.query(p, sql.c_str()))
 		{
 	  		dataReturn = remoteDatabase.retData2();
 	  		if(dataReturn.size()) //if there is remote movements to sync
 	    	{
-	      		delete sql;
 	      		//2b update in local database
-	      		upd_syncro_movements(sql,dataReturn);
+	      		updtSyncroMovs(sql, dataReturn);
 	      		str_log_message = "(SINCRO) BD local -> ";
 	      		str_log_message += sql;
 	      		log_message(str_log_message, 1);
-	      		if(localDatabase.query(p,sql))
+	      		if(localDatabase.query(p, sql.c_str()))
 					ret=-3;
 	    	}
-	  		delete sql;
 		}
       	else
 		{
 	  		log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);	  
 	  		ret = -3;
-	  		delete sql;
 		}
     }
   	else
@@ -636,68 +617,64 @@ static int syncMovements(PARAM *p,long codigo_estacion)
     }
   	return ret;
 }
-static int syncTransit(PARAM *p, int codigo_estacion)
+static int syncTransit(PARAM *p, long codigo_estacion)
 {
-  int ret = 0;
-  char* sql;
-  std::string str_log_message;
-  std::vector< std::vector< std::string>> all_transit_data;
-  str_log_message = "(SINCRO) syncing transit table... ";
-  //local transit priority over remote!!
-  sel_all_transito(sql);
-  str_log_message = "(SINCRO)(transito) BD local -> ";
-  str_log_message += sql;
-  log_message(str_log_message, 1);
-  if(!localDatabase.query(p,sql))
+    int ret = 0;
+    std::string sql;
+    std::string str_log_message;
+    std::vector< std::vector< std::string>> all_transit_data;
+    str_log_message = "(SINCRO) syncing transit table... ";
+    log_message(str_log_message, 1);  
+    //local transit priority over remote!!
+    selAllTransit(sql);
+    str_log_message = "(SINCRO)(transito) BD local -> ";
+    str_log_message += sql;
+    log_message(str_log_message, 1);
+    if(!localDatabase.query(p, sql.c_str()))
     {
-      log_message("(SINCRO) BD local OK", 1);
-      all_transit_data = localDatabase.retData2();
-      if(remoteDatabase.isOpen())
-	{
-	  delete sql;
-	  rmt_del_transito(sql, codigo_estacion);
-	  str_log_message = "(SINCRO)(transito) BD remota -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  if(!remoteDatabase.query(p,sql))
+        log_message("(SINCRO) BD local OK", 1);
+        all_transit_data = localDatabase.retData2();
+        if(remoteDatabase.isOpen())
 	    {
-	      log_message("(SINCRO) BD remota OK", 1);
-	      delete sql;
-	      rmt_updtTransito(sql, all_transit_data, codigo_estacion);
-	      str_log_message = "(SINCRO)(transito) BD remota -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(!remoteDatabase.query(p,sql))
-		{
-		  log_message("(SINCRO) BD remota OK", 1);
-		}
-	      else
-		{
-		  ret = -1;
-		  log_message("(SINCRO)(tránsito) BD remota ERROR(query)", 2);
-		}
-
+	        rmtDelTransit(sql, codigo_estacion);
+	        str_log_message = "(SINCRO)(transito) BD remota -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        if(!remoteDatabase.query(p, sql.c_str()))
+	        {
+	            log_message("(SINCRO) BD remota OK", 1);
+	            rmtUpdtTransit(sql, all_transit_data, codigo_estacion);
+	            str_log_message = "(SINCRO)(transito) BD remota -> ";
+	            str_log_message += sql;
+	            log_message(str_log_message, 1);
+	            if(!remoteDatabase.query(p, sql.c_str()))
+		        {
+		            log_message("(SINCRO) BD remota OK", 1);
+		        }
+	            else
+		        {
+		            ret = -1;
+		            log_message("(SINCRO)(tránsito) BD remota ERROR(query)", 2);
+		        }
+	        }
+	        else
+	        {
+	            ret = -1;
+	            log_message("(SINCRO)(tránsito) BD remota ERROR(query)", 2);
+	        }
 	    }
-	  else
+        else
 	    {
-	      ret = -1;
-	      log_message("(SINCRO)(tránsito) BD remota ERROR(query)", 2);
+	        ret = -1;
+	        log_message("(SINCRO)(tránsito) BD remota ERROR(conexión)", 2);
 	    }
-	}
-      else
-	{
-	  ret = -1;
-	  log_message("(SINCRO)(tránsito) BD remota ERROR(conexión)", 2);
-	}
     }
-  else
+    else
     {
-      ret = -1;
-      log_message("(SINCRO) BD local ERROR(query)", 2);
+        ret = -1;
+        log_message("(SINCRO) BD local ERROR(query)", 2);
     }
-
-  delete sql;
-  return ret;    
+    return ret;    
 }
 
 /*!
@@ -706,97 +683,91 @@ static int syncTransit(PARAM *p, int codigo_estacion)
 3- select all from remote
 4- write it to local
 */
-static int syncTransitDep(PARAM *p, int codigo_estacion)
+static int syncTransitDep(PARAM *p, long codigo_estacion)
 { 
-  int ret = 0;
-  char* sql;
-  std::string str_log_message;
-  std::vector< std::vector< std::string>> all_transit_data;
-  str_log_message = "(SINCRO) syncing transit-departures table... ";
-  //local transit priority over remote!!
-  sel_all_transito_dep(sql);
-  str_log_message = "(SINCRO)(transito_salidas) BD local -> ";
-  str_log_message += sql;
-  log_message(str_log_message, 1);
-  if(!localDatabase.query(p,sql))
+    int ret = 0;
+    std::string sql;
+    std::string str_log_message;
+    std::vector< std::vector< std::string>> all_transit_data;
+    str_log_message = "(SINCRO) syncing transit-departures table... ";
+    log_message(str_log_message, 1);
+    //local transit priority over remote!!
+    selAllTransitDep(sql);
+    str_log_message = "(SINCRO)(transito_salidas) BD local -> ";
+    str_log_message += sql;
+    log_message(str_log_message, 1);
+    if(!localDatabase.query(p, sql.c_str()))
     {
-      log_message("(SINCRO) BD local OK", 1);
-      all_transit_data = localDatabase.retData2();
-      if(remoteDatabase.isOpen())
-	{
-	  delete sql;
-	  rmt_del_transito_dep(sql, codigo_estacion);
-	  str_log_message = "(SINCRO)(transito_salidas) BD remota -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  if(!remoteDatabase.query(p,sql))
+        log_message("(SINCRO) BD local OK", 1);
+        all_transit_data = localDatabase.retData2();
+        if(remoteDatabase.isOpen())
 	    {
-	      log_message("(SINCRO) BD remota OK", 1);
-	      delete sql;
-	      rmt_updtTransitoSalidas(sql, all_transit_data, codigo_estacion);
-	      str_log_message = "(SINCRO)(transito_salidas) BD remota -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(!remoteDatabase.query(p,sql))
-		{
-		  log_message("(SINCRO) BD remota OK", 1);
-		}
-	      else
-		{
-		  ret = -1;
-		  log_message("(SINCRO)(transito_salidas) BD remota ERROR(query)", 2);
-		}
-
+	        rmtDelTransitDep(sql, codigo_estacion);
+	        str_log_message = "(SINCRO)(transito_salidas) BD remota -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        if(!remoteDatabase.query(p, sql.c_str()))
+	        {
+	            log_message("(SINCRO) BD remota OK", 1);
+	            rmtUpdtTransitDep(sql, all_transit_data, codigo_estacion);
+	            str_log_message = "(SINCRO)(transito_salidas) BD remota -> ";
+	            str_log_message += sql;
+	            log_message(str_log_message, 1);
+	            if(!remoteDatabase.query(p, sql.c_str()))
+		        {
+		            log_message("(SINCRO) BD remota OK", 1);
+		        }
+	            else
+		        {
+		            ret = -1;
+		            log_message("(SINCRO)(transito_salidas) BD remota ERROR(query)", 2);
+		        }
+	        }
+	        else
+	        {
+	            ret = -1;
+	            log_message("(SINCRO)(transito_salidas) BD remota ERROR(query)", 2);
+	        }
 	    }
-	  else
+        else
 	    {
-	      ret = -1;
-	      log_message("(SINCRO)(transito_salidas) BD remota ERROR(query)", 2);
+	        ret = -1;
+	        log_message("(SINCRO)(transito_salidas) BD remota ERROR(conexión)", 2);
 	    }
-	}
-      else
-	{
-	  ret = -1;
-	  log_message("(SINCRO)(transito_salidas) BD remota ERROR(conexión)", 2);
-	}
     }
-  else
+    else
     {
-      ret = -1;
-      log_message("(SINCRO) BD local ERROR(query)", 2);
+        ret = -1;
+        log_message("(SINCRO) BD local ERROR(query)", 2);
     }
-
-  delete sql;
-  return ret;  
+    return ret;  
 }
 
 /*!function for syncing stations from central Database*/
 static int syncStations(PARAM *p)
 {
 	int ret = 0;
-	char* sql = NULL;
+	std::string sql;
   	std::string str_log_message;
   	str_log_message = "(SINCRO) syncing stations table... ";
+    log_message(str_log_message, 1);
   	if(remoteDatabase.isOpen())
 	{
     	std::vector <std::vector <std::string>> dataReturn;
-    	//stations
-    	rmt_selAllStations(sql);
+    	rmtSelAllCenters(sql);
     	str_log_message = "(SINCRO) BD remota -> ";
     	str_log_message += sql;
     	log_message(str_log_message, 1);
-    	if(!remoteDatabase.query(p,sql))
+    	if(!remoteDatabase.query(p, sql.c_str()))
 		{
-	  		delete[] sql;
-	  		localDatabase.query(p,"delete from centros");
+	  		localDatabase.query(p, "delete from centros");
 	  		log_message("(SINCRO) BD local -> delete from centros", 1);
 	  		dataReturn = remoteDatabase.retData2();
-	  		sqlLoadStations(sql,dataReturn);
+	  		loadCenters(sql, dataReturn);
 	  		str_log_message = "(SINCRO) BD local -> ";
 	  		str_log_message += sql;
 	  		log_message(str_log_message, 1);
-	  		localDatabase.query(p,sql);
-			delete[] sql;
+	  		localDatabase.query(p, sql.c_str());
 		}
       	else
 		{

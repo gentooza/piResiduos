@@ -701,7 +701,7 @@ std::string baseForm::createArrDi(qtDatabase & localDatabase)
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovementsByClientProduct(sql, retArrCosCode(), retArrProdCode());  
+    selLastDiFromMovsByClientProduct(sql, retArrCosCode(), retArrProdCode());  
     localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())
@@ -739,7 +739,7 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovementsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());  
+    selLastDiFromMovsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());  
     localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())

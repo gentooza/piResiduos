@@ -158,11 +158,10 @@ static int setComboBoxPosByField(PARAM *p,int id,std::vector <std::vector < std:
 static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
 {
     // std::cout << "inside popteTransito" << std::endl;
-    char *sql;
+    std::string sql;
     std::vector<std::vector<std::string>> ourData;
-    sel_all_transito(sql,myStation->getCode());
-    localDatabase.query(p,sql);
-    delete[] sql;
+    selAllTransit(sql, myStation->getCode());
+    localDatabase.query(p, sql.c_str());
     try
     {
         ourData = localDatabase.retData2();

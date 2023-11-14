@@ -208,73 +208,70 @@ static int popteOrders(PARAM *p,DATA* d,int id, baseForm *& formulario)
 
 static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
 {
-  //std::cout << "inside popteTransito" << std::endl;
-  char *sql;
-  sel_all_transito_dep(sql);
-  localDatabase.query(p,sql);
-  std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-  if(are2dMatrixDifferents(ourData,formulario->retTransit()))
+    //std::cout << "inside popteTransito" << std::endl;
+    std::string sql;
+    selAllTransitDep(sql);
+    localDatabase.query(p, sql.c_str());
+    std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
+    if(are2dMatrixDifferents(ourData,formulario->retTransit()))
     {
-      formulario->setTransit(ourData);           
+        formulario->setTransit(ourData);
     }
-  
-  std::vector <std::vector <std::string>>::iterator trucks;
-  std::vector <std::string> ::iterator fields;
-  std::string item;
-  std::string tmpItem = "\n(";
-  int column = 1;
-  pvClear(p,id);
-  //ICON, PLATE, FECHA_HORA
-  std::string icon;
-  std::string plate;
-  std::string date;
-  int weight;
-  for(trucks = ourData.begin(); trucks != ourData.end(); ++trucks)
+    std::vector <std::vector <std::string>>::iterator trucks;
+    std::vector <std::string> ::iterator fields;
+    std::string item;
+    std::string tmpItem = "\n(";
+    int column = 1;
+    pvClear(p,id);
+    //ICON, PLATE, FECHA_HORA
+    std::string icon;
+    std::string plate;
+    std::string date;
+    int weight;
+    for(trucks = ourData.begin(); trucks != ourData.end(); ++trucks)
     {
-      column = 1;
-      item.clear();
-      plate.clear();
-      date.clear();
-      icon = "image/small_truck_BW_icon_T.png";
-      for(fields = trucks->begin(); fields != trucks->end(); ++fields)
-	{
-	  if(column == 6) //plate
+        column = 1;
+        item.clear();
+        plate.clear();
+        date.clear();
+        icon = "image/small_truck_BW_icon_T.png";
+        for(fields = trucks->begin(); fields != trucks->end(); ++fields)
 	    {
-	      plate = *fields;
+	        if(column == 6) //plate
+	        {
+	            plate = *fields;
+	        }
+	        else if(column == 3) //costumer
+	        {
+	            date = *fields;
+	        }	  
+	        else if(column == 9)
+	        {
+	            std::cout << "WEIGHT TO INT: " << *fields << std::endl;
+	            try
+		        {
+		            weight = std::stoi(*fields);
+		        }
+	            catch(...)
+		        {
+		            weight = 0;
+		        }
+	            if(weight>0)
+		            icon = "image/small_truck_BW_icon_G.png";
+	        }
+	        column++;
 	    }
-	  else if(column == 3) //costumer
-	    {
-	      date = *fields;
-	    }
-	  
-	  else if(column == 9)
-	    {
-	      std::cout << "WEIGHT TO INT: " << *fields << std::endl;
-
-	      try
-		{
-		  weight = std::stoi(*fields);
-		}
-	      catch(...)
-		{
-		  weight = 0;
-		}
-	      if(weight>0)
-		icon = "image/small_truck_BW_icon_G.png";
-	    }
-	  column++;
-	}
-      item = plate;
-      item += "\n(";
-      item += date;
-      item += ")";
-      //std::cout << item << std::endl;
-      if(item.length() >= MAX_EVENT_LENGTH/16)
-	item = item.substr(0,MAX_EVENT_LENGTH/16-1);
-      pvInsertItem(p,id,-1,icon.c_str(),item.c_str(),1);
-      std::cout << "exiting!!" << std::endl;
+        item = plate;
+        item += "\n(";
+        item += date;
+        item += ")";
+        //std::cout << item << std::endl;
+        if(item.length() >= MAX_EVENT_LENGTH/16)
+	        item = item.substr(0,MAX_EVENT_LENGTH/16-1);
+        pvInsertItem(p,id,-1,icon.c_str(),item.c_str(),1);
+        std::cout << "exiting!!" << std::endl;
     }
-  return 0;
+    return 0;
 }
 
 static int resetForm(PARAM *p,DATA* d, baseForm *& myForm)

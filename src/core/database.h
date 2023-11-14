@@ -50,10 +50,18 @@ void selAllDatFrmLocalCenters(char *& sql);
 void selExtCentersNameCode(char *& sql);
 void selIntCentersNameCode(char *& sql);
 
+void rmtSelAllCenters(std::string& sql);
+
+void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+
 //TABLE ORDERS
 void selectAllFromOrders(char *& sql, long station_code);
 void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer_code, long product);
 void selOrderById(char *& myQuery, long order_code);
+
+void rmtSelAllOrders(std::string& sql, long fromStation);
+
+void loadOrders(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE TRANSFERS
 void selAllTransfers(char *& sql, long station_code);
@@ -96,27 +104,33 @@ void rmtSelAllCosProds(std::string& sql);
 void loadCosProds(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE MOVEMENTS
-void selLastDiFromMovementsByClientProduct(std::string& sql, long costumer_code, long product_code);
-void sel_all_unsyncro_movements(char *& sql);
-void upd_all_unsyncro_movements(char *& sql);
-void upd_syncro_movements(char*& sql,std::vector<std::vector<std::string>> dataReturn);
-///remote
-void rmt_sel_last_movement(char *& sql,long codigo_estacion,int year);
+void selLastDiFromMovsByClientProduct(std::string& sql, long costumer_code, long product_code);
+void selAllUnsyncroMovs(std::string& sql);
+void updtAllUnsyncroMovs(std::string& sql);
+void updtSyncroMovs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+
+void rmtUpdtMovs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+void rmtSelLastMov(std::string& sql, long codigo_estacion, int year);
 
 //TABLE ARRIVING TRANSIT
-void updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, std::string comentario, std::string incidencias);
+void updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
 void sel_all_unsyncro_transito(char *& sql, int codigo_estacion);
-void sel_all_transito(char *& sql, int codigo_estacion);
-void sel_all_transito(char *& sql);
-void rmt_del_transito(char *& sql, int fromStation);
+void selAllTransit(std::string& sql, long codigo_estacion);
+void selAllTransit(std::string& sql);
+
+void rmtDelTransit(std::string& sql, long fromStation);
+void rmtUpdtTransit(std::string& sql, std::vector<std::vector<std::string>> dataReturn, long codigo_estacion);
 
 //TABLE DEPARTURE TRANSIT
-void updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
+void updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, std::string comentario, std::string incidencias);
 void updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_orden, unsigned int peso_salida, const char* comentario, const char * incidencias);
 void sel_all_unsyncro_transito_dep(char *& sql,long codigo_estacion);
-void sel_all_transito_dep(char *& sql);
+void selAllTransitDep(std::string& sql);
+
 void rmt_selAllFromTransitoSalidas(char *& sql,long fromStation);
-void rmt_del_transito_dep(char *& sql, long fromStation);
+void rmtDelTransitDep(std::string& sql, long fromStation);
+void rmtUpdtTransitDep(std::string& sql, std::vector<std::vector<std::string>> dataReturn, long codigo_estacion);
+
 void sqlLoadTransitoSalidas(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE CARS
@@ -130,9 +144,10 @@ void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
 //TABLE STAFF
 void sel_staff_data_by_code(char *&sql, long code);
 void selAllStaffData(char*& sql,long code);
-void load_staff(char*& sql, std::vector<std::vector<std::string>> load_data);
 
-void rmt_sel_all_staff(char *& sql);
+void rmtSelAllStaff(std::string& sql);
+
+void loadStaff(std::string& sql, std::vector<std::vector<std::string>> load_data);
 
 //TABLE BILLING
 void sel_fp_by_cos_code(char *&, long);
@@ -144,6 +159,10 @@ void loadBilling(std::string& sql,std::vector< std::vector< std::string>> load_d
 //TABLE DRIVERS
 void sel_driver_data_by_code(char *& sql, long code);
 void selAllDatFrmDrivers(char *& sql);
+
+void rmtSelAllDrivers(std::string& sql);
+
+void loadDrivers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //unsorted and deprecated
 void selectAllFromClient(char *&sql, const char *cliente);
@@ -167,23 +186,14 @@ void delTransfer(char*&sql,const char* fecha_hora, long codigo_origen, long codi
 
 //remote mysql
 std::string remote_selectAllCostumers();
-void remote_selectAllOrders(char *& sql, const char* fromStation);
-void remote_selectAllDrivers(char*&sql);
 void rmt_selAllFromTransito(char *& sql,int fromStation);
-void rmt_selAllStations(char *& sql);
 void rmt_selAllMovements(char *& sql);
 
 ////syncronize
 //local
-void sqlLoadOrders(char*& sql,std::vector<std::vector<std::string>> dataReturn);
-void sqlLoadDrivers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadTransito(char*& sql,std::vector<std::vector<std::string>> dataReturn);
-void sqlLoadStations(char *& sql,std::vector<std::vector<std::string>> dataReturn);
 
 //remote
-void rmt_updtMovements(char*& sql, std::vector<std::vector<std::string>> dataReturn);
-void rmt_updtTransito(char *& sql, std::vector<std::vector<std::string>> dataReturn, int codigo_estacion);
-void rmt_updtTransitoSalidas(char *& sql, std::vector<std::vector<std::string>> dataReturn, int codigo_estacion);
 void remote_updatePesoSalidaTransito(std::string & sql, long costumer_code, const char* date_time, int station_code, unsigned int scale,const char * comentario, const char* incidents);
 void remote_updatePesoSalidaTransitoSalida(std::string & sql, long costumer_code, const char* date_time, long station_code,  unsigned int scale, const char* comentario, const char* incidents);
 #endif
