@@ -68,7 +68,8 @@ void selProdDataByCode(char *& sql, long code);
 void selProductBasisByCode(std::string& sql, std::string code);
 void selProdsAllowedToClient(char *& sql, const char* codigoCliente, const char* tipoEstacion, bool temporal);
 void selAllProds(char*&sql);
-void sqlLoadProducts(char*& sql,std::vector<std::vector<std::string>> dataReturn);
+
+void rmtSelAllProducts(std::string& sql);
 
 //TABLE COSTUMERS
 void selCosDataByCode(char *& sql, long code);
@@ -82,9 +83,10 @@ void rmtSelAllCostumers(std::string& sql);
 void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code);
 void sel_price_cos_prod(char *&sql, long product_code, long costumer_code);
 void sel_DIbasis_cos_prod(char *& sql,const char* tipoEstacion, long codigoCliente, long codigoProducto);
-void load_cos_prod(char*& sql,std::vector<std::vector<std::string>> dataReturn);
-///remote
-void rmt_sel_all_cos_prod(char*&sql);
+
+void rmtSelAllCosProds(std::string& sql);
+
+void loadCosProds(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE MOVEMENTS
 void selLastDiFromMovementsByClientProduct(std::string& sql, long costumer_code, long product_code);
@@ -155,7 +157,6 @@ void delTransfer(char*&sql,const char* fecha_hora, long codigo_origen, long codi
 
 //remote mysql
 std::string remote_selectAllCostumers();
-void remote_selectAllProducts(char*&sql);
 void remote_selectAllOrders(char *& sql, const char* fromStation);
 void remote_selectAllDrivers(char*&sql);
 void rmt_selAllFromTransito(char *& sql,int fromStation);
@@ -165,6 +166,7 @@ void rmt_selAllMovements(char *& sql);
 ////syncronize
 //local
 void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+void loadProducts(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadTransfers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadOrders(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadDrivers(char*& sql,std::vector<std::vector<std::string>> dataReturn);

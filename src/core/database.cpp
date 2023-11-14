@@ -243,27 +243,28 @@ void selAllProds(char*&sql)
   return;
 }
 
-//c++ style!
-void sqlLoadProducts(char*& sql,std::vector<std::vector<std::string>> dataReturn)
+void rmtSelAllProducts(std::string& sql)
 {
-  std::string newQuery;
-  std::vector<std::vector<std::string>>::iterator myRow;
-  int row;
+    sql = "select CODIGO_PROD, CODIGO_LER , NOMBRE , NOMBRE2 , NOMBRE3 , PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO from productos WHERE BORRADO = 0;";
+    return;
+}
 
-  newQuery = "insert into productos (codigo_producto, codigo_ler, nombre, nombre2,nombre3,PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO) values ";
-  row=0;
-  for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+void loadProducts(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
+{
+    std::vector<std::vector<std::string>>::iterator myRow;
+    int row;
+    sql = "insert into productos (codigo_producto, codigo_ler, nombre, nombre2,nombre3,PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO) values ";
+    row=0;
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
-      newQuery +="(\"";
-      newQuery += vectorToString(*myRow,"\",\"");
-       newQuery +="\")";
-      if(row < dataReturn.size()-1)
-      	newQuery += ",";
-      row++;
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+      	    sql += ",";
+        row++;
     }
-  sql = new char[newQuery.size() + 32];
-  sprintf(sql,newQuery.c_str());
-  return;
+    return;
 }
 
 
@@ -330,36 +331,28 @@ void sel_DIbasis_cos_prod(char *& sql,const char* tipoEstacion, long codigoClien
   return;
 }
 
-//c++ style!
-void load_cos_prod(char*& sql,std::vector<std::vector<std::string>> dataReturn)
+void rmtSelAllCosProds(std::string& sql)
 {
-  std::string newQuery;
-  std::vector<std::vector<std::string>>::iterator myRow;
-  int row;
-
-  newQuery = "insert or ignore into clientes_productos (CODIGO_PRODUCTO,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO) values ";
-  row=0;
-    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
-    {
-      newQuery +="(\"";
-      newQuery += vectorToString(*myRow,"\",\"");
-       newQuery +="\")";
-      if(row < dataReturn.size()-1)
-      	newQuery += ",";
-      row++;
-    }
-  sql = new char[newQuery.size() + 32];
-  sprintf(sql,newQuery.c_str());
-  return;
+    sql = "select CODIGO_PROD,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO from clientes_productos";
+    return;
 }
 
-///remote
-void rmt_sel_all_cos_prod(char*&sql)
+void loadCosProds(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
 {
-  sql = new char[sizeof("select CODIGO_PROD,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO from clientes_productos")+32];
-  sprintf(sql,"select CODIGO_PROD,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO from clientes_productos");
-
-  return;
+    std::vector<std::vector<std::string>>::iterator myRow;
+    int row;
+    sql = "insert or ignore into clientes_productos (CODIGO_PRODUCTO,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO) values ";
+    row=0;
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+    {
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+          	sql += ",";
+        row++;
+    }
+    return;
 }
 
 //////// 
@@ -877,15 +870,6 @@ void selAllMovements(char*&sql)
   sql = new char[sizeof("select CODIGO_MOV, DI, FECHA_HORA_INICIO, FECHA_HORA_FINAL, TIPO_MOV, CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, PESO_NETO, PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS, COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, CLIENTE_PARTICULAR_DOMICILIO, CLIENTE_PARTICULAR_PROVINCIA, CLIENTE_PARTICULAR_POBLACION, CLIENTE_PARTICULAR_CODIGO_POSTAL, CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA, CLIENTE_PARTICULAR_NIMA, CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO, CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO FROM MOVIMIENTOS")+32];
  
   sprintf(sql,"select CODIGO_MOV, DI, FECHA_HORA_INICIO, FECHA_HORA_FINAL, TIPO_MOV, CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, PESO_NETO, PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS, COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, CLIENTE_PARTICULAR_DOMICILIO, CLIENTE_PARTICULAR_PROVINCIA, CLIENTE_PARTICULAR_POBLACION, CLIENTE_PARTICULAR_CODIGO_POSTAL, CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA, CLIENTE_PARTICULAR_NIMA, CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO, CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO FROM MOVIMIENTOS");
-
-  return;
-}
-
-
-void remote_selectAllProducts(char*&sql)
-{
-  sql = new char[sizeof("select CODIGO_PROD, CODIGO_LER , NOMBRE , NOMBRE2 , NOMBRE3 , PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO from productos WHERE BORRADO = 0;")+32];
-  sprintf(sql,"select CODIGO_PROD, CODIGO_LER , NOMBRE , NOMBRE2 , NOMBRE3 , PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO from productos WHERE BORRADO = 0;");
 
   return;
 }

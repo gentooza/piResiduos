@@ -170,90 +170,85 @@ static int syncCostumers(PARAM *p)
 
 static int syncProducts(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing products table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message;
+    str_log_message = "(SINCRO) syncing products table... ";
+    if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      //productos
-      remote_selectAllProducts(sql);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  delete sql;
-	  log_message("(SINCRO) BD local -> delete from productos", 1);
-	  if(localDatabase.query(p,"delete from productos"))
-	    log_message("(SINCRO) Error BD local", 2);
-	  dataReturn = remoteDatabase.retData2();
-	  sqlLoadProducts(sql,dataReturn);
-	  str_log_message = "(SINCRO) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  if(localDatabase.query(p,sql))
-	    log_message("(SINCRO) Error BD local", 2);   
-	}
-      else
-	{
-	  log_message("(SINCRO)(productos) Error BD remota (query)", 2);
-	  ret = -2;
-	}
-      delete sql;
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        rmtSelAllProducts(sql);
+        str_log_message = "(SINCRO) BD remota -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(p, sql.c_str()))
+	    {
+	        log_message("(SINCRO) BD local -> delete from productos", 1);
+	        if(localDatabase.query(p,"delete from productos"))
+	            log_message("(SINCRO) Error BD local", 2);
+	        dataReturn = remoteDatabase.retData2();
+	        loadProducts(sql, dataReturn);
+	        str_log_message = "(SINCRO) BD local -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        if(localDatabase.query(p, sql.c_str()))
+	            log_message("(SINCRO) Error BD local", 2);   
+	    }
+        else
+	    {
+	        log_message("(SINCRO)(productos) Error BD remota (query)", 2);
+	        ret = -2;
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(productos) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(productos) Error BD remota (conexión)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  return ret;
+    return ret;
 }
 
 static int syncCostumersProducts(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing costumers-products table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message;
+    str_log_message = "(SINCRO) syncing costumers-products table... ";
+    if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      //clientes-productos
-      rmt_sel_all_cos_prod(sql);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  delete sql;
-	  log_message("(SINCRO) BD local -> delete from clientes_productos", 1);
-	  if(localDatabase.query(p,"delete from clientes_productos"))
-	    log_message("(SINCRO) Error BD local", 2);
-	  dataReturn = remoteDatabase.retData2();
-	  load_cos_prod(sql,dataReturn);
-	  str_log_message = "(SINCRO) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  if(localDatabase.query(p,sql))
-	    log_message("(SINCRO) Error BD local", 2);
-	}
-      else
-	{
-	  log_message("(SINCRO)(clientes-productos) Error BD remota (query)", 2);
-	  ret = -2;
-	}
-      delete sql;
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        //clientes-productos
+        rmtSelAllCosProds(sql);
+        str_log_message = "(SINCRO) BD remota -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(p, sql.c_str()))
+	    {
+	        log_message("(SINCRO) BD local -> delete from clientes_productos", 1);
+	        if(localDatabase.query(p,"delete from clientes_productos"))
+	            log_message("(SINCRO) Error BD local", 2);
+	        dataReturn = remoteDatabase.retData2();
+	        loadCosProds(sql, dataReturn);
+	        str_log_message = "(SINCRO) BD local -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        if(localDatabase.query(p, sql.c_str()))
+	            log_message("(SINCRO) Error BD local", 2);
+	    }
+        else
+	    {
+	        log_message("(SINCRO)(clientes-productos) Error BD remota (query)", 2);
+	        ret = -2;
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(clientes-productos) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(clientes-productos) Error BD remota (conexión)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  return ret;
+    return ret;
 }
 
 static int syncBilling(PARAM *p)
