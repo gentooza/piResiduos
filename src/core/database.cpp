@@ -295,13 +295,10 @@ void sel_default_driver(char *& sql, long code)
   return;
 }
 
-void rmt_sel_all_costumers(char *& sql)
+void rmtSelAllCostumers(std::string& sql)
 {
-
-  sql = new char[sizeof("select CODIGO, NOMBRE , NIF , DIRECCION , PROVINCIA ,POBLACION ,CP , ENTIDAD_FACTURACION ,CBC ,TIPO , COMUNIDAD_AUTONOMA , NIMA , NUM_INSCRIPCION , TELEFONO , MAIL, TRANSPORTISTA_DEFECTO from clientes WHERE  (BORRADO is null or BORRADO = 0);")+12];
-  sprintf(sql,"select CODIGO, NOMBRE , NIF , DIRECCION , PROVINCIA ,POBLACION ,CP , ENTIDAD_FACTURACION ,CBC ,TIPO , COMUNIDAD_AUTONOMA , NIMA , NUM_INSCRIPCION , TELEFONO , MAIL, TRANSPORTISTA_DEFECTO from clientes WHERE  (BORRADO is null or BORRADO = 0)");
-
-  return;
+    sql = "select CODIGO, NOMBRE , NIF , DIRECCION , PROVINCIA ,POBLACION ,CP , ENTIDAD_FACTURACION ,CBC ,TIPO , COMUNIDAD_AUTONOMA , NIMA , NUM_INSCRIPCION , TELEFONO , MAIL, TRANSPORTISTA_DEFECTO from clientes WHERE  (BORRADO is null or BORRADO = 0)";
+    return;
 }
 
 
@@ -928,29 +925,23 @@ void rmt_selAllMovements(char *& sql)
 
 /////syncronization
 //local
-std::string sqlLoadCostumers(std::vector<std::vector<std::string>> dataReturn)
+void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
 {
-
-  std::string newQuery;
-  std::vector<std::vector<std::string>>::iterator myRow;
-  int row;
-
-  newQuery = "insert into clientes (codigo_cliente, nombre,nif, direccion, provincia,poblacion,cp,codigo_entidad_facturacion,cbc,tipo,comunidad_autonoma,nima,num_inscripcion,telefono,mail,transportista_defecto) values ";
-  row=0;
-  for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+    std::vector<std::vector<std::string>>::iterator myRow;
+    int row;
+    sql = "insert into clientes (codigo_cliente, nombre,nif, direccion, provincia,poblacion,cp,codigo_entidad_facturacion,cbc,tipo,comunidad_autonoma,nima,num_inscripcion,telefono,mail,transportista_defecto) values ";
+    row=0;
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
-      newQuery +="(\"";
-      newQuery += vectorToString(*myRow,"\",\"");
-      newQuery +="\")";
-      if(row < dataReturn.size()-1)
-      	newQuery += ",";
-      row++;
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+      	    sql += ",";
+        row++;
     }
-
-  return newQuery;
+    return;
 }
-
-
 
 //c++ style!
 void sqlLoadTransfers(char*& sql,std::vector<std::vector<std::string>> dataReturn)

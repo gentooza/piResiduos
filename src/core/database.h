@@ -76,7 +76,7 @@ void selAllDatFrmCostumers(char *& sql);
 void selCostumerNameByCode(std::string& sql, std::string code);
 void sel_default_driver(char *& sql, long code);
 
-void rmt_sel_all_costumers(char *& sql);
+void rmtSelAllCostumers(std::string& sql);
 
 //TABLE COSTUMERS-PRODUCTS
 void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code);
@@ -164,7 +164,7 @@ void rmt_selAllMovements(char *& sql);
 
 ////syncronize
 //local
-std::string sqlLoadCostumers(std::vector<std::vector<std::string>> dataReturn);
+void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadTransfers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadOrders(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadDrivers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
