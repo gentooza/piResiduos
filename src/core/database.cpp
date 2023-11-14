@@ -252,9 +252,8 @@ void rmtSelAllProducts(std::string& sql)
 void loadProducts(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
 {
     std::vector<std::vector<std::string>>::iterator myRow;
-    int row;
+    long unsigned int row = 0;
     sql = "insert into productos (codigo_producto, codigo_ler, nombre, nombre2,nombre3,PERMISO_PT ,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT ,PERMISO_ET ,CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,PERMISO_D5 ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,PERMISO_SAL ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL ,DESCRIPCION_PELIGRO,PRECIO_DEFECTO) values ";
-    row=0;
     for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
         sql +="(\"";
@@ -340,9 +339,8 @@ void rmtSelAllCosProds(std::string& sql)
 void loadCosProds(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
 {
     std::vector<std::vector<std::string>>::iterator myRow;
-    int row;
+    long unsigned int row = 0;
     sql = "insert or ignore into clientes_productos (CODIGO_PRODUCTO,CODIGO_CLIENTE,CONTRATO_PT , NPT_PT , CB_PT ,CP_PT , DCP_PT , CONTRATO_ET , NPT_ET , CB_ET ,CP_ET , DCP_ET ,CONTRATO_D5 , NPT_D5 , CB_D5 ,CP_D5 , DCP_D5 ,CONTRATO_SAL , NPT_SAL , CB_SAL ,CP_SAL , DCP_SAL, PRECIO_TRATAMIENTO) values ";
-    row=0;
     for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
         sql +="(\"";
@@ -912,9 +910,8 @@ void rmt_selAllMovements(char *& sql)
 void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
 {
     std::vector<std::vector<std::string>>::iterator myRow;
-    int row;
+    long unsigned int row = 0;
     sql = "insert into clientes (codigo_cliente, nombre,nif, direccion, provincia,poblacion,cp,codigo_entidad_facturacion,cbc,tipo,comunidad_autonoma,nima,num_inscripcion,telefono,mail,transportista_defecto) values ";
-    row=0;
     for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
         sql +="(\"";
