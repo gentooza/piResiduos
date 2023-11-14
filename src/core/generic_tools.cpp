@@ -494,6 +494,7 @@ int isConnected(const char* address, int port)
     struct sockaddr_in serv_addr;
     struct hostent *server;
     struct in_addr ipv4addr;
+    char buffer[16];
 
     int method = 0;
     int i;
@@ -509,26 +510,43 @@ int isConnected(const char* address, int port)
         if(method) // by address
 	    {
 	        server = gethostbyname(address);
+            std::cout << "translating  address: " << address << " to ip address:" << inet_ntoa(*(struct in_addr*)server->h_addr) <<std::endl;
 	        if(server!=NULL)
 	        {
-	            //bzero((char *) &serv_addr, sizeof(serv_addr));
-	            memset((char *) &serv_addr,0, sizeof(serv_addr));
+                memcpy(&serv_addr.sin_addr, server->h_addr, server->h_length);
 	            serv_addr.sin_family = AF_INET;
-	            memmove((char *)server->h_addr, 
-		            (char *)&serv_addr.sin_addr.s_addr,
-		            server->h_length);
 	            serv_addr.sin_port = htons(port);
+                inet_ntop(AF_INET, &serv_addr.sin_addr, buffer, sizeof(buffer));
+                std::cout << "socket address: " << serv_addr.sin_addr.s_addr << " to ip address:" << buffer << std::endl;
 	            if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) >= 0)
 		        {
 		            //SUCCESS!
 		            ret = 1;
 		            close(sockfd);
+                    std::cout << "CONNECTION OK! (method 1)" <<std::endl;
 		        }
 	            else
+                {
 		            std::cout << "CONNECT FAIL! : "<< strerror(errno) << " to host:" <<  inet_ntoa(*(struct in_addr*)server->h_addr) <<std::endl;
+                    std::cout << "Trying to simply ping to " << address <<" ...."<<std::endl;
+                    std::string command = "ping -c1 -s1 ";
+                    command += address;
+                    command += " > /dev/null 2>&1";
+                    int success = system(command.c_str());
+                    if (!success)
+                    {
+                        ret = 1;
+                        std::cout << "ping ok!" <<std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "ping NOT ok!" <<std::endl;
+                    }
+                }
+
 	        }
 	        else
-	            std::cout << "CONNECT method 1 FAIL!!\n" << std::endl;
+	            std::cout << "CONNECTION FAILED! (method 1)" << std::endl;
 	    }
         else
 	    {
@@ -541,9 +559,10 @@ int isConnected(const char* address, int port)
 	            //SUCCESS!
 	            ret = 1;
 	            close(sockfd);
+                std::cout << "CONNECTION OK! (method 2)" <<std::endl;
 	        }
 	        else
-	            std::cout << "CONNECT method 2 FAIL!\n" <<std::endl;
+	            std::cout << "CONNECTION FAILED! (method 2)" <<std::endl;
 	    }
     }
     return ret;
