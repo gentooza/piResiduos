@@ -137,13 +137,10 @@ void selAllTransfers(char *& sql, long station_code)
   return;
 }
 
-void sel_all_unsyncro_transfers(char *& sql)
+void selAllUnsyncroTransfers(std::string& sql)
 {
- sql = new char[sizeof("select di, fecha_hora, codigo_origen, codigo_destino, codigo_producto, codigo_transportista , matricula, remolque, incidencias, comentario_operador, operacion_Tratamiento FROM transferencias WHERE (SINCRONIZADO = 0)")+32];
- 
- sprintf(sql,"select di, fecha_hora, codigo_origen, codigo_destino, codigo_producto, codigo_transportista , matricula, remolque, incidencias, comentario_operador, operacion_tratamiento FROM transferencias WHERE (SINCRONIZADO = 0)");
-
- return;
+    sql = "select di, fecha_hora, codigo_origen, codigo_destino, codigo_producto, codigo_transportista , matricula, remolque, incidencias, comentario_operador, operacion_tratamiento FROM transferencias WHERE (SINCRONIZADO = 0)";
+    return;
 }
 
 void delTransfer(char *& sltQuery, char *& myQuery,long origin,long destiny,long product, const char* plate)
@@ -166,40 +163,50 @@ void delTransfer(char*&sql,const char* fecha_hora, long codigo_origen, long codi
   return;
 }
 
-void rmt_sel_all_transfers(char*&sql, long codigo_estacion)
+void rmtSelAllTransfers(std::string&sql, long codigo_estacion)
 {
-  sql = new char[sizeof("select DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO from transferencias where CODIGO_DESTINO = XX and BORRADO = 0")+32];
-  sprintf(sql,"select DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO from transferencias where CODIGO_DESTINO = %lu and BORRADO = 0",codigo_estacion);
-
-  return;
+    sql = "select DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO from transferencias where CODIGO_DESTINO = ";
+    sql += std::to_string(codigo_estacion) + " and BORRADO = 0";
+    return;
 }
 
-void rmt_updt_transfers(char *& sql, std::vector< std::vector <std::string>> dataReturn)
+void rmtUpdtTransfers(std::string& sql, std::vector< std::vector <std::string>> dataReturn)
 {
-  std::string newQuery;
-  std::vector<std::vector<std::string>>::iterator myRow;
-  int row;
-
-  newQuery = "insert into transferencias (DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO) values ";
-  row=0;
-  for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+    std::vector<std::vector<std::string>>::iterator myRow;
+    long unsigned int row = 0;
+    sql = "insert into transferencias (DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO) values ";
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
-      newQuery +="(\"";
-      newQuery += vectorToString(*myRow,"\",\"");
-      newQuery +="\")";
-      if(row < dataReturn.size()-1)
-      	newQuery += ",";
-      row++;
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+      	    sql += ",";
+        row++;
     }
-  newQuery += " ON DUPLICATE KEY UPDATE  DI = VALUES(DI), FECHA_HORA = VALUES(FECHA_HORA) , CODIGO_ORIGEN = VALUES(CODIGO_ORIGEN), CODIGO_DESTINO = VALUES(CODIGO_DESTINO),CODIGO_PRODUCTO = VALUES(CODIGO_PRODUCTO), CODIGO_TRANSPORTISTA = VALUES(CODIGO_TRANSPORTISTA), MATRICULA = VALUES(MATRICULA), REMOLQUE = VALUES(REMOLQUE), INCIDENCIAS = VALUES(INCIDENCIAS), COMENTARIO_OPERADOR = VALUES(COMENTARIO_OPERADOR), OPERACION_TRATAMIENTO = VALUES(OPERACION_TRATAMIENTO)";
-  
-  sql = new char[newQuery.size() + 32];
-  sprintf(sql,newQuery.c_str());
-
-  return;
-
+    sql += " ON DUPLICATE KEY UPDATE  DI = VALUES(DI), FECHA_HORA = VALUES(FECHA_HORA) , CODIGO_ORIGEN = VALUES(CODIGO_ORIGEN), CODIGO_DESTINO = VALUES(CODIGO_DESTINO),CODIGO_PRODUCTO = VALUES(CODIGO_PRODUCTO), CODIGO_TRANSPORTISTA = VALUES(CODIGO_TRANSPORTISTA), MATRICULA = VALUES(MATRICULA), REMOLQUE = VALUES(REMOLQUE), INCIDENCIAS = VALUES(INCIDENCIAS), COMENTARIO_OPERADOR = VALUES(COMENTARIO_OPERADOR), OPERACION_TRATAMIENTO = VALUES(OPERACION_TRATAMIENTO)";
+    return;
 }
 
+void loadTransfers(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
+{
+    std::vector<std::vector<std::string>>::iterator myRow;
+    long unsigned int row = 0;
+    sql = "insert into transferencias (DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO,SINCRONIZADO) values ";
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+    {  
+        //TRANSFORM MYSQL DATES TO SQLITE DATES
+        myRow->at(1) = mysql2sqliteDate(myRow->at(1));
+        //////////////////////////////////////
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\",1)";
+        if(row < dataReturn.size()-1)
+          	sql += ",";
+        row++;
+    }
+    return;
+}
 
 ////////////////
 ////****table products****////
@@ -301,7 +308,22 @@ void rmtSelAllCostumers(std::string& sql)
     return;
 }
 
-
+void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
+{
+    std::vector<std::vector<std::string>>::iterator myRow;
+    long unsigned int row = 0;
+    sql = "insert into clientes (codigo_cliente, nombre,nif, direccion, provincia,poblacion,cp,codigo_entidad_facturacion,cbc,tipo,comunidad_autonoma,nima,num_inscripcion,telefono,mail,transportista_defecto) values ";
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
+    {
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+      	    sql += ",";
+        row++;
+    }
+    return;
+}
 ////////
 ////****table costumers-products****////
 void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code)
@@ -567,15 +589,23 @@ void selCostumersFromCar(std::string&sql, std::string matricula)
     return;
 }
 
+void rmtSelAllCars(std::string& sql)
+{
+    sql = "select CODIGO_VEHICULO,MATRICULA,VEHICULO_REMOLQUE ,TARA , PMA ,CODIGO_CLIENTE1 , CODIGO_CLIENTE2 ,CODIGO_CLIENTE3 ,CODIGO_CLIENTE4 ,CODIGO_CLIENTE5,CODIGO_CLIENTE6 , CODIGO_CLIENTE7 ,CODIGO_CLIENTE8 ,CODIGO_CLIENTE9 ,CODIGO_CLIENTE10"
+            ",CODIGO_CLIENTE11 , CODIGO_CLIENTE12 ,CODIGO_CLIENTE13 ,CODIGO_CLIENTE14 ,CODIGO_CLIENTE15,CODIGO_CLIENTE16 , CODIGO_CLIENTE17 ,CODIGO_CLIENTE18 ,CODIGO_CLIENTE19 ,CODIGO_CLIENTE20"
+            ",CODIGO_CLIENTE21 , CODIGO_CLIENTE22 ,CODIGO_CLIENTE23 ,CODIGO_CLIENTE24 ,CODIGO_CLIENTE25,CODIGO_CLIENTE26 , CODIGO_CLIENTE27 ,CODIGO_CLIENTE28 ,CODIGO_CLIENTE29 ,CODIGO_CLIENTE30 from vehiculos WHERE (BORRADO is null or BORRADO = 0);";
+
+  return;
+}
+
 void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
 {
     std::vector<std::vector<std::string>>::iterator myRow;
-    int row;
+    long unsigned int row = 0;
 
     sql = "insert into vehiculos (CODIGO_VEHICULO, MATRICULA, VEHICULO_REMOLQUE, TARA, PMA, CODIGO_CLIENTE1, CODIGO_CLIENTE2, CODIGO_CLIENTE3, CODIGO_CLIENTE4, CODIGO_CLIENTE5, CODIGO_CLIENTE6, CODIGO_CLIENTE7, CODIGO_CLIENTE8, CODIGO_CLIENTE9, CODIGO_CLIENTE10"
             ", CODIGO_CLIENTE11, CODIGO_CLIENTE12, CODIGO_CLIENTE13, CODIGO_CLIENTE14, CODIGO_CLIENTE15, CODIGO_CLIENTE16, CODIGO_CLIENTE17, CODIGO_CLIENTE18, CODIGO_CLIENTE19, CODIGO_CLIENTE20"
             ", CODIGO_CLIENTE21, CODIGO_CLIENTE22, CODIGO_CLIENTE23, CODIGO_CLIENTE24, CODIGO_CLIENTE25, CODIGO_CLIENTE26, CODIGO_CLIENTE27, CODIGO_CLIENTE28, CODIGO_CLIENTE29, CODIGO_CLIENTE30) values ";
-    row=0;
     for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
     {
         sql +="(\"";
@@ -586,15 +616,6 @@ void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn)
         row++;
     }
     return;
-}
-
-void rmtSelAllCars(std::string& sql)
-{
-    sql = "select CODIGO_VEHICULO,MATRICULA,VEHICULO_REMOLQUE ,TARA , PMA ,CODIGO_CLIENTE1 , CODIGO_CLIENTE2 ,CODIGO_CLIENTE3 ,CODIGO_CLIENTE4 ,CODIGO_CLIENTE5,CODIGO_CLIENTE6 , CODIGO_CLIENTE7 ,CODIGO_CLIENTE8 ,CODIGO_CLIENTE9 ,CODIGO_CLIENTE10"
-            ",CODIGO_CLIENTE11 , CODIGO_CLIENTE12 ,CODIGO_CLIENTE13 ,CODIGO_CLIENTE14 ,CODIGO_CLIENTE15,CODIGO_CLIENTE16 , CODIGO_CLIENTE17 ,CODIGO_CLIENTE18 ,CODIGO_CLIENTE19 ,CODIGO_CLIENTE20"
-            ",CODIGO_CLIENTE21 , CODIGO_CLIENTE22 ,CODIGO_CLIENTE23 ,CODIGO_CLIENTE24 ,CODIGO_CLIENTE25,CODIGO_CLIENTE26 , CODIGO_CLIENTE27 ,CODIGO_CLIENTE28 ,CODIGO_CLIENTE29 ,CODIGO_CLIENTE30 from vehiculos WHERE (BORRADO is null or BORRADO = 0);";
-
-  return;
 }
 //
 
@@ -657,35 +678,30 @@ void sel_fp_by_cos_code(char *& sql, long code)
   sprintf(sql,"select FP from entidades_facturacion where codigo = (select CODIGO_ENTIDAD_FACTURACION from clientes where codigo_cliente = %lu)",code);
   
 }
-void load_billing(char *& sql,std::vector< std::vector< std::string>> load_data)
-{
-  std::string new_query;
-  std::vector<std::vector<std::string>>::iterator my_row;
-  int row;
 
-  new_query = "insert into entidades_facturacion (CODIGO, NOMBRE, NIF, DIRECCION, CP, POBLACION, PROVINCIA, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, FP, IBAN, ENVIO_FACT, TELEFONO, MAIL) values ";
-  row=0;
-  for(my_row = load_data.begin(); my_row != load_data.end(); ++my_row)
+void rmtSelAllBilling(std::string& sql)
+{
+    sql = "select CODIGO,NOMBRE,NIF,DIRECCION,CP,POBLACION,PROVINCIA,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,FP,IBAN,ENVIO_FACT,TELEFONO,MAIL from entidades_facturacion where (BORRADO is null or BORRADO = 0)";
+    return;
+}
+
+void loadBilling(std::string& sql, std::vector< std::vector< std::string>> load_data)
+{
+    std::vector<std::vector<std::string>>::iterator my_row;
+    long unsigned int row = 0;
+    sql = "insert into entidades_facturacion (CODIGO, NOMBRE, NIF, DIRECCION, CP, POBLACION, PROVINCIA, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, FP, IBAN, ENVIO_FACT, TELEFONO, MAIL) values ";
+    for(my_row = load_data.begin(); my_row != load_data.end(); ++my_row)
     {
-      new_query +="(\"";
-      new_query += vectorToString(*my_row,"\",\"");
-      new_query +="\")";
-      if(row < load_data.size()-1)
-      	new_query += ",";
-      row++;
+        sql +="(\"";
+        sql += vectorToString(*my_row,"\",\"");
+        sql +="\")";
+        if(row < load_data.size()-1)
+      	    sql += ",";
+        row++;
     }
-
-  sql = new char[new_query.size() + 32];
-  sprintf(sql,new_query.c_str());
-
-  return;
+    return;
 }
-///remote
-void rmt_sel_all_billing(char *& sql)
-{
-  sql = new char[sizeof("select CODIGO,NOMBRE,NIF,DIRECCION,CP,POBLACION,PROVINCIA,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,FP,IBAN,ENVIO_FACT,TELEFONO,MAIL from entidades_facturacion where (borrado is null or borrado = 0) ")+32];
-  sprintf(sql,"select CODIGO,NOMBRE,NIF,DIRECCION,CP,POBLACION,PROVINCIA,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,FP,IBAN,ENVIO_FACT,TELEFONO,MAIL from entidades_facturacion where (BORRADO is null or BORRADO = 0)");
-}
+
 //
 /////////////////////////////////////////////////////
 ////****table drivers****////
@@ -904,52 +920,6 @@ void rmt_selAllMovements(char *& sql)
   return;
 }
 //////
-
-/////syncronization
-//local
-void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
-{
-    std::vector<std::vector<std::string>>::iterator myRow;
-    long unsigned int row = 0;
-    sql = "insert into clientes (codigo_cliente, nombre,nif, direccion, provincia,poblacion,cp,codigo_entidad_facturacion,cbc,tipo,comunidad_autonoma,nima,num_inscripcion,telefono,mail,transportista_defecto) values ";
-    for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
-    {
-        sql +="(\"";
-        sql += vectorToString(*myRow,"\",\"");
-        sql +="\")";
-        if(row < dataReturn.size()-1)
-      	    sql += ",";
-        row++;
-    }
-    return;
-}
-
-//c++ style!
-void sqlLoadTransfers(char*& sql,std::vector<std::vector<std::string>> dataReturn)
-{
-
-  std::string newQuery;
-  std::vector<std::vector<std::string>>::iterator myRow;
-  int row;
-
-  newQuery = "insert into transferencias (DI, FECHA_HORA, CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, MATRICULA, REMOLQUE, INCIDENCIAS, COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO,SINCRONIZADO) values ";
-  row=0;
-  for(myRow = dataReturn.begin(); myRow != dataReturn.end();++myRow)
-    {  
-      //TRANSFORM MYSQL DATES TO SQLITE DATES
-      myRow->at(1) = mysql2sqliteDate(myRow->at(1));
-      //////////////////////////////////////
-      newQuery +="(\"";
-      newQuery += vectorToString(*myRow,"\",\"");
-      newQuery +="\",1)";
-      if(row < dataReturn.size()-1)
-      	newQuery += ",";
-      row++;
-    }
-  sql = new char[newQuery.size() + 32];
-  sprintf(sql,newQuery.c_str());
-  return;
-}
 
 //c++ style!
 void sqlLoadDrivers(char *&sql,std::vector<std::vector<std::string>> dataReturn)

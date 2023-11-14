@@ -129,8 +129,8 @@ static void syncReconnectIfNeeded()
 static int syncCostumers(PARAM *p)
 {
     int ret = 0;
-    std::string str_log_message;
-    str_log_message = "(SINCRO) syncing costumers table... ";
+    std::string str_log_message = "(SINCRO) syncing costumers table... ";
+    log_message(str_log_message, 1);
     if(remoteDatabase.isOpen())
     {
         std::string sql;
@@ -171,8 +171,8 @@ static int syncCostumers(PARAM *p)
 static int syncProducts(PARAM *p)
 {
     int ret = 0;
-    std::string str_log_message;
-    str_log_message = "(SINCRO) syncing products table... ";
+    std::string str_log_message = "(SINCRO) syncing products table... ";
+    log_message(str_log_message, 1);
     if(remoteDatabase.isOpen())
     {
         std::vector <std::vector <std::string>> dataReturn;
@@ -212,8 +212,8 @@ static int syncProducts(PARAM *p)
 static int syncCostumersProducts(PARAM *p)
 {
     int ret = 0;
-    std::string str_log_message;
-    str_log_message = "(SINCRO) syncing costumers-products table... ";
+    std::string str_log_message = "(SINCRO) syncing costumers-products table... ";
+    log_message(str_log_message, 1);
     if(remoteDatabase.isOpen())
     {
         std::vector <std::vector <std::string>> dataReturn;
@@ -253,46 +253,44 @@ static int syncCostumersProducts(PARAM *p)
 
 static int syncBilling(PARAM *p)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing billing entities table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message = "(SINCRO) syncing billing entities table... ";
+    log_message(str_log_message, 1);
+    if(remoteDatabase.isOpen())
     {
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      //entidades de facturación
-      rmt_sel_all_billing(sql);
-      str_log_message = "(SINCRO) BD remota -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(p,sql))
-	{
-	  delete sql;
-	  log_message("(SINCRO) BD local -> delete from entidades_facturacion", 1);
-	  if(localDatabase.query(p,"delete from entidades_facturacion"))
-	    log_message("(SINCRO) Error BD local", 2);
-	  dataReturn = remoteDatabase.retData2();
-	  load_billing(sql,dataReturn);
-	  str_log_message = "(SINCRO) BD local -> ";
-	  str_log_message += sql;
-	  log_message(str_log_message, 1);
-	  if(localDatabase.query(p,sql))
-	    log_message("(SINCRO) Error BD local", 2);
-	}
-      else
-	{
-	  ret = -2;
-	  log_message("(SINCRO)(entidades facturación) Error BD remota (query)", 2);
-	}
-      delete sql;
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        //entidades de facturación
+        rmtSelAllBilling(sql);
+        str_log_message = "(SINCRO) BD remota -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(p, sql.c_str()))
+	    {
+	        log_message("(SINCRO) BD local -> delete from entidades_facturacion", 1);
+	        if(localDatabase.query(p,"delete from entidades_facturacion"))
+	            log_message("(SINCRO) Error BD local", 2);
+	        dataReturn = remoteDatabase.retData2();
+	        loadBilling(sql,dataReturn);
+	        str_log_message = "(SINCRO) BD local -> ";
+	        str_log_message += sql;
+	        log_message(str_log_message, 1);
+	        if(localDatabase.query(p, sql.c_str()))
+	            log_message("(SINCRO) Error BD local", 2);
+	    }
+        else
+	    {
+	        ret = -2;
+	        log_message("(SINCRO)(entidades facturación) Error BD remota (query)", 2);
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(entidades facturación) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(entidades facturación) Error BD remota (conexión)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  return ret;
+    return ret;
 }
 
 static int syncCars(PARAM *p)
@@ -300,6 +298,7 @@ static int syncCars(PARAM *p)
     int ret=0;
     std::string str_log_message;
     str_log_message = "(SINCRO) syncing trucks table... ";
+    log_message(str_log_message, 1);
     if(remoteDatabase.isOpen())
     {
         std::vector <std::vector <std::string>> dataReturn;
@@ -310,16 +309,15 @@ static int syncCars(PARAM *p)
         log_message(str_log_message, 1);
         if(!remoteDatabase.query(p,sql.c_str()))
 	    {
-	        sql.clear();
 	        log_message("(SINCRO) BD local -> delete from vehiculos", 1);
 	        if(localDatabase.query(p,"delete from vehiculos"))
 	            log_message("(SINCRO) Error BD local", 2);
 	        dataReturn = remoteDatabase.retData2();
-	        loadCars(sql,dataReturn);
+	        loadCars(sql, dataReturn);
 	        str_log_message = "(SINCRO) BD local -> ";
 	        str_log_message += sql;
 	        log_message(str_log_message, 1);
-	        if(localDatabase.query(p,sql.c_str()))
+	        if(localDatabase.query(p, sql.c_str()))
 	            log_message("(SINCRO)(vehículos) Error BD local", 2);
 	    }
         else
@@ -339,84 +337,73 @@ static int syncCars(PARAM *p)
 
 static int syncTransfers(PARAM *p, long codigo_estacion)
 {
-  int ret = 0;
-  std::string str_log_message;
-  str_log_message = "(SINCRO) syncing transfers table... ";
-  if(remoteDatabase.isOpen())
+    int ret = 0;
+    std::string str_log_message;
+    str_log_message = "(SINCRO) syncing transfers table... ";
+    log_message(str_log_message, 1);
+    if(remoteDatabase.isOpen())
     {
-      //1 - choosing all unsyncronized local transfers
-      std::vector <std::vector <std::string>> dataReturn;
-      char* sql;
-      sel_all_unsyncro_transfers(sql);
-      str_log_message = "(SINCRO) BD local -> ";
-      str_log_message += sql;
-      log_message(str_log_message, 1);
-      if(!localDatabase.query(p,sql))
-	{
-	  dataReturn = localDatabase.retData2();
-	  if(dataReturn.size()) //if there is local movements to sync
+        //1 - choosing all unsyncronized local transfers
+        std::vector <std::vector <std::string>> dataReturn;
+        std::string sql;
+        selAllUnsyncroTransfers(sql);
+        str_log_message = "(SINCRO) BD local -> ";
+        str_log_message += sql;
+        log_message(str_log_message, 1);
+        if(!localDatabase.query(p, sql.c_str()))
 	    {
-	      delete sql;
-	      //1b - udpdating remote movements table
-	      rmt_updt_transfers(sql,dataReturn);
-	      str_log_message = "(SINCRO)(transferencias) BD remota -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(remoteDatabase.query(p,sql))
-		{
-		  log_message("(SINCRO)(transferencias) Error BD remota (query)", 2);
-		  ret=-2;
-		}
-	    }
-	  if(!ret) //if sincronizing remote movements with local's success, EVEN with no data
-	    {
-	      //1c - set local movements as syncronized (NOT NEED, WE ARE GONNA CLEAN THEM ALL)
-	      //delete sql;
-	      //upd_all_unsyncro_transfers(sql);
-	      //localDatabase.query(p,sql);
-
-	      //2 updating local transfers with possible new remote ones
-	      delete sql;
-	      rmt_sel_all_transfers(sql,codigo_estacion);
-	      str_log_message = "(SINCRO)(transferencias) BD remota -> ";
-	      str_log_message += sql;
-	      log_message(str_log_message, 1);
-	      if(remoteDatabase.query(p,sql))
-		log_message("(SINCRO)(transferencias) Error BD remota (query)", 2);
-	      else
-		{
-		  dataReturn = remoteDatabase.retData2();
-		  log_message("(SINCRO)(transferencias) BD local -> delete from transferencias", 1);
-		  if(localDatabase.query(p,"delete from transferencias"))
-		    log_message("(SINCRO)(transferencias) Error BD local", 2);
-		  delete sql;
-		  sqlLoadTransfers(sql,dataReturn);
-		  str_log_message = "(SINCRO)(transferencias) BD local -> ";
-		  str_log_message += sql;
-		  log_message(str_log_message, 1);
-		  if(localDatabase.query(p,sql))
-		    log_message("(SINCRO)(transferencias) Error BD local", 2);
-		}
-	       
-	    }    
-	  delete sql;
+	        dataReturn = localDatabase.retData2();
+	        if(dataReturn.size()) //if there is local movements to sync
+	        {
+	            //1b - udpdating remote movements table
+	            rmtUpdtTransfers(sql, dataReturn);
+	            str_log_message = "(SINCRO)(transferencias) BD remota -> ";
+	            str_log_message += sql;
+	            log_message(str_log_message, 1);
+	            if(remoteDatabase.query(p, sql.c_str()))
+		        {
+		            log_message("(SINCRO)(transferencias) Error BD remota (query)", 2);
+		            ret=-2;
+		        }
+	        }
+	        if(!ret) //if sincronizing remote movements with local's success, EVEN with no data
+	        {
+	            //2 updating local transfers with possible new remote ones
+	            rmtSelAllTransfers(sql, codigo_estacion);
+	            str_log_message = "(SINCRO)(transferencias) BD remota -> ";
+	            str_log_message += sql;
+	            log_message(str_log_message, 1);
+	            if(remoteDatabase.query(p, sql.c_str()))
+		            log_message("(SINCRO)(transferencias) Error BD remota (query)", 2);
+	            else
+		        {
+		            dataReturn = remoteDatabase.retData2();
+		            log_message("(SINCRO)(transferencias) BD local -> delete from transferencias", 1);
+		            if(localDatabase.query(p, "delete from transferencias"))
+		                log_message("(SINCRO)(transferencias) Error BD local", 2);
+		            loadTransfers(sql, dataReturn);
+		            str_log_message = "(SINCRO)(transferencias) BD local -> ";
+		            str_log_message += sql;
+		            log_message(str_log_message, 1);
+		            if(localDatabase.query(p, sql.c_str()))
+		                log_message("(SINCRO)(transferencias) Error BD local", 2);
+		        }
+	        }
 	  
-	}
-      else //no unsyncro data
-	{
-	  log_message("(SINCRO)(transferencias) Error BD local", 2);
-	  ret = -2;
-	  delete sql;
-	}
+	    }
+        else //no unsyncro data
+	    {
+	        log_message("(SINCRO)(transferencias) Error BD local", 2);
+	        ret = -2;
+	    }
     }
-  else
+    else
     {
-      log_message("(SINCRO)(transferencias) Error BD remota (conexión)", 2);
-      std::cout << "DATABASE not opened!" << std::endl;
-      ret = -1;
+        log_message("(SINCRO)(transferencias) Error BD remota (conexión)", 2);
+        std::cout << "DATABASE not opened!" << std::endl;
+        ret = -1;
     }
-  
-  return ret;
+    return ret;
 }
 
 static int syncOrders(PARAM *p)

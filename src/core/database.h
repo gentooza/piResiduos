@@ -57,10 +57,13 @@ void selOrderById(char *& myQuery, long order_code);
 
 //TABLE TRANSFERS
 void selAllTransfers(char *& sql, long station_code);
-void sel_all_unsyncro_transfers(char *& sql);
+void selAllUnsyncroTransfers(std::string& sql);
 void delTransfer(char *& sltQuery, char *& myQuery,long origin,long destiny,long product, const char* plate);
-void rmt_sel_all_transfers(char*&sql, long codigo_estacion);
-void rmt_updt_transfers(char *& sql, std::vector< std::vector <std::string>> dataReturn);
+
+void rmtSelAllTransfers(std::string& sql, long codigo_estacion);
+void rmtUpdtTransfers(std::string& sql, std::vector< std::vector <std::string>> dataReturn);
+
+void loadTransfers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE PRODUCTS
 void selProdPermits(char *& sql, const char* type, long product_code);
@@ -71,6 +74,8 @@ void selAllProds(char*&sql);
 
 void rmtSelAllProducts(std::string& sql);
 
+void loadProducts(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
+
 //TABLE COSTUMERS
 void selCosDataByCode(char *& sql, long code);
 void selAllDatFrmCostumers(char *& sql);
@@ -78,6 +83,8 @@ void selCostumerNameByCode(std::string& sql, std::string code);
 void sel_default_driver(char *& sql, long code);
 
 void rmtSelAllCostumers(std::string& sql);
+
+void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE COSTUMERS-PRODUCTS
 void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code);
@@ -115,8 +122,10 @@ void sqlLoadTransitoSalidas(char*& sql,std::vector<std::vector<std::string>> dat
 //TABLE CARS
 void sel_all_cars(char *& sql);
 void selCostumersFromCar(std::string& sql, std::string matricula);
-void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
+
 void rmtSelAllCars(std::string& sql);
+
+void loadCars(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE STAFF
 void sel_staff_data_by_code(char *&sql, long code);
@@ -127,9 +136,10 @@ void rmt_sel_all_staff(char *& sql);
 
 //TABLE BILLING
 void sel_fp_by_cos_code(char *&, long);
-void load_billing(char *& sql,std::vector< std::vector< std::string>> load_data);
-///remote
-void rmt_sel_all_billing(char *& sql);
+
+void rmtSelAllBilling(std::string& sql);
+
+void loadBilling(std::string& sql,std::vector< std::vector< std::string>> load_data);
 
 //TABLE DRIVERS
 void sel_driver_data_by_code(char *& sql, long code);
@@ -165,9 +175,6 @@ void rmt_selAllMovements(char *& sql);
 
 ////syncronize
 //local
-void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
-void loadProducts(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
-void sqlLoadTransfers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadOrders(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadDrivers(char*& sql,std::vector<std::vector<std::string>> dataReturn);
 void sqlLoadTransito(char*& sql,std::vector<std::vector<std::string>> dataReturn);
