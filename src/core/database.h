@@ -85,7 +85,7 @@ void rmtSelAllProducts(std::string& sql);
 void loadProducts(std::string& sql,std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE COSTUMERS
-void selCosDataByCode(char *& sql, long code);
+void selCosDataByCode(std::string& sql, long code);
 void selAllDatFrmCostumers(char *& sql);
 void selCostumerNameByCode(std::string& sql, std::string code);
 void sel_default_driver(char *& sql, long code);
@@ -157,7 +157,7 @@ void rmtSelAllBilling(std::string& sql);
 void loadBilling(std::string& sql,std::vector< std::vector< std::string>> load_data);
 
 //TABLE DRIVERS
-void sel_driver_data_by_code(char *& sql, long code);
+void selDriverDataByCode(std::string& sql, long code);
 void selAllDrivers(std::string& sql);
 
 void rmtSelAllDrivers(std::string& sql);

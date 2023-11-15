@@ -294,13 +294,11 @@ void loadProducts(std::string& sql, std::vector<std::vector<std::string>> dataRe
 
 /////////////////////////////////////////////////////
 ////****table costumers****////
-void selCosDataByCode(char *& sql, long code)
+void selCosDataByCode(std::string& sql, long code)
 {
-  sql = new char[sizeof("SELECT NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, CODIGO_ENTIDAD_FACTURACION, CBC, TIPO, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from CLIENTES WHERE (CODIGO_CLIENTE=XXXXX AND (BORRADO is null or BORRADO = 0))")+12];
-
-  sprintf(sql,"SELECT NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, CODIGO_ENTIDAD_FACTURACION, CBC, TIPO, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from CLIENTES WHERE (CODIGO_CLIENTE=%lu AND (BORRADO is null or BORRADO = 0))",code);
-
-  return;
+    sql = "SELECT CODIGO_CLIENTE, NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, CODIGO_ENTIDAD_FACTURACION, CBC, TIPO, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from CLIENTES WHERE (CODIGO_CLIENTE = ";
+    sql += std::to_string(code) + " AND (BORRADO is null or BORRADO = 0))";
+    return;
 }
 void selAllDatFrmCostumers(char *& sql)
 {
@@ -753,13 +751,11 @@ void loadBilling(std::string& sql, std::vector< std::vector< std::string>> load_
 //
 /////////////////////////////////////////////////////
 ////****table drivers****////
-void sel_driver_data_by_code(char *& sql, long code)
+void selDriverDataByCode(std::string& sql, long code)
 {
-  sql = new char[sizeof("SELECT NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from TRANSPORTISTAS WHERE (CODIGO_TRANSPORTISTA=XXXXX AND (BORRADO is null or BORRADO = 0))")+12];
-
-  sprintf(sql,"SELECT NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from TRANSPORTISTAS WHERE (CODIGO_TRANSPORTISTA=%lu AND (BORRADO is null or BORRADO = 0))",code);
-
-  return;
+    sql = "SELECT CODIGO_TRANSPORTISTA, NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from TRANSPORTISTAS WHERE (CODIGO_TRANSPORTISTA = ";
+    sql += std::to_string(code) + " AND (BORRADO is null or BORRADO = 0))";
+    return;
 }
 
 void selAllDrivers(std::string& sql)
