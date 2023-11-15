@@ -1932,11 +1932,10 @@ void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
 //Drivers Data
 int baseForm::updteDrivers(qtDatabase& myDatabase)
 {
-    char * sql = NULL;
+    std::string sql;
     int ret = -1;
-    
     selAllDrivers(sql);
-    if(!myDatabase.query(NULL,sql))
+    if(!myDatabase.query(NULL, sql.c_str()))
     {
         std::vector<std::vector<std::string>> dataReturn = myDatabase.retData2();
         resetDrivers();
@@ -1946,9 +1945,6 @@ int baseForm::updteDrivers(qtDatabase& myDatabase)
         }
         ret = 0;
     }
-    if (sql != NULL)
-        delete[] sql;
-
     return ret;
 }
 

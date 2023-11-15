@@ -158,7 +158,7 @@ void loadBilling(std::string& sql,std::vector< std::vector< std::string>> load_d
 
 //TABLE DRIVERS
 void sel_driver_data_by_code(char *& sql, long code);
-void selAllDatFrmDrivers(char *& sql);
+void selAllDrivers(std::string& sql);
 
 void rmtSelAllDrivers(std::string& sql);
 
@@ -178,7 +178,6 @@ void selectProductDataByCode(char *& sql, const char* code);
 void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente);
 
 void selLastMovCode(char *& sql,const char* codigo_estacion);
-void selAllDrivers(char *&sql);
 void selAllMovements(char*&sql);
 
 

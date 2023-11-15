@@ -762,13 +762,10 @@ void sel_driver_data_by_code(char *& sql, long code)
   return;
 }
 
-void selAllDatFrmDrivers(char *& sql)
+void selAllDrivers(std::string& sql)
 {
-  sql = new char[sizeof("SELECT CODIGO_TRANSPORTISTA, NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL  from TRANSPORTISTAS WHERE (BORRADO is null or BORRADO = 0) order by NOMBRE")+12];
-
-  sprintf(sql,"SELECT CODIGO_TRANSPORTISTA, NOMBRE, NIF, DIRECCION, PROVINCIA, POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL from TRANSPORTISTAS WHERE (BORRADO is null or BORRADO = 0) order by NOMBRE");
-
-  return;
+    sql = "select codigo_transportista, nombre, nif, direccion, provincia, poblacion, cp, comunidad_autonoma, nima, num_inscripcion, telefono, mail FROM transportistas WHERE (BORRADO is null or BORRADO = 0) order by NOMBRE";
+    return;
 }
 
 void rmtSelAllDrivers(std::string& sql)
@@ -942,14 +939,6 @@ void selLastMovCode(char *& sql,const char* codigo_estacion)
   return;
 }
 
-void selAllDrivers(char *& sql)
-{
- sql = new char[sizeof("select codigo_transportista, nombre, nif, direccion, provincia, poblacion, cp, comunidad_autonoma, nima, num_inscripcion, telefono, mail FROM transportistas order by nombre")+32];
- 
- sprintf(sql,"select codigo_transportista, nombre, nif, direccion, provincia, poblacion, cp, comunidad_autonoma, nima, num_inscripcion, telefono, mail FROM transportistas order by nombre");
-
-  return;
-}
 void selAllMovements(char*&sql)
 {
   sql = new char[sizeof("select CODIGO_MOV, DI, FECHA_HORA_INICIO, FECHA_HORA_FINAL, TIPO_MOV, CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, PESO_NETO, PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS, COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, CLIENTE_PARTICULAR_DOMICILIO, CLIENTE_PARTICULAR_PROVINCIA, CLIENTE_PARTICULAR_POBLACION, CLIENTE_PARTICULAR_CODIGO_POSTAL, CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA, CLIENTE_PARTICULAR_NIMA, CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO, CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO FROM MOVIMIENTOS")+32];
