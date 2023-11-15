@@ -99,7 +99,7 @@ void costumer::setCostumer(long cosCode, qtDatabase& myDatabase)
     std::string sql;
 
     selCosDataByCode(sql, cosCode);
-    myDatabase.query(NULL, sql);	    
+    myDatabase.query(NULL, sql.c_str());	    
     std::vector <std::vector <std::string>> dataReturn = myDatabase.retData2(); 
     if (dataReturn.size())
     {

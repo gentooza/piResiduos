@@ -56,18 +56,18 @@ driver::driver()
 /*!built copied from another*/
 driver::driver(driver * reference)
 {
-    code = reference->get_code();
-    name = reference->get_name();
-    nif = reference->get_nif();
-    address = reference->get_address();
-    provence = reference->get_provence();  
-    city = reference->get_city();
-    region = reference->get_region();
-    zip = reference->get_zip();
-    nima = reference->get_nima();
-    num_ins = reference->get_num_ins();
-    phone = reference->get_phone();
-    mail = reference->get_mail();
+    code = reference->getCode();
+    name = reference->getName();
+    nif = reference->getNif();
+    address = reference->getAddress();
+    provence = reference->getProvence();  
+    city = reference->getCity();
+    region = reference->getRegion();
+    zip = reference->getZip();
+    nima = reference->getNima();
+    num_ins = reference->getNumIns();
+    phone = reference->getPhone();
+    mail = reference->getMail();
     return;
 }
 void driver::reset()
