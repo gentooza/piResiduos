@@ -80,7 +80,6 @@ static int slotInit(PARAM *p, DATA *d)
     {
         d->enFutEstado = formEntrada->getState();
         formEntrada->setState(-100);
-        d->enFutEstado = -100;
     }
     formEntrada->setOurStation(myStation);
     
@@ -94,7 +93,7 @@ static int slotInit(PARAM *p, DATA *d)
     d->proceder=0;
     d->test=0;
     d->editDI=0;
-    
+
     return 0;
 }
 

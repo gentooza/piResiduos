@@ -77,8 +77,7 @@ static int slotInit(PARAM *p, DATA *d)
     else
     {
         d->enFutEstado = formSalida->getState();
-        formSalida->setState(-100); 
-        d->enFutEstado = -100;  
+        formSalida->setState(-100);
     }
     formSalida->setOurStation(myStation);
     formSalida->setErrorScale(DEF_ERROR_SCALES);
@@ -132,30 +131,30 @@ static int slotNullEvent(PARAM *p, DATA *d)
     if(destination)
         delete destination;
     //
-  std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getOutputIncidents(),"||")  << std::endl;
-  std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getOutputComment():"null") << "\"" << std::endl;
-  std::cout << "CARPETA:\"" << (formSalida?formSalida->retDepDiFolder():"null") << std::endl;
-  std::cout << "----" << std::endl;
-  std::cout << "############" << std::endl;
-  //maquina de estados
-  stateNext(p,d);
-  stateWork(p,d);
-  //semaphores
-  cameraSemaphore(3, -1,globalConfiguration.traffic_lights_enabled);
-  cameraSemaphore(4, -1,globalConfiguration.traffic_lights_enabled);
-  refreshSemaphores(p,d);
-  //console
-  consoleRefresh(p,d);
-  //date and Time
-  setDate(p,d,LABDATE);
-  setTime(p,d,LABTIME);
-  //syncronization
-  int i = reconnectSSH(&my_ssh_syncro_data);
-  if(i == -1)
-    console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
-  else if (i>=0)
-    console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
-  return 0;
+    std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getOutputIncidents(),"||")  << std::endl;
+    std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getOutputComment():"null") << "\"" << std::endl;
+    std::cout << "CARPETA:\"" << (formSalida?formSalida->retDepDiFolder():"null") << std::endl;
+    std::cout << "----" << std::endl;
+    std::cout << "############" << std::endl;
+    //maquina de estados
+    stateNext(p,d);
+    stateWork(p,d);
+    //semaphores
+    cameraSemaphore(3, -1,globalConfiguration.traffic_lights_enabled);
+    cameraSemaphore(4, -1,globalConfiguration.traffic_lights_enabled);
+    refreshSemaphores(p,d);
+    //console
+    consoleRefresh(p,d);
+    //date and Time
+    setDate(p,d,LABDATE);
+    setTime(p,d,LABTIME);
+    //syncronization
+    int i = reconnectSSH(&my_ssh_syncro_data);
+    if(i == -1)
+        console.push_back("*ERROR* hubo un error intentando reconectar el tunel ssh, ejecute el script manualmente");
+    else if (i>=0)
+        console.push_back("(INFO) reconexión del tunel ssh para la base de datos central, efectuada");
+    return 0;
 }
 
 static int slotButtonEvent(PARAM *p, int id, DATA *d)
