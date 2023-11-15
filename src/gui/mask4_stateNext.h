@@ -1106,42 +1106,44 @@ static int stateNext(PARAM *p, DATA *d)
 	  show_mask6(p);
 	}
       break;
-    case 1031: //DI INCOMPLETE
-      if (d->pesaje2)
-	{
-	  pvSetEnabled(p,BUTEDITDIDEF,0);
-	  d->pesaje2=0;
-	  d->enFutEstado = 1025;
-	}
-      else if(d->firmar)
-	{
-	  pvSetEnabled(p,BUTEDITDIDEF,0);
-	  d->firmado = 0;
-	  d->firmar = 0;
-	  d->enFutEstado=1035;
-	}
-      else if(d->retroceder || d->cancelar)
-	{
-	  pvSetEnabled(p,BUTEDITDIDEF,0);
-	  d->retroceder = 0;
-	  d->cancelar = 0;
-	  d->enFutEstado = 1000;
-	  pvSetText(p,EDITCAM_E2,"");
-	  pvSetText(p,EDITDIDEF,"");
-	  resetForm(p,d,formEntrada);
-	}
-      else if(d->editDI)
-	{
-	  pvSetEnabled(p,BUTEDITDIDEF,0);
-	  d->editDI=0;
-	  formEntrada->setState(1023);
-	  if(formDI!= NULL)
-	    delete formDI;
-	  formDI = new inputForm();
-	  formDI->copyFrom(formEntrada);
-	  show_mask6(p);
-	}
-      break;
+        case 1031: //DI INCOMPLETE
+        {
+            if (d->pesaje2)
+	        {
+	            pvSetEnabled(p,BUTEDITDIDEF,0);
+	            d->pesaje2=0;
+	            d->enFutEstado = 1025;
+	        }
+            else if(d->firmar)
+	        {
+	            pvSetEnabled(p,BUTEDITDIDEF,0);
+	            d->firmado = 0;
+	            d->firmar = 0;
+	            d->enFutEstado=1035;
+	        }
+            else if(d->retroceder || d->cancelar)
+	        {
+	            pvSetEnabled(p,BUTEDITDIDEF,0);
+	            d->retroceder = 0;
+	            d->cancelar = 0;
+	            d->enFutEstado = 1000;
+	            pvSetText(p,EDITCAM_E2,"");
+	            pvSetText(p,EDITDIDEF,"");
+	            resetForm(p,d,formEntrada);
+	        }
+            else if(d->editDI)
+	        {
+	            pvSetEnabled(p,BUTEDITDIDEF,0);
+	            d->editDI=0;
+	            formEntrada->setState(1023);
+	            if(formDI!= NULL)
+	                delete formDI;
+	            formDI = new inputForm();
+	            formDI->copyFrom(formEntrada);
+	            show_mask6(p);
+	        }
+            break;
+        }
     case 1097://staff selection screen
       if(formEntrada->isStaffConfigured()>=0)
 	{

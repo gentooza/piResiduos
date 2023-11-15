@@ -150,76 +150,88 @@ static int slotButtonPressedEvent(PARAM *p, int id, DATA *d)
 
 static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 {
-  if(p == NULL || id == 0 || d == NULL) return -1;
-     if(id == BUT1) //salvar
+    if(p == NULL || id == 0 || d == NULL) return -1;
+    if(id == BUT1) //salvar
     {
-      std::cout << "form save" << std::endl;
-      switch(formDI->retForm())
-	{
-	case(1): //unloading
-	  if(formEntrada)
-	    delete formEntrada;
-	  formEntrada = new inputForm();
-	  formEntrada->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2)://loading
-	  if(formSalida)
-	    delete formSalida;
-	  formSalida = new outputForm();	  
-	  formSalida->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default://unknown
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+        std::cout << "form save" << std::endl;
+        switch(formDI->retForm())
+	    {
+	        case(1): //unloading
+            {                
+	            if(formEntrada)
+	                delete formEntrada;
+	            formEntrada = new inputForm();
+	            formEntrada->copyFrom(formDI);
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	        case(2)://loading
+            {
+	            if(formSalida)
+	                delete formSalida;
+	            formSalida = new outputForm();	  
+	            formSalida->copyFrom(formDI);
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask5(p);
+	            break;
+            }
+	        default://unknown
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	    }
     }
     else if(id == BUT2) //CANCEL
     {
-      std::cout << "form reset" << std::endl;
-      switch(formDI->retForm())
-	{
-	case(1):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default:
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+        std::cout << "form reset" << std::endl;
+        switch(formDI->retForm())
+	    {
+	        case(1):
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	        case(2):
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask5(p);
+	            break;
+            }
+	        default:
+            {
+	            if(formDI)
+	                delete formDI;
+	            formDI = NULL;
+	            show_mask4(p);
+	            break;
+            }
+	    }
     }
-  else if(id == BUT1234)
-    show_mask6(p);
-  else if(id == BUT5)
-    show_mask7(p);    
-  else if(id == BUT6)
-    show_mask8(p);    
-  else if(id == BUT78)
-    show_mask9(p);
-  else if(id == BUT910)
-    show_mask10(p);
-  return 0;
+    else if(id == BUT1234)
+        show_mask6(p);
+    else if(id == BUT5)
+        show_mask7(p);    
+    else if(id == BUT6)
+        show_mask8(p);    
+    else if(id == BUT78)
+        show_mask9(p);
+    else if(id == BUT910)
+        show_mask10(p);
+    return 0;
 }
 
 static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
