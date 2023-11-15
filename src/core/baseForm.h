@@ -549,21 +549,8 @@ class  baseForm
         void clearPermits(){myArrMovement.PERMISOS_PRODUCTO = (const struct struPermits){ 0 };return;};
 
         ////DRIVER DATA
-        // TODO, TO IMPLEMENT AS COSTUMERS!
         int setDriverByCode(long code, qtDatabase & local_database);
         int setDriverByName(std::string name);
-        long retDepDriCode(){long value; (depDriver?value = depDriver->getCode():value=-1); return value;};
-        std::string retDepDriName(){std::string value; (depDriver?value = depDriver->getName():value=-1); return value;};
-        std::string retDepDriNif(){std::string value; (depDriver?value = depDriver->getNif():value=-1); return value;};
-        std::string retDepDriAddr(){std::string value; (depDriver?value = depDriver->getAddress():value=-1); return value;};
-        std::string retDepDriProv(){std::string value; (depDriver?value = depDriver->getProvence():value=-1); return value;};
-        std::string retDepDriCity(){std::string value; (depDriver?value = depDriver->getCity():value=-1); return value;};
-        std::string retDepDriReg(){std::string value; (depDriver?value = depDriver->getRegion():value=-1); return value;};
-        long retDepDriZip(){long value; (depDriver?value = depDriver->getZip():value=-1); return value;};
-        std::string retDepDriNima(){std::string value; (depDriver?value = depDriver->getNima():value=-1); return value;};
-        std::string retDepDriNumIns(){std::string value; (depDriver?value = depDriver->getNumIns():value=-1); return value;};
-        std::string retDepDriPhone(){std::string value; (depDriver?value = depDriver->getPhone():value=-1); return value;};
-        std::string retDepDriMail(){std::string value; (depDriver?value = depDriver->getMail():value=-1); return value;};
         int default_driver(qtDatabase &);
         void resetDepDriver();
         

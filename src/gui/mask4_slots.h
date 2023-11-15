@@ -122,7 +122,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "PRODUCTO CÓDIGO:\"" <<  (formEntrada?std::to_string(formEntrada->retDepProdCode()):"null") << "\"";
     std::cout << std::endl;
-    std::cout << "TRANSPORTISTA:\"" << (formEntrada?std::to_string(formEntrada->retDepDriCode()):"null")  << "\"" << std::endl;
+    std::cout << "TRANSPORTISTA:\"" << (formEntrada?std::to_string(formEntrada->depDriver->getCode()):"null")  << "\"" << std::endl;
     std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getOutputIncidents(),"||")  << std::endl;
     std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getOutputComment():"null") << "\"" << std::endl;
     std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retDepDiFolder():"null") << std::endl;

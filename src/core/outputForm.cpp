@@ -173,89 +173,85 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 }
 int outputForm::storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my_remote_database, int remote_host_connected)
 {
-  int ret = -1;
-  std::string str_log_message;
-  //only save transfer if connection
-  ///
-
-  std::string mysql_query = "insert into transferencias (DI,FECHA_HORA,CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,MATRICULA, REMOLQUE,INCIDENCIAS,COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO) values (\"";
-   std::string sqlite_query = "insert into transferencias (DI,FECHA_HORA,CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,MATRICULA, REMOLQUE,INCIDENCIAS,COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO,SINCRONIZADO) values (\""; 
-  
-  std::string values =  retDepDi();
-  values += "\",\"";  
-  values += getCurrentDate();
-  values += "\",";
-  values += std::to_string(depOriginStation->getCode());
-  values += ",";
-  values += std::to_string(depDestinationStation->getCode());
-  values += ",";
-  values += std::to_string(retDepProdCode());
-  values += ",";
-  values += std::to_string(retDepDriCode());
-  values += ",\"";
-  values += retDepPlate();
-  values += "\",\"";
-  values += retDepPlateAtt();
-  values += "\",\"";
-  values += vectorToString(getOutputIncidents(),"; ");
-  values += "\",\"";
-  values += getOutputComment();
-  values += "\",\"";
-  values += retDepTreat();
-  values += "\"";
+    int ret = -1;
+    std::string str_log_message;
+    //only save transfer if connection
+    ///
+    std::string mysql_query = "insert into transferencias (DI,FECHA_HORA,CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,MATRICULA, REMOLQUE,INCIDENCIAS,COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO) values (\"";
+    std::string sqlite_query = "insert into transferencias (DI,FECHA_HORA,CODIGO_ORIGEN, CODIGO_DESTINO, CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,MATRICULA, REMOLQUE,INCIDENCIAS,COMENTARIO_OPERADOR, OPERACION_TRATAMIENTO,SINCRONIZADO) values (\""; 
+    std::string values =  retDepDi();
+    values += "\",\"";  
+    values += getCurrentDate();
+    values += "\",";
+    values += std::to_string(depOriginStation->getCode());
+    values += ",";
+    values += std::to_string(depDestinationStation->getCode());
+    values += ",";
+    values += std::to_string(retDepProdCode());
+    values += ",";
+    values += std::to_string(depDriver->getCode());
+    values += ",\"";
+    values += retDepPlate();
+    values += "\",\"";
+    values += retDepPlateAtt();
+    values += "\",\"";
+    values += vectorToString(getOutputIncidents(),"; ");
+    values += "\",\"";
+    values += getOutputComment();
+    values += "\",\"";
+    values += retDepTreat();
+    values += "\"";
  
+     mysql_query += values;
+    mysql_query +=")";
+    sqlite_query +=values;
 
-  mysql_query += values;
-  mysql_query +=")";
-
-  sqlite_query +=values;
-
-  //remote saving
-  if(remote_host_connected)
+    //remote saving
+    if(remote_host_connected)
     {
-      str_log_message = "(CARGA) db remota -> ";
-      str_log_message += mysql_query;
-      log_message(str_log_message, 1); 
-      if(!my_remote_database.query(NULL,mysql_query.c_str()))
-	{
-	  log_message("(CARGA) registro en BD remota parece OK", 1);
-	  ret=0;
-	  sqlite_query +=",1)";
-	}
-      else
-	{
-	  log_message("(CARGA) registro en BD remota parece ERROR", 2);
-	  sqlite_query +=",0)";
-	}
+        str_log_message = "(CARGA) db remota -> ";
+        str_log_message += mysql_query;
+        log_message(str_log_message, 1); 
+        if(!my_remote_database.query(NULL,mysql_query.c_str()))
+	    {
+	        log_message("(CARGA) registro en BD remota parece OK", 1);
+	        ret=0;
+	        sqlite_query +=",1)";
+	    }
+        else
+	    {
+	        log_message("(CARGA) registro en BD remota parece ERROR", 2);
+	        sqlite_query +=",0)";
+	    }
     }
-  else
+    else
     {
-      log_message("(CARGA) registro en BD remota parece ERROR", 2);
-      sqlite_query +=",0)";
+        log_message("(CARGA) registro en BD remota parece ERROR", 2);
+        sqlite_query +=",0)";
     }
 
-  //local saving
-  str_log_message = "(CARGA) db local -> ";
-  str_log_message += sqlite_query;
-  log_message(str_log_message, 1); 
-  if(!my_local_database.query(NULL,sqlite_query.c_str()))
+    //local saving
+    str_log_message = "(CARGA) db local -> ";
+    str_log_message += sqlite_query;
+    log_message(str_log_message, 1); 
+    if(!my_local_database.query(NULL,sqlite_query.c_str()))
     {
-      log_message("(CARGA) registro en BD local parece OK", 1);
-      //we have no move code, create one with DI for saving files to server
-      std::string moveCode = retDepDi();
-      if(!retDepDateTime().empty())
-	{
-	  moveCode += " ";
-	  moveCode += retDepDateTime();
-	}
-      setDepMovCode(moveCode);
+        log_message("(CARGA) registro en BD local parece OK", 1);
+        //we have no move code, create one with DI for saving files to server
+        std::string moveCode = retDepDi();
+        if(!retDepDateTime().empty())
+	    {
+	        moveCode += " ";
+	        moveCode += retDepDateTime();
+	    }
+        setDepMovCode(moveCode);
     }
-  else
+    else
     {
-      log_message("(CARGA) registro en BD local parece ERROR, catastrófico", 2);
-      ret = -2;
+        log_message("(CARGA) registro en BD local parece ERROR, catastrófico", 2);
+        ret = -2;
     }
-  return ret;
+    return ret;
 }
 void outputForm::setOrders(qtDatabase & myDatabase, long station_code)
 {
@@ -911,7 +907,7 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
         // default driver loaded
         if (defDriverCode > 0) // if default driver configured
 	    {
-	        if (retDepDriCode() <= 0)
+	        if (depDriver->getCode() <= 0)
 	        {
 	            setDriverByCode(defDriverCode, localDatabase);
 	        }
@@ -1153,24 +1149,22 @@ is DI complete?
 */
 int outputForm::isDiComplete()
 {
-  int ret = 1;
-  //COMMON ANALYSIS
-  //CODIGO_PRODUCTO
-  if(retDepProdCode() <= 0)
-    ret = 0;
-  //CODIGO_TRANSPORTISTA
-  if(retDepDriCode() <= 0)
-    ret = 0;
-  //CODIGO_CLIENTE
-  if(depCostumer->getCode() <= 0)
-    ret = 0;
-  //DESTINATION
-  if(depDestinationStation->getCode() <= 0 && !depDestinationStation->isManuallyEdited())
-    ret = 0;
-
-  return ret;
+    int ret = 1;
+    //COMMON ANALYSIS
+    //CODIGO_PRODUCTO
+    if(retDepProdCode() <= 0)
+        ret = 0;
+    //CODIGO_TRANSPORTISTA
+    if(depDriver->getCode() <= 0)
+        ret = 0;
+    //CODIGO_CLIENTE
+    if(depCostumer->getCode() <= 0)
+        ret = 0;
+    //DESTINATION
+    if(depDestinationStation->getCode() <= 0 && !depDestinationStation->isManuallyEdited())
+        ret = 0;
+    return ret;
 }
-
 
 //////////////////////////////////////////////////////////////////
 //PDF generation
@@ -2074,7 +2068,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
   retDepDestinationStation(destination);
   myTicket->setCostumerName(destination->getName());
   delete destination;
-  myTicket->setTransportName(retDepDriName());
+  myTicket->setTransportName(depDriver->getName());
   myTicket->setTransportPlate(retDepPlate());
   myTicket->setProductName(retDepProdFullName());
   myTicket->setProductLER(std::to_string(retDepProdLER()));

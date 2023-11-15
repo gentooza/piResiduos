@@ -904,7 +904,7 @@ void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, lon
     {
         if (defDriverCode > 0) // if default driver configured
 	    {
-	        if (retDepDriCode() <= 0)
+	        if (depDriver->getCode() <= 0)
 	        {
 	            setDriverByCode(defDriverCode, localDatabase);
 	        }
@@ -914,22 +914,22 @@ void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, lon
     setDepDestStation(myStation);
     return;
 }
+
 /*is DI complete?*/
 int inputForm::isDiComplete()
 {
-  int ret = 1;
-  //COMMON ANALYSIS
-  //CODIGO_PRODUCTO
-  if(myDepMovement.CODIGO_PRODUCTO <= 0)
-    ret = 0;
-  //CODIGO_TRANSPORTISTA
-  if(retDepDriCode()< 0)
-    ret = 0;
-  //COSTUMER
-  if(!depCostumer->isDefined())
-    ret = 0;
-  
-  return ret;
+    int ret = 1;
+    //COMMON ANALYSIS
+    //CODIGO_PRODUCTO
+    if(myDepMovement.CODIGO_PRODUCTO <= 0)
+        ret = 0;
+    //CODIGO_TRANSPORTISTA
+    if(depDriver->getCode() < 0)
+        ret = 0;
+    //COSTUMER
+    if(!depCostumer->isDefined())
+        ret = 0;
+    return ret;
 }
 //////////////////////////////////////////////////////////////////
 //PDF generation
@@ -1770,7 +1770,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
     myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
     myTicket->setCostumerName(depCostumer->getName());
-    myTicket->setTransportName(retDepDriName());
+    myTicket->setTransportName(depDriver->getName());
     myTicket->setTransportPlate(retDepPlate());
     myTicket->setProductName(retDepProdFullName());
     myTicket->setProductLER(std::to_string(retDepProdLER()));

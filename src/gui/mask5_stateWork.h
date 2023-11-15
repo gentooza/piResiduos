@@ -314,18 +314,12 @@ static int stateWork(PARAM *p, DATA *d)
             }
             case(1230):
             case(1130):
-            {
-                pvSetText(p,EDITCODETRANSP,std::to_string(formSalida->retDepDriCode()).c_str());
-                pvSetText(p,EDITNAMETRANSP,formSalida->retDepDriName().c_str());
-                refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);	  
-                break;
-            }
-	        case(1231):
+            case(1231):
 	        case(1131):
             {
-                pvSetText(p,EDITCODETRANSP,std::to_string(formSalida->retDepDriCode()).c_str());
-                pvSetText(p,EDITNAMETRANSP,formSalida->retDepDriName().c_str());
-                refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);
+                pvSetText(p,EDITCODETRANSP, std::to_string(formSalida->depDriver->getCode()).c_str());
+                pvSetText(p,EDITNAMETRANSP, formSalida->depDriver->getName().c_str());
+                refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);	  
                 break;
             }
 	        case(1136): //signing

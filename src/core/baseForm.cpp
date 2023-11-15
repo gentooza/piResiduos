@@ -292,7 +292,7 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += ",";
     values += std::to_string(retDepProdCode());
     values += ",";
-    values += std::to_string(retDepDriCode());
+    values += std::to_string(depDriver->getCode());
     values += ",";
     values += std::to_string(staff_in_charge->get_code());
     values += ",";

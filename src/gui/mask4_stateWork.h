@@ -541,9 +541,9 @@ static int stateWork(PARAM *p, DATA *d)
 			case 1030:
 			case 1031:
 			{
-	  			pvSetText(p,EDITCODETRANSP,std::to_string(formEntrada->retDepDriCode()).c_str());
-	  			pvSetText(p,EDITNAMETRANSP,formEntrada->retDepDriName().c_str());
-	  			refreshOperatorComment(p,d,formEntrada,EDITCOMMENTSAL);
+	  			pvSetText(p, EDITCODETRANSP, std::to_string(formEntrada->depDriver->getCode()).c_str());
+	  			pvSetText(p, EDITNAMETRANSP, formEntrada->depDriver->getName().c_str());
+	  			refreshOperatorComment(p, d, formEntrada,EDITCOMMENTSAL);
 	  			break;
 			}
 			case 1036: //firma del movimiento
