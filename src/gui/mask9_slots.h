@@ -42,7 +42,6 @@ extern GLOBAL_DATA globalconfiguration;
 #include "mask9_tools.h"
 #include "mask_tools.h"
 
-
 static int slotInit(PARAM *p, DATA *d)		
 {
   if(p == NULL || d == NULL) return -1;
@@ -80,50 +79,40 @@ static int slotInit(PARAM *p, DATA *d)
 	setComboBoxPos(p,COMBOPRODUCTO,prodNames, formDI->retDepProdFullName() + " " + std::to_string(formDI->retDepProdCode()));	  
     }
 
-  //////////////////////////////////////////////
-  //combobox drivers
-  pvShow(p,COMBOTRANSPORTISTA);
-  formDI->updteDrivers(localDatabase);
-  std::vector <std::string> driversName = formDI->retAllDriversNames();
-  populateCombo(p,COMBOTRANSPORTISTA,driversName);
+    //////////////////////////////////////////////
+    //combobox drivers
+    pvShow(p,COMBOTRANSPORTISTA);
+    formDI->updteDrivers(localDatabase);
+    std::vector <std::string> driversName = formDI->retAllDriversNames();
+    populateCombo(p, COMBOTRANSPORTISTA, driversName);
+    
+    driver * myDriver;
+    formDI->retDepDriver(myDriver);
+    pvSetText(p, EDITNOMBRE, myDriver->getName().c_str());
+    pvSetText(p, EDITNIF, myDriver->getNif().c_str());		//DNI
+    pvSetText(p, EDITDIREC, myDriver->getAddress().c_str());	//Direccion	
+    pvSetText(p, EDITCP, std::to_string(myDriver->getZip()).c_str()); 
+    pvSetText(p, EDITMUNI, myDriver->getCity().c_str());	//Ciudad
+    pvSetText(p, EDITPRO, myDriver->getProvence().c_str());		//Provincia
+    pvSetText(p, EDITCA, myDriver->getRegion().c_str());		//Comunidad Autonoma
+    pvSetText(p, EDITNIMA, myDriver->getNima().c_str());
+    pvSetText(p, EDITREG, myDriver->getNumIns().c_str());			//Nº inscripcion en el registro	
+    pvSetText(p, EDITTFN, myDriver->getPhone().c_str());	
+    pvSetText(p, EDITEMAIL, myDriver->getMail().c_str());	//Email
 
-  std::string temporal;
+    if(myDriver->getCode() == 0)
+        pvShow(p,FRAME8RED);
+    else
+        pvHide(p,FRAME8RED);
 
-  pvSetText(p,EDITNOMBRE,formDI->retDepDriName().c_str());
-  pvSetText(p,EDITNIF,formDI->retDepDriNif().c_str());		//DNI
-  pvSetText(p,EDITDIREC,formDI->retDepDriAddr().c_str());	//Direccion
-	
-  temporal = std::to_string(formDI->retDepDriZip());		//CodigoPostal
-  pvSetText(p,EDITCP,temporal.c_str());
+    setComboBoxPos(p, COMBOTRANSPORTISTA, driversName, myDriver->getName());
 
-  pvSetText(p,EDITMUNI,formDI->retDepDriCity().c_str());	//Ciudad
-  pvSetText(p,EDITPRO,formDI->retDepDriProv().c_str());		//Provincia
-  pvSetText(p,EDITCA,formDI->retDepDriReg().c_str());		//Comunidad Autonoma
-
-  temporal = std::to_string(formDI->retDepDriNima());		//NIMA
-  pvSetText(p,EDITNIMA,temporal.c_str());
-	
-  temporal = std::to_string(formDI->retDepDriNumIns());	
-  pvSetText(p,EDITREG,temporal.c_str());			//Nº inscripcion en el registro	
-
-  temporal = std::to_string(formDI->retDepDriPhone());	//Telefono
-  pvSetText(p,EDITTFN,temporal.c_str());	
-
-  pvSetText(p,EDITEMAIL,formDI->retDepDriMail().c_str());	//Email
-
-
-if(formDI->retDepDriCode() == 0)
-  pvShow(p,FRAME8RED);
-else
-  pvHide(p,FRAME8RED);
-
-  setComboBoxPos(p,COMBOTRANSPORTISTA,driversName,formDI->retDepDriName());
+    delete myDriver;  
+    //console
+    consoleRefresh(p,d);
+    pvHide(p,LOADINGFORM);
   
-  //console
-  consoleRefresh(p,d);
-  pvHide(p,LOADINGFORM);
-  
-  return 0;
+    return 0;
 }
 
 static int slotNullEvent(PARAM *p, DATA *d)
@@ -235,123 +224,89 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 
 static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
 {
-  if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
-  if(id==COMBOTRANSPORTISTA)
+    if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
+    if(id==COMBOTRANSPORTISTA)
     {
-      std::string temporal;
-      std::string name = text;
-      if(!name.compare("ELIJA")) //CLEAR
-	{
-	  std::cout<< "estamos en ELIJA"<< std::endl;
-	  /*pvSetText(p,EDITNOMBRE,"");
-	  pvSetText(p,EDITNIF,"");
-	  pvSetText(p,EDITDIREC,"");
-	  pvSetText(p,EDITCP,"");
-	  pvSetText(p,EDITMUNI,"");
-	  pvSetText(p,EDITPRO,"");
-	  pvSetText(p,EDITCA,"");
-	  pvSetText(p,EDITNIMA,"");
-	  pvSetText(p,EDITREG,"");
-	  pvSetText(p,EDITTFN,"");
-	  pvSetText(p,EDITEMAIL,"");
-
-	  pvShow(p,FRAME8RED);
-
-	  formDI->resetDepDriver();*/
-	}
-      else if(!name.compare("DEFINIDO A MANO")) //A MANO
-	{
-	  pvSetText(p,EDITNOMBRE,"SUS DATOS EN COMENTARIO");
-	  formDI->setDriverByCode(0,localDatabase);
-	  pvSetText(p,EDITNIF,"");
-	  pvSetText(p,EDITDIREC,"");
-	  pvSetText(p,EDITCP,"");
-	  pvSetText(p,EDITMUNI,"");
-	  pvSetText(p,EDITPRO,"");
-	  pvSetText(p,EDITCA,"");
-	  pvSetText(p,EDITNIMA,"");
-	  pvSetText(p,EDITREG,"");
-	  pvSetText(p,EDITTFN,"");
-	  pvSetText(p,EDITEMAIL,"");
-	  pvHide(p,FRAME8RED);
-	}
-      else
-	{
-
-	  formDI->setDriverByName(name);
-	  
-	  pvSetText(p,EDITNOMBRE,name.c_str());	  			//Nombre
-	  pvSetText(p,EDITNIF,formDI->retDepDriNif().c_str());		//DNI
-	  pvSetText(p,EDITDIREC,formDI->retDepDriAddr().c_str());	//Direccion
-	
-	  temporal = std::to_string(formDI->retDepDriZip());		//CodigoPostal
-	  pvSetText(p,EDITCP,temporal.c_str());
-
-	  pvSetText(p,EDITMUNI,formDI->retDepDriCity().c_str());	//Ciudad
-	  pvSetText(p,EDITPRO,formDI->retDepDriProv().c_str());		//Provincia
-	  pvSetText(p,EDITCA,formDI->retDepDriReg().c_str());		//Comunidad Autonoma
-
-	  temporal = std::to_string(formDI->retDepDriNima());		//NIMA
-	  pvSetText(p,EDITNIMA,temporal.c_str());
-	
-	  temporal = std::to_string(formDI->retDepDriNumIns());	
-	  pvSetText(p,EDITREG,temporal.c_str());			//Nº inscripcion en el registro	
-
-	  temporal = std::to_string(formDI->retDepDriPhone());	//Telefono
-	  pvSetText(p,EDITTFN,temporal.c_str());	
-
-	  pvSetText(p,EDITEMAIL,formDI->retDepDriMail().c_str());	//Email
-	  
-	  pvHide(p,FRAME8RED);
-	
-	}
-      pvSetFocus(p,COMBOTRANSPORTISTA);
-     
-    }
-  else if(id==COMBOPRODUCTO)
-    {
-      
-      std::string name = text;
-      if(!name.compare("ELIJA")) //CLEAR
-	{
-	  pvShow(p,FRAME7RED);	  
-	  pvSetText(p,EDITLER,"");
-	  pvSetText(p,EDITDESCLER,"");
-	  pvSetText(p,EDITPELIGRO,"");
-	  pvSetText(p,EDITPESO,"");
-	  formDI->resetDepProduct();	    	 
-	}
-      else
-	{
-	  long prodCode = retCodeFromString(name," ");
-        
-	  if(prodCode)
+        std::string temporal;
+        std::string name = text;
+        // if(!name.compare("ELIJA")) //CLEAR DO NOTHING
+        if(!name.compare("DEFINIDO A MANO")) //A MANO
 	    {
-	      pvHide(p,FRAME7RED);
-	      formDI->setDepProdCode(prodCode);
-	      formDI->setAllProductData(localDatabase);
-	      std::string field = std::to_string(formDI->retDepProdLER());
-	      pvSetText(p,EDITLER,field.c_str());
-	      pvSetText(p,EDITDESCLER,formDI->retDepProdFullName().c_str());
-	      pvSetText(p,EDITPELIGRO,formDI->retDepProdPeligro().c_str());
-	      std::string strPeso = std::to_string(formDI->retDepTotalWeight());
-	      pvSetText(p,EDITPESO,strPeso.c_str());
+	        pvSetText(p, EDITNOMBRE, "SUS DATOS EN COMENTARIO");
+	        formDI->setDriverByCode(0, localDatabase);
+	        pvSetText(p, EDITNIF, "");
+	        pvSetText(p, EDITDIREC, "");
+	        pvSetText(p, EDITCP, "");
+	        pvSetText(p, EDITMUNI, "");
+	        pvSetText(p, EDITPRO, "");
+	        pvSetText(p, EDITCA, "");
+	        pvSetText(p, EDITNIMA, "");
+	        pvSetText(p, EDITREG, "");
+	        pvSetText(p, EDITTFN, "");
+	        pvSetText(p, EDITEMAIL, "");
+	        pvHide(p, FRAME8RED);
 	    }
-	  else
+        else
 	    {
-	      pvShow(p,FRAME7RED);
-	      pvSetText(p,EDITLER,"");
-	      pvSetText(p,EDITDESCLER,"");
-	      pvSetText(p,EDITPELIGRO,"");
-	      pvSetText(p,EDITPESO,"");
-	      formDI->resetDepProduct();
+	        formDI->setDriverByName(name);
+            driver * myDriver;
+            formDI->retDepDriver(myDriver);
+	        pvSetText(p, EDITNOMBRE, name.c_str());	  			//Nombre
+	        pvSetText(p, EDITNIF, myDriver->getNif().c_str());		//DNI
+	        pvSetText(p, EDITDIREC, myDriver->getAddress().c_str());	//Direccion
+	        pvSetText(p, EDITCP, std::to_string(myDriver->getZip()).c_str());
+	        pvSetText(p, EDITMUNI, myDriver->getCity().c_str());	//Ciudad
+	        pvSetText(p, EDITPRO, myDriver->getProvence().c_str());		//Provincia
+	        pvSetText(p, EDITCA, myDriver->getRegion().c_str());		//Comunidad Autonoma	
+	        pvSetText(p, EDITNIMA, myDriver->getNima().c_str()); // NIMA
+	        pvSetText(p, EDITREG, myDriver->getNumIns().c_str()); // Applying Number	
+	        pvSetText(p, EDITTFN, myDriver->getPhone().c_str());	// Phone
+	        pvSetText(p, EDITEMAIL, myDriver->getMail().c_str());	//Email
+	        pvHide(p, FRAME8RED);
+            delete myDriver;
 	    }
-	}
-
-      pvSetFocus(p,COMBOPRODUCTO);
-      
+        pvSetFocus(p,COMBOTRANSPORTISTA);
     }
-  return 0;
+    else if(id==COMBOPRODUCTO)
+    {      
+        std::string name = text;
+        if(!name.compare("ELIJA")) //CLEAR
+	    {
+	        pvShow(p,FRAME7RED);	  
+	        pvSetText(p,EDITLER,"");
+	        pvSetText(p,EDITDESCLER,"");
+	        pvSetText(p,EDITPELIGRO,"");
+	        pvSetText(p,EDITPESO,"");
+	        formDI->resetDepProduct();	    	 
+	    }
+        else
+	    {
+	        long prodCode = retCodeFromString(name," ");        
+	        if(prodCode)
+	        {
+	            pvHide(p,FRAME7RED);
+	            formDI->setDepProdCode(prodCode);
+	            formDI->setAllProductData(localDatabase);
+	            std::string field = std::to_string(formDI->retDepProdLER());
+	            pvSetText(p,EDITLER,field.c_str());
+	            pvSetText(p,EDITDESCLER,formDI->retDepProdFullName().c_str());
+	            pvSetText(p,EDITPELIGRO,formDI->retDepProdPeligro().c_str());
+	            std::string strPeso = std::to_string(formDI->retDepTotalWeight());
+	            pvSetText(p,EDITPESO,strPeso.c_str());
+	        }
+	        else
+	        {
+	            pvShow(p,FRAME7RED);
+	            pvSetText(p,EDITLER,"");
+	            pvSetText(p,EDITDESCLER,"");
+	            pvSetText(p,EDITPELIGRO,"");
+	            pvSetText(p,EDITPESO,"");
+	            formDI->resetDepProduct();
+	        }
+	    }
+        pvSetFocus(p,COMBOPRODUCTO);
+    }
+    return 0;
 }
 
 static int slotSliderEvent(PARAM *p, int id, DATA *d, int val)

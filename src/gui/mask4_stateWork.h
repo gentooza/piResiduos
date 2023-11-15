@@ -446,9 +446,9 @@ static int stateWork(PARAM *p, DATA *d)
 	    		if(formEntrada->default_driver(localDatabase))
 	      		{
 					driver *tmp_driver;
-					formEntrada->ret_dep_driver(tmp_driver);
-					pvSetText(p,EDITCODETRANSP,std::to_string(tmp_driver->get_code()).c_str());
-					pvSetText(p,EDITNAMETRANSP,tmp_driver->get_name().c_str());
+					formEntrada->retDepDriver(tmp_driver);
+					pvSetText(p, EDITCODETRANSP, std::to_string(tmp_driver->getCode()).c_str());
+					pvSetText(p, EDITNAMETRANSP, tmp_driver->getName().c_str());
 					delete tmp_driver;
 	      		}
 	    		else

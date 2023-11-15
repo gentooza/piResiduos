@@ -160,9 +160,9 @@ static int slotInit(PARAM *p, DATA *d)
     retrieveTransports(p);
     popteComboCostumers(p,COMBOOURTRANS, allTransports, 1);
 
-    defTrans = new driver(DEF_TRANS_CODE,localDatabase);
-    setTransData(p,defTrans->get_code(), allTransports,1);
-    d->selectedTrans = defTrans->get_code();
+    defTrans = new driver(DEF_TRANS_CODE, localDatabase);
+    setTransData(p, defTrans->getCode(), allTransports, 1);
+    d->selectedTrans = defTrans->getCode();
     //
     //printers
     std::vector <std::string> strPrintersPos;
