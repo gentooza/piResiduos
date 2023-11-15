@@ -25,170 +25,162 @@ If not, see <https://www.gnu.org/licenses/>.
 #include "inputForm.h"
 int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected)
 {
-  int ret = 1;
-  std::string sqliteQuery,mysqlQuery;
-  std::string str_log_message;
-  //TODO dirty fix
-  //exchanging PESO_SALIDA // PESO_ENTRADA
-  unsigned int tmpPeso = retDepScaleIn();
-  setDepScaleIn(retDepScaleOut());
-  setDepScaleOut(tmpPeso);
-  ////////////////////////////////////////
-  storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
+    int ret = 1;
+    std::string sqliteQuery,mysqlQuery;
+    std::string str_log_message;
+    //TODO dirty fix
+    //exchanging PESO_SALIDA // PESO_ENTRADA
+    unsigned int tmpPeso = retDepScaleIn();
+    setDepScaleIn(retDepScaleOut());
+    setDepScaleOut(tmpPeso);
+    ////////////////////////////////////////
+    storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
 
-  if(remote_host_connected) //SAVING MOVEMENT IN REMOTE SERVER
+    if(remote_host_connected) //SAVING MOVEMENT IN REMOTE SERVER
     {
-      str_log_message = "(DESCARGA) en BD remota -> ";
-      str_log_message += mysqlQuery;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //SYNCRONIZED
-	{
-	  log_message("(DESCARGA) registro en BD remota parece OK ",1);
-	  int sync=1;
-	  //RECHECK!
-	  check_last(mysqlQuery,depDestinationStation);
-	  str_log_message = "(DESCARGA) chequeo redundante en BD remota -> ";
-	  str_log_message += mysqlQuery;
-	  log_message(str_log_message, 1);
-	  if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
-	    sync=0;
-	  else
+        str_log_message = "(DESCARGA) en BD remota -> ";
+        str_log_message += mysqlQuery;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //SYNCRONIZED
 	    {
-	      if(remoteDatabase.retData2().empty())
-		sync=0;
-	    }
-	  
-	  if(sync)
-	    {
-	      log_message("(DESCARGA) chequeo redundante en BD remota parece OK", 1);
-	      sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
-	    }
-	  else
-	    log_message("(DESCARGA) chequeo redundante en BD remota parece que FALLÓ", 1);
-	  
-	  str_log_message = "(DESCARGA) en BD local -> ";
-	  str_log_message += sqliteQuery;
-	  log_message(str_log_message, 1);
-	  if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
-	    {
-	      log_message("(DESCARGA) registro en BD local parece OK", 1);
-	      //DELETING TRANSIT
-	      ret = 0;
-	      mysqlQuery.clear();
-	      mysqlQuery = "delete from transito where (FECHA_HORA =\"";
-	      mysqlQuery += retDepDateTime();
-	      mysqlQuery += "\" and CODIGO_ESTACION=";
-	      mysqlQuery += std::to_string(depDestinationStation->getCode());
-	      mysqlQuery += ")";
-	      str_log_message = "(DESCARGA) en BD remota -> ";
-	      str_log_message += mysqlQuery;
-	      log_message(str_log_message, 1);
-	      if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //OK
-		{
-		  log_message("(DESCARGA) registro en BD remota parece OK", 1);
-		}
-	      else //ERROR
-		{
-		  log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
-		}
+	        log_message("(DESCARGA) registro en BD remota parece OK ",1);
+	        int sync=1;
+	        //RECHECK!
+	        check_last(mysqlQuery, depDestinationStation);
+	        str_log_message = "(DESCARGA) chequeo redundante en BD remota -> ";
+	        str_log_message += mysqlQuery;
+	        log_message(str_log_message, 1);
+	        if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
+	            sync=0;
+	        else
+	        {
+	            if(remoteDatabase.retData2().empty())
+		        sync=0;
+	        }
+	        if(sync)
+	        {
+	            log_message("(DESCARGA) chequeo redundante en BD remota parece OK", 1);
+	            sqliteQuery.replace(sqliteQuery.length()-2,1,"1");
+	        }
+	        else
+	            log_message("(DESCARGA) chequeo redundante en BD remota parece que FALLÓ", 1);	  
 
-	      sqliteQuery.clear();
-	      sqliteQuery = "delete from TRANSITO where (FECHA_HORA =\"";
-	      sqliteQuery += retDepDateTime();
-	      sqliteQuery += "\")";
-	      str_log_message = "(DESCARGA) en BD local -> ";
-	      str_log_message += sqliteQuery;
-	      log_message(str_log_message, 1);
-	      if(!localDatabase.query(NULL,sqliteQuery.c_str()))
-		{
-		  log_message("(DESCARGA) registro en BD local parece OK", 1);
-		}
-	      else
-		{
-		  log_message("(DESCARGA) registro en BD local parece ERROR", 2);
-		}
-
-	      //if transfer, clean
-	      if(!ret && retDepMovType() == DEF_MOV_TRANSFER)
-		{
-		  char * sqlite;
-		  char * mysql;
-		  delTransfer(sqlite,mysql,depOriginStation->getCode(),depDestinationStation->getCode(),retDepProdCode(), retDepPlate().c_str());
-		  str_log_message = "(DESCARGA) en BD remota -> ";
-		  str_log_message += mysql;
-		  log_message(str_log_message, 1);
-		  if(remoteDatabase.query(NULL,mysql))
-		    {
-		      ret = -100;
-		      log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
-		    }
-		  else
-		    log_message("(DESCARGA) registro en BD remota parece OK", 1);
-		  
-		  str_log_message = "(DESCARGA) en BD local -> ";
-		  str_log_message += sqlite;
-		  log_message(str_log_message, 1);
-		  if(localDatabase.query(NULL,sqlite))
-		    {
-		      ret=-10;
-		      log_message("(DESCARGA) registro en BD local parece ERROR", 2);
-		    }
-		  else
-		    log_message("(DESCARGA) registro en BD local parece OK", 1);		    
-		  delete sqlite;
-		  delete mysql;
-		}  
-	      
+	        str_log_message = "(DESCARGA) en BD local -> ";
+	        str_log_message += sqliteQuery;
+	        log_message(str_log_message, 1);
+	        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
+	        {
+	            log_message("(DESCARGA) registro en BD local parece OK", 1);
+	            //DELETING TRANSIT
+	            ret = 0;
+	            mysqlQuery.clear();
+	            mysqlQuery = "delete from transito where (FECHA_HORA =\"";
+	            mysqlQuery += retDepDateTime();
+	            mysqlQuery += "\" and CODIGO_ESTACION=";
+	            mysqlQuery += std::to_string(depDestinationStation->getCode());
+	            mysqlQuery += ")";
+	            str_log_message = "(DESCARGA) en BD remota -> ";
+	            str_log_message += mysqlQuery;
+	            log_message(str_log_message, 1);
+	            if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //OK
+		        {
+		            log_message("(DESCARGA) registro en BD remota parece OK", 1);
+		        }
+	            else //ERROR
+		        {
+		            log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
+		        }
+	            sqliteQuery.clear();
+	            sqliteQuery = "delete from TRANSITO where (FECHA_HORA =\"";
+	            sqliteQuery += retDepDateTime();
+	            sqliteQuery += "\")";
+	            str_log_message = "(DESCARGA) en BD local -> ";
+	            str_log_message += sqliteQuery;
+	            log_message(str_log_message, 1);
+	            if(!localDatabase.query(NULL,sqliteQuery.c_str()))
+		        {
+		            log_message("(DESCARGA) registro en BD local parece OK", 1);
+		        }
+	            else
+		        {
+		            log_message("(DESCARGA) registro en BD local parece ERROR", 2);
+		        }
+	            //if transfer, clean
+	            if(!ret && retDepMovType() == DEF_MOV_TRANSFER)
+		        {
+		            char * sqlite;
+		            char * mysql;
+		            delTransfer(sqlite,mysql,depOriginStation->getCode(),depDestinationStation->getCode(),retDepProdCode(), retDepPlate().c_str());
+		            str_log_message = "(DESCARGA) en BD remota -> ";
+		            str_log_message += mysql;
+		            log_message(str_log_message, 1);
+		            if(remoteDatabase.query(NULL,mysql))
+		            {
+		                ret = -100;
+		                log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
+		            }
+		            else
+		                log_message("(DESCARGA) registro en BD remota parece OK", 1);		  
+		            str_log_message = "(DESCARGA) en BD local -> ";
+		            str_log_message += sqlite;
+		            log_message(str_log_message, 1);
+		            if(localDatabase.query(NULL,sqlite))
+		            {
+		                ret=-10;
+		                log_message("(DESCARGA) registro en BD local parece ERROR", 2);
+		            }
+		            else
+		                log_message("(DESCARGA) registro en BD local parece OK", 1);		    
+		            delete sqlite;
+		            delete mysql;
+		        }  	      
+	        }
+	        else
+	        {
+	            log_message("(DESCARGA) registro en BD local parece ERROR", 2);
+	            ret = -2;
+	        }
 	    }
-	  else
+        else
 	    {
-	      log_message("(DESCARGA) registro en BD local parece ERROR", 2);
-	      ret = -2;
-	    }
-
-	}
-      else
-	{
-	  ret = -1;
-	  log_message("(DESCARGA)(guardando movimiento) BD remota ERROR(query)", 2);
-	}
+	        ret = -1;
+	        log_message("(DESCARGA)(guardando movimiento) BD remota ERROR(query)", 2);
+        }
     }
-  else
+    else
     {
-      ret = -1;
-      log_message("(DESCARGA)(guardando movimiento) BD remota ERROR(conexión)", 2);
+        ret = -1;
+        log_message("(DESCARGA)(guardando movimiento) BD remota ERROR(conexión)", 2);
     }
-  if(ret < 0) //no remote saving
+    if(ret < 0) //no remote saving
     {
-      log_message("(DESCARGA)(guardando movimiento) Continuando sin salvar en el servidor remoto", 1);
-      if(retDepMovType() != DEF_MOV_TRANSFER)
-	{
-	  str_log_message = "(DESCARGA) en BD local -> ";
-	  str_log_message += sqliteQuery;
-	  log_message(str_log_message, 1);
-	  if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
+        log_message("(DESCARGA)(guardando movimiento) Continuando sin salvar en el servidor remoto", 1);
+        if(retDepMovType() != DEF_MOV_TRANSFER)
 	    {
-	      log_message("(DESCARGA) registro en BD local parece OK", 1);
-	      //DELETING TRANSIT
-	      sqliteQuery.clear();
-	      sqliteQuery = "delete from TRANSITO where (FECHA_HORA =\"";
-	      sqliteQuery += retDepDateTime();
-	      sqliteQuery += "\")";	  
-	      localDatabase.query(NULL,sqliteQuery.c_str());	      
+	        str_log_message = "(DESCARGA) en BD local -> ";
+	        str_log_message += sqliteQuery;
+	        log_message(str_log_message, 1);
+	        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //REMOVED FROM LOCAL SERVER
+	        {
+	            log_message("(DESCARGA) registro en BD local parece OK", 1);
+	            //DELETING TRANSIT
+	            sqliteQuery.clear();
+	            sqliteQuery = "delete from TRANSITO where (FECHA_HORA =\"";
+	            sqliteQuery += retDepDateTime();
+	            sqliteQuery += "\")";	  
+	            localDatabase.query(NULL,sqliteQuery.c_str());	      
+	        }
+	        else
+	        {
+	            log_message("(DESCARGA)(guardando movimiento) BD local ERROR", 1);
+	            ret = -2;
+	        }
 	    }
-	  else
-	    {
-	      log_message("(DESCARGA)(guardando movimiento) BD local ERROR", 1);
-	      ret = -2;
-	    }
-	}
-      else
-	ret = -10;
+        else
+	        ret = -10;
     }
-
-  log_message("(DESCARGA)(guardando movimiento) Terminado", 1);
-
-  return ret;
+    log_message("(DESCARGA)(guardando movimiento) Terminado", 1);
+    return ret;
 }
 
 void inputForm::setDepMov(int index, qtDatabase & myDatabase)
