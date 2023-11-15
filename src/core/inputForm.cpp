@@ -1414,81 +1414,69 @@ void inputForm::createPdf(std::string printerId)
  HPDF_Page_ShowText (page2, myText.c_str());
  HPDF_Page_EndText (page2);
 
- // 8.Transportistas
+    // 8.Transportistas
 
- //NAME
- myText = retDepDriName();
- set_di_text(page2,fsize,47,font,myText,188,980);
+    //NAME
+    set_di_text(page2, fsize, 47, font, depDriver->getName(), 188, 980);
+    //DIRECCION
+    set_di_text(page2, fsize, 47, font, depDriver->getAddress(), 188, 955);
  
- //DIRECCION
- myText = retDepDriAddr();
- set_di_text(page2,fsize,47,font,myText,188,955);
- 
- //MUNICIPIO
- //TODO: to adjust with new set_di_text function
- HPDF_Page_BeginText (page2);
- myText = retDepDriCity();
- HPDF_Page_MoveTextPos (page2, 188, 930);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //MUNICIPIO
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page2);    
+    HPDF_Page_MoveTextPos (page2, 188, 930);
+    HPDF_Page_ShowText (page2, depDriver->getCity().c_str());
+    HPDF_Page_EndText (page2);
 
- //NIMA
- HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepDriNima());
- HPDF_Page_MoveTextPos (page2, 188, 904);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //NIMA
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 188, 904);
+    HPDF_Page_ShowText (page2, depDriver->getNima().c_str());
+    HPDF_Page_EndText (page2);
 
- //TELEFONO
- HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepDriPhone());
- HPDF_Page_MoveTextPos (page2, 188, 877);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //TELEFONO
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 188, 877);
+    HPDF_Page_ShowText (page2, depDriver->getPhone().c_str());
+    HPDF_Page_EndText (page2);
 
- //PROVINCIA
- //TODO: to adjust with new set_di_text function
- HPDF_Page_BeginText (page2);
- myText = retDepDriProv();
- HPDF_Page_MoveTextPos (page2, 465, 930);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //PROVINCIA
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 465, 930);
+    HPDF_Page_ShowText (page2, depDriver->getProvence().c_str());
+    HPDF_Page_EndText (page2);
 
- //Nº INSC REGISTRO
- HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepDriNumIns());
- HPDF_Page_MoveTextPos (page2, 465, 904);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //Nº INSC REGISTRO
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 465, 904);
+    HPDF_Page_ShowText (page2, depDriver->getNumIns().c_str());
+    HPDF_Page_EndText (page2);
 
- //EMAIL
- HPDF_Page_BeginText (page2);
- myText = retDepDriMail();
- HPDF_Page_MoveTextPos (page2, 465, 877);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //EMAIL
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 465, 877);
+    HPDF_Page_ShowText (page2, depDriver->getMail().c_str());
+    HPDF_Page_EndText (page2);
 
- //NIF
- HPDF_Page_BeginText (page2);
- myText = retDepDriNif();
- HPDF_Page_MoveTextPos (page2, 648, 980);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //NIF
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 648, 980);
+    HPDF_Page_ShowText (page2, depDriver->getNif().c_str());
+    HPDF_Page_EndText (page2);
   
- //CP
- HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepDriZip());
- HPDF_Page_MoveTextPos (page2, 648, 955);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //CP
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 648, 955);
+    HPDF_Page_ShowText (page2, std::to_string(depDriver->getZip()).c_str());
+    HPDF_Page_EndText (page2);
 
- //COMUNIDAD AUTONOMA
- //TODO: to adjust with new set_di_text function
- HPDF_Page_BeginText (page2);
- myText = retDepDriReg();
- HPDF_Page_MoveTextPos (page2, 648, 930);
- HPDF_Page_ShowText (page2, myText.c_str());
- HPDF_Page_EndText (page2);
+    //COMUNIDAD AUTONOMA
+    //TODO: to adjust with new set_di_text function
+    HPDF_Page_BeginText (page2);
+    HPDF_Page_MoveTextPos (page2, 648, 930);
+    HPDF_Page_ShowText (page2, depDriver->getRegion().c_str());
+    HPDF_Page_EndText (page2);
 
   // 9. Vehiculos y remolques
 
