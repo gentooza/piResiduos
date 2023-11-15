@@ -96,7 +96,7 @@ void costumer::reset()
 }
 void costumer::setCostumer(long cosCode, qtDatabase& myDatabase)
 {
-    char *sql = NULL;
+    std::string sql;
 
     selCosDataByCode(sql, cosCode);
     myDatabase.query(NULL, sql);	    
@@ -110,8 +110,6 @@ void costumer::setCostumer(long cosCode, qtDatabase& myDatabase)
         std::cerr << "ERROR: costumer::setCostumer wrong number of fields passed to constructor, needed 15, NO DATA RECEIVED" <<  '\n';
         reset();
     }
-    if (sql)
-        delete [] sql;
     return;
 }
 void costumer::setCostumer(std::vector<std::string> databaseData)

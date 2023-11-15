@@ -38,7 +38,7 @@ baseForm::baseForm(int type, int entrance)
     ourId = NULL;
     ourStation = NULL;
     staff_in_charge = new staff();
-    dep_driver = new driver();
+    depDriver = new driver();
     depAuthCostumer = NULL;
     /**TODO BORRAR NO NECESARIO**/
     formType = NOT_DEFINED;
@@ -72,7 +72,7 @@ baseForm::baseForm()
     ourId = NULL;
     ourStation = NULL;
     staff_in_charge = new staff();
-    dep_driver = NULL;
+    depDriver = NULL;
     depAuthCostumer = NULL;
     return;
 }
@@ -96,8 +96,8 @@ baseForm::~baseForm()
         delete ourStation;
     if(staff_in_charge)
         delete staff_in_charge;
-    if(dep_driver)
-        delete dep_driver;
+    if(depDriver)
+        delete depDriver;
     if(depAuthCostumer)
         delete depAuthCostumer;
     resetDrivers();
@@ -132,7 +132,7 @@ void baseForm::copyFrom(baseForm * toCopy)
     setErrorScale(toCopy->retErrorScale());
 
     //DRIVER
-    toCopy->ret_dep_driver(dep_driver);
+    toCopy->retDepDriver(depDriver);
     //dep authorized costumer
     try 
     {
@@ -174,7 +174,7 @@ void baseForm::resetForm(int departure)
         resetDepDestination();
         clearDepDiFolder();
         staff_in_charge->reset();
-        dep_driver->reset();
+        depDriver->reset();
     }
     return;
 }
@@ -1751,21 +1751,21 @@ int baseForm::isArrProdDcpPermit()
 
 int baseForm::setAllArrCostumerData(qtDatabase & myDatabase)
 {
-  char * sql;
-  int ret = -1;
-  std::vector<std::vector<std::string>> retData;
+    std::string sql;
+    int ret = -1;
+    std::vector<std::vector<std::string>> retData;
     
-  selCosDataByCode(sql, retArrCosCode());
-  if(!myDatabase.query(NULL,sql))
+    selCosDataByCode(sql, retArrCosCode());
+    if(!myDatabase.query(NULL, sql.c_str()))
     {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  setArrCosDATA(retData[0]);
-	  ret = 0;
-	}  
+        retData = myDatabase.retData2();
+        if(retData.size())
+	    {
+	        setArrCosDATA(retData[0]);
+	        ret = 0;
+	    }  
     }
-  return ret;
+    return ret;
 }
 /*! function to refresh all costumer-product data
 NPT is what we need*/
@@ -1852,82 +1852,82 @@ int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
 
 void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
 {
-  std::vector<std::string>::iterator iter;
-  int field=1;
-  for(iter=newDATA.begin();iter!=newDATA.end();++iter)
+    std::vector<std::string>::iterator iter;
+    int field=0;
+    for(iter=newDATA.begin();iter!=newDATA.end();++iter)
     {
-      if(field==1) //NOmbre
-	setArrCosName(*iter);
-      else if(field==2) //NIF
-	setArrCosNif(*iter);
-      else if(field==3) //DIRECCION
-	setArrCosAddr(*iter);
-      else if(field==4) //PROVINCIA
-	setArrCosProv(*iter);
-      else if(field==5) //POBLACIÓN
-	setArrCosCity(*iter);
-      else if(field==6) //CP	
-	{
-	  try
+        if(field==1) //NOmbre
+	        setArrCosName(*iter);
+        else if(field==2) //NIF
+	        setArrCosNif(*iter);
+        else if(field==3) //DIRECCION
+	        setArrCosAddr(*iter);
+        else if(field==4) //PROVINCIA
+	        setArrCosProv(*iter);
+        else if(field==5) //POBLACIÓN
+	        setArrCosCity(*iter);
+        else if(field==6) //CP	
 	    {
-	      setArrCosZip(std::stoul(*iter));
+	        try
+	        {
+	            setArrCosZip(std::stoul(*iter));
+	        }
+	        catch (...)
+	        {
+	            setArrCosZip(0);		
+	        }
 	    }
-	  catch (...)
+        else if(field==9) //Type
 	    {
-	      setArrCosZip(0);		
+	        try
+	        {
+	            setArrCosTypeDef(std::stoul(*iter));
+	        }
+	        catch (...)
+	        {
+	            setArrCosTypeDef(0);		
+	        }
 	    }
-	}
-      else if(field==9) //Type
-	{
-	  try
+        else if(field==10) //Comunidad
+	        setArrCosReg(*iter);
+        else if(field==11) //NIMA
 	    {
-	      setArrCosTypeDef(std::stoul(*iter));
+	        try
+	        {
+	            setArrCosNima(std::stol(*iter));
+	        }
+	        catch (...)
+	        {
+	            setArrCosNima(0);		
+	        }
 	    }
-	  catch (...)
+        else if(field==12) //NUM INSCRIPCIÓN EN EL REGISTRO
 	    {
-	      setArrCosTypeDef(0);		
+	        try
+	        {
+	            setArrCosNumIns(std::stol(*iter));
+	        }
+	        catch (...)
+	        {
+	            setArrCosNumIns(0);		
+	        }
 	    }
-	}
-      else if(field==10) //Comunidad
-	setArrCosReg(*iter);
-      else if(field==11) //NIMA
-	{
-	  try
+        else if(field==13) //TELEFONO
 	    {
-	      setArrCosNima(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setArrCosNima(0);		
-	    }
-	}
-      else if(field==12) //NUM INSCRIPCIÓN EN EL REGISTRO
-	{
-	  try
-	    {
-	      setArrCosNumIns(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setArrCosNumIns(0);		
-	    }
-	}
-      else if(field==13) //TELEFONO
-	{
-	  try
-	    {
-	      setArrCosPhone(std::stol(*iter));
-	    }
-	  catch (...)
-	    {
-	      setArrCosPhone(0);		
-	    }
-	}     
-      else if(field==14) //MAIL
-        setArrCosMail(*iter);     
-      field++;
+	        try
+	        {
+	            setArrCosPhone(std::stol(*iter));
+	        }
+	        catch (...)
+	        {
+	            setArrCosPhone(0);		
+	        }
+	    }     
+        else if(field==14) //MAIL
+            setArrCosMail(*iter);     
+        field++;
     }
-  return;
+    return;
 }
 //Drivers Data
 int baseForm::updteDrivers(qtDatabase& myDatabase)
@@ -1951,103 +1951,77 @@ int baseForm::updteDrivers(qtDatabase& myDatabase)
 //clears Drivers Data
 void baseForm::resetDrivers()
 {
-  for (std::vector< driver* >::iterator it = allDrivers.begin() ; it != allDrivers.end(); ++it)
+    for (std::vector< driver* >::iterator it = allDrivers.begin() ; it != allDrivers.end(); ++it)
     {
-      delete (*it);
+        delete (*it);
     } 
-  allDrivers.clear();
+    allDrivers.clear();
 }
-
       
 void baseForm::insertDriver(std::vector<std::string> record)
 {
-
-  long new_code;
-  
-  if(record.size() >=12)
-    {
-      //only code needed
-      try             			//0
+    try
 	{
-	  new_code = std::stol(record.at(0));
+        allDrivers.push_back(new driver(record));
 	}
-      catch(...)
+    catch(...)
 	{
-	  new_code = 0;
-	}
-      if(new_code)
-	{
-	  record.erase(record.begin()); //first element is code
-	  allDrivers.push_back(new driver(record));
-	  driver* iter = allDrivers.back();
-	  iter->set_code(new_code);
-	}
+	    std::cout << "baseForm::insertDriver, NOT a driver database data row provided, passing..." << std::endl;
     }
-  return;
-
+    return;
 }
 
 std::vector<std::string> baseForm::retAllDriversNames()
 {
-  std::vector<driver*>::iterator iter;
-  std::vector<std::string> names;
-  names.clear();
-  if(!allDrivers.empty())
+    std::vector<driver*>::iterator iter;
+    std::vector<std::string> names;
+    names.clear();
+    if(!allDrivers.empty())
     {
-      for (iter = allDrivers.begin(); iter != allDrivers.end();++iter)
-	{
-	  names.push_back((*iter)->get_name());
-	}
+        for (iter = allDrivers.begin(); iter != allDrivers.end();++iter)
+	    {
+	        names.push_back((*iter)->getName());
+	    }
     }
-  return names;
+    return names;
 }
-
 
 int baseForm::setDriverByName(std::string name)
 {
-  int ret = -1,done=0;
-  std::vector<driver*>::iterator iter;
-  iter = allDrivers.begin();
- 
-  while(iter != allDrivers.end() && !done)
-    {
-      if(!(*iter)->get_name().compare(name))
-	{
-	  if(dep_driver)
-	    delete dep_driver;
-	  dep_driver = new driver(*iter);
-	  done=1;
-	}
-      ++iter;
-    }
+    int ret = 0;
+    std::vector<driver*>::iterator iter;
+    iter = allDrivers.begin();
 
-  return ret;
+    while(iter != allDrivers.end() && !ret)
+    {
+        if(!(*iter)->getName().compare(name))
+	    {
+	        if(depDriver)
+	            delete depDriver;
+	        depDriver = new driver(*iter);
+	        ret = 1;
+	    }
+        ++iter;
+    }
+    return ret;
 }
 
-int baseForm::setDriverByCode(long code,qtDatabase & local_database)
+int baseForm::setDriverByCode(long code, qtDatabase & local_database)
 {
-  if(code > 0)
+    if(code > 0)
     {
-      if(dep_driver)
-	delete dep_driver;
-      dep_driver = new driver(code, local_database);
+        if(depDriver)
+	        delete depDriver;
+        depDriver = new driver(code, local_database);
     }
-  else if (code == 0)
+    else
     {
-      if(dep_driver)
-	delete dep_driver;
-      dep_driver = new driver();
-      dep_driver->set_code(0);
+        if(depDriver)
+            depDriver->reset();
+        else
+            depDriver = new driver();
     }
-  else
-    {
-     if(dep_driver)
-       dep_driver->reset();
-     else
-       dep_driver = new driver();
-    }
-
-  return 0;
+    return 0;
 }
 
 int baseForm::default_driver(qtDatabase & local_database)
@@ -2079,9 +2053,9 @@ int baseForm::default_driver(qtDatabase & local_database)
                     if(driver_code)
                     {
                         set = 1;
-                        if(dep_driver)
-                            delete dep_driver;
-                        dep_driver = new driver(driver_code, local_database);
+                        if(depDriver)
+                            delete depDriver;
+                        depDriver = new driver(driver_code, local_database);
                     }
                 }
             }

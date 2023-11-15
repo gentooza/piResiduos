@@ -46,44 +46,44 @@ class driver
         void reset();
         void setDriver(long code, qtDatabase& my_database);
         void setDriver(std::vector<std::string> database_data);
-        int is_manually_edited();
+        int isManuallyEdited();
         
         //values
-        long get_code(){return code;};
-        void set_code(long new_code){code = new_code;};
+        long getCode(){return code;};
+        void setCode(long new_code){code = new_code;};
         
-        std::string get_name(){return name;};
-        void set_name(std::string newName){name = newName;};
+        std::string getName(){return name;};
+        void setName(std::string newName){name = newName;};
             
-        std::string get_nif(){return nif;};
-        void set_nif(std::string new_nif){nif = new_nif;};
+        std::string getNif(){return nif;};
+        void setNif(std::string new_nif){nif = new_nif;};
         
-        std::string get_address(){return address;};
-        void set_address(std::string new_address){address = new_address;};
+        std::string getAddress(){return address;};
+        void setAddress(std::string new_address){address = new_address;};
         
-        std::string get_provence(){return provence;};
-        void set_provence(std::string new_provence){provence = new_provence;};
+        std::string getProvence(){return provence;};
+        void setProvence(std::string new_provence){provence = new_provence;};
         
-        std::string get_city(){return city;};
-        void set_city(std::string new_city){city = new_city;};
+        std::string getCity(){return city;};
+        void setCity(std::string new_city){city = new_city;};
         
-        std::string get_region(){return region;};
-        void set_region(std::string new_region){region = new_region; };
+        std::string getRegion(){return region;};
+        void setRegion(std::string new_region){region = new_region; };
         
-        long get_zip(){return zip;}
-        void set_zip(long new_zip){zip = new_zip; };
+        long getZip(){return zip;}
+        void setZip(long new_zip){zip = new_zip; };
         
-        long get_nima(){return nima;};
-        void set_nima(long new_nima){nima = new_nima;};
+        std::string getNima(){return nima;};
+        void setNima(std::string new_nima){nima = new_nima;};
         
-        long get_num_ins(){return num_ins;};
-        void set_num_ins(long new_num_ins){num_ins = new_num_ins;};
+        std::string getNumIns(){return num_ins;};
+        void setNumIns(std::string new_num_ins){num_ins = new_num_ins;};
         
-        long get_phone(){return phone;};
-        void set_phone(long new_phone){phone = new_phone;};
+        std::string getPhone(){return phone;};
+        void setPhone(std::string new_phone){phone = new_phone;};
         
-        std::string get_mail(){return mail;};
-        void set_mail(std::string new_mail){mail=new_mail;};
+        std::string getMail(){return mail;};
+        void setMail(std::string new_mail){mail = new_mail;};
     
     private:
         long code;
@@ -94,9 +94,9 @@ class driver
         std::string city;
         std::string region;
         long zip;
-        long nima;
-        long num_ins;
-        long phone;
+        std::string nima;
+        std::string num_ins;
+        std::string phone;
         std::string mail;
 };
 

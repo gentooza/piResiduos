@@ -47,9 +47,9 @@ driver::driver()
     city = "";
     region = "";
     zip = 0;
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima = "";
+    num_ins = "";
+    phone = "";
     mail = "";
     return;
 }
@@ -80,19 +80,19 @@ void driver::reset()
     city.clear();
     region.clear();
     zip = 0;
-    nima = 0;
-    num_ins = 0;
-    phone = 0;
+    nima.clear();
+    num_ins.clear();
+    phone.clear();
     mail.clear();
     return;
 }
 /*! build by code and database query */
 void driver::setDriver(long code, qtDatabase& my_database)
 {
-    char *sql = NULL;
+    std::string sql;
 
-    sel_driver_data_by_code(sql, code);
-    my_database.query(NULL,sql);	    
+    selDriverDataByCode(sql, code);
+    my_database.query(NULL,sql.c_str());	    
     std::vector <std::vector <std::string>> data_return = my_database.retData2();
     if(data_return.size())
     {
@@ -103,31 +103,41 @@ void driver::setDriver(long code, qtDatabase& my_database)
         std::cerr << "ERROR: driver::setDriver wrong number of fields passed to constructor, NO DATA PASSED" <<  '\n';
         this->reset();
     }
-    if(sql != NULL)
-        delete [] sql;
     return;
 }
 /*! build by data from database*/
 void driver::setDriver(std::vector<std::string> databaseData)
 {
-    if(databaseData.size() >= 15)
+    if(databaseData.size() >= 12)
     {
         std::vector <std::string>::iterator iter;
-        int i = 0;
-        
+        int i = 0;    
         for(iter = databaseData.begin(); iter != databaseData.end(); ++iter)
         {
-            if(i==0) //NAME
+            if(i == 0) //CODE
+            {
+                try
+                {
+                    code = std::stol(*iter);
+                }
+                catch(const std::invalid_argument& ia)
+                {
+                    std::cerr << "Invalid argument: " << ia.what() << '\n';
+                    std::cerr << "driver::setDriver In driver CODE field 0 = " << *iter <<  '\n';
+                    code = 0;
+                }
+            }
+            else if(i == 1) //NAME
                 name = *iter;
-            else if(i==1) //NIF
+            else if(i == 2) //NIF
                 nif = *iter;
-            else if(i==2) //ADDRESS
+            else if(i == 3) //ADDRESS
                 address = *iter;
-            else if(i==3) //PROVENCE
+            else if(i == 4) //PROVENCE
                 provence = *iter;
-            else if(i==4) //CITY
+            else if(i == 5) //CITY
                 city = *iter;
-            else if(i==5) //ZIP CODE
+            else if(i == 6) //ZIP CODE
             {
                 try
                 {
@@ -136,52 +146,19 @@ void driver::setDriver(std::vector<std::string> databaseData)
                 catch(const std::invalid_argument& ia)
                 {
                     std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "driver::setDriver In driver POSTAL_CODE field 5 = " << *iter <<  '\n';
+                    std::cerr << "driver::setDriver In driver POSTAL_CODE field 6 = " << *iter <<  '\n';
                     zip = 0;
                 }
             }
-            else if(i==6) //REGION
+            else if(i == 7) //REGION
                 region = *iter;
-            else if(i==7) //NIMA
-            {
-                try
-                {
-                    nima = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "driver::setDriver In driver NIMA field 7 = " << *iter <<  '\n';
-                    nima = 0;
-                }
-            }
-            else if(i==8) //NUM APPLYING
-            {
-                try
-                {
-                    num_ins = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "driver::setDriver In driver NUM_INS field 8 = " << *iter <<  '\n';
-                    num_ins = 0;
-                }
-            }
-            else if(i==9) //PHONE
-            {
-                try
-                {
-                    phone = std::stol(*iter);
-                }
-                catch(const std::invalid_argument& ia)
-                {
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    std::cerr << "driver::setDriver In driver PHONE field 9 = " << *iter <<  '\n';
-                    phone = 0;
-                }
-            }
-            else if(i==10) //MAIL
+            else if(i == 8) //NIMA
+                nima = *iter;
+            else if(i == 9) //NUM APPLYING
+                num_ins = *iter;
+            else if(i == 10) //PHONE
+                phone = *iter;
+            else if(i == 11) //MAIL
                 mail = *iter;
             i++;
         }
@@ -194,13 +171,13 @@ void driver::setDriver(std::vector<std::string> databaseData)
     return;
 }
 
-int driver::is_manually_edited()
+int driver::isManuallyEdited()
 {
-  //TODO
-  int ret = 0;
-  if(code == 0)
+    //TODO
+    int ret = 0;
+    if(code == 0)
     {
-	ret = 1;
+	    ret = 1;
     }
-  return ret;
+    return ret;
 }
