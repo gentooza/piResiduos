@@ -67,9 +67,9 @@ static int slotInit(PARAM *p, DATA *d)
     if(formSalida == NULL)
     {
         if(!type.compare("PT"))
-        formSalida = new outputForm(PT);
+            formSalida = new outputForm(PT);
         else
-        formSalida = new outputForm(ET);
+            formSalida = new outputForm(ET);
         formSalida->setDepMovType(DEF_MOV_SALIDA);
         formSalida->setState(-99999);
         d->enFutEstado = -99999;

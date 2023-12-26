@@ -408,8 +408,8 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(1221):
             {
                 //operator comment
-                refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);	    
-                pvSetText(p,EDITDIDEF,formSalida->createDepDi(localDatabase).c_str());
+                refreshOperatorComment(p, d, formSalida, EDITCOMMENTSAL);	    
+                pvSetText(p, EDITDIDEF, formSalida->createDepDi(localDatabase).c_str());
                 //Create fake signature for transportist not present	    
                 formSalida->saveSignature("image/void.png");
                 //default driver
