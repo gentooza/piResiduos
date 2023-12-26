@@ -569,85 +569,92 @@ static int stateNext(PARAM *p, DATA *d)
 	        }
             break;
         }
-    case 1231: //DI INCOMPLETE
-      /*      else if(d->firmar)
-	{
-	  d->firmado = 0;
-	  d->firmar = 0;
-	  d->enFutEstado=1235;
-	  }*/
-      if(d->retroceder || d->cancelar)
-	{
-	  d->retroceder = 0;
-	  d->cancelar = 0;
-	  d->enFutEstado = 1200;
-	  resetForm(p,d,formSalida);
-	}
-      else if(d->editDI)
-	{
-	  d->editDI=0;
-	  formSalida->setState(1221);
-	  if(formDI!= NULL)
-	    delete formDI;
-	  formDI = new outputForm();
-	  formDI->copyFrom(formSalida);
-	  show_mask6(p);	  
-	}
-      break;
-    case 1197://staff selection screen
-      if(formSalida->isStaffConfigured()>=0)
-	{
-	  if(formSalida->isStaffConfigured()>0)
-	    d->enFutEstado = 1198;
-	  else
-	    {
-	      pvMessageBox(p,BUTPROCEDER_E1,BoxWarning,"El código de basculista introducido no está registrado en el sistema",MessageBoxOk,0,0);
-	      if(formSalida->retDepMovType() == DEF_MOV_TRANSFER)
-		d->enFutEstado = 1230;
-	      else
-		d->enFutEstado = 1130;
-	    }
-	}
-      break;
-    case 1198://animation state
-      d->enFutEstado = 1199;
-      break;
-    case 1199:
-      if(!d->ret)
-	{
-	  resetForm(p,d,formSalida);
-	  d->enFutEstado = 1100;
-	  console.push_back("INFO: Formulario finalizado!");
-	}
-      else
-	{
-	  d->enFutEstado = 1230;
-	  console.push_back("*ERROR* imposible cargar el movimiento, no hay conexión con la base de datos central");
-	}
-      break;
-    case 1135: //start signing
-      d->enFutEstado=1136;
-      break;       
-    case 1136: //fin de firma
-      if(!d->miTableta)
-	d->enFutEstado = 1121;
-      else if(d->firmado)
-	{
-	  d->firmado = 0;
-	  d->miTableta->stopCapture();
-	  delete d->miTableta;
-	  espera(1);
-	  formSalida->saveSignature();
-	  d->enFutEstado = 1123;
-	}
-      
-      break;
-    default:
-      //no state, we reset!
-      d->enFutEstado = -2;
-      break;
+        case 1231: //DI INCOMPLETE
+        {
+            if(d->retroceder || d->cancelar)
+	        {
+	            d->retroceder = 0;
+	            d->cancelar = 0;
+	            d->enFutEstado = 1200;
+	            resetForm(p,d,formSalida);
+	        }
+            else if(d->editDI)
+	        {
+	            d->editDI=0;
+	            formSalida->setState(1221);
+	            if(formDI!= NULL)
+	                delete formDI;
+	            formDI = new outputForm();
+	            formDI->copyFrom(formSalida);
+	            show_mask6(p);	  
+	        }
+            break;
+        }
+        case 1197://staff selection screen
+        {
+            if(formSalida->isStaffConfigured()>=0)
+	        {
+	            if(formSalida->isStaffConfigured()>0)
+	                d->enFutEstado = 1198;
+	            else
+	            {
+	                pvMessageBox(p,BUTPROCEDER_E1,BoxWarning,"El código de basculista introducido no está registrado en el sistema",MessageBoxOk,0,0);
+	                if(formSalida->retDepMovType() == DEF_MOV_TRANSFER)
+		                d->enFutEstado = 1230;
+	                else
+		                d->enFutEstado = 1130;
+	            }
+	        }
+            break;
+        }
+        case 1198://animation state
+        {
+            d->enFutEstado = 1199;
+            break;
+        }
+        case 1199:
+        {
+            if(!d->ret)
+	        {
+	            resetForm(p,d,formSalida);
+	            d->enFutEstado = 1100;
+	            console.push_back("INFO: Formulario finalizado!");
+	        }
+            else
+	        {
+	            d->enFutEstado = 1230;
+	            console.push_back("*ERROR* imposible cargar el movimiento, no hay conexión con la base de datos central");
+	        }
+            break;
+        }
+        case 1135: //start signing
+        {
+            d->enFutEstado=1136;
+            break;
+        }
+        case 1136: //fin de firma
+        {
+            if(!d->miTableta)
+	            d->enFutEstado = 1121;
+            else if(d->firmado)
+	        {
+	            d->firmado = 0;
+	            d->miTableta->stopCapture();
+	            delete d->miTableta;
+	            espera(1);
+	            formSalida->saveSignature();
+	            d->enFutEstado = 1123;
+	        }      
+            break;
+        }
+        default:
+        {
+            //no state, we reset!
+            d->enFutEstado = -2;
+            break;
+        }
     }
-  return ret;
+    return ret;
 }
 
 #endif
