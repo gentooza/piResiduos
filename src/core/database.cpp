@@ -396,7 +396,7 @@ void loadCosProds(std::string& sql,std::vector<std::vector<std::string>> dataRet
 void selLastDiFromMovsByClientProduct(std::string& sql, long costumer_code, long product_code)
 {
   sql = "select DI,FECHA_HORA_FINAL from MOVIMIENTOS where CODIGO_CLIENTE = " + std::to_string(costumer_code);
-  sql += "AND CODIGO_PRODUCTO = " + std::to_string(product_code);
+  sql += " AND CODIGO_PRODUCTO = " + std::to_string(product_code);
   sql += " ORDER BY DATETIME(FECHA_HORA_FINAL) DESC";
 
   return;
