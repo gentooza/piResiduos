@@ -411,6 +411,7 @@ void outputForm::setTransferMov(costumer *& myCostumer, station *& myStation)
     setDepProdCode(0);
     setDepOrigStation(myStation);
     setDepDateTime(getCurrentDate());
+    setDepTotalWeight(0);
 }
 
 /*! void outputForm::isArrMov()
@@ -921,8 +922,7 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
     int numCol=0;
     long costumer_code = 0;
     long station_code = 0;
-
-    selOrderById(sql,order_code);
+    selOrderById(sql, order_code);
     localDatabase.query(NULL,sql);
     if (sql)
         delete [] sql;
