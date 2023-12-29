@@ -276,49 +276,50 @@ static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
 
 static int resetForm(PARAM *p,DATA* d, baseForm *& myForm)
 {
-  int formType=0;
-  int movType=1;
-  if(myForm->getState() >= 1000)
+    int formType = 0;
+    int movType = 1;
+    if(myForm->getState() >= 1000)
     {
-      formType=1;
-      movType =  myForm->retDepMovType();
+        formType=1;
+        movType =  myForm->retDepMovType();
     }
-  else
-    movType =  myForm->retArrMovType();
-  //triggers
-  d->retroceder = 0;
-  d->cancelar = 0;
-  d->plateTaking = 0;
-  d->processTag = 0;
-  system("rm camera/capture.jpg");
-  //concreto para entrada
-  if(formType==0)
+    else
+        movType =  myForm->retArrMovType();
+    //triggers
+    d->retroceder = 0;
+    d->cancelar = 0;
+    d->plateTaking = 0;
+    d->processTag = 0;
+    system("rm camera/capture.jpg");
+    //concreto para entrada
+    if(formType==0)
     {
-      pvSetImage(p,IMCAM,myResources.RES_IMG_IMAGE.c_str());      //Camera
-      d->productoCodeActual.clear();
-      pvSetText(p,EDITCAM,"");
-      pvSetText(p,EDITCLIENT,"");
-      pvSetText(p,EDITPRODUCT,"");
-      pvSetText(p,EDITDIPROV,"");
-      pvSetText(p,EDITPESOENT,"");
-      pvClear(p,EDITCOMMENTENT);
-      pvSetChecked(p,CHKFORZARPROD,0);
+        pvSetImage(p,IMCAM,myResources.RES_IMG_IMAGE.c_str());      //Camera
+        d->productoCodeActual.clear();
+        pvSetText(p,EDITCAM,"");
+        pvSetText(p,EDITCLIENT,"");
+        pvSetText(p,EDITPRODUCT,"");
+        pvSetText(p,EDITDIPROV,"");
+        pvSetText(p,EDITPESOENT,"");
+        pvClear(p,EDITCOMMENTENT);
+        pvSetChecked(p,CHKFORZARPROD,0);
     }
-  else
+    else
     {
-      pvSetImage(p,IMCAM_E2,myResources.RES_IMG_IMAGE.c_str());      //Camera
-      pvSetText(p,EDITCAM_E2,"");
-      pvSetText(p,EDITDIDEF,"");
-      pvSetText(p,EDITPESOSAL,"");
-      pvSetText(p,EDITCODETRANSP,"");
-      pvSetText(p,EDITNAMETRANSP,"");      
-      pvClear(p,EDITCOMMENTSAL);
-      pvSetChecked(p,CHKTRANSITO,1);
-      if(myForm->retDepMovType() == DEF_MOV_TRANSFER)
-	myForm->rmDepDiFolder();
+        pvSetImage(p,IMCAM_E2,myResources.RES_IMG_IMAGE.c_str());      //Camera
+        pvSetText(p,EDITCAM_E2,"");
+        pvSetText(p,EDITDIDEF,"");
+        pvSetText(p,EDITPESOSAL,"");
+        pvSetText(p,EDITCODETRANSP,"");
+        pvSetText(p,EDITNAMETRANSP,"");      
+        pvClear(p,EDITCOMMENTSAL);
+        pvSetChecked(p,CHKTRANSITO,1);
+        if(myForm->retDepMovType() == DEF_MOV_TRANSFER)
+	        myForm->rmDepDiFolder();
     }
-  //
-  myForm->resetForm(formType);
+    //
+    myForm->resetForm(formType);
+    return 0;
 }
 
 
