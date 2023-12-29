@@ -552,7 +552,6 @@ class  baseForm
         int setDriverByCode(long code, qtDatabase & local_database);
         int setDriverByName(std::string name);
         int default_driver(qtDatabase &);
-        void resetDepDriver();
         
         driver* depDriver;
         void retDepDriver(driver *& new_dep_driver){ (depDriver?new_dep_driver = new driver(depDriver):new_dep_driver = new driver());};
@@ -629,7 +628,7 @@ class  baseForm
         void setDepScaleIn(unsigned int scale){myDepMovement.PESO_ENTRADA = scale;};
         unsigned int retArrScaleIn(){return myArrMovement.PESO_ENTRADA;};
         void setArrScaleIn(unsigned int scale){myArrMovement.PESO_ENTRADA = scale;};
-        long retDepTotalWeight(){return myDepMovement.PESO_CARGA;};
+        long retDepTotalWeight(){return (myDepMovement.PESO_CARGA <= 0 ? myDepMovement.PESO_CARGA: 0);};
         void setDepTotalWeight(long scale){myDepMovement.PESO_CARGA = scale;};
         long retDepWeightToTakeAway(){return myDepMovement.PESO_A_RETIRAR;};
         void setDepWeightToTakeAway(long scale){myDepMovement.PESO_A_RETIRAR = scale;};
@@ -668,6 +667,8 @@ class  baseForm
         void resetArrDestination();
         void resetDepDestination();
         void resetOurId();
+        void resetDepDriver();
+        void resetStaff();
 
         std::string retDepMovCode(){return myDepMovement.CODIGO_MOVIMIENTO;};
         void setDepMovCode(std::string code){myDepMovement.CODIGO_MOVIMIENTO = code; return;}; 

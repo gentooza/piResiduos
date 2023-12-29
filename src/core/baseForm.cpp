@@ -149,6 +149,7 @@ void baseForm::copyFrom(baseForm * toCopy)
 
 void baseForm::resetForm(int departure)
 {
+    std::cout << "cleaning form, departure: " << std::to_string(departure) << std::endl;
     resetOurId();
     if(!departure) //arrival
     {
@@ -164,8 +165,6 @@ void baseForm::resetForm(int departure)
     }
     else //Departure
     {
-        //forced status
-        //
         oIncidents.clear();
         oComment.clear();
         clearMovement(myDepMovement);
@@ -173,8 +172,8 @@ void baseForm::resetForm(int departure)
         resetDepOrigin();
         resetDepDestination();
         clearDepDiFolder();
-        staff_in_charge->reset();
-        depDriver->reset();
+        resetDepDriver();
+        resetStaff();
     }
     return;
 }
@@ -2331,6 +2330,20 @@ void baseForm::resetOurId()
     }
   else
     ourId = new costumer();
+}
+void baseForm::resetStaff()
+{
+    if(staff_in_charge != NULL)
+        staff_in_charge->reset();
+    else    
+        staff_in_charge = new staff();
+}
+void baseForm::resetDepDriver()
+{
+    if(depDriver != NULL)
+        depDriver->reset();
+    else    
+        depDriver = new driver();
 }
 /**************************/
 
