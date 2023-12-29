@@ -616,7 +616,7 @@ static int stateNext(PARAM *p, DATA *d)
         {
             if(!d->ret)
 	        {
-	            resetForm(p,d,formSalida);
+	            resetForm(p, d, formSalida);
 	            d->enFutEstado = 1100;
 	            console.push_back("INFO: Formulario finalizado!");
 	        }
