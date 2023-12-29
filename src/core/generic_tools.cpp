@@ -510,9 +510,9 @@ int isConnected(const char* address, int port)
         if(method) // by address
 	    {
 	        server = gethostbyname(address);
-            std::cout << "translating  address: " << address << " to ip address:" << inet_ntoa(*(struct in_addr*)server->h_addr) <<std::endl;
 	        if(server!=NULL)
 	        {
+                std::cout << "translating  address: " << address << " to ip address:" << inet_ntoa(*(struct in_addr*)server->h_addr) <<std::endl;
                 memcpy(&serv_addr.sin_addr, server->h_addr, server->h_length);
 	            serv_addr.sin_family = AF_INET;
 	            serv_addr.sin_port = htons(port);
