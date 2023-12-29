@@ -2,9 +2,12 @@
 
 ## improves
 + upgraded pvbrowser version, and using qt5 now.
++ updated cars database table, and entity with 30 associated costumers now.
 
 ## fixes
 + using valgrind for detecting memory leaks, fixing them.
++ fixed initialization script for linking local dynamic library. (dirty fix, but working for now)
++ fixed some int functions returning nothing, with undefined behaviour.
 
 ## code improvement
 + code cleaning, fixing functions with no return statement, etc.
