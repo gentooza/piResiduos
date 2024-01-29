@@ -93,6 +93,8 @@ class printable
     int saveFile();
     int printFile();
 
+    int _HaruText(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
+
     virtual int composeFile(){return 0;};
 
     virtual int composeHeader(){return 0;};
@@ -112,6 +114,7 @@ class printable
     virtual void setDiCode(std::string diCode){ return; };
     virtual void setDiNpt(std::string diNpt){ return; };
     virtual void setDiDateTime(std::string diDateTime){ return; };
+    virtual void setDepCosType(int type){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };

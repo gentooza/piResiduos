@@ -35,12 +35,15 @@ class printableDi: public printable
     int composeFile();
 
     int composeHeader();
+    int composer4DepCos();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
     void setDiCode(std::string diCode){di_code = diCode;};
     void setDiNpt(std::string diNpt){di_npt = diNpt;};
     void setDiDateTime(std::string diDateTime){di_dateTime = diDateTime;};
+
+    void setDepCosType(int depCosType){di_4CosType = depCosType;};
 
     private:
     HPDF_Font hpdfFont;
@@ -56,6 +59,8 @@ class printableDi: public printable
     std::string di_code;
     std::string di_npt;
     std::string di_dateTime;
+
+    int di_4CosType;
 };
 
 
