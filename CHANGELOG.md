@@ -1,4 +1,7 @@
-# 2023 version 0.3 
+# 2024 version 0.3 
+
+## behaviour changes
++ Not generated DI document in input movements or in deposit station
 
 ## improves
 + upgraded pvbrowser version, and using qt5 now.
