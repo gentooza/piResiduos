@@ -35,7 +35,8 @@ class printableDi: public printable
     int composeFile();
 
     int composeHeader();
-    int composer4DepCos();
+    int compose4DepCos();
+    int composeOrigin();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
@@ -43,18 +44,10 @@ class printableDi: public printable
     void setDiNpt(std::string diNpt){di_npt = diNpt;};
     void setDiDateTime(std::string diDateTime){di_dateTime = diDateTime;};
 
-    void setDepCosType(int depCosType){di_4CosType = depCosType;};
-    void setDepCosName(std::string depCosName){di_4CosName = depCosName;};
-    void setDepCosNif(std::string data){ di_4CosNif = data; };
-    void setDepCosZip(std::string data){ di_4CosZip = data; };
-    void setDepCosRegion(std::string data){ di_4CosRegion = data; };
-    void setDepCosAddr(std::string data){ di_4CosAddr = data; };
-    void setDepCosCity(std::string data){ di_4CosCity = data; };
-    void setDepCosNima(std::string data){ di_4CosNima = data; };
-    void setDepCosPhone(std::string data){ di_4CosPhone = data; };
-    void setDepCosProvence(std::string data){ di_4CosProvence = data; };
-    void setDepCosNumIns(std::string data){ di_4CosNumIns = data; };
-    void setDepCosEmail(std::string data){ di_4CosEmail = data; };
+    void setAp4Cos(costumer *& data){ di_4Cos = data; };
+    void setAp5Station(station *& data){ di_5Station = data; };
+    void setAp6Cos(costumer *& data){ di_6Cos = data; };
+
 
     private:
     HPDF_Font hpdfFont;
@@ -71,18 +64,9 @@ class printableDi: public printable
     std::string di_npt;
     std::string di_dateTime;
 
-    int di_4CosType;
-    std::string di_4CosName;
-    std::string di_4CosNif;
-    std::string di_4CosZip;
-    std::string di_4CosRegion;
-    std::string di_4CosAddr;
-    std::string di_4CosCity;
-    std::string di_4CosNima;
-    std::string di_4CosPhone;
-    std::string di_4CosProvence;
-    std::string di_4CosNumIns;
-    std::string di_4CosEmail;
+    costumer * di_4Cos;
+    station * di_5Station;
+    costumer * di_6Cos;
 };
 
 

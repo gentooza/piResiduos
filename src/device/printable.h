@@ -45,6 +45,8 @@ If not, see <https://www.gnu.org/licenses/>.
 #include <setjmp.h>
 #include "hpdf.h"
 #include "generic_tools.h"
+#include "costumer.h"
+#include "station.h"
 
 
 void
@@ -114,18 +116,9 @@ class printable
     virtual void setDiCode(std::string diCode){ return; };
     virtual void setDiNpt(std::string diNpt){ return; };
     virtual void setDiDateTime(std::string diDateTime){ return; };
-    virtual void setDepCosType(int type){ return; };
-    virtual void setDepCosName(std::string data){ return; };
-    virtual void setDepCosNif(std::string data){ return; };
-    virtual void setDepCosZip(std::string data){ return; };
-    virtual void setDepCosRegion(std::string data){ return; };
-    virtual void setDepCosAddr(std::string data){ return; };
-    virtual void setDepCosCity(std::string data){ return; };
-    virtual void setDepCosNima(std::string data){ return; };
-    virtual void setDepCosPhone(std::string data){ return; };
-    virtual void setDepCosProvence(std::string data){ return; };
-    virtual void setDepCosNumIns(std::string data){ return; };
-    virtual void setDepCosEmail(std::string data){ return; };
+    virtual void setAp4Cos(costumer *& data){ return; };
+    virtual void setAp5Station(station *& data){ return; };
+    virtual void setAp6Cos(costumer *& data){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };

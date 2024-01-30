@@ -72,6 +72,10 @@ printableDi::printableDi(std::string file, std::string ptrId)
     // printOpts from base class
     int num_options = 0;
     num_options = cupsAddOption("fit-to-page", "true", num_options, &printOpts);
+    // pointers
+    di_4Cos = NULL;
+    di_5Station = NULL;
+    di_6Cos = NULL;
     return;
 }
 
@@ -79,6 +83,13 @@ printableDi::~printableDi()
 {
     // std::cout << "printableDi::~printableDi()" << std::endl;
     HPDF_Free (hpdfDoc);
+    // pointers
+    if (di_4Cos)
+        delete di_4Cos;
+    if (di_5Station)
+        delete di_5Station;
+    if (di_6Cos)
+        delete di_6Cos;
 }
 
 int printableDi::composeFile()
@@ -87,6 +98,12 @@ int printableDi::composeFile()
     int ret = 0;
     //Header
     if (composeHeader())
+        ret = -1;
+    // Paragraph 4
+    if (compose4DepCos())
+        ret = -1;
+    // Paragraphs 5 and 6
+    if (composeOrigin())
         ret = -1;
 
     return ret;
@@ -113,62 +130,69 @@ int printableDi::composeHeader()
 
     return 0;
 }
-int printableDi::composer4DepCos()
+int printableDi::compose4DepCos()
 {
-    std::string myText = "X";
-    
-    HPDF_Page_BeginText (hpdfPage1);
-    if(di_4CosType == 1)
-	{
-	    HPDF_Page_MoveTextPos (hpdfPage1, 183, 925);
-	}
-    else if(di_4CosType == 2)
+    if(di_4Cos)
     {
-        HPDF_Page_MoveTextPos (hpdfPage1, 290, 913);
+        std::string myText = "X";
+        
+        HPDF_Page_BeginText (hpdfPage1);
+        if(di_4Cos->getType() == 1)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 183, 925);
+        }
+        else if(di_4Cos->getType() == 2)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 290, 913);
+        }
+        else if(di_4Cos->getType() == 3)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 509, 925);;
+        }	  
+        else if(di_4Cos->getType() == 4)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 183, 880);	
+        }	  
+        else if(di_4Cos->getType() == 5)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 290, 880);
+        }
+        else if(di_4Cos->getType() == 6)
+        {
+            HPDF_Page_MoveTextPos (hpdfPage1, 509, 880);
+        }
+        else { // if type 1 or no type present (by default)
+            HPDF_Page_MoveTextPos (hpdfPage1, 183, 925);
+        }	 
+        HPDF_Page_ShowText (hpdfPage1, myText.c_str());
+        HPDF_Page_EndText (hpdfPage1);
+        // NAME
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getName(), 188, 841);
+        //NIF
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getNif(), 648, 841);
+        // ZIP
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, std::to_string(di_4Cos->getZip()), 648, 816);
+        //COMUNIDAD AUTONOMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getRegion(), 648, 792);
+        //DIRECCION
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getAddress(), 188, 816);
+        //MUNICIPIO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getCity(), 188, 792);
+        //NIMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getNima(), 188, 764);
+        //TELEFONO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getPhone(), 188, 737);
+        //PROVINCIA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getProvence(), 465, 792);
+        //Nº INSC REGISTRO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getNumIns(), 465, 764);
+        //EMAIL
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getMail(), 465, 737);
     }
-    else if(di_4CosType == 3)
-    {
-        HPDF_Page_MoveTextPos (hpdfPage1, 509, 925);;
-    }	  
-    else if(di_4CosType == 4)
-    {
-        HPDF_Page_MoveTextPos (hpdfPage1, 183, 880);	
-    }	  
-    else if(di_4CosType == 5)
-    {
-        HPDF_Page_MoveTextPos (hpdfPage1, 290, 880);
-    }
-    else if(di_4CosType == 6)
-    {
-        HPDF_Page_MoveTextPos (hpdfPage1, 509, 880);
-    }
-    else { // if type 1 or no type present (by default)
-        HPDF_Page_MoveTextPos (hpdfPage1, 183, 925);
-    }	 
-    HPDF_Page_ShowText (hpdfPage1, myText.c_str());
-    HPDF_Page_EndText (hpdfPage1);
-    // NAME
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosName, 188, 841);
-    //NIF
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosNif, 648, 841);
-    // ZIP
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosZip, 648, 816);
-    //COMUNIDAD AUTONOMA
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosRegion, 648, 792);
-    //DIRECCION
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosAddr, 188, 816);
-    //MUNICIPIO
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosCity, 188, 792);
-    //NIMA
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosNima, 188, 764);
-    //TELEFONO
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosPhone, 188, 737);
-    //PROVINCIA
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosProvence, 465, 792);
-    //Nº INSC REGISTRO
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosNumIns, 465, 764);
-    //EMAIL
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4CosEmail, 465, 737);
-
     return 0;
+}
+
+int printableDi::composeOrigin()
+{
+    return  0;
 }
