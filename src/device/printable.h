@@ -115,6 +115,17 @@ class printable
     virtual void setDiNpt(std::string diNpt){ return; };
     virtual void setDiDateTime(std::string diDateTime){ return; };
     virtual void setDepCosType(int type){ return; };
+    virtual void setDepCosName(std::string data){ return; };
+    virtual void setDepCosNif(std::string data){ return; };
+    virtual void setDepCosZip(std::string data){ return; };
+    virtual void setDepCosRegion(std::string data){ return; };
+    virtual void setDepCosAddr(std::string data){ return; };
+    virtual void setDepCosCity(std::string data){ return; };
+    virtual void setDepCosNima(std::string data){ return; };
+    virtual void setDepCosPhone(std::string data){ return; };
+    virtual void setDepCosProvence(std::string data){ return; };
+    virtual void setDepCosNumIns(std::string data){ return; };
+    virtual void setDepCosEmail(std::string data){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };

@@ -1183,6 +1183,24 @@ void outputForm::createPdf(std::string printerId)
     myDi->setDiCode(retDepDi());
     myDi->setDiNpt(std::to_string(retDepPermitNPT()));
     myDi->setDiDateTime(removeTime(retDepDateTime()));
+    // ap4
+    costumer* myCostumer4 = NULL;
+    retDepCostumer(myCostumer4);
+    myDi->setDepCosType(myCostumer4->getType());
+    myDi->setDepCosName(myCostumer4->getName());
+    myDi->setDepCosNif(myCostumer4->getNif());
+    myDi->setDepCosZip(std::to_string(myCostumer4->getZip()));
+    myDi->setDepCosRegion(myCostumer4->getRegion());
+    myDi->setDepCosAddr(myCostumer4->getAddress());
+    myDi->setDepCosCity(myCostumer4->getCity());
+    myDi->setDepCosNima(myCostumer4->getNima());
+    myDi->setDepCosPhone(myCostumer4->getPhone());
+    myDi->setDepCosProvence(myCostumer4->getProvence());
+    myDi->setDepCosNumIns(myCostumer4->getNumIns());
+    myDi->setDepCosEmail(myCostumer4->getMail());
+    delete myCostumer4;
+    // ap5
+
 
     myDi->composeFile();
     myDi->saveFile();
@@ -1204,7 +1222,7 @@ void outputForm::createPdf(std::string printerId)
     std::string myText = retDepDiFolder();
     strcpy (fname, myText.c_str());
     strcat (fname, "/ticket.pdf");
-  myText.clear();
+    myText.clear();
 
   pdf = HPDF_New (error_handler, NULL);
   if (!pdf) {
@@ -1312,7 +1330,6 @@ void outputForm::createPdf(std::string printerId)
     HPDF_Page_ShowText (page1, myText.c_str());
     HPDF_Page_EndText (page1);
 
-    costumer* myCostumer4;
     retDepCostumer(myCostumer4);
     //NAME
     set_di_text(page1, fsize, 47, font, myCostumer4->getName(), 188, 841);
