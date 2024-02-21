@@ -75,6 +75,8 @@ printableDi::printableDi(std::string file, std::string ptrId)
     // pointers
     di_4Cos = NULL;
     di_5Station = NULL;
+    di_5Cos = NULL;
+    di_6Station = NULL;
     di_6Cos = NULL;
     return;
 }
@@ -88,8 +90,13 @@ printableDi::~printableDi()
         delete di_4Cos;
     if (di_5Station)
         delete di_5Station;
+    if (di_5Cos)
+        delete di_5Cos;
+    if (di_6Station)
+        delete di_6Station;
     if (di_6Cos)
         delete di_6Cos;
+    return;
 }
 
 int printableDi::composeFile()
@@ -102,8 +109,11 @@ int printableDi::composeFile()
     // Paragraph 4
     if (compose4DepCos())
         ret = -1;
-    // Paragraphs 5 and 6
-    if (composeOrigin())
+    // Paragraphs 5
+    if (compose5Origin())
+        ret = -1;
+    // Paragraphs 6
+    if (compose6Destination())
         ret = -1;
 
     return ret;
@@ -132,6 +142,7 @@ int printableDi::composeHeader()
 }
 int printableDi::compose4DepCos()
 {
+    int ret = 0;
     if(di_4Cos)
     {
         std::string myText = "X";
@@ -189,10 +200,126 @@ int printableDi::compose4DepCos()
         //EMAIL
         _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_4Cos->getMail(), 465, 737);
     }
-    return 0;
+    else
+        ret = 1;
+    return ret;
 }
 
-int printableDi::composeOrigin()
+int printableDi::compose5Origin()
 {
-    return  0;
+    int ret = 0;
+    if(di_5Station)
+    {        
+        // NAME
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getName(), 188, 638);
+        // DIRECCION
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getAddress(), 188, 614);
+        // MUNICIPIO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getCity(), 188, 589);
+        // NIMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getNima(), 188, 562);
+        // PROVINCIA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getProvence(), 465, 589);
+        // Nº INSC REGISTRO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getNumIns(), 465, 562);
+        // NIF
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getNif(), 648, 638);
+        // CP
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, std::to_string(di_5Station->getZip()), 648, 614);
+        // COMUNIDAD AUTONOMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Station->getRegion(), 648, 589);
+        // CNAE
+        // nothing!
+    }
+    else
+        ret = 1;
+    
+    if(di_5Cos)
+    {  
+        // NAME
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getName(), 188, 512);
+        // DIRECCION
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getAddress(), 188, 487);
+        // MUNICIPIO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getCity(), 188, 462);
+        // NIMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getNima(), 188, 437);
+        // TELEFON0
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getPhone(), 188, 411);
+        // PROVINCIA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getProvence(), 465, 462);
+        // Nº INSC REGISTRO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getNumIns(), 465, 437);
+        // EMAIL
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getMail(), 465, 411);
+        // NIF
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getNif(), 648, 512);
+        // ZIP
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, std::to_string(di_5Cos->getZip()), 648, 487);        
+        // COMUNIDAD AUTONOMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_5Cos->getRegion(), 648, 462);
+    }
+    else
+        ret = 1;
+
+    return  ret;
+}
+
+int printableDi::compose6Destination()
+{
+    int ret = 0;
+    if(di_6Station)
+    {
+        // NAME
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getName(), 188, 315);
+        // DIRECCION
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getAddress(), 188, 290);
+        // MUNICIPIO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getCity(), 188, 265);
+        // NIMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getNima(), 188, 240);
+        // PROVINCIA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getProvence(), 465, 265);       
+        // Nº INSC REGISTRO
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getNumIns(), 465, 240); 
+        // NIF
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getNif(), 648, 315); 
+        // ZIP
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, std::to_string(di_6Station->getZip()), 648, 290); 
+        //COMUNIDAD AUTONOMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Station->getRegion(), 648, 265);
+        // DR
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6DR, 686, 240);
+    }
+    else
+        ret = 1;
+    if(di_6Cos)
+    {
+        // NAME
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getName(), 188, 187);
+        // ADDRESS
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getAddress(), 188, 162);
+        // CITY
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getCity(), 188, 137);
+        // NIMA
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getNima(), 188, 112);
+        // PHONE
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getPhone(), 188, 86);
+        // PROVINCE
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getProvence(), 465, 137);
+        // INSCRIPTION NUMBER
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getNumIns(), 465, 112);
+        // EMAIL
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getMail(), 465, 86);
+        // NIF
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getNif(), 648, 187);
+        // ZIP
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, std::to_string(di_6Cos->getZip()), 648, 162);
+        // REGION
+        _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_6Cos->getRegion(), 648, 137);
+    }
+    else
+        ret = 1;
+
+    return ret;
 }

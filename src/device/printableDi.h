@@ -36,7 +36,8 @@ class printableDi: public printable
 
     int composeHeader();
     int compose4DepCos();
-    int composeOrigin();
+    int compose5Origin();
+    int compose6Destination();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
@@ -46,9 +47,11 @@ class printableDi: public printable
 
     void setAp4Cos(costumer *& data){ di_4Cos = data; };
     void setAp5Station(station *& data){ di_5Station = data; };
+    void setAp5Cos(costumer *& data){ di_5Cos = data; };
+    void setAp6Station(station *& data){ di_6Station = data; };
+    void setAp6DR(std::string data){ di_6DR = data; };
     void setAp6Cos(costumer *& data){ di_6Cos = data; };
-
-
+    
     private:
     HPDF_Font hpdfFont;
     HPDF_Page hpdfPage1;
@@ -66,6 +69,9 @@ class printableDi: public printable
 
     costumer * di_4Cos;
     station * di_5Station;
+    costumer * di_5Cos;
+    station * di_6Station;
+    std::string di_6DR;
     costumer * di_6Cos;
 };
 
