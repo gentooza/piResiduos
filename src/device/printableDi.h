@@ -40,6 +40,7 @@ class printableDi: public printable
     int compose6Destination();
     int compose7Product();
     int compose8Driver();
+    int compose9Plates();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
@@ -58,6 +59,8 @@ class printableDi: public printable
     void setAp7TotalWeight(std::string data){ di_7TotalWeight = data; };
     void setAp7Danger(std::string data){ di_7Danger = data; };
     void setAp8Driver(driver *& data){ di_8Driver = data; };
+    void setPlate(std::string data){ di_9Plate = data; };
+    void setPlateAtt(std::string data){ di_9PlateAtt = data; };
     
     
     private:
@@ -86,6 +89,8 @@ class printableDi: public printable
     std::string di_7TotalWeight;
     std::string di_7Danger;
     driver* di_8Driver;
+    std::string  di_9Plate;
+    std::string  di_9PlateAtt;
 };
 
 

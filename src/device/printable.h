@@ -117,6 +117,8 @@ class printable
     virtual void setAp7TotalWeight(std::string data){ return; };
     virtual void setAp7Danger(std::string data){ return; };
     virtual void setAp8Driver(driver *& data){ return; };
+    virtual void setPlate(std::string data){ return; };
+    virtual void setPlateAtt(std::string data){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };

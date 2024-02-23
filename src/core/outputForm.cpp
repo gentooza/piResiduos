@@ -1256,6 +1256,9 @@ void outputForm::createPdf(std::string printerId)
         delete myDriver;
         myDriver = NULL;
     }
+    // ap 9
+    myDi->setPlate(retDepPlate());
+    myDi->setPlateAtt(retDepPlateAtt());
    
     myDi->composeFile();
     myDi->saveFile();

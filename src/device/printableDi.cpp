@@ -119,6 +119,8 @@ int printableDi::composeFile()
         ret = -1;
     if (compose8Driver())
         ret = -1;
+    if (compose9Plates())
+        ret = -1;
 
     return ret;
 }
@@ -332,80 +334,42 @@ int printableDi::compose7Product()
 {
     int ret = 0;
     // LER
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_7LER, 140, 1075);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7LER, 140, 1075);
     // NAME
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_7Name, 303, 1075);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7Name, 303, 1075);
     // TOTAL WEIGHT
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_7TotalWeight, 659, 1075);    
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7TotalWeight, 659, 1075);
     // CHARACTERISTIC DANGER
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_7Danger, 260, 1050);     
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7Danger, 260, 1050);
     return ret;
 }
 
 int printableDi::compose8Driver()
 {
     int ret = 0;
-    /*
-    //NAME
-    set_di_text(page2, fsize, 47, font, depDriver->getName().c_str(), 188, 980);
-    //DIRECCION
-    set_di_text(page2, fsize, 47, font, depDriver->getAddress().c_str(), 188, 955);
- 
-    //MUNICIPIO
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 188, 930);
-    HPDF_Page_ShowText (page2, depDriver->getCity().c_str());
-    HPDF_Page_EndText (page2);
+    if(di_8Driver)
+    {
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getName(), 188, 980);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getAddress(), 188, 955);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getCity(), 188, 930);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getNima(), 188, 904);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getPhone(), 188, 877);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getProvence(), 465, 930);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getNumIns(), 465, 904);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getMail(), 465, 877);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getNif(), 648, 980);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, std::to_string(di_8Driver->getZip()), 648, 955);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_8Driver->getRegion(), 648, 930);
+    }
+    else
+        ret = 1;
+    return ret;
+}
 
-    //NIMA
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 188, 904);
-    HPDF_Page_ShowText (page2, depDriver->getNima().c_str());
-    HPDF_Page_EndText (page2);
-
-    //TELEFONO
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 188, 877);
-    HPDF_Page_ShowText (page2, depDriver->getPhone().c_str());
-    HPDF_Page_EndText (page2);
-
-    //PROVINCIA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 465, 930);
-    HPDF_Page_ShowText (page2, depDriver->getProvence().c_str());
-    HPDF_Page_EndText (page2);
-
-    //Nº INSC REGISTRO
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 465, 904);
-    HPDF_Page_ShowText (page2, depDriver->getNumIns().c_str());
-    HPDF_Page_EndText (page2);
-
-    //EMAIL
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 465, 877);
-    HPDF_Page_ShowText (page2, depDriver->getMail().c_str());
-    HPDF_Page_EndText (page2);
-
-    //NIF
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 648, 980);
-    HPDF_Page_ShowText (page2, depDriver->getNif().c_str());
-    HPDF_Page_EndText (page2);
-  
-    //CP
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 648, 955);
-    HPDF_Page_ShowText (page2, std::to_string(depDriver->getZip()).c_str());
-    HPDF_Page_EndText (page2);
-
-    //COMUNIDAD AUTONOMA
-    //TODO: to adjust with new set_di_text function
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 648, 930);
-    HPDF_Page_ShowText (page2, depDriver->getRegion().c_str());
-    HPDF_Page_EndText (page2);*/
+int printableDi::compose9Plates()
+{
+    int ret = 0;
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_9Plate, 190, 804);
+    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_9PlateAtt, 468, 804);
     return ret;
 }
