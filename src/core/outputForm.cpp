@@ -1174,7 +1174,6 @@ int outputForm::isDiComplete()
 void outputForm::createPdf(std::string printerId)
 {
     printable *myDi;
-
     // std::string fileName = retDepDiFolder() + "/ticket.pdf";
     std::string fileName = "new ticket.pdf";
     myDi = new printableDi(fileName, printerId);
@@ -1259,6 +1258,9 @@ void outputForm::createPdf(std::string printerId)
     // ap 9
     myDi->setPlate(retDepPlate());
     myDi->setPlateAtt(retDepPlateAtt());
+    // signing
+    std::string _signature = retDepDiFolder() + "/firma.png";
+    myDi->setSignaturePath(_signature);
    
     myDi->composeFile();
     myDi->saveFile();
@@ -1273,7 +1275,7 @@ void outputForm::createPdf(std::string printerId)
     HPDF_Page page1,page2;
     HPDF_Image templatePage1,templatePage2;
     char fname[512];
-    char signature[512];
+
 
     float fsize = 14;
 
@@ -1939,6 +1941,7 @@ void outputForm::createPdf(std::string printerId)
   // final and extra info
 
   //FIRMA
+  char signature[512];
   strcpy (signature,  retDepDiFolder().c_str());
   strcat (signature, "/firma.png");
   draw_image (pdf, signature, 100, HPDF_Page_GetHeight (page2) - 900,"Firma transportista",0);

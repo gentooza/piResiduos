@@ -121,6 +121,10 @@ int printableDi::composeFile()
         ret = -1;
     if (compose9Plates())
         ret = -1;
+    if (compose10Misc())
+        ret = -1;
+    if (composeSignature())
+        ret = -1;
 
     return ret;
 }
@@ -370,6 +374,29 @@ int printableDi::compose9Plates()
 {
     int ret = 0;
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_9Plate, 190, 804);
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_9PlateAtt, 468, 804);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_9PlateAtt, 468, 804);
+    return ret;
+}
+
+int printableDi::compose10Misc()
+{
+    int ret = 0;
+    // everything empty but date
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_dateTime, 395, 665);
+    return ret;
+}
+
+int printableDi::composeSignature()
+{
+    int ret = 0;
+    try
+    {
+        draw_image (hpdfDoc, di_signaturePath.c_str(), 100, HPDF_Page_GetHeight(hpdfPage2) - 900, "Firma transportista", 0);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "no signature png file path provided!" << '\n';
+        ret = 1;
+    }
     return ret;
 }

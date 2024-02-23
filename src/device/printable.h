@@ -141,7 +141,9 @@ class printable
     virtual void setFinalPrice(std::string finalPrice) { return; };
     virtual void setComment(std::string comment) { return; };
     virtual void setStaffCode(std::string staffCode) { return; };
-    virtual void setSignaturePath(std::string signaturePath) { return; };
+
+    // common
+    virtual void setSignaturePath(std::string data) { return; };
 
     HPDF_Doc  hpdfDoc;
     HPDF_STATUS hpdfStatus;
