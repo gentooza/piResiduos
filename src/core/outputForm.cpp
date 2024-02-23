@@ -1241,6 +1241,21 @@ void outputForm::createPdf(std::string printerId)
         delete myCostumer;
         myCostumer = NULL;
     }
+    // ap 7
+    myDi->setAp7LER(std::to_string(retDepProdLER()));
+    myDi->setAp7Name(retDepProdName1() + " " + retDepProdName2() + " " + retDepProdName3());
+    myDi->setAp7TotalWeight(std::to_string(retDepTotalWeight()));
+    myDi->setAp7Danger(retDepProdPeligro());
+
+    // ap 8
+    driver * myDriver = NULL;
+    retDepDriver(myDriver);
+    myDi->setAp8Driver(myDriver);
+    if (myDriver)
+    {
+        delete myDriver;
+        myDriver = NULL;
+    }
    
     myDi->composeFile();
     myDi->saveFile();

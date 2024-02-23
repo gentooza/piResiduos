@@ -47,6 +47,7 @@ If not, see <https://www.gnu.org/licenses/>.
 #include "generic_tools.h"
 #include "costumer.h"
 #include "station.h"
+#include "driver.h"
 
 
 void
@@ -99,18 +100,6 @@ class printable
 
     virtual int composeFile(){return 0;};
 
-    virtual int composeHeader(){return 0;};
-    virtual int composeStationTitle(){return 0;};
-    virtual int composeRegistration(){return 0;};
-    virtual int composeOrigin(){return 0;};
-    virtual int composeDestination(){return 0;};
-    virtual int composeTransport(){return 0;};
-    virtual int composeProduct(){return 0;};
-    virtual int composeWeight(){return 0;};
-    virtual int composePrice(){return 0;};
-    virtual int composeComment(){return 0;};
-    virtual int composeStaff(){return 0;};
-
     // only PDF
     virtual void setProductLer(std::string productLer){ return; };
     virtual void setProductDanger(std::string productDanger){ return; };
@@ -123,6 +112,11 @@ class printable
     virtual void setAp6Station(station *& data){ return; };
     virtual void setAp6DR(std::string data){ return; };
     virtual void setAp6Cos(costumer *& data){ return; };
+    virtual void setAp7LER(std::string data){ return; };
+    virtual void setAp7Name(std::string data){ return; };
+    virtual void setAp7TotalWeight(std::string data){ return; };
+    virtual void setAp7Danger(std::string data){ return; };
+    virtual void setAp8Driver(driver *& data){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };

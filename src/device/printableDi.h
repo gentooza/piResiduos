@@ -38,6 +38,8 @@ class printableDi: public printable
     int compose4DepCos();
     int compose5Origin();
     int compose6Destination();
+    int compose7Product();
+    int compose8Driver();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
@@ -51,6 +53,12 @@ class printableDi: public printable
     void setAp6Station(station *& data){ di_6Station = data; };
     void setAp6DR(std::string data){ di_6DR = data; };
     void setAp6Cos(costumer *& data){ di_6Cos = data; };
+    void setAp7LER(std::string data){ di_7LER = data; };
+    void setAp7Name(std::string data){ di_7Name = data; };
+    void setAp7TotalWeight(std::string data){ di_7TotalWeight = data; };
+    void setAp7Danger(std::string data){ di_7Danger = data; };
+    void setAp8Driver(driver *& data){ di_8Driver = data; };
+    
     
     private:
     HPDF_Font hpdfFont;
@@ -73,6 +81,11 @@ class printableDi: public printable
     station * di_6Station;
     std::string di_6DR;
     costumer * di_6Cos;
+    std::string di_7LER;
+    std::string di_7Name;
+    std::string di_7TotalWeight;
+    std::string di_7Danger;
+    driver* di_8Driver;
 };
 
 
