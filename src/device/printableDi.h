@@ -43,6 +43,8 @@ class printableDi: public printable
     int compose9Plates();
     int compose10Misc();
     int composeSignature();
+    int composeOperatorComment();
+    int composeWeights();    
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};
@@ -64,6 +66,7 @@ class printableDi: public printable
     void setPlate(std::string data){ di_9Plate = data; };
     void setPlateAtt(std::string data){ di_9PlateAtt = data; };
     void setSignaturePath(std::string data){ di_signaturePath = data; };
+    void setOperatorComment(std::string data){ di_operatorComment = data; };
     
     
     private:
@@ -95,6 +98,7 @@ class printableDi: public printable
     std::string  di_9Plate;
     std::string  di_9PlateAtt;
     std::string di_signaturePath;
+    std::string di_operatorComment;
 };
 
 

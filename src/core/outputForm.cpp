@@ -1261,6 +1261,8 @@ void outputForm::createPdf(std::string printerId)
     // signing
     std::string _signature = retDepDiFolder() + "/firma.png";
     myDi->setSignaturePath(_signature);
+    // operator comments
+    myDi->setOperatorComment(getOutputComment());
    
     myDi->composeFile();
     myDi->saveFile();

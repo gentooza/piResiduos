@@ -119,6 +119,7 @@ class printable
     virtual void setAp8Driver(driver *& data){ return; };
     virtual void setPlate(std::string data){ return; };
     virtual void setPlateAtt(std::string data){ return; };
+    virtual void setOperatorComment(std::string data){ return; };
 
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };
