@@ -1263,6 +1263,10 @@ void outputForm::createPdf(std::string printerId)
     myDi->setSignaturePath(_signature);
     // operator comments
     myDi->setOperatorComment(getOutputComment());
+    // weights
+    myDi->setGrossWeight(std::to_string(retDepScaleOut()) + " Kg");
+    myDi->setNetWeight(std::to_string(retDepScaleIn()) + " Kg");
+    myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");  
    
     myDi->composeFile();
     myDi->saveFile();

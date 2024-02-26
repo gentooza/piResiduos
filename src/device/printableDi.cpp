@@ -420,48 +420,33 @@ int printableDi::composeOperatorComment()
 int printableDi::composeWeights()
 {
     int ret = 0;
-    //WEIGHTS BLOCKS
-    /*
-    HPDF_Page_SetRGBFill(page2, 0.85, 0.85, 0.85);
-    HPDF_Page_Rectangle(page2, 348, 345, 60, 40);
-    HPDF_Page_Rectangle(page2, 488, 345, 60, 40);
-    HPDF_Page_Rectangle(page2, 628, 345, 60, 40);
-    HPDF_Page_FillStroke(page2);
+    HPDF_Page_SetRGBFill(hpdfPage2, 0.85, 0.85, 0.85);
+    HPDF_Page_Rectangle(hpdfPage2, 348, 345, 60, 40);
+    HPDF_Page_Rectangle(hpdfPage2, 488, 345, 60, 40);
+    HPDF_Page_Rectangle(hpdfPage2, 628, 345, 60, 40);
+    HPDF_Page_FillStroke(hpdfPage2);
  
-    HPDF_Page_SetRGBFill(page2, 0, 0, 0);
-    HPDF_Page_BeginText (page2);
-    HPDF_Page_MoveTextPos (page2, 360, 360);
-    HPDF_Page_ShowText (page2, "TARA");
-    HPDF_Page_MoveTextPos (page2, 136, 0);
-    HPDF_Page_ShowText (page2, "BRUTO");
-    HPDF_Page_MoveTextPos (page2, 140, 0);
-    HPDF_Page_ShowText (page2, "NETO"); 
-    HPDF_Page_EndText (page2);
+    HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
+    HPDF_Page_BeginText (hpdfPage2);
+    HPDF_Page_MoveTextPos (hpdfPage2, 360, 360);
+    HPDF_Page_ShowText (hpdfPage2, "TARA");
+    HPDF_Page_MoveTextPos (hpdfPage2, 136, 0);
+    HPDF_Page_ShowText (hpdfPage2, "BRUTO");
+    HPDF_Page_MoveTextPos (hpdfPage2, 140, 0);
+    HPDF_Page_ShowText (hpdfPage2, "NETO"); 
+    HPDF_Page_EndText (hpdfPage2);
 
-    HPDF_Page_SetRGBFill(page2, 1, 1, 1);
-    HPDF_Page_Rectangle(page2, 408, 345, 70, 40);
-    HPDF_Page_Rectangle(page2, 548, 345, 70, 40);
-    HPDF_Page_Rectangle(page2, 688, 345, 70, 40);
-    HPDF_Page_FillStroke(page2);
+    HPDF_Page_SetRGBFill(hpdfPage2, 1, 1, 1);
+    HPDF_Page_Rectangle(hpdfPage2, 408, 345, 70, 40);
+    HPDF_Page_Rectangle(hpdfPage2, 548, 345, 70, 40);
+    HPDF_Page_Rectangle(hpdfPage2, 688, 345, 70, 40);
+    HPDF_Page_FillStroke(hpdfPage2);
 
-    HPDF_Page_SetRGBFill(page2, 0, 0, 0);
-    HPDF_Page_BeginText (page2);
-    ///tara
-    myText = std::to_string(retDepScaleIn());
-    myText += " Kg";
-    HPDF_Page_MoveTextPos (page2, 412, 360);
-    HPDF_Page_ShowText (page2, myText.c_str());
-    ///bruto
-    myText = std::to_string(retDepScaleOut());
-    myText += " Kg";
-    HPDF_Page_MoveTextPos (page2, 139, 0); 
-    HPDF_Page_ShowText (page2, myText.c_str());
-    ///neto
-    myText = std::to_string(retDepTotalWeight());
-    myText += " Kg"; 
-    HPDF_Page_MoveTextPos (page2, 141, 0);
-    HPDF_Page_ShowText (page2, myText.c_str()); 
-    HPDF_Page_EndText (page2);*/
-    //END WEIGHTS BLOCKS
+    HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
+    HPDF_Page_BeginText (hpdfPage2);
+
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleIn, 412, 360);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleOut, 561, 360);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_totalWeight, 702, 360);
     return ret;
 }

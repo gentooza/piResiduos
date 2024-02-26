@@ -120,7 +120,7 @@ class printable
     virtual void setPlate(std::string data){ return; };
     virtual void setPlateAtt(std::string data){ return; };
     virtual void setOperatorComment(std::string data){ return; };
-
+    
     // only ticket
     virtual void setPayProcedure(int payProcedure) { return; };
     virtual void setTicketCode(std::string code) { return; };
@@ -136,14 +136,15 @@ class printable
     virtual void setTransportPlate(std::string trpPlate) { return; };
     virtual void setProductName(std::string prodName) { return; };
     virtual void setProductLER(std::string prodLER) { return; };
-    virtual void setGrossWeight(std::string grossWeight) { return; };
-    virtual void setNetWeight(std::string tareWeight) { return; };
-    virtual void setTotalWeight(std::string totalWeight) { return; };
+
     virtual void setFinalPrice(std::string finalPrice) { return; };
     virtual void setComment(std::string comment) { return; };
     virtual void setStaffCode(std::string staffCode) { return; };
 
     // common
+    virtual void setGrossWeight(std::string data) { return; };
+    virtual void setNetWeight(std::string data) { return; };
+    virtual void setTotalWeight(std::string data) { return; };
     virtual void setSignaturePath(std::string data) { return; };
 
     HPDF_Doc  hpdfDoc;

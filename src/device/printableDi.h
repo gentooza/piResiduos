@@ -67,7 +67,9 @@ class printableDi: public printable
     void setPlateAtt(std::string data){ di_9PlateAtt = data; };
     void setSignaturePath(std::string data){ di_signaturePath = data; };
     void setOperatorComment(std::string data){ di_operatorComment = data; };
-    
+    void setGrossWeight(std::string data) { di_scaleIn = data; };
+    void setNetWeight(std::string data) { di_scaleOut = data; };
+    void setTotalWeight(std::string data) { di_totalWeight = data; };   
     
     private:
     HPDF_Font hpdfFont;
@@ -99,6 +101,9 @@ class printableDi: public printable
     std::string  di_9PlateAtt;
     std::string di_signaturePath;
     std::string di_operatorComment;
+    std::string di_scaleIn;
+    std::string di_scaleOut;
+    std::string di_totalWeight; 
 };
 
 
