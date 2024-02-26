@@ -56,6 +56,7 @@ class station
         void reset();
         void setStation(long stationCode, qtDatabase& myDatabase);
         void setStation(std::vector<std::string> databaseData);
+        void setStation(station * reference);
         void refreshStationType();
         int isManuallyEdited();
         

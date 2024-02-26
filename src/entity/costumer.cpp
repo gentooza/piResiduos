@@ -216,6 +216,26 @@ void costumer::setCostumer(std::vector<std::string> databaseData)
     return;
 }
 
+void costumer::setCostumer(costumer * reference)
+{
+    code = reference->getCode();
+    name = reference->getName();
+    nif = reference->getNif();
+    address = reference->getAddress();
+    provence = reference->getProvence();  
+    city = reference->getCity();
+    region = reference->getRegion();
+    zip = reference->getZip();
+    billin_code = reference->getBillin();
+    cbc = reference->getCbc();   
+    type = reference->getType();
+    nima = reference->getNima();
+    num_ins = reference->getNumIns();
+    phone = reference->getPhone();
+    mail = reference->getMail();
+    return;
+}
+
 int costumer::isManuallyEdited()
 {
     //TODO: to improve?

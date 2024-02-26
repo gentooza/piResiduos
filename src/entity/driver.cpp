@@ -170,6 +170,22 @@ void driver::setDriver(std::vector<std::string> databaseData)
     }
     return;
 }
+void driver::setDriver(driver * reference)
+{
+    code = reference->getCode();
+    name = reference->getName();
+    nif = reference->getNif();
+    address = reference->getAddress();
+    provence = reference->getProvence();  
+    city = reference->getCity();
+    region = reference->getRegion();
+    zip = reference->getZip();
+    nima = reference->getNima();
+    num_ins = reference->getNumIns();
+    phone = reference->getPhone();
+    mail = reference->getMail();
+    return;
+}
 
 int driver::isManuallyEdited()
 {

@@ -52,17 +52,17 @@ class printableDi: public printable
     void setDiNpt(std::string diNpt){di_npt = diNpt;};
     void setDiDateTime(std::string diDateTime){di_dateTime = diDateTime;};
 
-    void setAp4Cos(costumer *& data){ di_4Cos = data; };
-    void setAp5Station(station *& data){ di_5Station = data; };
-    void setAp5Cos(costumer *& data){ di_5Cos = data; };
-    void setAp6Station(station *& data){ di_6Station = data; };
+    void setAp4Cos(costumer *& data){ di_4Cos->setCostumer(data); };
+    void setAp5Station(station *& data){ di_5Station->setStation(data); };
+    void setAp5Cos(costumer *& data){ di_5Cos->setCostumer(data); };
+    void setAp6Station(station *& data){ di_6Station->setStation(data); };
     void setAp6DR(std::string data){ di_6DR = data; };
-    void setAp6Cos(costumer *& data){ di_6Cos = data; };
+    void setAp6Cos(costumer *& data){ di_6Cos->setCostumer(data); };
     void setAp7LER(std::string data){ di_7LER = data; };
     void setAp7Name(std::string data){ di_7Name = data; };
     void setAp7TotalWeight(std::string data){ di_7TotalWeight = data; };
     void setAp7Danger(std::string data){ di_7Danger = data; };
-    void setAp8Driver(driver *& data){ di_8Driver = data; };
+    void setAp8Driver(driver *& data){ di_8Driver->setDriver(data); };
     void setPlate(std::string data){ di_9Plate = data; };
     void setPlateAtt(std::string data){ di_9PlateAtt = data; };
     void setSignaturePath(std::string data){ di_signaturePath = data; };

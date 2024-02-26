@@ -1182,15 +1182,18 @@ void outputForm::createPdf(std::string printerId)
     myDi->setProductDanger(retDepProdPeligro());
     myDi->setDiCode(retDepDi());
     myDi->setDiNpt(std::to_string(retDepPermitNPT()));
-    myDi->setDiDateTime(removeTime(retDepDateTime()));
+    myDi->setDiDateTime(retDepDateTime());
     // ap4
-    costumer* myCostumer4 = NULL;
-    retDepCostumer(myCostumer4);
-    myDi->setAp4Cos(myCostumer4);
-    delete myCostumer4;
+    costumer *myCostumer = NULL;
+    retDepCostumer(myCostumer);
+    myDi->setAp4Cos(myCostumer);
+    if(myCostumer)
+    {
+        delete myCostumer;
+        myCostumer = NULL;
+    }
     // ap 5
     station *myStation = NULL;
-    costumer *myCostumer = NULL;
     if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_SALIDA)
     {
         // station ours (actual local station indeed)
@@ -1396,60 +1399,61 @@ void outputForm::createPdf(std::string printerId)
     HPDF_Page_ShowText (page1, myText.c_str());
     HPDF_Page_EndText (page1);
 
-    retDepCostumer(myCostumer4);
+    retDepCostumer(myCostumer);
     //NAME
-    set_di_text(page1, fsize, 47, font, myCostumer4->getName(), 188, 841);
+    set_di_text(page1, fsize, 47, font, myCostumer->getName(), 188, 841);
     //NIF
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 648, 841);
-    HPDF_Page_ShowText (page1, myCostumer4->getNif().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getNif().c_str());
     HPDF_Page_EndText (page1);
     // ZIP
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 648, 816);
-    HPDF_Page_ShowText (page1, std::to_string(myCostumer4->getZip()).c_str());
+    HPDF_Page_ShowText (page1, std::to_string(myCostumer->getZip()).c_str());
     HPDF_Page_EndText (page1);
     //COMUNIDAD AUTONOMA
     //TODO: to adjust with new set_di_text function
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 648, 792);
-    HPDF_Page_ShowText (page1, myCostumer4->getRegion().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getRegion().c_str());
     HPDF_Page_EndText (page1);
     //DIRECCION
-    set_di_text(page1, fsize, 47, font, myCostumer4->getAddress(), 188, 816);
+    set_di_text(page1, fsize, 47, font, myCostumer->getAddress(), 188, 816);
     //MUNICIPIO
     //TODO: to adjust with new set_di_text function
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 188, 792);
-    HPDF_Page_ShowText (page1, myCostumer4->getCity().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getCity().c_str());
     HPDF_Page_EndText (page1);
     //NIMA
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 188, 764);
-    HPDF_Page_ShowText (page1, myCostumer4->getNima().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getNima().c_str());
     HPDF_Page_EndText (page1);
     //TELEFONO
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 188, 737);
-    HPDF_Page_ShowText (page1, myCostumer4->getPhone().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getPhone().c_str());
     HPDF_Page_EndText (page1);
     //PROVINCIA
     //TODO: to adjust with new set_di_text function
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 465, 792);
-    HPDF_Page_ShowText (page1, myCostumer4->getProvence().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getProvence().c_str());
     HPDF_Page_EndText (page1);
     //Nº INSC REGISTRO
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 465, 764);
-    HPDF_Page_ShowText (page1, myCostumer4->getNumIns().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getNumIns().c_str());
     HPDF_Page_EndText (page1);
     //EMAIL
     HPDF_Page_BeginText (page1);
     HPDF_Page_MoveTextPos (page1, 465, 737);
-    HPDF_Page_ShowText (page1, myCostumer4->getMail().c_str());
+    HPDF_Page_ShowText (page1, myCostumer->getMail().c_str());
     HPDF_Page_EndText (page1);
-    delete myCostumer4;
+    delete myCostumer;
+    myCostumer = NULL;
 
     // 5.ORIGIN DATA
     if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_SALIDA)

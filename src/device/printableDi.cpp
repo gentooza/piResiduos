@@ -73,11 +73,12 @@ printableDi::printableDi(std::string file, std::string ptrId)
     int num_options = 0;
     num_options = cupsAddOption("fit-to-page", "true", num_options, &printOpts);
     // pointers
-    di_4Cos = NULL;
-    di_5Station = NULL;
-    di_5Cos = NULL;
-    di_6Station = NULL;
-    di_6Cos = NULL;
+    di_4Cos = new costumer();
+    di_5Station = new station();
+    di_5Cos = new costumer();
+    di_6Station = new station();
+    di_6Cos = new costumer();
+    di_8Driver = new driver();
     return;
 }
 
@@ -96,6 +97,8 @@ printableDi::~printableDi()
         delete di_6Station;
     if (di_6Cos)
         delete di_6Cos;
+    if (di_8Driver)
+        delete di_8Driver;
     return;
 }
 
@@ -125,6 +128,10 @@ int printableDi::composeFile()
         ret = -1;
     if (composeSignature())
         ret = -1;
+    if (composeOperatorComment())
+        ret = -1;
+    if (composeWeights())
+        ret = -1;
 
     return ret;
 }
@@ -146,7 +153,7 @@ int printableDi::composeHeader()
     //NPT
     _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_npt, 558, 995);
     //DATE TIME
-    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, di_dateTime, 558, 975);
+    _HaruText(hpdfPage1, fontSize, 47, hpdfFont, removeTime(di_dateTime), 558, 975);
 
     return 0;
 }
@@ -382,7 +389,7 @@ int printableDi::compose10Misc()
 {
     int ret = 0;
     // everything empty but date
-    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_dateTime, 395, 665);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_dateTime, 395, 690);
     return ret;
 }
 
@@ -411,7 +418,6 @@ int printableDi::composeOperatorComment()
     HPDF_Page_Rectangle(hpdfPage2, 350, 395, 404,80);
     HPDF_Page_FillStroke(hpdfPage2);
     HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
-    HPDF_Page_BeginText (hpdfPage2);
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, std::string("COMENTARIO OPERADOR:"), 355, 480);
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_operatorComment, 355, 455);
     return ret;
@@ -419,7 +425,7 @@ int printableDi::composeOperatorComment()
 
 int printableDi::composeWeights()
 {
-    int ret = 0;
+    int ret = 0;    
     HPDF_Page_SetRGBFill(hpdfPage2, 0.85, 0.85, 0.85);
     HPDF_Page_Rectangle(hpdfPage2, 348, 345, 60, 40);
     HPDF_Page_Rectangle(hpdfPage2, 488, 345, 60, 40);
@@ -441,9 +447,7 @@ int printableDi::composeWeights()
     HPDF_Page_Rectangle(hpdfPage2, 548, 345, 70, 40);
     HPDF_Page_Rectangle(hpdfPage2, 688, 345, 70, 40);
     HPDF_Page_FillStroke(hpdfPage2);
-
     HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
-    HPDF_Page_BeginText (hpdfPage2);
 
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleIn, 412, 360);
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleOut, 561, 360);

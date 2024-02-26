@@ -180,6 +180,25 @@ void station::setStation(std::vector<std::string> databaseData)
     return;
 }
 
+void station::setStation(station * reference)
+{
+    code = reference->getCode();
+    reference->getType(type);
+    reference->getType(sType); 
+    name = reference->getName();
+    nif = reference->getNif();
+    address = reference->getAddress();
+    provence = reference->getProvence();
+    city = reference->getCity();
+    cp = reference->getZip();
+    region = reference->getRegion();
+    nima = reference->getNima();
+    num_ins = reference->getNumIns();
+    phone = reference->getPhone();
+    mail = reference->getMail();
+    return;
+}
+
 void  station::refreshStationType()
 {
     if(type == 1)

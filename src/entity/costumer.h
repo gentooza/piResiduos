@@ -50,6 +50,7 @@ class costumer
         void reset();
         void setCostumer(long cosCode, qtDatabase& myDatabase);
         void setCostumer(std::vector<std::string> databaseData);
+        void setCostumer(costumer * reference);
         int isManuallyEdited();
         int isParticular(){ int ret = -1; ((code == PARTICULAR_COSTUMER)?ret = 1:ret = 0);return ret;};
         int isDefined();

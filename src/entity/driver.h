@@ -46,6 +46,7 @@ class driver
         void reset();
         void setDriver(long code, qtDatabase& my_database);
         void setDriver(std::vector<std::string> database_data);
+        void setDriver(driver * reference);
         int isManuallyEdited();
         
         //values
