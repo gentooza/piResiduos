@@ -132,6 +132,8 @@ int printableDi::composeFile()
         ret = -1;
     if (composeWeights())
         ret = -1;
+    if (composeStaff())
+        ret = -1;
 
     return ret;
 }
@@ -452,5 +454,29 @@ int printableDi::composeWeights()
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleIn, 412, 360);
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleOut, 561, 360);
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_totalWeight, 702, 360);
+    return ret;
+}
+
+int printableDi::composeStaff()
+{
+    int ret = 0;    
+    HPDF_Page_SetRGBFill(hpdfPage2, 0.85, 0.85, 0.85);
+    HPDF_Page_Rectangle(hpdfPage2, 350, 315, 235,20);
+    HPDF_Page_FillStroke(hpdfPage2);
+    HPDF_Page_SetRGBFill(hpdfPage2, 1, 1, 1);
+    HPDF_Page_Rectangle(hpdfPage2, 350, 235, 235,80);
+    HPDF_Page_FillStroke(hpdfPage2);
+    HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, "BASCULISTA:", 355, 320);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, "CÓDIGO: " + di_staffCode, 365, 275);
+    try 
+    {
+        draw_image (hpdfDoc, "image/sellotrans.png", 420, 205,"",0);
+    } 
+    catch(const std::exception& e)
+    {
+        std::cerr << "no staff stamp png file path provided!" << '\n';
+        ret = 1;
+    }
     return ret;
 }

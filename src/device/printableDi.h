@@ -44,7 +44,8 @@ class printableDi: public printable
     int compose10Misc();
     int composeSignature();
     int composeOperatorComment();
-    int composeWeights();    
+    int composeWeights();
+    int composeStaff();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};

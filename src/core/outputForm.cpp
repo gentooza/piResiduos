@@ -1269,7 +1269,11 @@ void outputForm::createPdf(std::string printerId)
     // weights
     myDi->setGrossWeight(std::to_string(retDepScaleOut()) + " Kg");
     myDi->setNetWeight(std::to_string(retDepScaleIn()) + " Kg");
-    myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");  
+    myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");
+    // staff
+    myDi->setStaffCode(std::to_string(ret_staff_code()));
+    myDi->setStampPath("image/sellotrans.png");
+
    
     myDi->composeFile();
     myDi->saveFile();
