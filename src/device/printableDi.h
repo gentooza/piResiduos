@@ -69,7 +69,9 @@ class printableDi: public printable
     void setOperatorComment(std::string data){ di_operatorComment = data; };
     void setGrossWeight(std::string data) { di_scaleIn = data; };
     void setNetWeight(std::string data) { di_scaleOut = data; };
-    void setTotalWeight(std::string data) { di_totalWeight = data; };   
+    void setTotalWeight(std::string data) { di_totalWeight = data; };
+    void setStaffCode(std::string data) { di_staffCode = data; };
+    void setStampPath(std::string data) { di_stampPath = data; };
     
     private:
     HPDF_Font hpdfFont;
@@ -103,7 +105,9 @@ class printableDi: public printable
     std::string di_operatorComment;
     std::string di_scaleIn;
     std::string di_scaleOut;
-    std::string di_totalWeight; 
+    std::string di_totalWeight;
+    std::string di_staffCode;
+    std::string di_stampPath;
 };
 
 
