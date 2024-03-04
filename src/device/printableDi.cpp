@@ -351,7 +351,7 @@ int printableDi::compose7Product()
     // NAME
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7Name, 303, 1075);
     // TOTAL WEIGHT
-    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7TotalWeight, 659, 1075);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_totalWeight, 659, 1075);
     // CHARACTERISTIC DANGER
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_7Danger, 260, 1050);
     return ret;

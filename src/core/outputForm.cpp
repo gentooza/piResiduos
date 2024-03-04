@@ -1246,7 +1246,7 @@ void outputForm::createPdf(std::string printerId)
     // ap 7
     myDi->setAp7LER(std::to_string(retDepProdLER()));
     myDi->setAp7Name(retDepProdName1() + " " + retDepProdName2() + " " + retDepProdName3());
-    myDi->setAp7TotalWeight(std::to_string(retDepTotalWeight()));
+    myDi->setTotalWeight(std::to_string(retDepScaleOut() - retDepScaleIn()) + " Kg");
     myDi->setAp7Danger(retDepProdPeligro());
 
     // ap 8
@@ -1269,11 +1269,9 @@ void outputForm::createPdf(std::string printerId)
     // weights
     myDi->setGrossWeight(std::to_string(retDepScaleIn()) + " Kg");
     myDi->setNetWeight(std::to_string(retDepScaleOut()) + " Kg");
-    myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");
     // staff
     myDi->setStaffCode(std::to_string(ret_staff_code()));
     myDi->setStampPath("image/sellotrans.png");
-
    
     myDi->composeFile();
     myDi->saveFile();
@@ -2040,7 +2038,7 @@ void outputForm::createPdf(std::string printerId)
  HPDF_Page_MoveTextPos (page2, 139, 0); 
  HPDF_Page_ShowText (page2, myText.c_str());
  ///neto
- myText = std::to_string(retDepTotalWeight());
+ myText = std::to_string(retDepScaleOut() - retDepScaleIn());
  myText += " Kg"; 
  HPDF_Page_MoveTextPos (page2, 141, 0);
  HPDF_Page_ShowText (page2, myText.c_str()); 

@@ -61,7 +61,6 @@ class printableDi: public printable
     void setAp6Cos(costumer *& data){ di_6Cos->setCostumer(data); };
     void setAp7LER(std::string data){ di_7LER = data; };
     void setAp7Name(std::string data){ di_7Name = data; };
-    void setAp7TotalWeight(std::string data){ di_7TotalWeight = data; };
     void setAp7Danger(std::string data){ di_7Danger = data; };
     void setAp8Driver(driver *& data){ di_8Driver->setDriver(data); };
     void setPlate(std::string data){ di_9Plate = data; };
@@ -97,7 +96,6 @@ class printableDi: public printable
     costumer * di_6Cos;
     std::string di_7LER;
     std::string di_7Name;
-    std::string di_7TotalWeight;
     std::string di_7Danger;
     driver* di_8Driver;
     std::string  di_9Plate;
