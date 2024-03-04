@@ -1265,14 +1265,22 @@ void outputForm::createPdf(std::string printerId)
     std::string _signature = retDepDiFolder() + "/firma.png";
     myDi->setSignaturePath(_signature);
     // operator comments
-    myDi->setOperatorComment(getOutputComment());
+    myDi->setComment(getOutputComment());
     // weights
     myDi->setGrossWeight(std::to_string(retDepScaleIn()) + " Kg");
     myDi->setNetWeight(std::to_string(retDepScaleOut()) + " Kg");
     // staff
     myDi->setStaffCode(std::to_string(ret_staff_code()));
     myDi->setStampPath("image/sellotrans.png");
-   
+    // price
+    if(retDepPayProcedure()==1)
+    {
+        double total_price_ = retDepTotalWeight()*retDepPrice() / 1000.0;
+        std::stringstream stream_;
+        stream_ << std::fixed << std::setprecision(2) << total_price_;
+        myDi->setFinalPrice(stream_.str() + " Euros");
+    }
+
     myDi->composeFile();
     myDi->saveFile();
     myDi->printFile();

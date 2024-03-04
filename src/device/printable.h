@@ -118,7 +118,6 @@ class printable
     virtual void setAp8Driver(driver *& data){ return; };
     virtual void setPlate(std::string data){ return; };
     virtual void setPlateAtt(std::string data){ return; };
-    virtual void setOperatorComment(std::string data){ return; };
     virtual void setStampPath(std::string data) { return; };
     
     // only ticket
@@ -136,8 +135,6 @@ class printable
     virtual void setTransportPlate(std::string trpPlate) { return; };
     virtual void setProductName(std::string prodName) { return; };
     virtual void setProductLER(std::string prodLER) { return; };
-    virtual void setFinalPrice(std::string finalPrice) { return; };
-    virtual void setComment(std::string comment) { return; };
 
     // common
     virtual void setGrossWeight(std::string data) { return; };
@@ -145,6 +142,8 @@ class printable
     virtual void setTotalWeight(std::string data) { return; };
     virtual void setSignaturePath(std::string data) { return; };
     virtual void setStaffCode(std::string data) { return; };
+    virtual void setFinalPrice(std::string finalPrice) { return; };
+    virtual void setComment(std::string comment) { return; };
 
     HPDF_Doc  hpdfDoc;
     HPDF_STATUS hpdfStatus;
