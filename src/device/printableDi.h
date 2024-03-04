@@ -46,6 +46,7 @@ class printableDi: public printable
     int composeOperatorComment();
     int composeWeights();
     int composeStaff();
+    int composePrice();
 
     void setProductLer(std::string productLer){di_productLer = productLer;};
     void setProductDanger(std::string productDanger){di_productDanger = productDanger;};

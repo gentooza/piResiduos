@@ -134,6 +134,8 @@ int printableDi::composeFile()
         ret = -1;
     if (composeStaff())
         ret = -1;
+    if (composePrice())
+        ret = -1;
 
     return ret;
 }
@@ -477,6 +479,23 @@ int printableDi::composeStaff()
     {
         std::cerr << "no staff stamp png file path provided!" << '\n';
         ret = 1;
+    }
+    return ret;
+}
+int printableDi::composePrice()
+{
+    int ret = 0;
+    if (!di_price.empty())
+    {
+        HPDF_Page_SetRGBFill(hpdfPage2, 0.85, 0.85, 0.85);
+        HPDF_Page_Rectangle(hpdfPage2, 595, 315, 160,20);
+        HPDF_Page_FillStroke(hpdfPage2);
+        HPDF_Page_SetRGBFill(hpdfPage2, 1, 1, 1);
+        HPDF_Page_Rectangle(hpdfPage2, 595, 235, 160,80);
+        HPDF_Page_FillStroke(hpdfPage2);
+        HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, "PRECIO: ", 600, 320);
+        _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_price, 620, 275);
     }
     return ret;
 }
