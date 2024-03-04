@@ -114,7 +114,6 @@ class printable
     virtual void setAp6Cos(costumer *& data){ return; };
     virtual void setAp7LER(std::string data){ return; };
     virtual void setAp7Name(std::string data){ return; };
-    virtual void setAp7TotalWeight(std::string data){ return; };
     virtual void setAp7Danger(std::string data){ return; };
     virtual void setAp8Driver(driver *& data){ return; };
     virtual void setPlate(std::string data){ return; };
