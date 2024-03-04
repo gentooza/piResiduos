@@ -452,8 +452,8 @@ int printableDi::composeWeights()
     HPDF_Page_SetRGBFill(hpdfPage2, 0, 0, 0);
 
     _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleIn, 412, 360);
-    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleOut, 561, 360);
-    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_totalWeight, 702, 360);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_scaleOut, 551, 360);
+    _HaruText(hpdfPage2, fontSize, 47, hpdfFont, di_totalWeight, 692, 360);
     return ret;
 }
 
