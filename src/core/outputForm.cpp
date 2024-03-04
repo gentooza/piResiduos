@@ -1267,8 +1267,8 @@ void outputForm::createPdf(std::string printerId)
     // operator comments
     myDi->setOperatorComment(getOutputComment());
     // weights
-    myDi->setGrossWeight(std::to_string(retDepScaleOut()) + " Kg");
-    myDi->setNetWeight(std::to_string(retDepScaleIn()) + " Kg");
+    myDi->setGrossWeight(std::to_string(retDepScaleIn()) + " Kg");
+    myDi->setNetWeight(std::to_string(retDepScaleOut()) + " Kg");
     myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");
     // staff
     myDi->setStaffCode(std::to_string(ret_staff_code()));
