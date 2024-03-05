@@ -8,15 +8,17 @@
 + updated cars database table, and entity with 30 associated costumers now.
 
 ## fixes
-+ using valgrind for detecting memory leaks, fixing them.
-+ fixed initialization script for linking local dynamic library. (dirty fix, but working for now)
-+ fixed some int functions returning nothing, with undefined behaviour.
++ Using valgrind for detecting memory leaks, fixing them.
++ Fixed initialization script for linking local dynamic library. (dirty fix, but working for now)
++ Fixed some int functions returning nothing, with undefined behaviour.
 
 ## code improvement
-+ code cleaning, fixing functions with no return statement, etc.
-+ formulario files to baseForm renaming
-+ removed unused staff in baseForm class.
-
++ Source code moved and arranged
++ Improve DI printing by moving it's code out from baseForm classes to printing ones.
++ Code cleaning, fixing functions with no return statement, etc.
++ Formulario files to baseForm renaming
++ Removed unused staff in baseForm class.
++ State machine source code splitted in several files for easy reading, fixing and improving.
 
 # 2022/04/28 version 0.2rc1 
 
