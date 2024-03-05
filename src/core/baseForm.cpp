@@ -2235,9 +2235,8 @@ void baseForm::resetArrScale()
 
 void baseForm::resetDepScale()
 {
-  myDepMovement.PESO_SALIDA = 0;
-  myDepMovement.PESO_CARGA = 0;
-  incDepScaleEdited(0); 
+    myDepMovement.PESO_SALIDA = 0;
+    incDepScaleEdited(0); 
 }
 
 void baseForm::resetArrPlate()

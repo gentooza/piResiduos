@@ -161,7 +161,6 @@ typedef struct struMovement
     std::string DI;
     unsigned int PESO_ENTRADA;
     unsigned int PESO_SALIDA;
-    long PESO_CARGA;
     std::string CODIGO_MOVIMIENTO;
     int TIPO_DE_MOVIMIENTO;
     int REPETIR;
@@ -628,8 +627,7 @@ class  baseForm
         void setDepScaleIn(unsigned int scale){myDepMovement.PESO_ENTRADA = scale;};
         unsigned int retArrScaleIn(){return myArrMovement.PESO_ENTRADA;};
         void setArrScaleIn(unsigned int scale){myArrMovement.PESO_ENTRADA = scale;};
-        long retDepTotalWeight(){return (myDepMovement.PESO_CARGA <= 0 ? myDepMovement.PESO_CARGA: 0);};
-        void setDepTotalWeight(long scale){myDepMovement.PESO_CARGA = scale;};
+        virtual unsigned int retDepTotalWeight(){ return 0; };
         long retDepWeightToTakeAway(){return myDepMovement.PESO_A_RETIRAR;};
         void setDepWeightToTakeAway(long scale){myDepMovement.PESO_A_RETIRAR = scale;};
         long retArrWeightToTakeAway(){return myArrMovement.PESO_A_RETIRAR;};

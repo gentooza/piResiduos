@@ -90,6 +90,7 @@ class inputForm: public baseForm
   int retDepScaleExpected(){return 0;};
   void setAndCalcScaleOut(unsigned int scale);
   int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
+  unsigned int retDepTotalWeight(){ return (retDepScaleIn() - retDepScaleOut()); };
   //
   int setMovCode(std::string sLastCode, int stationCode, int movementTypeCode);
 

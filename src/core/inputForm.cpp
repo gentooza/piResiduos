@@ -277,14 +277,11 @@ int inputForm::isDepPesoOk()
   return ret;
 }
 
-/*! function to save and calculate total scale*/
+/*! function to save and calculate total scale
+TODO: USELESS to REMOVE */
 void inputForm::setAndCalcScaleOut(unsigned int scale)
 {
-  unsigned int scaleIn;
-  
-  setDepScaleOut(scale);
-  scaleIn = retDepScaleIn();
-  setDepTotalWeight(scaleIn-scale);    
+    setDepScaleOut(scale);
 }
 
 /*! function to save scale out in database*/
@@ -1770,7 +1767,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     myTicket->setNetWeight(std::to_string(retDepScaleIn()));
     myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
     myTicket->setPayProcedure(retDepPayProcedure());
-    double total_price = retDepTotalWeight()*retDepPrice() / 1000.0;
+    double total_price = (retDepTotalWeight()*retDepPrice()) / 1000.0;
     std::stringstream stream;
     stream << std::fixed << std::setprecision(2) << total_price;
     myTicket->setFinalPrice(stream.str());
