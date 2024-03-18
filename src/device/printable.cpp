@@ -327,7 +327,8 @@ int printable::_HaruText(HPDF_Page & my_page, float font_size, int max_size, HPD
 }
 
 /*! function for writting adaptative text in several lines, and flexible size for libharu*/
-int printable::_HaruTextWDispl(HPDF_Page & my_page, float font_size, int max_size, HPDF_Font my_font, std::string my_text, int start_x, int start_y)
+int printable::_HaruTextWDispl(HPDF_Page & my_page, float font_size, int max_size, 
+                        HPDF_Font my_font, std::string my_text, int start_x, int start_y)
 {
     std::vector< std::string > paragraph;
     int ret = 0;
