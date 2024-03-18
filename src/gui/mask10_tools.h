@@ -2,6 +2,7 @@
 This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
+Copyright 2024, Joaquín Cuéllar-Padilla <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -19,84 +20,91 @@ If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef _MASK10_TOOLS_
 #define _MASK10_TOOLS_
-enum{
-  CTRL_NONE = 0,
-  CTRL_PROCEDER,
-  CTRL_PROCEDER_CANCELAR,
-  CTRL_PROCEDER_CANCELAR_RETROCEDER,
-  CTRL_PROCEDER_RETROCEDER,
-  CTRL_CANCELAR_RETROCEDER,
-  CTRL_CANCELAR,
-  CTRL_RETROCEDER
+
+enum {
+    CTRL_NONE = 0,
+    CTRL_PROCEDER,
+    CTRL_PROCEDER_CANCELAR,
+    CTRL_PROCEDER_CANCELAR_RETROCEDER,
+    CTRL_PROCEDER_RETROCEDER,
+    CTRL_CANCELAR_RETROCEDER,
+    CTRL_CANCELAR,
+    CTRL_RETROCEDER
 };
 
-
-static int isStrInProdsVector(std::vector < std::string> lista,std::vector < std::string> listaCodes, std::string cadena)
+static int isStrInProdsVector(std::vector < std::string> lista,
+            std::vector < std::string> listaCodes, std::string cadena)
 {
-  int itIs=-1;
-  int i = 0;
-  std::vector<std::string>::iterator iter;
-  std::vector<std::string>::iterator iterCodes;
-  iterCodes = listaCodes.begin();
-  for(iter = lista.begin(); iter != lista.end() && iterCodes != listaCodes.end(); ++iter)
+    int itIs = -1;
+    int i = 0;
+    std::vector<std::string>::iterator iter;
+    std::vector<std::string>::iterator iterCodes;
+  
+    iterCodes = listaCodes.begin();
+    for(iter = lista.begin(); iter != lista.end() && iterCodes != listaCodes.end(); ++iter)
     {
-      std::string producto = *iter + " " + *iterCodes;
-      //std::cout << i << " comparando cadena: " << cadena << std::endl;
-      //std::cout << "con conjunción: " << *iter << " " << *iterCodes << std::endl;
-      if(producto.compare(cadena) == 0)
-	itIs=i;
-      i++;
-      ++iterCodes;
+        std::string product   o = *iter + " " + *iterCodes;
+        if(producto.compare(cadena) == 0)
+	        itIs=i;
+        i++;
+        ++iterCodes;
     }
   
-  return itIs;
+    return itIs;
 }
 //
-static int populateProdsCombo(PARAM *p,int id, std::vector <std::vector < std::string>> lista, bool otros)
+static int populateProdsCombo(PARAM *p, int id,
+            std::vector <std::vector < std::string>> lista, bool otros)
 {
-  pvClear(p,id);
-  pvSetText(p,id,"ELIJA");
-  std::vector < std::vector < std::string>>::iterator row;
-  std::vector < std::string>::iterator col;
-  std::string text;
-  if(otros)
-    pvSetText(p,id,"MOSTRAR TODOS");
-  for(row = lista.begin(); row != lista.end(); ++row)
+    pvClear(p, id);
+    pvSetText(p, id, "ELIJA");
+    std::vector < std::vector < std::string>>::iterator row;
+    std::vector < std::string>::iterator col;
+    std::string text;
+    if(otros)
+        pvSetText(p,id,"MOSTRAR TODOS");
+    for(row = lista.begin(); row != lista.end(); ++row)
     {
-      text.clear();
-      for(col = row->begin(); col != row->end(); ++col)
-	{		  
-	  text += *col;
-	  text+=" ";
-	}
-      pvSetText(p,id,text.c_str());
+        text.clear();
+        for(col = row->begin(); col != row->end(); ++col)
+	    {		  
+	        text += *col;
+	        text+=" ";
+	    }
+        pvSetText(p,id,text.c_str());
     }
 
-  pvToolTip(p,id,"ELIJA");
-  return 0;
+    pvToolTip(p,id,"ELIJA");
+    return 0;
 }
 
-static int populateCombo(PARAM *p,int id, std::vector <std::vector < std::string>> lista)
+static int populateCombo(PARAM *p, int id, std::vector <std::vector < std::string>> lista)
 {
-  pvClear(p,id);
-  pvSetText(p,id,"ELIJA");
-  for(int i = 0; i < lista.size();i++)
-    for(int j=0;j< lista[i].size();j++)
-      if(!lista[i][j].empty())
-	pvSetText(p,id,lista[i][j].c_str());
-  pvToolTip(p,id,"ELIJA");
-  return 0;
+    pvClear(p, id);
+    pvSetText(p, id, "ELIJA");
+    for(long unsigned int i = 0; i < lista.size(); i++)
+    {
+        for(long unsigned int j = 0; j< lista[i].size(); j++)
+        {
+            if(!lista[i][j].empty())
+	            pvSetText(p, id, lista[i][j].c_str());
+        }
+    }
+    pvToolTip(p, id, "ELIJA");
+    return 0;
 }
 //
-static int populateCombo(PARAM *p,int id, std::vector < std::string> lista)
+static int populateCombo(PARAM *p, int id, std::vector < std::string> lista)
 {
-  pvClear(p,id);
-  pvSetText(p,id,"ELIJA");
-  for(int i = 0; i < lista.size();i++)
-    if(!lista[i].empty())
-      pvSetText(p,id,lista[i].c_str());
-  pvToolTip(p,id,"ELIJA");
-  return 0;
+    pvClear(p, id);
+    pvSetText(p, id, "ELIJA");
+    for(long unsigned int i = 0; i < lista.size(); i++)
+    {
+        if(!lista[i].empty())
+            pvSetText(p, id, lista[i].c_str());
+    }
+    pvToolTip(p, id, "ELIJA");
+    return 0;
 }
 static int setComboBoxPos(PARAM *p,int id,std::vector< std::string> allValues, std::string value)
 {
