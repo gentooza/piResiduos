@@ -97,8 +97,7 @@ class printable
     int printFile();
 
     int _HaruText(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
-    int _HaruTextWDispl(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
-
+    
     virtual int composeFile(){return 0;};
 
     // only PDF
