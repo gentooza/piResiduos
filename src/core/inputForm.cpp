@@ -475,7 +475,7 @@ int inputForm::setTrfMov(qtDatabase & myDatabase, station *& myStation)
 
 }
 
-//transit movements managment
+//transit movements management
 int inputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected)
 {
     int ret = 0;	    
