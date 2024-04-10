@@ -621,8 +621,8 @@ class  baseForm
         float retErrorScale(){return ERROR_ACCEPTED_WEIGHT;};
         unsigned int retDepScaleOut(){return myDepMovement.PESO_SALIDA;};
         void setDepScaleOut(unsigned int scale){myDepMovement.PESO_SALIDA = scale;};
-        unsigned int retArrScaleOut(){return myArrMovement.PESO_SALIDA;};
-        void setArrScaleOut(unsigned int scale){myArrMovement.PESO_SALIDA = scale;};
+//        unsigned int retArrScaleOut(){return myArrMovement.PESO_SALIDA;};
+//        void setArrScaleOut(unsigned int scale){myArrMovement.PESO_SALIDA = scale;};
         unsigned int retDepScaleIn(){return myDepMovement.PESO_ENTRADA;};
         void setDepScaleIn(unsigned int scale){myDepMovement.PESO_ENTRADA = scale;};
         unsigned int retArrScaleIn(){return myArrMovement.PESO_ENTRADA;};

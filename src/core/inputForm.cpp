@@ -478,115 +478,83 @@ int inputForm::setTrfMov(qtDatabase & myDatabase, station *& myStation)
 //transit movements managment
 int inputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected)
 {
-  int ret = 0;	    
-  //mysql && sqlite
-  std::string my_sqlite, my_mysql;
-  std::string str_log_message;
+    int ret = 0;	    
+
+    std::string str_log_message;
+    //mysql && sqlite
+    std::string my_mysql = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION) values (\"";
+    std::string my_sqlite = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION, SINCRONIZADO) values (\"";
   
-  my_mysql = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION) values (\"";
+    std::string query = retArrDi(); //DI 
+    query += "\",\"";  
+    //  query += getCurrentDate();   BUG esto nos rompe la definción de la carpeta de save de documentos
+    query += retArrDateTime();
+    query += "\",";
+    query += std::to_string(retArrMovType());
+    query += ",";
+    query += std::to_string(retArrCosCode());
+    query += ",";
+    query += std::to_string(retArrProdCode());
+    query += ",";
+    query += std::to_string(retArrScaleIn());  
+    query += ",";
+    query += std::to_string(retArrPrice());
+    query += ",\"";
+    query += retArrPlate();
+    query += "\",\"";
+    query += retArrPlateAtt(); 
+    query += "\",";
+    query += std::to_string(arrOriginStation->getCode());
+    query += ",\"";
+    query += vectorToString(getInputIncidents(),"; ");
+    query += "\",\"";
+    query += getInputComment();
+    query += "\",0 ,"; // no Scale out yet 
+    query += std::to_string(myStation->getCode());
 
-  my_sqlite = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION, SINCRONIZADO) values (\"";
-  
-  std::string query = retArrDi(); //DI 
-  query += "\",\"";  
-  //  query += getCurrentDate();   BUG esto nos rompe la definción de la carpeta de save de documentos
-  query += retArrDateTime();
-  query += "\",";
-  query += std::to_string(retArrMovType());
-  query += ",";
-  query += std::to_string(retArrCosCode());
-  query += ",";
-  query += std::to_string(retArrProdCode());
-  query += ",";
-  query += std::to_string(retArrScaleIn());  
-  query += ",";
-  query += std::to_string(retArrPrice());
-  query += ",\"";
-  query += retArrPlate();
-  query += "\",\"";
-  query += retArrPlateAtt(); 
-  query += "\",";
-  query += std::to_string(arrOriginStation->getCode());
-  query += ",\"";
-  query += vectorToString(getInputIncidents(),"; ");
-  query += "\",\"";
-  query += getInputComment();
-  query += "\",";
-  query += std::to_string(retArrScaleOut());
-  query += ",";	      
-  query += std::to_string(myStation->getCode());
+    my_mysql += query;
+    my_mysql += ")";
 
-  my_mysql += query;
-  my_mysql += ")";
+    my_sqlite += query;
 
-  my_sqlite += query;
-
-  if(remote_host_connected)
+    if(remote_host_connected)
     {
-      str_log_message = "(DESCARGA) remote db -> ";
-      str_log_message += my_mysql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(NULL,my_mysql.c_str()))
-	{
-	  log_message("(DESCARGA) registro en BD remota parece OK", 1);
-	  my_sqlite += ",1)";
-	}
-      else
-	{
-	  log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
-	  ret = -1;
-	  my_sqlite += ",0)";
-	}
-      str_log_message = "(DESCARGA) local db -> ";
-      str_log_message += my_sqlite;
-      log_message(str_log_message, 1);
-       if(!myDatabase.query(NULL,my_sqlite.c_str()))
-	 {
-	   log_message("(DESCARGA) registro en BD local parece OK", 1);
-	   //remove from ordenes //transferencias...
-	   //  if(retArrMovType() == DEF_MOV_TRANSFER) //transferencia
-	   //  {
-	   //    //TODO IMPROVE WITH BORRADO FIELD
-	   //    char * sql;
-	   //    delTransfer(sql,retArrDateTime().c_str(),arrOriginStation->getCode(),myStation->getCode());
-	   //    if(!myDatabase.query(NULL,sql))
-	   //	 remoteDatabase.query(NULL,sql);
-	   //    delete sql;
-	   //  }
-
-	 }
-       else
-	 log_message("(DESCARGA) registro en BD local parece ERROR (NO SE HACE NADA)", 2);
+        str_log_message = "(DESCARGA) remote db -> ";
+        str_log_message += my_mysql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(NULL,my_mysql.c_str()))
+	    {
+	        log_message("(DESCARGA) registro en BD remota parece OK", 1);
+	        my_sqlite += ",1)";
+	    }
+        else
+	    {
+	        log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
+	        ret = -1;
+	        my_sqlite += ",0)";
+	    }
+        str_log_message = "(DESCARGA) local db -> ";
+        str_log_message += my_sqlite;
+        log_message(str_log_message, 1);
+        if(!myDatabase.query(NULL,my_sqlite.c_str()))
+	        log_message("(DESCARGA) registro en BD local parece OK", 1);
+        else
+	        log_message("(DESCARGA) registro en BD local parece ERROR (NO SE HACE NADA)", 2);
     }
-  else
+    else
     {
-      log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
-      ret = -1;
-      my_sqlite += ",0)";
-      str_log_message = "(DESCARGA) local db -> ";
-      str_log_message += my_sqlite;
-      log_message(str_log_message, 1);
-      if(!myDatabase.query(NULL,my_sqlite.c_str()))
-	{
-	  log_message("(DESCARGA) registro en BD local parece OK", 1);
-	  //remove from ordenes //transferencias...
-	  //	  if(retArrMovType() == DEF_MOV_TRANSFER) //transferencia
-	  //  {
-	  //   //TODO IMPROVE WITH BORRADO FIELD
-	    //   char * sql;
-	    //  delTransfer(sql,retArrDateTime().c_str(),arrOriginStation->getCode(),myStation->getCode());
-	    //  myDatabase.query(NULL,sql);
-	      //if(!myDatabase.query(NULL,sql))
-	      // remoteDatabase.query(NULL,sql);
-	  //  delete sql;
-	  //  }
-
-	}
-      else
-	log_message("(DESCARGA) registro en BD local parece ERROR (NO SE HACE NADA)", 2);
-    }
-
-  return ret;
+        log_message("(DESCARGA) registro en BD remota parece ERROR", 2);
+        ret = -1;
+        my_sqlite += ",0)";
+        str_log_message = "(DESCARGA) local db -> ";
+        str_log_message += my_sqlite;
+        log_message(str_log_message, 1);
+        if(!myDatabase.query(NULL,my_sqlite.c_str()))
+	        log_message("(DESCARGA) registro en BD local parece OK", 1);
+        else
+	        log_message("(DESCARGA) registro en BD local parece ERROR (NO SE HACE NADA)", 2);
+        }
+    return ret;
 }
 
 int inputForm::isPlateInTransit(std::string plate)
@@ -1765,6 +1733,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     myTicket->setProductLER(std::to_string(retDepProdLER()));
     myTicket->setGrossWeight(std::to_string(retDepScaleOut()));
     myTicket->setNetWeight(std::to_string(retDepScaleIn()));
+    std::cout << "DEBUG: retDepTotalWeight() = " << retDepTotalWeight() << std::endl;
     myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
     myTicket->setPayProcedure(retDepPayProcedure());
     double total_price = (retDepTotalWeight()*retDepPrice()) / 1000.0;
