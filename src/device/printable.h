@@ -131,6 +131,7 @@ class printable
     virtual void setMovDate(std::string movDate) { return; };
     virtual void setMovTime(std::string movTime) { return; };
     virtual void setCostumerName(std::string cosName) { return; };
+    virtual void setCostumerNif(std::string data) { return; };
     virtual void setTransportName(std::string trpName) { return; };
     virtual void setTransportPlate(std::string trpPlate) { return; };
     virtual void setProductName(std::string prodName) { return; };

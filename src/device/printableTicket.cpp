@@ -235,7 +235,7 @@ int printableTicket::composeRegistration()
                 myText.c_str(), HPDF_TALIGN_RIGHT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space" << std::endl;
     HPDF_Page_EndText (hpdfPage);
-    currentLine = currentLine - 35;
+    currentLine = currentLine - 45;
 
     return 0;
 }
@@ -247,27 +247,32 @@ int printableTicket::composeOrigin()
     std::string myText;
     int finalLine = fontSize_xl;
 
-    // ORIGEN label
-    HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
-    HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontSize_xl - 5);
-    HPDF_Page_ShowText (hpdfPage, "ORIGEN: ");
-    HPDF_Page_EndText (hpdfPage);
     // costumer name
     HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
     HPDF_Page_SetTextLeading(hpdfPage, fontSize_xl);
     HPDF_Page_BeginText (hpdfPage);
-    myText = "      " + ticket_costumerName;
+    myText = "ORIGEN: " + ticket_costumerName;
     if(myText.length() > 26)
         finalLine = 3 * fontSize_xl;
     if(myText.length() > 52)
         finalLine = 5 * fontSize_xl;
-    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 8, 190, (currentLine - finalLine),
+    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-        std::cout << "TODO: not enough space for text, text length = " << myText.length() << std::endl;
+        std::cout << "TODO: not enough space for text, costumer name length = " << myText.length() << std::endl;
+    currentLine = currentLine - finalLine + fontSize_xl;
+
+    finalLine = fontSize_xl;
+    myText = "CIF: " + ticket_costumerNif;
+    if(myText.length() > 26)
+        finalLine = 3 * fontSize_xl;
+    if(myText.length() > 52)
+        finalLine = 5 * fontSize_xl;
+    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
+        myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
+        std::cout << "TODO: not enough space, costuemr CIF length = " << myText.length() << std::endl;
     HPDF_Page_EndText (hpdfPage);
 
-    currentLine = currentLine - finalLine;
+    currentLine = currentLine - finalLine - fontSize_xl/2;
     return 0;
 }
 
@@ -276,41 +281,33 @@ int printableTicket::composeTransport()
 {
     std::cout << "prinrtableTicket::composeTransport()" << std::endl;
     std::string myText;
-    int finalLine = fontSize;
-
-    // transportation label
-    HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
-    HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontSize_xl - 5);
-    HPDF_Page_ShowText (hpdfPage, "TRANSPORTISTA: ");
-    HPDF_Page_EndText (hpdfPage);
+    int finalLine = 2*fontSize;
 
     // transportation name
+    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
     HPDF_Page_SetTextLeading(hpdfPage, fontSize);
     HPDF_Page_BeginText (hpdfPage);
-    myText = "              " + ticket_transportName;
-    if(myText.length() > 30)
-        finalLine = 3*fontSize + 1;
-    if(myText.length() > 68)
-        finalLine = 5*fontSize + 2;
-    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 8.5, 190, (currentLine - finalLine),
+    myText = "TRANSPORTISTA: " + ticket_transportName;
+    if(myText.length() > 28)
+        finalLine += fontSize;
+    if(myText.length() > 56)
+        finalLine += fontSize;
+    if(myText.length() > 84)
+        finalLine += fontSize;
+    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space" << std::endl;
+    // std::cout << "DEBUG: transport length: " << myText.length() << ", finalLine = " << finalLine << ", fontSize = " << fontSize << std::endl;
     HPDF_Page_EndText (hpdfPage);
 
     currentLine = currentLine - finalLine;
     finalLine = fontSize;
 
-    // PLATE label
-    HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontSize_xl - 5);
-    HPDF_Page_ShowText (hpdfPage, "MATRÍCULA: ");
-    HPDF_Page_EndText (hpdfPage);
-
     // transportation plate
     HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_MoveTextPos (hpdfPage, 60, currentLine - fontSize_xl - 5);
-    HPDF_Page_ShowText (hpdfPage, ticket_transportPlate.c_str());
+    myText = "MATRÍCULA: " + ticket_transportPlate;
+    HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine);
+    HPDF_Page_ShowText (hpdfPage, myText.c_str());
     HPDF_Page_EndText (hpdfPage);
 
     currentLine = currentLine - finalLine;
@@ -322,35 +319,24 @@ int printableTicket::composeProduct()
 {
     std::cout << "printableTicket::composeProduct()" << std::endl;
     std::string myText;
-    int finalLine = fontSize;
+    int finalLine = 2*fontSize;
 
-    // product label
-    HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
-    HPDF_Page_MoveTextPos (hpdfPage, 0, currentLine - fontSize_xl - 7);
-    HPDF_Page_ShowText (hpdfPage, "LER-PRODUCTO: ");
-    HPDF_Page_EndText (hpdfPage);
-
-    // product ler
-    HPDF_Page_BeginText (hpdfPage);
-    HPDF_Page_MoveTextPos (hpdfPage, 77, currentLine - fontSize_xl - 7);
-    HPDF_Page_ShowText (hpdfPage, ticket_productLER.c_str());
-    HPDF_Page_EndText (hpdfPage);
-
-    // product name
+    // product LER and NAME
     HPDF_Page_SetTextLeading(hpdfPage, fontSize);
     HPDF_Page_BeginText (hpdfPage);
-    myText = "                    -" + ticket_productName;
-    if(myText.length() > 30)
-        finalLine = 3*fontSize;
-    if(myText.length() > 68)
-        finalLine = 5*fontSize;
-    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - 10, 190, (currentLine - 10 - finalLine),
+    myText = "LER-PRODUCTO: " + ticket_productLER + " - " + ticket_productName;
+    if(myText.length() > 28)
+        finalLine += fontSize;
+    if(myText.length() > 56)
+        finalLine += fontSize;
+    if(myText.length() > 84)
+        finalLine += fontSize;
+    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - fontSize, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space, text length: " << myText.length() << std::endl;
     HPDF_Page_EndText (hpdfPage);
 
-    currentLine = currentLine - finalLine - 5;
+    currentLine = currentLine - finalLine;
 
     return 0;
 }

@@ -55,6 +55,7 @@ class printableTicket: public printable
     void setMovDate(std::string movDate) { ticket_movDate = movDate; };
     void setMovTime(std::string movTime) { ticket_movTime = movTime; };
     void setCostumerName(std::string cosName) { ticket_costumerName = cosName; };
+    void setCostumerNif(std::string data) { ticket_costumerNif = data; };
     void setTransportName(std::string trpName) { ticket_transportName = trpName; };
     void setTransportPlate(std::string trpPlate) { ticket_transportPlate = trpPlate; };
     void setProductName(std::string prodName) { ticket_productName = prodName; };
@@ -85,6 +86,7 @@ class printableTicket: public printable
     std::string ticket_movDate;
     std::string ticket_movTime;
     std::string ticket_costumerName;
+    std::string ticket_costumerNif;
     std::string ticket_transportName;
     std::string ticket_transportPlate;
     std::string ticket_productName;
