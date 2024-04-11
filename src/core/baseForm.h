@@ -621,13 +621,17 @@ class  baseForm
         float retErrorScale(){return ERROR_ACCEPTED_WEIGHT;};
         unsigned int retDepScaleOut(){return myDepMovement.PESO_SALIDA;};
         void setDepScaleOut(unsigned int scale){myDepMovement.PESO_SALIDA = scale;};
-//        unsigned int retArrScaleOut(){return myArrMovement.PESO_SALIDA;};
-//        void setArrScaleOut(unsigned int scale){myArrMovement.PESO_SALIDA = scale;};
         unsigned int retDepScaleIn(){return myDepMovement.PESO_ENTRADA;};
         void setDepScaleIn(unsigned int scale){myDepMovement.PESO_ENTRADA = scale;};
         unsigned int retArrScaleIn(){return myArrMovement.PESO_ENTRADA;};
         void setArrScaleIn(unsigned int scale){myArrMovement.PESO_ENTRADA = scale;};
-        virtual unsigned int retDepTotalWeight(){ return 0; };
+        // calculated weights
+        unsigned int retGrossWeight(){return grossWeight;};
+        void setGrossWeight(unsigned int weight){grossWeight = weight;};
+        unsigned int retTareWeight(){return tareWeight;};
+        void setTareWeight(unsigned int weight){tareWeight = weight;};
+        long retNetWeight(){return netWeight;};
+        void setNetWeight(long weight){netWeight = weight;};
         long retDepWeightToTakeAway(){return myDepMovement.PESO_A_RETIRAR;};
         void setDepWeightToTakeAway(long scale){myDepMovement.PESO_A_RETIRAR = scale;};
         long retArrWeightToTakeAway(){return myArrMovement.PESO_A_RETIRAR;};
@@ -736,6 +740,10 @@ class  baseForm
         bool cpPermit;
         bool dcpPermit;
         
+        // weights
+        unsigned int grossWeight;
+        unsigned int tareWeight;
+        long netWeight;
         float ERROR_ACCEPTED_WEIGHT;
 
 };

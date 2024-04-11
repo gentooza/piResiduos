@@ -60,8 +60,8 @@ class printableTicket: public printable
     void setProductName(std::string prodName) { ticket_productName = prodName; };
     void setProductLER(std::string prodLER) { ticket_productLER = prodLER; };
     void setGrossWeight(std::string grossWeight) { ticket_grossWeight = grossWeight; };
-    void setNetWeight(std::string tareWeight) { ticket_tareWeight = tareWeight; };
-    void setTotalWeight(std::string totalWeight) { ticket_totalWeight = totalWeight; };
+    void setTareWeight(std::string tareWeight) { ticket_tareWeight = tareWeight; };
+    void setNetWeight(std::string netWeight) { ticket_netWeight = netWeight; };
     void setFinalPrice(std::string finalPrice) { ticket_finalPrice = finalPrice; };
     void setComment(std::string comment) { ticket_comment = comment; };
     void setStaffCode(std::string staffCode) { ticket_staffCode = staffCode; };
@@ -91,7 +91,7 @@ class printableTicket: public printable
     std::string ticket_productLER;
     std::string ticket_grossWeight;
     std::string ticket_tareWeight;
-    std::string ticket_totalWeight;
+    std::string ticket_netWeight;
     std::string ticket_finalPrice;
     std::string ticket_comment;
     std::string ticket_staffCode;

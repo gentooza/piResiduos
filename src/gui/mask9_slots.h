@@ -72,7 +72,7 @@ static int slotInit(PARAM *p, DATA *d)
       pvSetText(p,EDITLER,field.c_str());
       pvSetText(p,EDITDESCLER,fullName.c_str());
       pvSetText(p,EDITPELIGRO,formDI->retDepProdPeligro().c_str());
-      std::string strPeso = std::to_string(formDI->retDepTotalWeight());
+      std::string strPeso = std::to_string(formDI->retNetWeight());
       pvSetText(p,EDITPESO,strPeso.c_str());
       
       if(formDI->retForm() == 2 && formDI->retDepMovType() == DEF_MOV_TRANSFER)
@@ -303,7 +303,7 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
 	            pvSetText(p,EDITLER,field.c_str());
 	            pvSetText(p,EDITDESCLER,formDI->retDepProdFullName().c_str());
 	            pvSetText(p,EDITPELIGRO,formDI->retDepProdPeligro().c_str());
-	            std::string strPeso = std::to_string(formDI->retDepTotalWeight());
+	            std::string strPeso = std::to_string(formDI->retNetWeight());
 	            pvSetText(p,EDITPESO,strPeso.c_str());
 	        }
 	        else

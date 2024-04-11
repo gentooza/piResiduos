@@ -28,11 +28,10 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
     int ret = 1;
     std::string sqliteQuery,mysqlQuery;
     std::string str_log_message;
-    //TODO dirty fix
-    //exchanging PESO_SALIDA // PESO_ENTRADA
-    unsigned int tmpPeso = retDepScaleIn();
-    setDepScaleIn(retDepScaleOut());
-    setDepScaleOut(tmpPeso);
+
+    setTareWeight(retDepScaleOut());
+    setGrossWeight(retDepScaleIn());
+    setNetWeight((long)(retDepScaleIn() - retDepScaleOut()));
     ////////////////////////////////////////
     storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
 
@@ -1358,7 +1357,7 @@ void inputForm::createPdf(std::string printerId)
 
  //KG
  HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepTotalWeight());
+ myText = std::to_string(retNetWeight());
  HPDF_Page_MoveTextPos (page2, 659, 1075);
  HPDF_Page_ShowText (page2, myText.c_str());
  HPDF_Page_EndText (page2);
@@ -1499,7 +1498,7 @@ void inputForm::createPdf(std::string printerId)
 
  //CANTIDADACEPTADA
  HPDF_Page_BeginText (page2);
- myText = std::to_string(retDepTotalWeight());
+ myText = std::to_string(retNetWeight());
  HPDF_Page_MoveTextPos (page2, 650, 665);
  HPDF_Page_ShowText (page2, myText.c_str());
  HPDF_Page_EndText (page2);
@@ -1538,16 +1537,7 @@ void inputForm::createPdf(std::string printerId)
   strcpy (signature,  retDepDiFolder().c_str());
   strcat (signature, "/firma.png");
   draw_image (pdf, signature, 100, HPDF_Page_GetHeight (page2) - 900,"Firma transportista",0);
- /****************************************/
- //nuevas inserciones, Noviembre 2018
- //peso neto //  retDepTotalWeight(
- //peso tara //  retDepScaleOut()
- //peso bruto //  retDepScaleIn()
- //comentario operador // getOutputComment()
- //basculista //ret_staff_code();
- //Our costumer stamp // ?¿
- //precio // no lo tenemos
- //forma de pago //  está en la tabla de entidades de facturación
+
  //OPERATOR COMMENT BLOCK
  HPDF_Page_SetRGBFill(page2, 0.85, 0.85, 0.85);
  HPDF_Page_Rectangle(page2, 350, 475, 404,20);
@@ -1610,17 +1600,17 @@ void inputForm::createPdf(std::string printerId)
  HPDF_Page_BeginText (page2);
  /*! BUG, its the opposite ScaleOut vs ScaleIn, dirty quick fix*/
  ///tara
- myText = std::to_string(retDepScaleIn());
+ myText = std::to_string(retTareWeight());
  myText += " Kg";
  HPDF_Page_MoveTextPos (page2, 412, 360);
  HPDF_Page_ShowText (page2, myText.c_str());
  ///bruto
- myText = std::to_string(retDepScaleOut());
+ myText = std::to_string(retGrossWeight());
  myText += " Kg";
  HPDF_Page_MoveTextPos (page2, 139, 0); 
  HPDF_Page_ShowText (page2, myText.c_str());
  ///neto
- myText = std::to_string(retDepTotalWeight());
+ myText = std::to_string(retNetWeight());
  myText += " Kg"; 
  HPDF_Page_MoveTextPos (page2, 141, 0);
  HPDF_Page_ShowText (page2, myText.c_str()); 
@@ -1660,7 +1650,7 @@ void inputForm::createPdf(std::string printerId)
      HPDF_Page_MoveTextPos (page2, 600, 320);
      HPDF_Page_ShowText (page2, "PRECIO:");
 
-     double total_price = retDepTotalWeight()*retDepPrice() / 1000.0;
+     double total_price = retNetWeight()*retDepPrice() / 1000.0;
      std::stringstream stream;
      stream << std::fixed << std::setprecision(2) << total_price;
      std::string precio_final = stream.str();
@@ -1731,12 +1721,11 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     myTicket->setTransportPlate(retDepPlate());
     myTicket->setProductName(retDepProdFullName());
     myTicket->setProductLER(std::to_string(retDepProdLER()));
-    myTicket->setGrossWeight(std::to_string(retDepScaleOut()));
-    myTicket->setNetWeight(std::to_string(retDepScaleIn()));
-    std::cout << "DEBUG: retDepTotalWeight() = " << retDepTotalWeight() << std::endl;
-    myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
+    myTicket->setGrossWeight(std::to_string(retGrossWeight()));
+    myTicket->setTareWeight(std::to_string(retTareWeight()));
+    myTicket->setNetWeight(std::to_string(retNetWeight()));
     myTicket->setPayProcedure(retDepPayProcedure());
-    double total_price = (retDepTotalWeight()*retDepPrice()) / 1000.0;
+    double total_price = (retNetWeight()*retDepPrice()) / 1000.0;
     std::stringstream stream;
     stream << std::fixed << std::setprecision(2) << total_price;
     myTicket->setFinalPrice(stream.str());

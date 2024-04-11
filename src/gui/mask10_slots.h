@@ -57,7 +57,7 @@ static int slotInit(PARAM *p, DATA *d)
   pvSetText(p,EDITREMOLQUE_ROW1,formDI->retDepPlateAtt().c_str());
 
   //10
-  std::string strPeso = std::to_string(formDI->retDepTotalWeight());
+  std::string strPeso = std::to_string(formDI->retNetWeight());
   pvSetText(p,EDITCANT_ACEPT,strPeso.c_str());
      
   std::string myText;

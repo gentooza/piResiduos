@@ -138,8 +138,8 @@ class printable
 
     // common
     virtual void setGrossWeight(std::string data) { return; };
+    virtual void setTareWeight(std::string data) { return; };
     virtual void setNetWeight(std::string data) { return; };
-    virtual void setTotalWeight(std::string data) { return; };
     virtual void setSignaturePath(std::string data) { return; };
     virtual void setStaffCode(std::string data) { return; };
     virtual void setFinalPrice(std::string finalPrice) { return; };

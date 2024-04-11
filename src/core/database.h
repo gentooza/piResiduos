@@ -122,8 +122,7 @@ void rmtDelTransit(std::string& sql, long fromStation);
 void rmtUpdtTransit(std::string& sql, std::vector<std::vector<std::string>> dataReturn, long codigo_estacion);
 
 //TABLE DEPARTURE TRANSIT
-void updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, std::string comentario, std::string incidencias);
-void updtScaleOutTransSal(char *& sql, const char* fecha_hora, long codigo_orden, unsigned int peso_salida, const char* comentario, const char * incidencias);
+void updtScaleOutTransSal(std::string& sql, std::string fecha_hora, long codigo_cliente, long codigo_producto, long peso_salida, std::string comentario, std::string incidencias);
 void sel_all_unsyncro_transito_dep(char *& sql,long codigo_estacion);
 void selAllTransitDep(std::string& sql);
 

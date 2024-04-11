@@ -68,9 +68,9 @@ class printableDi: public printable
     void setPlateAtt(std::string data){ di_9PlateAtt = data; };
     void setSignaturePath(std::string data){ di_signaturePath = data; };
     void setComment(std::string data){ di_operatorComment = data; };
-    void setGrossWeight(std::string data) { di_scaleIn = data; };
-    void setNetWeight(std::string data) { di_scaleOut = data; };
-    void setTotalWeight(std::string data) { di_totalWeight = data; };
+    void setGrossWeight(std::string data) { di_grossWeight = data; };
+    void setTareWeight(std::string data) { di_tareWeight = data; };
+    void setNetWeight(std::string data) { di_netWeight = data; };
     void setStaffCode(std::string data) { di_staffCode = data; };
     void setStampPath(std::string data) { di_stampPath = data; };
     void setFinalPrice(std::string data) { di_price = data; };
@@ -104,9 +104,9 @@ class printableDi: public printable
     std::string  di_9PlateAtt;
     std::string di_signaturePath;
     std::string di_operatorComment;
-    std::string di_scaleIn;
-    std::string di_scaleOut;
-    std::string di_totalWeight;
+    std::string di_grossWeight;
+    std::string di_netWeight;
+    std::string di_tareWeight;
     std::string di_staffCode;
     std::string di_stampPath;
     std::string di_price;

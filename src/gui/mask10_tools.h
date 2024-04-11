@@ -43,7 +43,7 @@ static int isStrInProdsVector(std::vector < std::string> lista,
     iterCodes = listaCodes.begin();
     for(iter = lista.begin(); iter != lista.end() && iterCodes != listaCodes.end(); ++iter)
     {
-        std::string product   o = *iter + " " + *iterCodes;
+        std::string producto = *iter + " " + *iterCodes;
         if(producto.compare(cadena) == 0)
 	        itIs=i;
         i++;

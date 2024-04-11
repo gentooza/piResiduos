@@ -252,6 +252,7 @@ void baseForm::setArrMov(struMovement myOrder)
 
     return;
 }
+
 /*!prepare to save sql movement*/
 void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,station *& myStation, qtDatabase & localDatabase)
 {
@@ -295,11 +296,11 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     values += ",";
     values += std::to_string(staff_in_charge->get_code());
     values += ",";
-    values += std::to_string(retDepTotalWeight()); //PESO NETO
-    values += ",";	    
-    values += std::to_string(retDepScaleIn());  // PESO TARA
-    values += ","; 
-    values += std::to_string(retDepScaleOut()); //PESO BRUTO
+    values += std::to_string(retNetWeight());
+    values += ",";
+    values += std::to_string(retTareWeight());
+    values += ",";
+    values += std::to_string(retDepScaleOut());
     values += ",";
     values += std::to_string(retDepPrice());
     values += ",\"";

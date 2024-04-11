@@ -33,6 +33,9 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
     std::string sqliteQuery, mysqlQuery;
     std::string str_log_message;
   
+    setTareWeight(retDepScaleIn());
+    setGrossWeight(retDepScaleOut());
+    setNetWeight((long)(retDepScaleOut() - retDepScaleIn()));
     //getting sql queries
     storeMov(sqliteQuery, mysqlQuery, depOriginStation, localDatabase);
 
@@ -472,14 +475,15 @@ int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDataba
     int ret = 1;
 
     setAndCalcScaleOut(retDepScaleOut());
-    updtScaleOutTransSal(sql, retDepDateTime(), depCostumer->getCode(), retDepProdCode(), retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+    // this function must be fixed, using grossWeight not netWeight, for saving simply scaling as in Arriving Transit.
+    updtScaleOutTransSal(sql, retDepDateTime(), depCostumer->getCode(), retDepProdCode(), retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
   
     if(!myDatabase.query(NULL, sql.c_str()))
     {
         ret = 0;
         if(isConnected(remoteHost, remotePort))
 	    {
-	        remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepTotalWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+	        remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
 	        myRemoteDatabase.query(NULL, sql.c_str());
 	    }
 
@@ -1240,7 +1244,7 @@ void outputForm::createPdf(std::string printerId)
     // ap 7
     myDi->setAp7LER(std::to_string(retDepProdLER()));
     myDi->setAp7Name(retDepProdName1() + " " + retDepProdName2() + " " + retDepProdName3());
-    myDi->setTotalWeight(std::to_string(retDepTotalWeight()) + " Kg");
+    myDi->setNetWeight(std::to_string(retNetWeight()) + " Kg");
     myDi->setAp7Danger(retDepProdPeligro());
 
     // ap 8
@@ -1261,15 +1265,15 @@ void outputForm::createPdf(std::string printerId)
     // operator comments
     myDi->setComment(getOutputComment());
     // weights
-    myDi->setGrossWeight(std::to_string(retDepScaleIn()) + " Kg");
-    myDi->setNetWeight(std::to_string(retDepScaleOut()) + " Kg");
+    myDi->setGrossWeight(std::to_string(retGrossWeight()) + " Kg");
+    myDi->setTareWeight(std::to_string(retTareWeight()) + " Kg");
     // staff
     myDi->setStaffCode(std::to_string(ret_staff_code()));
     myDi->setStampPath("image/sellotrans.png");
     // price
     if(retDepPayProcedure()==1)
     {
-        double total_price_ = retDepTotalWeight()*retDepPrice() / 1000.0;
+        double total_price_ = retNetWeight()*retDepPrice() / 1000.0;
         std::stringstream stream_;
         stream_ << std::fixed << std::setprecision(2) << total_price_;
         myDi->setFinalPrice(stream_.str() + " Euros");
@@ -1316,11 +1320,11 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
   myTicket->setTransportPlate(retDepPlate());
   myTicket->setProductName(retDepProdFullName());
   myTicket->setProductLER(std::to_string(retDepProdLER()));
-  myTicket->setGrossWeight(std::to_string(retDepScaleOut()));
-  myTicket->setNetWeight(std::to_string(retDepScaleIn()));
-  myTicket->setTotalWeight(std::to_string(retDepTotalWeight()));
+  myTicket->setGrossWeight(std::to_string(retGrossWeight()));
+  myTicket->setTareWeight(std::to_string(retTareWeight()));
+  myTicket->setNetWeight(std::to_string(retNetWeight()));
   myTicket->setPayProcedure(retDepPayProcedure());
-  double total_price = retDepTotalWeight()*retDepPrice() / 1000.0;
+  double total_price = retNetWeight()*retDepPrice() / 1000.0;
   std::stringstream stream;
   stream << std::fixed << std::setprecision(2) << total_price;
   myTicket->setFinalPrice(stream.str());

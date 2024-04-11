@@ -121,7 +121,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "TRANSPORTISTA:\"" << (formSalida?std::to_string(formSalida->depDriver->getCode()):"null")  << "\"";
     std::cout << std::endl;
-    std::cout << "PESO TOTAL:\"" << (formSalida?std::to_string(formSalida->retDepTotalWeight()):"null")  << "\"" << std::endl;
+    std::cout << "PESO TOTAL:\"" << (formSalida?std::to_string(formSalida->retNetWeight()):"null")  << "\"" << std::endl;
     //STATIONS
     station* origin = NULL;
     station* destination = NULL;

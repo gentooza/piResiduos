@@ -126,7 +126,8 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << "INCIDENCIAS:\"" << vectorToString(formEntrada->getOutputIncidents(),"||")  << std::endl;
     std::cout << "COMENTARIO:\"" << (formEntrada?formEntrada->getOutputComment():"null") << "\"" << std::endl;
     std::cout << "CARPETA:\"" << (formEntrada?formEntrada->retDepDiFolder():"null") << std::endl;
-    std::cout << "----" << std::endl;
+    std::cout << "PESO ENTRADA PLANTA:" << (formEntrada?formEntrada->retDepScaleIn():0) << std::endl;
+    std::cout << "PESO SALIDA PLANTA:" << (formEntrada?formEntrada->retDepScaleOut():0) << std::endl;
     std::cout << "############" << std::endl;
     stateNext(p,d);
     stateWork(p,d);
