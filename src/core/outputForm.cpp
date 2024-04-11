@@ -1244,7 +1244,10 @@ void outputForm::createPdf(std::string printerId)
     // ap 7
     myDi->setAp7LER(std::to_string(retDepProdLER()));
     myDi->setAp7Name(retDepProdName1() + " " + retDepProdName2() + " " + retDepProdName3());
-    myDi->setNetWeight(std::to_string(retNetWeight()) + " Kg");
+    if(retDepMovType() == DEF_MOV_TRANSFER)
+        myDi->setNetWeight("-");
+    else
+        myDi->setNetWeight(std::to_string(retNetWeight()) + " Kg");
     myDi->setAp7Danger(retDepProdPeligro());
 
     // ap 8
@@ -1265,8 +1268,16 @@ void outputForm::createPdf(std::string printerId)
     // operator comments
     myDi->setComment(getOutputComment());
     // weights
-    myDi->setGrossWeight(std::to_string(retGrossWeight()) + " Kg");
-    myDi->setTareWeight(std::to_string(retTareWeight()) + " Kg");
+    if(retDepMovType() == DEF_MOV_TRANSFER)
+    {
+        myDi->setGrossWeight("-");
+        myDi->setTareWeight("-");
+    }
+    else
+    {
+        myDi->setGrossWeight(std::to_string(retGrossWeight()) + " Kg");
+        myDi->setTareWeight(std::to_string(retTareWeight()) + " Kg");
+    }
     // staff
     myDi->setStaffCode(std::to_string(ret_staff_code()));
     myDi->setStampPath("image/sellotrans.png");
@@ -1293,49 +1304,48 @@ void outputForm::createPdf(std::string printerId)
   about our movement*/
 int outputForm::createTicket(std::string printerId, std::string ticketCode)
 {
-  printable *myTicket;
-  std::string fileName = "ticket.pdf";
+    printable *myTicket;
+    std::string fileName = "ticket.pdf";
 
-  myTicket = new printableTicket(fileName, printerId);
+    myTicket = new printableTicket(fileName, printerId);
 
-  myTicket->setTicketType("REGISTRO DE SALIDA");
-  myTicket->setTicketCode(ticketCode);
-  costumer * our_costumer;
-  retOurId(our_costumer);
-  myTicket->setOurCIF(our_costumer->getNif());
-  delete our_costumer;
-  station * localDestination;
-  retDepOriginStation(localDestination);
-  myTicket->setStationName(localDestination->getName());
-  myTicket->setStationNIMA(localDestination->getNima());
-  delete localDestination;
-  myTicket->setMovCode(retDepMovCode());
-  myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
-  myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
-  station * destination;
-  retDepDestinationStation(destination);
-  myTicket->setCostumerName(destination->getName());
-  delete destination;
-  myTicket->setTransportName(depDriver->getName());
-  myTicket->setTransportPlate(retDepPlate());
-  myTicket->setProductName(retDepProdFullName());
-  myTicket->setProductLER(std::to_string(retDepProdLER()));
-  myTicket->setGrossWeight(std::to_string(retGrossWeight()));
-  myTicket->setTareWeight(std::to_string(retTareWeight()));
-  myTicket->setNetWeight(std::to_string(retNetWeight()));
-  myTicket->setPayProcedure(retDepPayProcedure());
-  double total_price = retNetWeight()*retDepPrice() / 1000.0;
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(2) << total_price;
-  myTicket->setFinalPrice(stream.str());
-  myTicket->setComment(getOutputComment());
-  myTicket->setStaffCode(std::to_string(ret_staff_code()));
-  std::string signaturePath = retDepDiFolder() + "/firma.png";
-  myTicket->setSignaturePath(signaturePath);
-  myTicket->composeFile();
-  myTicket->saveFile();
-  myTicket->printFile();
-  delete myTicket;
-
-  return 0;
+    myTicket->setTicketType("REGISTRO DE SALIDA");
+    myTicket->setTicketCode(ticketCode);
+    costumer * our_costumer;
+    retOurId(our_costumer);
+    myTicket->setOurCIF(our_costumer->getNif());
+    delete our_costumer;
+    station * localDestination;
+    retDepOriginStation(localDestination);
+    myTicket->setStationName(localDestination->getName());
+    myTicket->setStationNIMA(localDestination->getNima());
+    delete localDestination;
+    myTicket->setMovCode(retDepMovCode());
+    myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
+    myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
+    station * destination;
+    retDepDestinationStation(destination);
+    myTicket->setCostumerName(destination->getName());
+    delete destination;
+    myTicket->setTransportName(depDriver->getName());
+    myTicket->setTransportPlate(retDepPlate());
+    myTicket->setProductName(retDepProdFullName());
+    myTicket->setProductLER(std::to_string(retDepProdLER()));
+    myTicket->setGrossWeight(std::to_string(retGrossWeight()));
+    myTicket->setTareWeight(std::to_string(retTareWeight()));
+    myTicket->setNetWeight(std::to_string(retNetWeight()));
+    myTicket->setPayProcedure(retDepPayProcedure());
+    double total_price = retNetWeight()*retDepPrice() / 1000.0;
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << total_price;
+    myTicket->setFinalPrice(stream.str());
+    myTicket->setComment(getOutputComment());
+    myTicket->setStaffCode(std::to_string(ret_staff_code()));
+    std::string signaturePath = retDepDiFolder() + "/firma.png";
+    myTicket->setSignaturePath(signaturePath);
+    myTicket->composeFile();
+    myTicket->saveFile();
+    myTicket->printFile();
+    delete myTicket;
+    return 0;
 }
