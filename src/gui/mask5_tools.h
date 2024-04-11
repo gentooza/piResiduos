@@ -808,21 +808,20 @@ static int populateTransito(PARAM *p, DATA* d, formulario *& myForm)
 static int consoleRefresh(PARAM *p, DATA * d)
 {
     int ret = -1;
-  //console
-  std::vector <std::string>::iterator iter;
-  unsigned int i=0;    
-  if(d->localConsole.size() != console.size())
+    //console
+    std::vector <std::string>::iterator iter;  
+    if(d->localConsole.size() != console.size())
     {
-      if(console.size()>6)
-	console.erase(console.begin(), console.end()-6);
-      d->localConsole = console;
-      pvClear(p,OUTPUT);
-      for(iter = console.begin(); iter != console.end() ; ++iter)
-	{
-	  pvSetText(p,OUTPUT,iter->c_str());
-	  ret = 0;
-	}
+        if(console.size()>6)
+	        console.erase(console.begin(), console.end()-6);
+        d->localConsole = console;
+        pvClear(p,OUTPUT);
+        for(iter = console.begin(); iter != console.end() ; ++iter)
+	    {
+	        pvSetText(p,OUTPUT,iter->c_str());
+	        ret = 0;
+	    }
     }
-  return ret;
+    return ret;
 }
 #endif
