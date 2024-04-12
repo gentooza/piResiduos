@@ -3,7 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018 Prointegra SL.
 Copyright 2019-2020 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023-2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or

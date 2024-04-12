@@ -3,7 +3,7 @@ This file is part of PixResiduos.
 
 Copyright 2017-2019, Pro Integra SL.
 Copyright 2019-2022 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023-2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -36,7 +36,7 @@ If not, see <https://www.gnu.org/licenses/>.
 //rlPPIClient        ppi(ppidaemon_MAILBOX,ppidaemon_SHARED_MEMORY,ppidaemon_SHARED_MEMORY_SIZE);
 
 
-const char* sVERSION = "piResiduos v0.3dev (2023xxxx)";
+const char* sVERSION = "piResiduos v0.3dev (2024xxxx)";
 
 
 camera* camera1;
