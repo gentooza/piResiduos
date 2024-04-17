@@ -858,34 +858,17 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
     }
     //billing method and price
     if(set_all_billing_info(localDatabase))
-        std::cout << "*ERROR*" << std::endl; 
+        std::cout << "*ERROR*" << std::endl;
+    // origin station, us!
+    if(myStation)
+        setDepOrigStation(myStation);
     // output movement
     if(retDepMovType() == DEF_MOV_SALIDA)
     {
-        // origin station, us!
-        if(myStation)
-            setDepOrigStation(myStation);
-        if(ourId)
-        {
-            depOriginStation->setName(ourId->getName());
-            depOriginStation->setNif(ourId->getNif());
-            depOriginStation->setAddress(ourId->getAddress());
-            depOriginStation->setProvence(ourId->getProvence());
-            depOriginStation->setCity(ourId->getCity());
-            depOriginStation->setRegion(ourId->getRegion());
-            depOriginStation->setZip(ourId->getZip());
-            depOriginStation->setNima(ourId->getNima());
-            depOriginStation->setNumIns(ourId->getNumIns());
-            depOriginStation->setPhone(ourId->getPhone());
-            depOriginStation->setMail(ourId->getMail());
-        }
         getAllOrderInfo(localDatabase, myDepMovement.CODIGO_ORDEN);
     }
     else
     {
-        // origin station, us!
-        if(myStation)
-            setDepOrigStation(myStation);
         // destination station
         if (depDestinationStation)
         {
