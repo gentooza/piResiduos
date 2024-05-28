@@ -42,159 +42,155 @@ myMail::myMail()
 
 int myMail::sendIncidentsMail(station *& myStation, baseForm *& myForm)
 {
-  std::cout << "DEBUG: inside myMail::sendIncidentsMail" << std::endl;
-  //if no incidents, return
-  if(myForm->getOutputIncidents().empty())
-    return 0;				     
-  QApplication a();
+    std::cout << "DEBUG: inside myMail::sendIncidentsMail" << std::endl;
+    //if no incidents, return
+    if(myForm->getOutputIncidents().empty())
+        return 0;				     
     
-  QString qstr = QString::fromStdString(smtpServer);
-  SmtpClient smtp(qstr, smtpPort, SmtpClient::SslConnection);
+    QString qstr = QString::fromStdString(smtpServer);
+    SmtpClient smtp(qstr, smtpPort, SmtpClient::SslConnection);
 
-  //timeouts
-  smtp.setResponseTimeout(60000);
-  smtp.setSendMessageTimeout(240000);
-  //
+    //timeouts
+    smtp.setResponseTimeout(60000);
+    smtp.setSendMessageTimeout(240000);
+    //
 
-  // We need to set the username (your email address) and the password
-  // for smtp authentification.
+    // We need to set the username (your email address) and the password
+    // for smtp authentification.
 
-  qstr = QString::fromStdString(mailUser);
-  smtp.setUser(qstr);
-  qstr = QString::fromStdString(mailPass);
-  smtp.setPassword(qstr);
+    qstr = QString::fromStdString(mailUser);
+    smtp.setUser(qstr);
+    qstr = QString::fromStdString(mailPass);
+    smtp.setPassword(qstr);
 
-  // Now we create a MimeMessage object. This will be the email.
+    // Now we create a MimeMessage object. This will be the email.
 
-  MimeMessage message;
+    MimeMessage message;
     
-  qstr = QString::fromStdString(mailUser);
-  QString qstr2 = QString::fromStdString(mailSenderName);
-  std::cout << "message user mail:" << mailUser << " name:"<< mailSenderName << std::endl;
-  message.setSender(new EmailAddress(qstr, qstr2));
+    qstr = QString::fromStdString(mailUser);
+    QString qstr2 = QString::fromStdString(mailSenderName);
+    std::cout << "message user mail:" << mailUser << " name:"<< mailSenderName << std::endl;
+    message.setSender(new EmailAddress(qstr, qstr2));
 
-  std::vector <std::string> ::iterator iter;
-  std::cout << "send to: ";
-  for(iter = mailRecipients.begin();iter != mailRecipients.end();++iter)
+    std::vector <std::string> ::iterator iter;
+    std::cout << "send to: ";
+    for(iter = mailRecipients.begin();iter != mailRecipients.end();++iter)
     {
-      qstr = QString::fromStdString(*iter);
-      std::cout << *iter << " ";
-      message.addRecipient(new EmailAddress(qstr, "test recipient"));
+        qstr = QString::fromStdString(*iter);
+        std::cout << *iter << " ";
+        message.addRecipient(new EmailAddress(qstr, "test recipient"));
     }
-  std::cout << std::endl;
+    std::cout << std::endl;
     
-  //subject and body
-  std::string subject = "Incidentes registrados en ";
-  subject += myStation->getName();
-  message.setSubject(QString::fromStdString(subject));
-  MimeText text;
-  buildMessage( text, myStation, myForm);
+    //subject and body
+    std::string subject = "Incidentes registrados en ";
+    subject += myStation->getName();
+    message.setSubject(QString::fromStdString(subject));
+    MimeText text;
+    buildMessage( text, myStation, myForm);
 
-  // Now add it to the mail
-  message.addPart(&text);
+    // Now add it to the mail
+    message.addPart(&text);
   
-  // Now we can send the mail
-  if(smtp.connectToHost())
-    std::cout << "connect to host true" << std::endl;
-  else
-    std::cout << "can't connect to host!!" << std::endl;    
-  if(smtp.login())
-    std::cout << "login true" << std::endl;
-  else
-    std::cout << "login failed!! " << mailUser << " : " << mailPass << std::endl;
-  if(smtp.sendMail(message))
-    std::cout << "message sent true" << std::endl;
-  else
-    std::cout << "message wasn't sent!!" << std::endl;    
-  smtp.quit();
+    // Now we can send the mail
+    if(smtp.connectToHost())
+        std::cout << "connect to host true" << std::endl;
+    else
+        std::cout << "can't connect to host!!" << std::endl;    
+    if(smtp.login())
+        std::cout << "login true" << std::endl;
+    else
+        std::cout << "login failed!! " << mailUser << " : " << mailPass << std::endl;
+    if(smtp.sendMail(message))
+        std::cout << "message sent true" << std::endl;
+    else
+        std::cout << "message wasn't sent!!" << std::endl;    
+    smtp.quit();
 
-  std::cout << "DEBUG: exiting! myMail::sendIncidentsMail" << std::endl;
-  return 0;
-
+    std::cout << "DEBUG: exiting! myMail::sendIncidentsMail" << std::endl;
+    return 0;
 }
 
 int myMail::buildMessage( MimeText &text, station *& myStation, baseForm *& myForm)
 {
+    // Now add some text to the email.
+    // First we create a MimeText object.
 
-  // Now add some text to the email.
-  // First we create a MimeText object.
-
-  std::string mailContent = "Hola!\n\nSe han encontrado las siguientes incidencias al procesar el transporte:\n\n";
+    std::string mailContent = "Hola!\n\nSe han encontrado las siguientes incidencias al procesar el transporte:\n\n";
  
-  std::string station ="ESTACION:\n";
-  station +="  ";
-  station += myStation->getName();
-  std::string sType;
-  myStation->getType(sType);
-  station +=" , DE TIPO ";
-  station += sType;
-  station += "\n";
-  station += "  ";
-  station += getCurrentDate();
-  station += "\n\n";
-  
-  std::string costumer ="CLIENTE:\n";
-  costumer += "  código: ";
-  costumer += std::to_string(myForm->depCostumer->getCode());
-  costumer += "   nombre: ";
-  costumer += myForm->depCostumer->getName();
-  costumer += "\n\n";
-  
-  std::string product ="PRODUCTO:\n";
-  product += "  código: ";
-  product += std::to_string(myForm->retDepProdCode());
-  product += "   ler: ";
-  product += std::to_string(myForm->retDepProdLER());
-  product += "\n";
-  product += "  nombre: ";
-  product += myForm->retDepProdName1();
-  product += " ";
-  product += myForm->retDepProdName2();
-  product += " ";
-  product += myForm->retDepProdName3();
-  product += "\n\n";
+    std::string station ="ESTACION:\n";
+    station +="  ";
+    station += myStation->getName();
+    std::string sType;
+    myStation->getType(sType);
+    station +=" , DE TIPO ";
+    station += sType;
+    station += "\n";
+    station += "  ";
+    station += getCurrentDate();
+    station += "\n\n";
 
-  std::string movement = "TIPO DE MOVIMIENTO ";
-  int type = myForm->retDepMovType();
-  if(type == 1)    
-    movement += "DE ENTRADA DE MATERIAL";
-  else if(type == 2)
-    movement += "DE TRANSFERENCIA DE MATERIAL";
-  else if(type == 3)
-    movement += "DE SALIDA DE MATERIAL";
-  else
+    std::string costumer ="CLIENTE:\n";
+    costumer += "  código: ";
+    costumer += std::to_string(myForm->depCostumer->getCode());
+    costumer += "   nombre: ";
+    costumer += myForm->depCostumer->getName();
+    costumer += "\n\n";
+
+    std::string product ="PRODUCTO:\n";
+    product += "  código: ";
+    product += std::to_string(myForm->retDepProdCode());
+    product += "   ler: ";
+    product += std::to_string(myForm->retDepProdLER());
+    product += "\n";
+    product += "  nombre: ";
+    product += myForm->retDepProdName1();
+    product += " ";
+    product += myForm->retDepProdName2();
+    product += " ";
+    product += myForm->retDepProdName3();
+    product += "\n\n";
+
+    std::string movement = "TIPO DE MOVIMIENTO ";
+    int type = myForm->retDepMovType();
+    if(type == 1)    
+        movement += "DE ENTRADA DE MATERIAL";
+    else if(type == 2)
+        movement += "DE TRANSFERENCIA DE MATERIAL";
+    else if(type == 3)
+        movement += "DE SALIDA DE MATERIAL";
+    else
     {
-      movement += "DESCONOCIDO (";
-      movement += std::to_string(type);
-      movement += ")";
+        movement += "DESCONOCIDO (";
+        movement += std::to_string(type);
+        movement += ")";
     }
-  movement += "\n\n";
+    movement += "\n\n";
 
-  std::string incidents = "INCIDENCIAS REGISTRADAS:\n";
-  std::vector<std::string> myIncidents;
-  std::vector<std::string>::iterator iter;
-  myIncidents = myForm->getOutputIncidents();
-  for(iter = myIncidents.begin(); iter != myIncidents.end(); ++iter)
+    std::string incidents = "INCIDENCIAS REGISTRADAS:\n";
+    std::vector<std::string> myIncidents;
+    std::vector<std::string>::iterator iter;
+    myIncidents = myForm->getOutputIncidents();
+    for(iter = myIncidents.begin(); iter != myIncidents.end(); ++iter)
     {
-      incidents += " - ";
-      incidents += *iter;
-      incidents +="\n";
-      //std::cout << "incidents: " << incidents << std::endl;
+        incidents += " - ";
+        incidents += *iter;
+        incidents +="\n";
+        //std::cout << "incidents: " << incidents << std::endl;
     }
-  incidents +="\n";
+    incidents +="\n";
 
-  std::string comments = "COMENTARIO DEL OPERADOR:\n";
-  comments += myForm->getOutputComment();
+    std::string comments = "COMENTARIO DEL OPERADOR:\n";
+    comments += myForm->getOutputComment();
   
-  mailContent += station + costumer + product + movement + incidents + comments;
-  text.setText(QString::fromUtf8(mailContent.c_str()));
+    mailContent += station + costumer + product + movement + incidents + comments;
+    text.setText(QString::fromUtf8(mailContent.c_str()));
 
-  return  0;
+    return  0;
 }
 
 int myMail::sendTestMail(std::string name,std::string type)
 {
-  QApplication a();
     // This is a first demo application of the SmtpClient for Qt project
 
     // First we need to create an SmtpClient object
