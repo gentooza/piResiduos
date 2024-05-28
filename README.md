@@ -1,6 +1,6 @@
 # piResiduos
 
-Garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server -no source code available for this pieze ;-(-.
+Garbage managing software, (currently only in spanish) we have several local nodes managing input/ouput materials, and a central administration server (no source code available for the server side ;-().
 
 This is the source code for every local node. It's developed using C++ and [pvbrowser](https://github.com/pvbrowser/pvb) SCADA framework.
 
@@ -81,21 +81,21 @@ Happy Hacking!
 
 ## License and copyright
 ```
- This file is part of PixResiduos.
+ This file is part of PiResiduos.
 
- Copyright 2021, Pixelada S. Coop. And.
- Copyright 2023 Joaquín Cuéllar <joaquin (dot) cuellar (at) riseup (dot) net>
+ Copyright 2017-2019, Pro Integra SL.
+ Copyright 2019-2022 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
+ Copyright 2023-2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
- PixResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
+ PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- PixResiduos is distributed in the hope that it will
+ PiResiduos is distributed in the hope that it will
  be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with PixResiduos.
+ along with PiResiduos.
  If not, see <https://www.gnu.org/licenses/>.
 ```
