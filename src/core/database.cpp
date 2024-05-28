@@ -24,26 +24,28 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 #include "database.h"
 
-
-
 /*! SELECT queries */
 //table CENTERS
-void selAllDatFrmCenter(std::string& sql,long code)
+void selAllDatFrmCenter(std::string& sql, long code)
 { 
-  sql = "select CODIGO_CENTRO,TIPO_CENTRO,NOMBRE,NIF,DIRECCION,PROVINCIA,POBLACION,CP,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,TELEFONO,MAIL,BORRADO FROM CENTROS WHERE CODIGO_CENTRO =";
-  sql += std::to_string(code);
-  sql += "  AND (BORRADO is null or BORRADO = 0);";
+    sql = "select CODIGO_CENTRO, TIPO_CENTRO, NOMBRE, NIF, DIRECCION, PROVINCIA, ";
+    sql += "POBLACION, CP, COMUNIDAD_AUTONOMA,NIMA, NUM_INSCRIPCION, TELEFONO, MAIL, BORRADO ";
+    sql += "FROM CENTROS WHERE CODIGO_CENTRO = ";
+    sql += std::to_string(code);
+    sql += "  AND (BORRADO is null or BORRADO = 0);";
 
-  return;
+    return;
 }
-void selAllDatFrmLocalCenters(char *& sql)
+
+void selAllDatFrmLocalCenters(std::string& sql)
 {
-  sql = new char[sizeof("select CODIGO_CENTRO,TIPO_CENTRO,NOMBRE,NIF,DIRECCION,PROVINCIA,POBLACION,CP,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,TELEFONO,MAIL,BORRADO FROM CENTROS WHERE TIPO_CENTRO > 0 AND TIPO_CENTRO < 5;")+30];
-   
-  sprintf(sql,"select CODIGO_CENTRO,TIPO_CENTRO,NOMBRE,NIF,DIRECCION,PROVINCIA,POBLACION,CP,COMUNIDAD_AUTONOMA,NIMA,NUM_INSCRIPCION,TELEFONO,MAIL,BORRADO FROM CENTROS WHERE TIPO_CENTRO > 0 AND TIPO_CENTRO < 5;");
+    sql = "select CODIGO_CENTRO, TIPO_CENTRO, NOMBRE, NIF, DIRECCION, PROVINCIA, ";
+    sql += "POBLACION, CP, COMUNIDAD_AUTONOMA, NIMA, NUM_INSCRIPCION, TELEFONO, MAIL, BORRADO ";
+    sql += "FROM CENTROS WHERE TIPO_CENTRO > 0 AND TIPO_CENTRO < 5;";
 
-  return;
+    return;
 }
+
 void selExtCentersNameCode(char *& sql)
 {
   sql = new char[sizeof("select NOMBRE,CODIGO_CENTRO FROM CENTROS WHERE TIPO_CENTRO =5")+30];
@@ -1002,19 +1004,18 @@ void remote_updatePesoSalidaTransito(std::string& sql, long costumer_code, const
 }
 void remote_updatePesoSalidaTransitoSalida(std::string& sql, long costumer_code, const char* date_time, long station_code,  unsigned int scale, const char* comentario, const char* incidents)
 {    
-  sql = "INSERT INTO transito_salidas (FECHA_HORA, CODIGO_CLIENTE, CODIGO_ESTACION,PESO_RETIRADO,COMENTARIO_OPERADOR, INCIDENCIAS) VALUES (\"";
-  sql += date_time;
-  sql += "\",";
-  sql += std::to_string(costumer_code);
-  sql += ",";
-  sql += std::to_string(station_code);
-  sql += ",";
-  sql += std::to_string(scale);
-  sql += ",\"";
-  sql += comentario; 
-  sql += "\",\"";
-  sql += incidents;
-  sql += "\") ON DUPLICATE KEY UPDATE PESO_RETIRADO = VALUES(PESO_RETIRADO),COMENTARIO_OPERADOR = VALUES(COMENTARIO_OPERADOR), INCIDENCIAS = VALUES(INCIDENCIAS);";
- 
-  return;
+    sql = "INSERT INTO transito_salidas (FECHA_HORA, CODIGO_CLIENTE, CODIGO_ESTACION,PESO_RETIRADO,COMENTARIO_OPERADOR, INCIDENCIAS) VALUES (\"";
+    sql += date_time;
+    sql += "\",";
+    sql += std::to_string(costumer_code);
+    sql += ",";
+    sql += std::to_string(station_code);
+    sql += ",";
+    sql += std::to_string(scale);
+    sql += ",\"";
+    sql += comentario; 
+    sql += "\",\"";
+    sql += incidents;
+    sql += "\") ON DUPLICATE KEY UPDATE PESO_RETIRADO = VALUES(PESO_RETIRADO),COMENTARIO_OPERADOR = VALUES(COMENTARIO_OPERADOR), INCIDENCIAS = VALUES(INCIDENCIAS);";
+    return;
 }
