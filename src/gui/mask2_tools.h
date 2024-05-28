@@ -380,10 +380,10 @@ static void globalSyncronization(PARAM *p, DATA* d)
 
 static void retrieveStations(PARAM *p)
 {	    
-    char * sql = NULL;
+    std::string sql;
 
     selAllDatFrmLocalCenters(sql);
-    if(!localDatabase.query(p,sql))
+    if(!localDatabase.query(p, sql.c_str()))
     {
         std::vector<std::vector<std::string>>  dataReturn = localDatabase.retData2();
         std::vector<std::vector<std::string>>::iterator iter;
@@ -391,8 +391,6 @@ static void retrieveStations(PARAM *p)
         for(iter = dataReturn.begin(); iter != dataReturn.end(); ++iter)
             allStations.push_back(station(*iter));	 
     }
-    if( sql != NULL)
-        delete [] sql;
     return;
 }
 
