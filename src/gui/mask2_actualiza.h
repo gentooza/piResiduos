@@ -336,81 +336,94 @@ static int actualizaEstado(PARAM *p, DATA *d)
 //condiciones de cambio
 static int maquinaEstados(PARAM *p, DATA *d)
 {
-  int ret = 0;
-  switch(d->estadoActual) 
+    int ret = 0;
+    switch(d->estadoActual) 
     {
-    case -1: //llegada a configuración
-      d->estadoFuturo= 0;
-      ret = 0;
-      break;
-    case 0: //reposo, nada seleccionado
-      if(d->selectedCam.compare("ELIJA") && !d->selectedCam.empty() )
-	{
-	  std::cout << " que nos vamos al estado 1!" << std::endl;
-	  pvSetText(p,LABCURRCAM,pvtr("1 y 2 entradas, 3 y 4 salidas"));
-	  d->loadedCam = d->selectedCam;
-	  d->estadoFuturo= 1;
-	}
-      if(d->selectedBas.compare("ELIJA") && !d->selectedBas.empty() )
-	{
-	  std::cout << " que nos vamos al estado 2!" << std::endl;
-	  pvSetText(p,LABCURRBAS,pvtr("1 y 2 entradas, 3 y 4 salidas"));
-	  d->loadedBas = d->selectedBas;
-	  d->estadoFuturo= 2;
-	}
-		if(d->selectedPrinter.compare("ELIJA") && !d->selectedPrinter.empty() )
-		{
-			d->loadedPrinter = d->selectedPrinter;
-	  		d->estadoFuturo= 3;
-		}
-      ret = 0;
-      break;
-    case 1: //info de cámara cargada
-      if(d->selectedCam.compare(d->loadedCam))
-	{
-	  pvSetText(p,LABCURRCAM,pvtr("Elija una"));
-	  d->estadoFuturo= 0;
-	}
-      if(d->selectedBas.compare(d->loadedBas) || d->selectedPrinter.compare(d->loadedPrinter))
-	{
-	  pvSetText(p,LABCURRCAM,pvtr("Elija una"));
-	  d->selectedCam.clear();
-	  d->loadedCam.clear();
-	  d->estadoFuturo= 0;
-	}
-      ret = 0;
-      break;
-    case 2: //info de báscula cargada
-      if(d->selectedBas.compare(d->loadedBas))
-	{
-	  pvSetText(p,LABCURRBAS,pvtr("Elija una"));
-	  d->estadoFuturo= 0;
-	}
-      if(d->selectedCam.compare(d->loadedCam) || d->selectedPrinter.compare(d->loadedPrinter))
-	{
-	  pvSetText(p,LABCURRBAS,pvtr("Elija una"));
-	  d->selectedBas.clear();
-	  d->loadedBas.clear();
-	  d->estadoFuturo= 0;
-	}
-      ret = 0;
-      break;
-	case 3: // printer loaded
-		if(d->selectedPrinter.compare(d->loadedPrinter))
-		{
-			d->estadoFuturo= 0;
-		}
-		if(d->selectedCam.compare(d->loadedCam) || d->selectedBas.compare(d->loadedBas))
-		{
-	  		d->selectedPrinter.clear();
-	  		d->loadedPrinter.clear();
-	  		d->estadoFuturo= 0;
-		}
-    default:
-      ret = -1;
-      break;
+        case -1: // Arriving
+        {
+            d->estadoFuturo= 0;
+            ret = 0;
+            break;
+        }
+        case 0: // nothing selected
+        {
+            if(d->selectedCam.compare("ELIJA") && !d->selectedCam.empty() )
+	        {
+	            std::cout << " que nos vamos al estado 1!" << std::endl;
+	            pvSetText(p,LABCURRCAM,pvtr("1 y 2 entradas, 3 y 4 salidas"));
+	            d->loadedCam = d->selectedCam;
+	            d->estadoFuturo= 1;
+	        }
+            if(d->selectedBas.compare("ELIJA") && !d->selectedBas.empty() )
+	        {
+	            std::cout << " que nos vamos al estado 2!" << std::endl;
+	            pvSetText(p,LABCURRBAS,pvtr("1 y 2 entradas, 3 y 4 salidas"));
+	            d->loadedBas = d->selectedBas;
+	            d->estadoFuturo= 2;
+	        }
+		    if(d->selectedPrinter.compare("ELIJA") && !d->selectedPrinter.empty() )
+		    {
+			    d->loadedPrinter = d->selectedPrinter;
+	  		    d->estadoFuturo= 3;
+		    }
+            ret = 0;
+            break;
+        }
+        case 1: // info de cámara cargada
+        {
+            if(d->selectedCam.compare(d->loadedCam))
+	        {
+	            pvSetText(p,LABCURRCAM,pvtr("Elija una"));
+	            d->estadoFuturo= 0;
+	        }
+            if(d->selectedBas.compare(d->loadedBas) || d->selectedPrinter.compare(d->loadedPrinter))
+	        {
+	            pvSetText(p,LABCURRCAM,pvtr("Elija una"));
+	            d->selectedCam.clear();
+	            d->loadedCam.clear();
+	            d->estadoFuturo= 0;
+	        }
+            ret = 0;
+            break;
+        }
+        case 2: //info de báscula cargada
+        {
+            if(d->selectedBas.compare(d->loadedBas))
+	        {
+	            pvSetText(p,LABCURRBAS,pvtr("Elija una"));
+	            d->estadoFuturo= 0;
+	        }
+            if(d->selectedCam.compare(d->loadedCam) || d->selectedPrinter.compare(d->loadedPrinter))
+	        {
+	            pvSetText(p,LABCURRBAS,pvtr("Elija una"));
+	            d->selectedBas.clear();
+	            d->loadedBas.clear();
+	            d->estadoFuturo= 0;
+	        }
+            ret = 0;
+            break;
+        }
+	    case 3: // printer loaded
+        {
+		    if(d->selectedPrinter.compare(d->loadedPrinter))
+		    {
+    			d->estadoFuturo= 0;
+		    }
+		    if(d->selectedCam.compare(d->loadedCam) || d->selectedBas.compare(d->loadedBas))
+		    {
+	  		    d->selectedPrinter.clear();
+	  		    d->loadedPrinter.clear();
+	  		    d->estadoFuturo= 0;
+		    }
+            break;
+        }
+        default:
+        {
+            ret = -1;
+            break;
+        }
     }
-  return ret;
+    return ret;
 }
 
 #endif
