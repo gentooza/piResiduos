@@ -99,8 +99,6 @@ class inputForm: public baseForm
   std::vector <std::string> allClientes;
   std::vector <std::string> allClientesCodes;
 
-  void createPdf(std::string printerId);
-
   int createTicket(std::string printerId, std::string ticketCode);
   void calculateTicketHeight(int& lines);
   void ticketHeader(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, std::string ticketCode, float fsize_small);
