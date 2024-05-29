@@ -65,10 +65,10 @@ enum
 
 enum
 {
-    DEF_MOV_ENTRADA = 1,
+    DEF_MOV_UNLOADING = 1,
     DEF_MOV_TRANSFER,
-    DEF_MOV_SALIDA,
-    DEF_MOV_INTERNOD5,
+    DEF_MOV_LOADING,
+    DEF_MOV_TODEPOSITD5,
 };
 
 enum //form type
@@ -281,7 +281,7 @@ class  baseForm
         long ret_staff_code(){long my_id; (staff_in_charge?my_id = staff_in_charge->get_code():my_id=-1); return my_id;};
         
         //arrive of unload movements managment
-        virtual void setUnloadMov(){setArrMovType(DEF_MOV_ENTRADA);};
+        virtual void setUnloadMov(){setArrMovType(DEF_MOV_UNLOADING);};
         
         //arrive of transfer movements managment
         virtual int isTrf(qtDatabase & myDatabase, station*& myStation){ return -1;};

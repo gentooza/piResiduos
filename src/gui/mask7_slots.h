@@ -55,7 +55,7 @@ static int slotInit(PARAM *p, DATA *d)
     std::string temp;
   
     //dynamic GUI construction
-    if(formDI->retDepMovType() == DEF_MOV_TRANSFER || formDI->retDepMovType() == DEF_MOV_SALIDA)
+    if(formDI->retDepMovType() == DEF_MOV_TRANSFER || formDI->retDepMovType() == DEF_MOV_LOADING)
     {
         //a) centro nuestro centro de origen
         station * localOrigin;

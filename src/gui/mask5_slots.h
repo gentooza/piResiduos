@@ -70,7 +70,7 @@ static int slotInit(PARAM *p, DATA *d)
             formSalida = new outputForm(PT);
         else
             formSalida = new outputForm(ET);
-        formSalida->setDepMovType(DEF_MOV_SALIDA);
+        formSalida->setDepMovType(DEF_MOV_LOADING);
         formSalida->setState(-99999);
         d->enFutEstado = -99999;
     }
@@ -447,7 +447,7 @@ static int slotRadioButtonEvent(PARAM *p, int id, DATA *d, const char *text)
   else if(id==CHKSALIDA && !strcmp(text,"(1)"))
     d->llegada=0;
   else if(id==CHKTRANSITO && !strcmp(text,"(1)"))
-    formSalida->setDepMovType(DEF_MOV_SALIDA);
+    formSalida->setDepMovType(DEF_MOV_LOADING);
   else if(id==CHKTRANSFERENCIA && !strcmp(text,"(1)"))
     formSalida->setDepMovType(DEF_MOV_TRANSFER);
   return 0;

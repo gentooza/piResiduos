@@ -112,9 +112,9 @@ static int stateWork(PARAM *p, DATA *d)
 	    		if(formEntrada->retArrCosCode() == DEF_BIORECICLAJE_CODE) //SI ES UNA TRANSFERENCIA LO DEFINIMOS COMO TIPO DE MOVIMIENTO AQUI
 	      			formEntrada->setArrMovType(DEF_MOV_TRANSFER);
 	    		else if(istation_type == 3) //deposit
-	      			formEntrada->setArrMovType(DEF_MOV_INTERNOD5);	      
+	      			formEntrada->setArrMovType(DEF_MOV_TODEPOSITD5);	      
 	    		else
-	      			formEntrada->setArrMovType(DEF_MOV_ENTRADA);
+	      			formEntrada->setArrMovType(DEF_MOV_UNLOADING);
 	    		std::string strstation_type;
 	    		myStation->getType(strstation_type);
 				//TODO

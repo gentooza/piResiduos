@@ -61,7 +61,7 @@ static int slotInit(PARAM *p, DATA *d)
     std::string temp;
     formDI->retDepDestinationStation(myDestStation);
     formDI->retDepAuthCostumer(myAuthCostumer);
-    if(formDI->retDepMovType() == DEF_MOV_SALIDA)
+    if(formDI->retDepMovType() == DEF_MOV_LOADING)
     {
 	    //a) un centro desde la base de datos + campo D/R
 		pvSetEditable(p, FRAME6_A,0);

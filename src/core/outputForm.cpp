@@ -101,7 +101,7 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 	            else
 		            log_message("(CARGA) registro en BD local parece OK", 2);		
 	            //if order, clean
-	            if(!ret && retDepMovType() == DEF_MOV_SALIDA)
+	            if(!ret && retDepMovType() == DEF_MOV_LOADING)
 		        {
                     sqliteQuery.clear();
                     mysqlQuery.clear();
@@ -863,7 +863,7 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
     if(myStation)
         setDepOrigStation(myStation);
     // output movement
-    if(retDepMovType() == DEF_MOV_SALIDA)
+    if(retDepMovType() == DEF_MOV_LOADING)
     {
         getAllOrderInfo(localDatabase, myDepMovement.CODIGO_ORDEN);
     }
@@ -876,7 +876,7 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
             depDestinationStation->getType(value);
             if(value == DEF_STATION_DEPOSIT) //movement to deposit
 	        {
-	            setDepMovType(DEF_MOV_INTERNOD5);
+	            setDepMovType(DEF_MOV_TODEPOSITD5);
                 depCostumer->setCostumer(defDriverCode, localDatabase);
 	            depCostumer->setType(3);
 	        }
@@ -1175,7 +1175,7 @@ void outputForm::createPdf(std::string printerId)
     }
     // ap 5
     station *myStation = NULL;
-    if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_SALIDA)
+    if(retDepMovType() == DEF_MOV_TRANSFER || retDepMovType() == DEF_MOV_LOADING)
     {
         // station ours (actual local station indeed)
         retDepOriginStation(myStation);

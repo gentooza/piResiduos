@@ -129,7 +129,7 @@ static int slotInit(PARAM *p, DATA *d)
         }
     }
     ///TYPE
-    if(formDI->retDepMovType() == DEF_MOV_SALIDA) //only editable when no an output order movement
+    if(formDI->retDepMovType() == DEF_MOV_LOADING) //only editable when no an output order movement
     {
         pvSetEnabled(p, CHK4_1, 0);
         pvSetEnabled(p, CHK4_2, 0);

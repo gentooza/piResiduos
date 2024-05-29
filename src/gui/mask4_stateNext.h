@@ -3,7 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2019, Pro Integra SL.
 Copyright 2019-2022 Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023-2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -658,62 +658,63 @@ static int stateNext(PARAM *p, DATA *d)
       else //if not authorized to state 133
 	d->enFutEstado=133;
       break;
-    case 132: //product allowed by type-client-station (or being forced)
-      if(formEntrada->isArrPesoOk()) //si damos por válido según criterios el peso de entrada
-	{
-	  d->enFutEstado = 140;
-	}
-      if(d->pesaje1) //pesamos!
-	{
-	  d->pesaje1 = 0;
-	  d->enFutEstado = 135;
-	}      
-      if(d->retroceder) //volvemos al estado 30
-	{
-	  d->retroceder = 0;
-	  formEntrada->resetArrProduct();
-	  d->enFutEstado = 130;
-	  d->productoCodeActual.clear();
-	  pvSetCurrentItem(p,COMBOLERS,0);
-	  formEntrada->unforceCurrentProduct();
-	  pvSetChecked(p,CHKFORZARPROD,0);
-	  //reseteamos peso!
-	  formEntrada->resetArrScale();
-	  pvSetText(p,EDITPESOENT,"0");
-	  //di
-	  formEntrada->resetArrDi();
-	  formEntrada->rmArrDiFolder();
-	}      
-      if(d->cancelar) //cancelamos el formulario de entrada
-	{
-	  d->cancelar=0;
-	  resetForm(p,d,formEntrada);
-	  formEntrada->rmArrDiFolder();
-	  d->enFutEstado = 0;
-	  console.push_back("INFO: Formulario cancelado!");
-	}
-      ret = 0;
-      break;
-    case 133: //product not allowed, authorize?
-      if(formEntrada->isIncArrProdFz())
-	  d->enFutEstado = 132;
-      if(d->retroceder) //volvemos al estado 30
-	{
-	  d->retroceder = 0;
-	  formEntrada->resetArrProduct();
-	  d->enFutEstado = 130;
-	  d->productoCodeActual.clear();
-	  pvSetCurrentItem(p,COMBOLERS,0);
-	}
-      if(d->cancelar) //cancelamos el formulario de entrada
-	{
-	  d->cancelar=0;
-	  resetForm(p,d,formEntrada);
-	  d->enFutEstado = 0;
-	  console.push_back("INFO: Formulario cancelado!");
-	}
-      break;
-      
+        case 132: //product allowed by type-client-station (or being forced)
+        {
+            if(formEntrada->isArrPesoOk()) //si damos por válido según criterios el peso de entrada
+	            d->enFutEstado = 140;
+            if(d->pesaje1) //pesamos!
+	        {
+	            d->pesaje1 = 0;
+	            d->enFutEstado = 135;
+	        }      
+            if(d->retroceder) //volvemos al estado 30
+	        {
+	            d->retroceder = 0;
+	            formEntrada->resetArrProduct();
+	            d->enFutEstado = 130;
+	            d->productoCodeActual.clear();
+	            pvSetCurrentItem(p,COMBOLERS,0);
+	            formEntrada->unforceCurrentProduct();
+	            pvSetChecked(p,CHKFORZARPROD,0);
+	            //reseteamos peso!
+	            formEntrada->resetArrScale();
+	            pvSetText(p,EDITPESOENT,"0");
+	            //di
+	            formEntrada->resetArrDi();
+	            formEntrada->rmArrDiFolder();
+	        }      
+            if(d->cancelar) //cancelamos el formulario de entrada
+	        {
+	            d->cancelar=0;
+	            resetForm(p,d,formEntrada);
+	            formEntrada->rmArrDiFolder();
+	            d->enFutEstado = 0;
+	            console.push_back("INFO: Formulario cancelado!");
+	        }
+            ret = 0;
+            break;
+        }
+        case 133: //product not allowed, authorize?
+        {
+            if(formEntrada->isIncArrProdFz())
+	            d->enFutEstado = 132;
+            if(d->retroceder) //volvemos al estado 30
+	        {
+	            d->retroceder = 0;
+	            formEntrada->resetArrProduct();
+	            d->enFutEstado = 130;
+	            d->productoCodeActual.clear();
+	            pvSetCurrentItem(p,COMBOLERS,0);
+	        }
+            if(d->cancelar) //cancelamos el formulario de entrada
+	        {
+	            d->cancelar=0;
+	            resetForm(p,d,formEntrada);
+	            d->enFutEstado = 0;
+	            console.push_back("INFO: Formulario cancelado!");
+	        }
+            break;
+        }
     case 135:
       d->enFutEstado=136;
       break;

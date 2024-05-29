@@ -128,7 +128,7 @@ static int stateNext(PARAM *p, DATA *d)
 	                d->enFutEstado = 1200;
 	            else
 	            {
-	                formSalida->setDepMovType(DEF_MOV_SALIDA);
+	                formSalida->setDepMovType(DEF_MOV_LOADING);
 	                pvSetChecked(p,CHKTRANSITO,1);
 	                d->enFutEstado = 1100;	
                 }
@@ -323,7 +323,7 @@ static int stateNext(PARAM *p, DATA *d)
         {
             if(d->llegada) //selector to llegada
 	            d->enFutEstado = 500;
-            else if(formSalida->retDepMovType() == DEF_MOV_SALIDA)
+            else if(formSalida->retDepMovType() == DEF_MOV_LOADING)
 	            d->enFutEstado = 1100;
             else if(d->plateTaking) //si pulsamos en tomar maricula pasamos a capturarla
 	        {

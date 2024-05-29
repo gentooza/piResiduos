@@ -175,15 +175,14 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(1100):
             {
                 popteTransito(p,d,TABLATRANSITO, formSalida);
-                //tipo de movimiento tránsito!
-                formSalida->setDepMovType(DEF_MOV_SALIDA);
+                formSalida->setDepMovType(DEF_MOV_LOADING);
                 d->transito_plate.clear();
                 d->post_transito_plate.clear();
                 break;
             }
 	        case(1200):
             {
-                //tipo de movimiento transferencia!
+                // transfer movement
                 costumer* us = new costumer(DEF_BIORECICLAJE_CODE, localDatabase);
                 formSalida->setTransferMov(us, myStation);
                 delete us;
