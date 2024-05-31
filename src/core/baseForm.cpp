@@ -2161,7 +2161,7 @@ std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, in
   
     if (lastCode > 0 && sLastCode.size() > 11)
     {
-        std::cout << "tenemos last code = " << lastCode << std::endl;
+        // std::cout << "(DEBUG) Have last code = " << lastCode << std::endl;
         std::string prefix = sLastCode.substr(0,sLastCode.size()-7);
         std::string sIndex = sLastCode.substr(sLastCode.size()-7,6);
 
@@ -2172,19 +2172,19 @@ std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, in
 	        index = 999999;
         std::string newIndex = zeroPadNumber(index,6);
         newCode = prefix_year + str_station_code + newIndex + std::to_string(movementTypeCode);
-        std::cout << "newcode is: (prefix_year)" << prefix_year << " (str_station_code)" << str_station_code;
-        std::cout << " (newIndex)" << newIndex << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
+        // std::cout << "(DEBUG) newcode is: (prefix_year)" << prefix_year << " (str_station_code)" << str_station_code;
+        // std::cout << " (newIndex)" << newIndex << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
     }
     else
     {
-        std::cout << "no tenemos last code!!" << lastCode << std::endl;
+        // std::cout << "(DEBUG) NO last code!!" << lastCode << std::endl;
         time_t myTime = time(NULL);
         struct tm *aTime = localtime(&myTime);
         int year = aTime->tm_year + 1900;
 
         newCode = std::to_string(year) + str_station_code + "000001" + std::to_string(movementTypeCode);
-        std::cout << "newcode is: (year)" << std::to_string(year) << " (str_station_code)" << str_station_code;
-        std::cout << " 000001" << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
+        // std::cout << "(DEBUG) newcode is: (year)" << std::to_string(year) << " (str_station_code)" << str_station_code;
+        // std::cout << " 000001" << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
     }
     return newCode;
 }
