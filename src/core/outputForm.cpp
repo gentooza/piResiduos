@@ -37,7 +37,7 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
     setGrossWeight(retDepScaleOut());
     setNetWeight((long)(retDepScaleOut() - retDepScaleIn()));
     //getting sql queries
-    storeMov(sqliteQuery, mysqlQuery, depOriginStation, localDatabase);
+    std::string myMoveCode = storeMov(sqliteQuery, mysqlQuery, depOriginStation, localDatabase);
 
     //trying to remote save
     if(remote_host_connected)
@@ -48,18 +48,18 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
         if(!remoteDatabase.query(NULL,mysqlQuery.c_str()))
 	    {
 	        log_message("(CARGA) registro en BD remota parece OK", 1);
-	        int sync=1;
-	        //RECHECK!
-	        check_last(mysqlQuery, depDestinationStation);
+	        int sync = 0;
+	        selLastMovCode(mysqlQuery, std::to_string(depOriginStation->getCode()));
 	        str_log_message = "(CARGA) chequeo redundante en BD remota -> ";
 	        str_log_message += mysqlQuery;
 	        log_message(str_log_message, 1);
-	        if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
-	            sync=0;
-	        else
+            if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
 	        {
-	            if(remoteDatabase.retData2().empty())
-		            sync=0;
+                if(remoteDatabase.retData2().size())
+                {
+	                if(remoteDatabase.retData2().at(0).at(0) == myMoveCode)
+		                sync = 1;
+                }
 	        }
 	        if(sync)
 	        {
@@ -240,14 +240,6 @@ int outputForm::storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my
     if(!my_local_database.query(NULL,sqlite_query.c_str()))
     {
         log_message("(CARGA) registro en BD local parece OK", 1);
-        //we have no move code, create one with DI for saving files to server
-        std::string moveCode = retDepDi();
-        if(!retDepDateTime().empty())
-	    {
-	        moveCode += " ";
-	        moveCode += retDepDateTime();
-	    }
-        setDepMovCode(moveCode);
     }
     else
     {
@@ -490,45 +482,6 @@ int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDataba
     }
     return ret;
 }
-//
-int outputForm::setMovCode(std::string sLastCode, int stationCode, int movementTypeCode)
-{
-  long lastCode = std::stol(sLastCode);
-  std::string newCode;
-  std::string str_station_code;
-  //costumer need, bad idea:
-  //station codes of fixed size 2.
-  // TODO REVCODES
-  //if(stationCode <10)
-  //  str_station_code = "0";
-  str_station_code += std::to_string(stationCode);
-  
-  if (lastCode > 0 && sLastCode.size() > 11)
-    {
-      std::string prefix = sLastCode.substr(0,sLastCode.size()-7);
-      std::string sIndex = sLastCode.substr(sLastCode.size()-7,6);
-
-      std::string prefix_year = prefix.substr(0,4); 
-      long index = std::stol(sIndex);
-      index++;
-      if(index > 999999)
-	index = 999999;
-      std::string newIndex = zeroPadNumber(index,6);
-      
-      newCode = prefix_year + str_station_code + newIndex + std::to_string(movementTypeCode);
-    }
-  else
-    {
-      time_t myTime = time(NULL);
-      struct tm *aTime = localtime(&myTime);
-      int year = aTime->tm_year + 1900;
-      
-      newCode = std::to_string(year) + str_station_code + "000001" + std::to_string(movementTypeCode);
-
-    }
-  myDepMovement.CODIGO_MOVIMIENTO = newCode;
-  return 0;
-}
 
 //transit movements managment
 /*! FUNCTION IS WRONG! FIX IT*/
@@ -538,7 +491,6 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
   std::string str_log_message;
   
   std::string mysql_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR) values (\"";
-
   std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO) values (\"";
   
   std::string common_sql = retArrDi();
@@ -838,6 +790,13 @@ int outputForm::getFzCurrentProduct()
   
   return isForced;
 }
+
+std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase)
+{
+    std::string DI;
+    return DI;
+}
+
 // TODO: error handling not implemented
 void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode)
 {
@@ -1125,7 +1084,6 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
     return 0;
 }
 
-
 /*TODO
 is DI complete?
 */
@@ -1285,7 +1243,7 @@ void outputForm::createPdf(std::string printerId)
 //////////////////////////////////////////////////////////////////
 /*! function for creating our ticket document with all the stored info 
   about our movement*/
-int outputForm::createTicket(std::string printerId, std::string ticketCode)
+int outputForm::createTicket(std::string printerId, std::string ticketCode, qtDatabase &localDatabase)
 {
     printable *myTicket;
     std::string fileName = "ticket.pdf";
@@ -1297,13 +1255,21 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode)
     costumer * our_costumer;
     retOurId(our_costumer);
     myTicket->setOurCIF(our_costumer->getNif());
-    delete our_costumer;
     station * localDestination;
     retDepOriginStation(localDestination);
     myTicket->setStationName(localDestination->getName());
     myTicket->setStationNIMA(localDestination->getNima());
+    std::string diCode;
+    costumer * depCostumer;
+    retDepCostumer(depCostumer);
+    if(our_costumer->getCode() != depCostumer->getCode())
+        diCode = getMovCode(localDatabase, localDestination, retDepMovType());
+    // else
+    //   diCode = getDI();
+    delete depCostumer;
+    delete our_costumer;
     delete localDestination;
-    myTicket->setMovCode(retDepMovCode());
+    myTicket->setMovCode(diCode);
     myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
     myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
     station * destination;

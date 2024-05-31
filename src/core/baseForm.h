@@ -161,7 +161,6 @@ typedef struct struMovement
     std::string DI;
     unsigned int PESO_ENTRADA;
     unsigned int PESO_SALIDA;
-    std::string CODIGO_MOVIMIENTO;
     int TIPO_DE_MOVIMIENTO;
     int REPETIR;
 
@@ -186,10 +185,8 @@ class  baseForm
         void clearMovement(struMovement & myMovement);
         virtual int storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected){return -1;};
         virtual int delTransit(int index, std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code){return -1;};
-        void storeMov(std::string& localSql,std::string& remoteSql,station *& myStation, qtDatabase & localDatabase);
-        /*!function for checking last movement stored, for redundancy purposes*/
-        void check_last(std::string& remoteSql,station *& myStation);
-        
+        std::string storeMov(std::string& localSql,std::string& remoteSql,station *& myStation, qtDatabase & localDatabase);
+
         virtual int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected){return -1;};
         virtual int storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my_remote_database, int remote_host_connected){return -1;};
         //plates
@@ -245,10 +242,10 @@ class  baseForm
         virtual void unforceCurrentProduct(){};
         virtual int getFzCurrentProduct(){return 0;}
         //
-        
         void setDatePermit(std::string strdate);
 
         //DI CODE GENERATION
+        virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase){return "";};
         std::string createArrDi(qtDatabase & localDatabase);
         std::string createDepDi(qtDatabase & localDatabase);
         std::string generateDi(std::string lastDi, int arrive);
@@ -312,16 +309,18 @@ class  baseForm
         virtual void clearDepMov(){return;};
         //
         //codigo movimiento
-        virtual int setMovCode(std::string lastCode, int stationCode, int movementTypeCode){return 0;};
+        std::string getLastMovCode(qtDatabase &localDatabase, station *myStation);
+        std::string getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode);
+        // virtual int setMovCode(std::string lastCode, int stationCode, int movementTypeCode){return 0;};
         //
         
         virtual void saveSignature(int blank_signature = 0);
         virtual void saveSignature(const char* file);  
         virtual int isSignature();
         virtual void createPdf(std::string printerId){};
-        virtual int createTicket(std::string printerId, std::string ticketCode){};
+        virtual int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase){};
         int set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
-        void backupFiles(const char* movFolder);
+        void backupFiles(std::string movFolder);
 
         //test
         int showPermisos();
@@ -672,8 +671,6 @@ class  baseForm
         void resetDepDriver();
         void resetStaff();
 
-        std::string retDepMovCode(){return myDepMovement.CODIGO_MOVIMIENTO;};
-        void setDepMovCode(std::string code){myDepMovement.CODIGO_MOVIMIENTO = code; return;}; 
         //date and time
         std::string retDepDateTime(){return myDepMovement.FECHA_HORA;};
         void setDepDateTime(std::string newDateTime){myDepMovement.FECHA_HORA = newDateTime; return;};
@@ -716,7 +713,7 @@ class  baseForm
         std::vector <bool> productPermits;
         std::vector <std::string> clientProductPermits;
 
-        std::string di;
+        // std::string di;
         std::string diDate;
         std::string diTime;
 

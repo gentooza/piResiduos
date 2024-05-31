@@ -490,7 +490,7 @@ static int stateWork(PARAM *p, DATA *d)
                 // outcoming loading materials movements
                 else
                 {		
-                    error_check = formSalida->storeDepMov(localDatabase,remoteDatabase,remote_connected);
+                    error_check = formSalida->storeDepMov(localDatabase, remoteDatabase, remote_connected);
                     if(!error_check)
                     {
                         console.push_back("INFO Movimiento generado correctamente");
@@ -517,7 +517,7 @@ static int stateWork(PARAM *p, DATA *d)
                         if(mailClient->sendIncidentsMail(myStation,formSalida))
                             console.push_back("*ERROR* ¡Error en el sistema de envío de emails");
                         // backing up files
-                        formSalida->backupFiles(formSalida->retDepMovCode().c_str());
+                        formSalida->backupFiles(formSalida->getMovCode(localDatabase, myStation, formSalida->retDepMovType()));
                     }
                 }
                 cameraSemaphore(4,1,globalConfiguration.traffic_lights_enabled);

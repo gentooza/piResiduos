@@ -136,7 +136,7 @@ static int stateWork(PARAM *p, DATA *d)
 			case 21: //waiting weigth, product chosen by normal path
 	  		{
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);	    
-	    		std::string myDI = formEntrada->createArrDi(localDatabase);
+	    		std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
 	    		//if(!formEntrada->isIncArrPlateEdited()) //chequeo de imagen
 	      		formEntrada->savePlateImage(1,"entrada");
 	    		pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -280,7 +280,7 @@ static int stateWork(PARAM *p, DATA *d)
 	  		{
 	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 	    		//
-	    		std::string myDI = formEntrada->createArrDi(localDatabase);
+	    		std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
 	    		//if(!formEntrada->isIncArrPlateEdited())//chequeo de imagen
 	      		formEntrada->savePlateImage(1,"entrada");
 	    		pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -388,7 +388,7 @@ static int stateWork(PARAM *p, DATA *d)
 	    		productText += formEntrada->retArrProdName3(); 
 	    		pvSetText(p,EDITPRODUCTOS,productText.c_str());		
 	    		//DI and folder
-	    		std::string myDI = formEntrada->createArrDi(localDatabase);
+	    		std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
 	    		//if(!formEntrada->isIncArrPlateEdited())//chequeo de imagen
 	      		formEntrada->savePlateImage(1,"entrada");
 	  	  		pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -694,11 +694,11 @@ static int stateWork(PARAM *p, DATA *d)
 					{
 		  				console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
 					}
-					formEntrada->createTicket(myTicketPrinter, ticketCode);
+					formEntrada->createTicket(myTicketPrinter, ticketCode, localDatabase);
 					// backing up files
 					try 
 					{
-						formEntrada->backupFiles(formEntrada->retDepMovCode().c_str());
+						formEntrada->backupFiles(formEntrada->getMovCode(localDatabase, myStation, formEntrada->retDepMovType()));
 					} 
 					catch(...)
 					{

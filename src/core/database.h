@@ -111,6 +111,8 @@ void updtSyncroMovs(std::string& sql, std::vector<std::vector<std::string>> data
 
 void rmtUpdtMovs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 void rmtSelLastMov(std::string& sql, long codigo_estacion, int year);
+void selLastMovCode(std::string& sql, std::string codigo_estacion);
+void selAllMovements(char*&sql);
 
 //TABLE ARRIVING TRANSIT
 void updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
@@ -175,10 +177,6 @@ void selProdsCodesPermsFromClienteProductos(char *& sql, const char* cliente , c
 void selProdsPermsFromProductosByCode(char *& sql, std::vector <std::string> prodCodes, const char* estacion);
 void selectProductDataByCode(char *& sql, const char* code);
 void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente);
-
-void selLastMovCode(char *& sql,const char* codigo_estacion);
-void selAllMovements(char*&sql);
-
 
 void delTransfer(char*&sql,const char* fecha_hora, long codigo_origen, long codigo_destino);
 

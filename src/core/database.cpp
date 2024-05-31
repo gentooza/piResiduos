@@ -9,7 +9,7 @@ PiResiduos is free software: you can redistribute it and/or modify it under the 
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PiResiduos is distributed in the hope that selLastMovCodeit will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -906,26 +906,28 @@ void selLastDiFromMovementsByClient(char *& sql, const char* codigoCliente)
  return;
 }
 
-void selLastMovCode(char *& sql,const char* codigo_estacion)
+void selLastMovCode(std::string& sql, std::string codigo_estacion)
 {
-  time_t myTime = time(NULL);
-  struct tm *aTime = localtime(&myTime);
-  int year = aTime->tm_year + 1900;
+    time_t myTime = time(NULL);
+    struct tm *aTime = localtime(&myTime);
+    int year = aTime->tm_year + 1900;
 
-  std::string codigo = std::to_string(year);
-  // TODO REVCODES
-  //if(strlen(codigo_estacion)<2)
-  //  codigo += "0";
-  codigo += codigo_estacion;
+    std::string codigo = std::to_string(year);
+    // TODO REVCODES
+    //if(strlen(codigo_estacion)<2)
+    //  codigo += "0";
+    codigo += codigo_estacion;
 
-  std::string codigo_min = codigo + "0000011";
-  std::string codigo_max = codigo + "9999999";
+    std::string codigo_min = codigo + "0000011";
+    std::string codigo_max = codigo + "9999999";
   
-  sql = new char[sizeof("select CODIGO_MOV FROM MOVIMIENTOS WHERE (CODIGO_MOV >= XXXXXXXXXXXXXXX AND CODIGO_MOV <= XXXXXXXXXXXXXXXX) ORDER BY CODIGO_MOV DESC LIMIT 1")+32];
+    sql = "select CODIGO_MOV FROM MOVIMIENTOS WHERE (CODIGO_MOV >= ";
+    sql += codigo_min;
+    sql += " AND CODIGO_MOV <= ";
+    sql += "codigo_max";
+    sql += ") ORDER BY CODIGO_MOV DESC LIMIT 1";
 
-  sprintf(sql,"select CODIGO_MOV FROM MOVIMIENTOS WHERE (CODIGO_MOV >= %s AND CODIGO_MOV <= %s) ORDER BY CODIGO_MOV DESC LIMIT 1",codigo_min.c_str(),codigo_max.c_str());
-
-  return;
+    return;
 }
 
 void selAllMovements(char*&sql)

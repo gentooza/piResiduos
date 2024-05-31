@@ -84,34 +84,23 @@ class inputForm: public baseForm
   void unforceCurrentProduct();
   int getFzCurrentProduct();
 
-  //scaling
-  int isArrPesoOk();
-  int isDepPesoOk();
-  int retDepScaleExpected(){return 0;};
-  void setAndCalcScaleOut(unsigned int scale);
-  int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
-  int setMovCode(std::string sLastCode, int stationCode, int movementTypeCode);
+    //scaling
+    int isArrPesoOk();
+    int isDepPesoOk();
+    int retDepScaleExpected(){return 0;};
+    void setAndCalcScaleOut(unsigned int scale);
+    int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
 
-  //DI INFORMATION
-  void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
-  int isDiComplete();
+    //DI INFORMATION
+    std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase);
+    void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
+    int isDiComplete();
   
   std::vector <std::string> allClientes;
   std::vector <std::string> allClientesCodes;
 
-  int createTicket(std::string printerId, std::string ticketCode);
+  int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase);
   void calculateTicketHeight(int& lines);
-  void ticketHeader(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, std::string ticketCode, float fsize_small);
-  void ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium);
-  void ticketRegistrationData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketOriginData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketTransportData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketProductData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketWeightData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketPaidData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketCommentData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  void ticketStaffData(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium, float size_small);
-  
   //
  private:
   std::vector<std::vector<std::string>> vctAllTransfers;

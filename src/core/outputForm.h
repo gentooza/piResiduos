@@ -96,17 +96,15 @@ class outputForm: public baseForm
   void setAndCalcScaleOut(unsigned int scale);
   int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
   //
-  //codigo movimiento
-  int setMovCode(std::string lastCode, int stationCode, int movementTypeCode);
-  //
   //DI INFORMATION
+  std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase);
   void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
   int getAllOrderInfo(qtDatabase & localDatabase, long order_code);
   int isDiComplete();
 
   void createPdf(std::string printerId);
 
-  int createTicket(std::string printerId, std::string ticketCode);
+  int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase);
   void calculateTicketHeight(int& lines);
   void ticketHeader(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, std::string ticketCode, float fsize_small);
   void ticketStationTitle(HPDF_Doc &myPdf, HPDF_Page &myPage, int &line, HPDF_Font &font, float size_big, float size_medium);

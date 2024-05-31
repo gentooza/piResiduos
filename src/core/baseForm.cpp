@@ -238,7 +238,6 @@ void baseForm::clearMovement(struMovement & myMovement)
     myMovement.DI.clear();
     myMovement.PESO_ENTRADA = 0;
     myMovement.PESO_SALIDA = 0;
-    myMovement.CODIGO_MOVIMIENTO.clear();
     myMovement.TIPO_DE_MOVIMIENTO = -1;
     myMovement.REPETIR = 0;
     return;
@@ -254,30 +253,14 @@ void baseForm::setArrMov(struMovement myOrder)
 }
 
 /*!prepare to save sql movement*/
-void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,station *& myStation, qtDatabase & localDatabase)
+std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,station *& myStation, qtDatabase & localDatabase)
 {
-    char * sql = NULL;
-
-    //getting last movement code for this station and DI
-    std::string sCodigo_estacion = std::to_string(myStation->getCode());
-    selLastMovCode(sql,sCodigo_estacion.c_str());
-    localDatabase.query(NULL,sql);
-    if( sql != NULL)
-        delete [] sql;
-    std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-    std::string codigo_mov = "-1";
-    if(ourData.size())
-    {
-        codigo_mov = ourData.at(0).at(0);
-    }	   
-    std::cout << "DEBUG: actualizando el código del movimiento!!, código de la estación:" << myStation->getCode() << " ,último código:" << codigo_mov << std::endl;
-    setMovCode(codigo_mov,myStation->getCode(),retDepMovType());
-    std::cout << "DEBUG: nuevo código:" << retDepMovCode();
+    std::string movCode = getMovCode(localDatabase, myStation, retDepMovType());
     //almacenamos en movimientos
     sqliteQuery = "insert into MOVIMIENTOS (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOV,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE, SINCRONIZADO ) values (\"";
     mysqlQuery = "insert into movimientos (CODIGO_MOV,DI,FECHA_HORA_INICIO, FECHA_HORA_FINAL,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,CODIGO_TRANSPORTISTA,CODIGO_BASCULISTA,PESO_NETO,PESO_TARA,PESO_BRUTO,PRECIO,VEHICULO,REMOLQUE,CENTRO_ORIGEN,CENTRO_DESTINO,INCIDENCIAS,COMENTARIO_OPERADOR,CLIENTE_PARTICULAR_NOMBRE,CLIENTE_PARTICULAR_NIF,CLIENTE_PARTICULAR_DOMICILIO,CLIENTE_PARTICULAR_PROVINCIA,CLIENTE_PARTICULAR_POBLACION,CLIENTE_PARTICULAR_CODIGO_POSTAL,CLIENTE_PARTICULAR_COMUNIDAD_AUTONOMA,CLIENTE_PARTICULAR_NIMA,CLIENTE_PARTICULAR_NUM_INSCRIPCION_REGISTRO,CLIENTE_PARTICULAR_TELEFONO, CLIENTE_PARTICULAR_CORREO_ELECTRONICO, DESTINO_NOMBRE, DESTINO_NIF, DESTINO_DOMICILIO, DESTINO_PROVINCIA, DESTINO_POBLACION, DESTINO_CODIGO_POSTAL, DESTINO_COMUNIDAD_AUTONOMA, DESTINO_NIMA, DESTINO_NUM_INSCRIPCION_REGISTRO, DESTINO_TELEFONO, DESTINO_CORREO_ELECTRONICO, TIPO_CLIENTE) values (\"";
     //codigo movimiento
-    std::string values = retDepMovCode();
+    std::string values = movCode;
     values += "\",\"";
     values +=  retDepDi();
     values += "\",\"";  
@@ -367,14 +350,7 @@ void baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQuery,stat
     mysqlQuery += values;
     mysqlQuery += ")";
 
-    return;
-}
-
-/*!function for checking last movement stored, for redundancy purposes*/
-void baseForm::check_last(std::string& remoteSql,station *& myStation)
-{
-    remoteSql = "select * from movimientos where CODIGO_MOV = " + retDepMovCode();
-    return;
+    return movCode;
 }
 
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
@@ -470,7 +446,7 @@ int baseForm::isSignature()
     return exist;
 }
 
-void baseForm::backupFiles(const char* movFolder)
+void baseForm::backupFiles(std::string movFolder)
 {
     int ret;
     ret = system("mkdir backup");
@@ -1816,38 +1792,39 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
         delete [] sql;
         sql = NULL;
     }
-    return 0;
+    return ret;
 }
 int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
 {
-  /*TODO IMPROVE FOR ALL PERMITS!*/
-  int ret = -1;
-  char * sql = NULL;
-  std::vector<std::vector<std::string>> retData;
+    /*TODO IMPROVE FOR ALL PERMITS!*/
+    int ret = -1;
+    char * sql = NULL;
+    std::vector<std::vector<std::string>> retData;
 
-  std::string station_type;
-  myStation->getType(station_type);
-  sel_DIbasis_cos_prod(sql,station_type.c_str(), retArrCosCode(), retArrProdCode());
-  if(!myDatabase.query(NULL,sql))
+    std::string station_type;
+    myStation->getType(station_type);
+    sel_DIbasis_cos_prod(sql,station_type.c_str(), retArrCosCode(), retArrProdCode());
+    if(!myDatabase.query(NULL,sql))
     {
-      retData = myDatabase.retData2();
-      if(retData.size())
-	{
-	  std::vector <std::string> result = retData.at(0);
-	  try //NPT
+        retData = myDatabase.retData2();
+        if(retData.size())
 	    {
-	      setArrPermitNpt(std::stoul(result.at(0)));
+	        std::vector <std::string> result = retData.at(0);
+	        try //NPT
+	        {
+	            setArrPermitNpt(std::stoul(result.at(0)));
+	        }
+	        catch(...)
+	        {
+	            setArrPermitNpt(0);	    
+	        }
+	        ret=0;
 	    }
-	  catch(...)
-	    {
-	      setArrPermitNpt(0);	    
-	    }
-	  ret=0;
-	}
-      else
-	setArrPermitNpt(0);
+        else
+	        setArrPermitNpt(0);
     }
-  delete sql;
+    delete sql;
+    return ret;
 }
 
 void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
@@ -2156,6 +2133,61 @@ int baseForm::set_all_billing_info(qtDatabase & local_database)
     return 0;
 }
 
+std::string baseForm::getLastMovCode(qtDatabase &localDatabase, station *myStation)
+{
+    std::string sql;
+    std::string lastMovCode = "0";
+
+    //getting last movement code for this station and DI
+    std::string sCodigo_estacion = std::to_string(myStation->getCode());
+    selLastMovCode(sql, sCodigo_estacion);
+    localDatabase.query(NULL, sql.c_str());
+
+    std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
+    if(ourData.size())
+    {
+        lastMovCode = ourData.at(0).at(0);
+    }	
+    return lastMovCode;
+}
+
+///
+std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode)
+{
+    std::string sLastCode = getLastMovCode(myDatabase, myStation);
+    long lastCode = std::stol(sLastCode);
+    std::string newCode;
+    std::string str_station_code = std::to_string(myStation->getCode());
+  
+    if (lastCode > 0 && sLastCode.size() > 11)
+    {
+        std::cout << "tenemos last code = " << lastCode << std::endl;
+        std::string prefix = sLastCode.substr(0,sLastCode.size()-7);
+        std::string sIndex = sLastCode.substr(sLastCode.size()-7,6);
+
+        std::string prefix_year = prefix.substr(0,4); 
+        long index = std::stol(sIndex);
+        index++;
+        if(index > 999999)
+	        index = 999999;
+        std::string newIndex = zeroPadNumber(index,6);
+        newCode = prefix_year + str_station_code + newIndex + std::to_string(movementTypeCode);
+        std::cout << "newcode is: (prefix_year)" << prefix_year << " (str_station_code)" << str_station_code;
+        std::cout << " (newIndex)" << newIndex << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
+    }
+    else
+    {
+        std::cout << "no tenemos last code!!" << lastCode << std::endl;
+        time_t myTime = time(NULL);
+        struct tm *aTime = localtime(&myTime);
+        int year = aTime->tm_year + 1900;
+
+        newCode = std::to_string(year) + str_station_code + "000001" + std::to_string(movementTypeCode);
+        std::cout << "newcode is: (year)" << std::to_string(year) << " (str_station_code)" << str_station_code;
+        std::cout << " 000001" << "(movementTypeCode)" << std::to_string(movementTypeCode) << std::endl;
+    }
+    return newCode;
+}
 /****RESET FUNCTIONS****/
 void baseForm::resetArrCostumer()
 {

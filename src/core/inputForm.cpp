@@ -23,6 +23,7 @@ If not, see <https://www.gnu.org/licenses/>.
 @file inputform.cpp
 */
 #include "inputForm.h"
+
 int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected)
 {
     int ret = 1;
@@ -33,7 +34,7 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
     setGrossWeight(retDepScaleIn());
     setNetWeight((long)(retDepScaleIn() - retDepScaleOut()));
     ////////////////////////////////////////
-    storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
+    std::string myMoveCode = storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
 
     if(remote_host_connected) //SAVING MOVEMENT IN REMOTE SERVER
     {
@@ -43,18 +44,18 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
         if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //SYNCRONIZED
 	    {
 	        log_message("(DESCARGA) registro en BD remota parece OK ",1);
-	        int sync=1;
-	        //RECHECK!
-	        check_last(mysqlQuery, depDestinationStation);
+	        int sync = 0;
+            selLastMovCode(mysqlQuery, std::to_string(depDestinationStation->getCode()));
 	        str_log_message = "(DESCARGA) chequeo redundante en BD remota -> ";
 	        str_log_message += mysqlQuery;
 	        log_message(str_log_message, 1);
-	        if(remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
-	            sync=0;
-	        else
+	        if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //NO SYNCRONIZED
 	        {
-	            if(remoteDatabase.retData2().empty())
-		        sync=0;
+                if(remoteDatabase.retData2().size())
+                {
+	                if(remoteDatabase.retData2().at(0).at(0) == myMoveCode)
+		                sync = 1;
+                }
 	        }
 	        if(sync)
 	        {
@@ -307,47 +308,6 @@ int inputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabas
     return ret;
 }
 
-///
-int inputForm::setMovCode(std::string sLastCode, int stationCode, int movementTypeCode)
-{
-  long lastCode = std::stol(sLastCode);
-  std::string newCode;
-  std::string str_station_code;
-  //costumer need, bad idea:
-  //station codes of fixed size 2.
-  //TODO REVCODES
-  //if(stationCode <10)
-  //  str_station_code = "0";
-  //FIN TODO REVCODES
-  str_station_code += std::to_string(stationCode);
-  
-  if (lastCode > 0 && sLastCode.size() > 11)
-    {
-      std::cout << "tenemos last code = " << lastCode << std::endl;
-      std::string prefix = sLastCode.substr(0,sLastCode.size()-7);
-      std::string sIndex = sLastCode.substr(sLastCode.size()-7,6);
-
-      std::string prefix_year = prefix.substr(0,4); 
-      long index = std::stol(sIndex);
-      index++;
-      if(index > 999999)
-	index = 999999;
-      std::string newIndex = zeroPadNumber(index,6);
-      
-      newCode = prefix_year + str_station_code + newIndex + std::to_string(movementTypeCode);
-    }
-  else
-    {
-      std::cout << "no tenemos last code!!" << lastCode << std::endl;
-      time_t myTime = time(NULL);
-      struct tm *aTime = localtime(&myTime);
-      int year = aTime->tm_year + 1900;
-
-      newCode = std::to_string(year) + str_station_code + "000001" + std::to_string(movementTypeCode);
-    }
-  myDepMovement.CODIGO_MOVIMIENTO = newCode;
-  return 0;
-}
 //transfer movements managment
 int inputForm::isTrf(qtDatabase & myDatabase, station *& myStation)
 {
@@ -810,6 +770,14 @@ int inputForm::getFzCurrentProduct()
   
   return isForced;
 }
+/*! DI number in all unloading movements are the movement number */
+std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase)
+{
+    station *myStation;
+    retDepDestinationStation(myStation);
+    std::string DI = getMovCode(localDatabase, myStation, retDepMovType());
+    return DI;
+}
 void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, long ourCode, long defDriverCode)
 {
     //TODO fix error handling
@@ -892,7 +860,7 @@ int inputForm::isDiComplete()
 //////////////////////////////////////////////////////////////////
 /*! function for creating our ticket document with all the stored info 
   about our movement*/
-int inputForm::createTicket(std::string printerId, std::string ticketCode)
+int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase)
 {
     printable * myTicket = NULL;
     std::string fileName = "ticket.pdf";
@@ -908,9 +876,9 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode)
     retDepDestinationStation(localDestination);
     myTicket->setStationName(localDestination->getName());
     myTicket->setStationNIMA(localDestination->getNima());
+    myTicket->setMovCode(getMovCode(localDatabase, localDestination, retDepMovType()));
     if (localDestination != NULL)
         delete localDestination;
-    myTicket->setMovCode(retDepMovCode());
     myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
     myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
     myTicket->setCostumerName(depCostumer->getName());
