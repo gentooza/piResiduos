@@ -3,19 +3,19 @@ This file is part of PiResiduos.
 
 Copyright 2017-2019, Prointegra SL.
 Copyright 2019-2020, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023,2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PiResiduos is distributed in the hope that it will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PiResiduos.
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -54,7 +54,7 @@ static int slotInit(PARAM *p, DATA *d)
     pvSetText(p,LABTYPE,wholeTitle.c_str());
     //LER
     std::string myText = std::to_string(formDI->retDepProdLER());
-    pvSetText(p, EDITLER, myText.c_str());  
+    pvSetText(p, EDITLER, myText.c_str());
     myText.clear();
     //DANGER
     myText = formDI->retDepProdPeligro();
@@ -68,7 +68,7 @@ static int slotInit(PARAM *p, DATA *d)
     }
     myText.clear();
     //1.- DI
-    myText = formDI->retDepDi();
+    myText = formDI->createDINumber(localDatabase, remoteDatabase);
     pvSetText(p, EDITDI, myText.c_str());
     myText.clear();
     //2.- NPT
@@ -139,28 +139,28 @@ static int slotInit(PARAM *p, DATA *d)
         pvSetEnabled(p, CHK4_6, 0);
     }
 
-    pvSetText(p, EDITNOMBRE, formDI->depCostumer->getName().c_str());      
+    pvSetText(p, EDITNOMBRE, formDI->depCostumer->getName().c_str());
     pvSetText(p, EDITNIF, formDI->depCostumer->getNif().c_str());
     pvSetText(p, EDITDIREC, formDI->depCostumer->getAddress().c_str());
-    pvSetText(p, EDITCP, std::to_string(formDI->depCostumer->getZip()).c_str());      
+    pvSetText(p, EDITCP, std::to_string(formDI->depCostumer->getZip()).c_str());
     pvSetText(p, EDITMUNI, formDI->depCostumer->getCity().c_str());
-    pvSetText(p, EDITPRO, formDI->depCostumer->getProvence().c_str());      
+    pvSetText(p, EDITPRO, formDI->depCostumer->getProvence().c_str());
     pvSetText(p, EDITCA, formDI->depCostumer->getRegion().c_str());
     pvSetText(p, EDITNIMA, formDI->depCostumer->getNima().c_str());
     pvSetText(p, EDITREG, formDI->depCostumer->getNumIns().c_str());
-    pvSetText(p, EDITTFN, formDI->depCostumer->getPhone().c_str());      
+    pvSetText(p, EDITTFN, formDI->depCostumer->getPhone().c_str());
     pvSetText(p, EDITEMAIL, formDI->depCostumer->getMail().c_str());
     if(formDI->depCostumer->isParticular())
     {
-        if(formDI->depCostumer->getName().empty() || formDI->depCostumer->getNif().empty() 
-        || formDI->depCostumer->getAddress().empty() || formDI->depCostumer->getZip() == 0 
-        || formDI->depCostumer->getCity().empty() || formDI->depCostumer->getProvence().empty() 
-        || formDI->depCostumer->getRegion().empty() || formDI->depCostumer->getNima().empty() 
-        || formDI->depCostumer->getNumIns().empty() || formDI->depCostumer->getPhone().empty() 
+        if(formDI->depCostumer->getName().empty() || formDI->depCostumer->getNif().empty()
+        || formDI->depCostumer->getAddress().empty() || formDI->depCostumer->getZip() == 0
+        || formDI->depCostumer->getCity().empty() || formDI->depCostumer->getProvence().empty()
+        || formDI->depCostumer->getRegion().empty() || formDI->depCostumer->getNima().empty()
+        || formDI->depCostumer->getNumIns().empty() || formDI->depCostumer->getPhone().empty()
         || formDI->depCostumer->getMail().empty())
-	        pvShow(p, FRAME4RED);
+            pvShow(p, FRAME4RED);
         else
-	        pvHide(p, FRAME4RED);
+            pvHide(p, FRAME4RED);
 
         pvSetEditable(p, EDITNOMBRE, 1);
         pvSetEditable(p, EDITNIF, 1);
@@ -217,66 +217,66 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
     {
       std::cout << "form save" << std::endl;
       switch(formDI->retForm())
-	{
-	case(1): //unloading
-	  if(formEntrada)
-	    delete formEntrada;
-	  formEntrada = new inputForm();
-	  formEntrada->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2)://loading
-	  if(formSalida)
-	    delete formSalida;
-	  formSalida = new outputForm();	  
-	  formSalida->copyFrom(formDI);
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default://unknown
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+    {
+    case(1): //unloading
+      if(formEntrada)
+        delete formEntrada;
+      formEntrada = new inputForm();
+      formEntrada->copyFrom(formDI);
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask4(p);
+      break;
+    case(2)://loading
+      if(formSalida)
+        delete formSalida;
+      formSalida = new outputForm();
+      formSalida->copyFrom(formDI);
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask5(p);
+      break;
+    default://unknown
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask4(p);
+      break;
+    }
     }
   else if(id == BUT2) //CANCEL
     {
       std::cout << "form reset" << std::endl;
       switch(formDI->retForm())
-	{
-	case(1):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	case(2):
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask5(p);
-	  break;
-	default:
-	  if(formDI)
-	    delete formDI;
-	  formDI = NULL;
-	  show_mask4(p);
-	  break;
-	}
+    {
+    case(1):
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask4(p);
+      break;
+    case(2):
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask5(p);
+      break;
+    default:
+      if(formDI)
+        delete formDI;
+      formDI = NULL;
+      show_mask4(p);
+      break;
+    }
     }
   else if(id == BUT1234)
     show_mask6(p);
   else if(id == BUT5)
-    show_mask7(p);    
+    show_mask7(p);
   else if(id == BUT6)
-    show_mask8(p);    
+    show_mask8(p);
   else if(id == BUT78)
     show_mask9(p);
   else if(id == BUT910)
@@ -296,14 +296,14 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
         formDI->depCostumer->setAddress(myString);
     else if(id == EDITCP)
     {
- 	    try             			
-	    {
-	        formDI->depCostumer->setZip(std::stol(myString));
-	    }
-	    catch(...)
-	    {
-	        formDI->depCostumer->setZip(0);
-	    }
+         try
+        {
+            formDI->depCostumer->setZip(std::stol(myString));
+        }
+        catch(...)
+        {
+            formDI->depCostumer->setZip(0);
+        }
     }
     else if(id == EDITMUNI)
         formDI->depCostumer->setCity(myString);
@@ -330,25 +330,25 @@ static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
         std::string temporal;
         std::string name = text;
         if(name.compare("ELIJA O A MANO")) //CLEAR
-	    {	  
-	        long cosCode = retCodeFromString(name," ");
+        {
+            long cosCode = retCodeFromString(name," ");
             costumer * newCostumer = new costumer(cosCode, localDatabase);
             formDI->setDepCostumer(newCostumer);
-            delete newCostumer;	  	  
-	  
-	        pvSetText(p, EDITNOMBRE, formDI->depCostumer->getName().c_str());
-	        pvSetText(p, EDITNIF, formDI->depCostumer->getNif().c_str());
-	        pvSetText(p, EDITDIREC, formDI->depCostumer->getAddress().c_str());
-	        pvSetText(p, EDITCP, std::to_string(formDI->depCostumer->getZip()).c_str());
-	        pvSetText(p, EDITMUNI, formDI->depCostumer->getCity().c_str());
-	        pvSetText(p, EDITPRO, formDI->depCostumer->getProvence().c_str());
-	        pvSetText(p, EDITCA, formDI->depCostumer->getRegion().c_str());
-	        pvSetText(p, EDITNIMA, formDI->depCostumer->getNima().c_str());
-	        pvSetText(p, EDITREG, formDI->depCostumer->getNumIns().c_str());
-	        pvSetText(p, EDITTFN, formDI->depCostumer->getPhone().c_str());
-	        pvSetText(p, EDITEMAIL, formDI->depCostumer->getMail().c_str());	  	
-	    }
-        pvSetFocus(p, COMBOCLIENTE);     
+            delete newCostumer;
+
+            pvSetText(p, EDITNOMBRE, formDI->depCostumer->getName().c_str());
+            pvSetText(p, EDITNIF, formDI->depCostumer->getNif().c_str());
+            pvSetText(p, EDITDIREC, formDI->depCostumer->getAddress().c_str());
+            pvSetText(p, EDITCP, std::to_string(formDI->depCostumer->getZip()).c_str());
+            pvSetText(p, EDITMUNI, formDI->depCostumer->getCity().c_str());
+            pvSetText(p, EDITPRO, formDI->depCostumer->getProvence().c_str());
+            pvSetText(p, EDITCA, formDI->depCostumer->getRegion().c_str());
+            pvSetText(p, EDITNIMA, formDI->depCostumer->getNima().c_str());
+            pvSetText(p, EDITREG, formDI->depCostumer->getNumIns().c_str());
+            pvSetText(p, EDITTFN, formDI->depCostumer->getPhone().c_str());
+            pvSetText(p, EDITEMAIL, formDI->depCostumer->getMail().c_str());
+        }
+        pvSetFocus(p, COMBOCLIENTE);
     }
     return 0;
 }
