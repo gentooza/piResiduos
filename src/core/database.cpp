@@ -9,7 +9,7 @@ PiResiduos is free software: you can redistribute it and/or modify it under the 
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that selLastMovCodeit will 
+PiResiduos is distributed in the hope that it will 
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -924,7 +924,7 @@ void selLastMovCode(std::string& sql, std::string codigo_estacion)
     sql = "select CODIGO_MOV FROM MOVIMIENTOS WHERE (CODIGO_MOV >= ";
     sql += codigo_min;
     sql += " AND CODIGO_MOV <= ";
-    sql += "codigo_max";
+    sql += codigo_max;
     sql += ") ORDER BY CODIGO_MOV DESC LIMIT 1";
 
     return;
