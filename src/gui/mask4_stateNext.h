@@ -20,7 +20,7 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 
 #ifndef _MASK4_STATENEXT_
-#define _MASK4_STATENEXT_
+#define _
 
 //condiciones de cambio
 static int stateNext(PARAM *p, DATA *d)
