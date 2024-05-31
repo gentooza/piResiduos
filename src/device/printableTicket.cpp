@@ -245,7 +245,7 @@ int printableTicket::composeOrigin()
 {
     std::cout << "prinrtableTicket::composeOrigin()" << std::endl;
     std::string myText;
-    int finalLine = fontSize_xl;
+    int finalLine = 2*fontSize_xl;
 
     // costumer name
     HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize_xl);
@@ -253,20 +253,20 @@ int printableTicket::composeOrigin()
     HPDF_Page_BeginText (hpdfPage);
     myText = "ORIGEN: " + ticket_costumerName;
     if(myText.length() > 26)
-        finalLine = 3 * fontSize_xl;
+        finalLine += fontSize_xl;
     if(myText.length() > 52)
-        finalLine = 5 * fontSize_xl;
+        finalLine +=  fontSize_xl;
     if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space for text, costumer name length = " << myText.length() << std::endl;
     currentLine = currentLine - finalLine + fontSize_xl;
 
-    finalLine = fontSize_xl;
+    finalLine = 2*fontSize_xl;
     myText = "CIF: " + ticket_costumerNif;
     if(myText.length() > 26)
-        finalLine = 3 * fontSize_xl;
+        finalLine += fontSize_xl;
     if(myText.length() > 52)
-        finalLine = 5 * fontSize_xl;
+        finalLine += fontSize_xl;
     if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
         myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space, costuemr CIF length = " << myText.length() << std::endl;
