@@ -442,7 +442,7 @@ int inputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase,
     std::string my_mysql = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION) values (\"";
     std::string my_sqlite = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION, SINCRONIZADO) values (\"";
 
-    std::string query = createDINumber(myDatabase, remoteDatbase); //DI
+    std::string query = createDINumber(myDatabase, remoteDatabase); //DI
     query += "\",\"";
     //  query += getCurrentDate();   BUG esto nos rompe la definción de la carpeta de save de documentos
     query += retArrDateTime();
