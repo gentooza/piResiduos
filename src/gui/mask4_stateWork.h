@@ -135,7 +135,7 @@ static int stateWork(PARAM *p, DATA *d)
 			case 121: //waiting taking weigth, product chosen from authorized client
 			case 21: //waiting weigth, product chosen by normal path
 	  		{
-	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);	    
+	    		refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
 	    		std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
 	    		//if(!formEntrada->isIncArrPlateEdited()) //chequeo de imagen
 	      		formEntrada->savePlateImage(1,"entrada");
