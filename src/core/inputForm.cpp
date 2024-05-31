@@ -783,6 +783,12 @@ std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & r
     if(movType <= 0)
         movType = DEF_MOV_UNLOADING;
     std::string DI = getMovCode(localDatabase, myStation, movType);
+
+    if(retArrDateTime().empty())
+        setArrDateTime(getCurrentDate());
+
+    std::string folder = DI + " "+ retArrDateTime();
+    setArrDiFolder(folder);
     return DI;
 }
 void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, long ourCode, long defDriverCode)
