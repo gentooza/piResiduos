@@ -3,19 +3,19 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
 Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023,2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PiResiduos is distributed in the hope that it will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PiResiduos.
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -31,7 +31,7 @@ If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iomanip> 
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <ctime>
@@ -53,36 +53,36 @@ If not, see <https://www.gnu.org/licenses/>.
 
 class inputForm: public baseForm
 {
- public:
- inputForm(int type) : baseForm(type,1){formSCADA=1;};
- inputForm() : baseForm(){};
-  ~inputForm(){};
+    public:
+    inputForm(int type) : baseForm(type,1){formSCADA=1;};
+    inputForm() : baseForm(){};
+    ~inputForm(){};
 
-  int getFormType(){return DISCHARGE_FORM;};
-  //movement data
-  int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected);
-  //database dependant
-  int storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected);
+    int getFormType(){return DISCHARGE_FORM;};
+    //movement data
+    int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected);
+    //database dependant
+    int storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected);
 
-  int isTrf(qtDatabase & myDatabase, station*& myStation);
-  int setTrfMov(qtDatabase & myDatabase, station *& myStation);
-  void setDepMov(int index, qtDatabase& myDatabase);
-  void setTransit(std::vector<std::vector<std::string>> transit){vctAllTransit.clear(); vctAllTransit = transit; return;};
-  std::vector<std::vector<std::string>> retTransit(){return vctAllTransit;};
-  int isPlateInTransit(std::string);
-  int setTransitMov(int index, std::string plate, qtDatabase & myDatabase);
-  int delTransit(int index,std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code);
+    int isTrf(qtDatabase & myDatabase, station*& myStation);
+    int setTrfMov(qtDatabase & myDatabase, station *& myStation);
+    void setDepMov(int index, qtDatabase& myDatabase);
+    void setTransit(std::vector<std::vector<std::string>> transit){vctAllTransit.clear(); vctAllTransit = transit; return;};
+    std::vector<std::vector<std::string>> retTransit(){return vctAllTransit;};
+    int isPlateInTransit(std::string);
+    int setTransitMov(int index, std::string plate, qtDatabase & myDatabase);
+    int delTransit(int index,std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code);
 
-  //all costumers
-  std::vector<std::string> retAllCos4Combo(qtDatabase & myDatabase);
-  ///
+    //all costumers
+    std::vector<std::string> retAllCos4Combo(qtDatabase & myDatabase);
+    ///
 
-  //product permits
-  //datatabase dependant
-  void setArrCosProdPermits(qtDatabase & myDatabase, const char* type){setArrCosProdPermitsBase(myDatabase,type);};
-  void forceCurrentProduct();
-  void unforceCurrentProduct();
-  int getFzCurrentProduct();
+    //product permits
+    //datatabase dependant
+    void setArrCosProdPermits(qtDatabase & myDatabase, const char* type){setArrCosProdPermitsBase(myDatabase,type);};
+    void forceCurrentProduct();
+    void unforceCurrentProduct();
+    int getFzCurrentProduct();
 
     //scaling
     int isArrPesoOk();
@@ -95,17 +95,16 @@ class inputForm: public baseForm
     std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase);
     void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
     int isDiComplete();
-  
-  std::vector <std::string> allClientes;
-  std::vector <std::string> allClientesCodes;
 
-  int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase);
-  void calculateTicketHeight(int& lines);
-  //
- private:
-  std::vector<std::vector<std::string>> vctAllTransfers;
-  std::vector<std::vector<std::string>> vctAllTransit;
+    std::vector <std::string> allClientes;
+    std::vector <std::string> allClientesCodes;
+
+    int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase);
+    void calculateTicketHeight(int& lines);
+    //
+    private:
+    std::vector<std::vector<std::string>> vctAllTransfers;
+    std::vector<std::vector<std::string>> vctAllTransit;
 };
 
 #endif
-
