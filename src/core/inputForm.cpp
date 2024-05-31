@@ -773,9 +773,18 @@ int inputForm::getFzCurrentProduct()
 /*! DI number in all unloading movements are the movement number */
 std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase)
 {
-    station *myStation;
+    station *myStation = NULL;
     retDepDestinationStation(myStation);
-    std::string DI = getMovCode(localDatabase, myStation, retDepMovType());
+    if(myStation->getCode() >= 0)
+    {
+        if (myStation)
+            delete myStation;
+        retOurStation(myStation);
+    }
+    int movType = retDepMovType();
+    if(movType <= 0)
+        movType = DEF_MOV_UNLOADING;
+    std::string DI = getMovCode(localDatabase, myStation, movType);
     return DI;
 }
 void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, long ourCode, long defDriverCode)
