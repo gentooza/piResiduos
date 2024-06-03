@@ -921,7 +921,7 @@ void selLastMovCode(std::string& sql, std::string codigo_estacion)
     std::string codigo_min = codigo + "0000011";
     std::string codigo_max = codigo + "9999999";
   
-    sql = "select CODIGO_MOV FROM MOVIMIENTOS WHERE (CODIGO_MOV >= ";
+    sql = "select CODIGO_MOV FROM movimientos WHERE (CODIGO_MOV >= ";
     sql += codigo_min;
     sql += " AND CODIGO_MOV <= ";
     sql += codigo_max;
