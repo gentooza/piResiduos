@@ -41,7 +41,7 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
         str_log_message = "(DESCARGA) en BD remota -> ";
         str_log_message += mysqlQuery;
         log_message(str_log_message, 1);
-        if(!remoteDatabase.query(NULL,mysqlQuery.c_str())) //SYNCRONIZED
+        if(!remoteDatabase.query(NULL, mysqlQuery.c_str())) //SYNCRONIZED
         {
             log_message("(DESCARGA) registro en BD remota parece OK ",1);
             int sync = 0;
