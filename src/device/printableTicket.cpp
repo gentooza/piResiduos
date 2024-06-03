@@ -414,7 +414,7 @@ int printableTicket::composeComment()
         finalLine = 5*fontSize;
     if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
-        std::cout << "TODO: not enough space, tetx length: " << myText.length() << std::endl;
+        std::cout << "TODO: not enough space, text length: " << myText.length() << std::endl;
     HPDF_Page_EndText (hpdfPage);
      
     currentLine = currentLine - finalLine;
