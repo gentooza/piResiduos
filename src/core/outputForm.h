@@ -97,7 +97,7 @@ class outputForm: public baseForm
   int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
   //
   //DI INFORMATION
-  std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase);
+  std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive);
   void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
   int getAllOrderInfo(qtDatabase & localDatabase, long order_code);
   int isDiComplete();

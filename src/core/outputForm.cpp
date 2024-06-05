@@ -791,7 +791,7 @@ int outputForm::getFzCurrentProduct()
   return isForced;
 }
 
-std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase)
+std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive)
 {
     std::string DI;
     return DI;

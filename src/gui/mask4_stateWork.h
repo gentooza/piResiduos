@@ -136,7 +136,7 @@ static int stateWork(PARAM *p, DATA *d)
             case 21: //waiting weigth, product chosen by normal path
               {
                 refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
-                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
+                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase, 1);
                 //if(!formEntrada->isIncArrPlateEdited()) //chequeo de imagen
                   formEntrada->savePlateImage(1,"entrada");
                 pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -280,7 +280,7 @@ static int stateWork(PARAM *p, DATA *d)
               {
                 refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
                 //
-                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
+                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase, 1);
                 //if(!formEntrada->isIncArrPlateEdited())//chequeo de imagen
                   formEntrada->savePlateImage(1,"entrada");
                 pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -388,7 +388,7 @@ static int stateWork(PARAM *p, DATA *d)
                 productText += formEntrada->retArrProdName3();
                 pvSetText(p,EDITPRODUCTOS,productText.c_str());
                 //DI and folder
-                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase);
+                std::string myDI = formEntrada->createDINumber(localDatabase, remoteDatabase, 1);
                 //if(!formEntrada->isIncArrPlateEdited())//chequeo de imagen
                   formEntrada->savePlateImage(1,"entrada");
                     pvSetText(p,EDITDIPROV,myDI.c_str());
@@ -436,7 +436,7 @@ static int stateWork(PARAM *p, DATA *d)
                     formEntrada->incDepPlateEdited(0);
                 }
                 //load DI
-                std::string di = formEntrada->createDINumber(localDatabase, remoteDatabase);
+                std::string di = formEntrada->createDINumber(localDatabase, remoteDatabase, 0);
                 pvSetText(p, EDITDIDEF, di.c_str());
                 //if(!formEntrada->isIncDepPlateEdited())//chequeo de imagen
                 formEntrada->savePlateImage(2,"salida");

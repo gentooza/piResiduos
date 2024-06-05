@@ -245,7 +245,7 @@ class  baseForm
         void setDatePermit(std::string strdate);
 
         //DI CODE GENERATION
-        virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase){return "";};
+        virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive){return "";};
         std::string createArrDi(qtDatabase & localDatabase);
         std::string createDepDi(qtDatabase & localDatabase);
         std::string generateDi(std::string lastDi, int arrive);

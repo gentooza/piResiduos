@@ -442,7 +442,7 @@ int inputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase,
     std::string my_mysql = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION) values (\"";
     std::string my_sqlite = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION, SINCRONIZADO) values (\"";
 
-    std::string query = createDINumber(myDatabase, remoteDatabase); //DI
+    std::string query = createDINumber(myDatabase, remoteDatabase, 1); //DI
     query += "\",\"";
     //  query += getCurrentDate();   BUG esto nos rompe la definción de la carpeta de save de documentos
     query += retArrDateTime();
@@ -769,26 +769,46 @@ int inputForm::getFzCurrentProduct()
   return isForced;
 }
 /*! DI number in all unloading movements are the movement number */
-std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase)
+std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive)
 {
     station *myStation = NULL;
-    retDepDestinationStation(myStation);
-    if(myStation->getCode() >= 0)
+    if(arrive)
+        retArrDestinationStation(myStation);
+    else
+        retDepDestinationStation(myStation);
+    if(myStation->getCode() <= 0)
     {
         if (myStation)
             delete myStation;
         retOurStation(myStation);
     }
-    int movType = retDepMovType();
+    int movType = DEF_MOV_UNLOADING;
+    if(arrive)
+        movType = retArrMovType();
+    else
+        movType = retDepMovType();
+
     if(movType <= 0)
         movType = DEF_MOV_UNLOADING;
     std::string DI = getMovCode(localDatabase, myStation, movType);
+    
+    std::string folder;
+    if(arrive)
+    {
+        if(retArrDateTime().empty())
+            setArrDateTime(getCurrentDate());
 
-    if(retArrDateTime().empty())
-        setArrDateTime(getCurrentDate());
+        folder = DI + " " + retArrDateTime();
+        setArrDiFolder(folder);
+    }
+    else
+    {
+        if(retDepDateTime().empty())
+            setDepDateTime(getCurrentDate());
 
-    std::string folder = DI + " "+ retArrDateTime();
-    setArrDiFolder(folder);
+        folder = DI + " " + retDepDateTime();
+        setDepDiFolder(folder);
+    }
     return DI;
 }
 void inputForm::setAllDiData(qtDatabase & localDatabase,station * myStation, long ourCode, long defDriverCode)
