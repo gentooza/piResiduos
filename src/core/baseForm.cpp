@@ -394,12 +394,12 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
 {
     int ret;
-    //std::cout << "debug: inside saveArrPlateImage()" << std::endl;
-    ret = system("mkdir saves");
+    // std::cout << "debug: inside saveArrPlateImage()" << std::endl;
+    ret = system("mkdir -p saves");
 
-    std::string command = "mkdir \"";
+    std::string command = "mkdir -p \"";
     command += arrFolder + "\"";
-    std::cout << "TERMINAL COMMAND: "<< command << std::endl;
+    // std::cout << "TERMINAL COMMAND: "<< command << std::endl;
     ret = system(command.c_str());
     
     
@@ -427,9 +427,9 @@ void baseForm::savePlateImage(int pos,const char* entrada_salida)
 void baseForm::saveSignature(int blank_signature)
 {
     int ret;
-    ret = system("mkdir saves");
+    ret = system("mkdir -p saves");
 
-    std::string command = "mkdir \"";
+    std::string command = "mkdir -p \"";
     command += depFolder + "\"";
     std::cout << "TERMINAL COMMAND: " << command << std::endl;
     ret = system(command.c_str());
