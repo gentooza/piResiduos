@@ -9,13 +9,13 @@ PiResiduos is free software: you can redistribute it and/or modify it under the 
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-PiResiduos is distributed in the hope that it will 
+PiResiduos is distributed in the hope that it will
 be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with PiResiduos.  
+along with PiResiduos.
 If not, see <https://www.gnu.org/licenses/>.
 */
 
@@ -24,7 +24,7 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 #include "baseForm.h"
 
-baseForm::baseForm(int type, int entrance)  
+baseForm::baseForm(int type, int entrance)
 {
     clearMovement(myArrMovement);
     clearMovement(myDepMovement);
@@ -56,7 +56,7 @@ baseForm::baseForm(int type, int entrance)
 
     //departure movement index in matrix
     depMovIndex = -1;
-    
+
     return;
 }
 baseForm::baseForm()
@@ -103,7 +103,7 @@ baseForm::~baseForm()
     resetDrivers();
     return;
 }
-void baseForm::copyFrom(baseForm * toCopy)  
+void baseForm::copyFrom(baseForm * toCopy)
 {
     myArrMovement = toCopy->retArrMovement();
     myDepMovement = toCopy->retDepMovement();
@@ -122,7 +122,7 @@ void baseForm::copyFrom(baseForm * toCopy)
     arrFolder = toCopy->retArrDiFolder();
     depFolder = toCopy->retDepDiFolder();
 
-    //incidents and comments 
+    //incidents and comments
     setInputIncidents(toCopy->getInputIncidents());
     setOutputIncidents(toCopy->getOutputIncidents());
     setInputComment(toCopy->getInputComment());
@@ -134,11 +134,11 @@ void baseForm::copyFrom(baseForm * toCopy)
     //DRIVER
     toCopy->retDepDriver(depDriver);
     //dep authorized costumer
-    try 
+    try
     {
         toCopy->retDepAuthCostumer(depAuthCostumer);
-    } 
-    catch(...) 
+    }
+    catch(...)
     {
         std::cout << "TODO: memory error in redDepAuthCostumer" << std::endl;
         depAuthCostumer = new costumer();
@@ -154,7 +154,7 @@ void baseForm::resetForm(int departure)
     if(!departure) //arrival
     {
         formInicState=0;
-        //forzado producto   
+        //forzado producto
         iIncidents.clear();
         iComment.clear();
         clearMovement(myArrMovement);
@@ -212,7 +212,7 @@ void baseForm::clearMovement(struMovement & myMovement)
     myMovement.CLIENTE_PARTICULAR_NUM_INSCRIPCION = 0;
     myMovement.CLIENTE_PARTICULAR_TELEFONO = 0;
     myMovement.CLIENTE_PARTICULAR_MAIL.clear();
-    
+
     myMovement.CODIGO_PRODUCTO = -1;
     myMovement.PRODUCTO_LER = -1;
     myMovement.PRODUCTO_NOMBRE.clear();
@@ -220,12 +220,12 @@ void baseForm::clearMovement(struMovement & myMovement)
     myMovement.PRODUCTO_NOMBRE3.clear();
     myMovement.PRODUCTO_PELIGROSIDAD.clear();
 
-    myMovement.CLIENTE_PRODUCTO_NPT = -1; 
-    
+    myMovement.CLIENTE_PRODUCTO_NPT = -1;
+
     myMovement.FECHA_FIRMA.clear();
     myMovement.FECHA_PROGRAMADA.clear();
     myMovement.PRECIO_TN = -1;
-    myMovement.FORMA_DE_PAGO = 0;  
+    myMovement.FORMA_DE_PAGO = 0;
     myMovement.PESO_A_RETIRAR = 0;
 
     myMovement.OPERACION_DE_TRATAMIENTO.clear();
@@ -257,7 +257,7 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
 {
     std::string movCode = getMovCode(localDatabase, myStation, retDepMovType());
     //almacenamos en movimientos
-    std::string fields = "(CODIGO_MOV, DI, FECHA_HORA_INICIO, FECHA_HORA_FINAL, TIPO_MOV, ";
+    std::string fields = "(CODIGO_MOV, DI, FECHA_HORA_INICIO, FECHA_HORA_FINAL, TIPO_MOVIMIENTO, ";
     fields += "CODIGO_CLIENTE, CODIGO_PRODUCTO, CODIGO_TRANSPORTISTA, CODIGO_BASCULISTA, PESO_NETO, ";
     fields += "PESO_TARA, PESO_BRUTO, PRECIO, VEHICULO, REMOLQUE, CENTRO_ORIGEN, CENTRO_DESTINO, ";
     fields += "INCIDENCIAS,COMENTARIO_OPERADOR, CLIENTE_PARTICULAR_NOMBRE, CLIENTE_PARTICULAR_NIF, ";
@@ -279,7 +279,7 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     std::string values = movCode;
     values += "\",\"";
     values +=  retDepDi();
-    values += "\",\"";  
+    values += "\",\"";
     values += retDepDateTime();
     values += "\",\"";
     setDepFinalDateTime(getCurrentDate());
@@ -305,7 +305,7 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += ",\"";
     values += retDepPlate();
     values += "\",\"";
-    values += retDepPlateAtt(); 
+    values += retDepPlateAtt();
     values += "\",";
     values += std::to_string(depOriginStation->getCode());
     values += ",";
@@ -318,15 +318,15 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += depCostumer->getName();
     values += "\",\"";
     values += depCostumer->getNif();
-    values += "\",\""; 
+    values += "\",\"";
     values += depCostumer->getAddress();
     values += "\",\"";
-    values += depCostumer->getProvence(); 
+    values += depCostumer->getProvence();
     values += "\",\"";
     values += depCostumer->getCity();
     values += "\",\"";
     values += std::to_string(depCostumer->getZip());
-    values += "\",\"";  
+    values += "\",\"";
     values += depCostumer->getRegion();
     values += "\",\"";
     values += depCostumer->getNima();
@@ -334,12 +334,12 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += depCostumer->getNumIns();
     values += "\",\"";
     values += depCostumer->getPhone();
-    values += "\",\"";    
+    values += "\",\"";
     values += depCostumer->getMail();
     values += "\",\"";
     values += depDestinationStation->getName();
     values += "\",\"";
-    values += depDestinationStation->getNif();  
+    values += depDestinationStation->getNif();
     values += "\",\"";
     values += depDestinationStation->getAddress();
     values += "\",\"";
@@ -360,19 +360,19 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += depDestinationStation->getMail();
     values += "\",";
     values += std::to_string(depCostumer->getType());
-    values += "\",";
+    values += ",\"";
     values += depDriver->getName();
     values += "\",\"";
     values += depDriver->getNif();
-    values += "\",\""; 
+    values += "\",\"";
     values += depDriver->getAddress();
     values += "\",\"";
-    values += depDriver->getProvence(); 
+    values += depDriver->getProvence();
     values += "\",\"";
     values += depDriver->getCity();
     values += "\",\"";
     values += std::to_string(depDriver->getZip());
-    values += "\",\"";  
+    values += "\",\"";
     values += depDriver->getRegion();
     values += "\",\"";
     values += depDriver->getNima();
@@ -380,11 +380,11 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += depDriver->getNumIns();
     values += "\",\"";
     values += depDriver->getPhone();
-    values += "\",\"";    
-    values += depDriver->getMail();    
-
+    values += "\",\"";
+    values += depDriver->getMail();
+    values += "\"";
     sqliteQuery += values;
-    sqliteQuery += ",0)"; 
+    sqliteQuery += ",0)";
     mysqlQuery += values;
     mysqlQuery += ")";
 
@@ -401,8 +401,8 @@ void baseForm::savePlateImage(int pos,const char* entrada_salida)
     command += arrFolder + "\"";
     // std::cout << "TERMINAL COMMAND: "<< command << std::endl;
     ret = system(command.c_str());
-    
-    
+
+
     command.clear();
     command = "convert camera/capture";
     command += std::to_string(pos);
@@ -413,14 +413,14 @@ void baseForm::savePlateImage(int pos,const char* entrada_salida)
     command += entrada_salida;
     command += ".png\"";
     ret = system(command.c_str());
-    
+
     espera(1);
-    
+
     command.clear();
     command = "rm  camera/capture";
     command += std::to_string(pos);
     command += ".jpg";
-    
+
     return;
 }
 
@@ -454,13 +454,13 @@ void baseForm::saveSignature(int blank_signature)
 void baseForm::saveSignature(const char* file)
 {
     int ret;
-    ret = system("mkdir saves");
+    ret = system("mkdir -p saves");
 
-    std::string command = "mkdir ";
+    std::string command = "mkdir -p ";
     command += "\"" + depFolder + "\"";
     std::cout << "TERMINAL COMMAND: " << command << std::endl;
     ret = system(command.c_str());
-    
+
     command.clear();
     command = "cp ";
     command += file;
@@ -469,7 +469,7 @@ void baseForm::saveSignature(const char* file)
     command += "/firma.png\"";
     std::cout << command << std::endl;
     ret = system(command.c_str());
-    
+
     return;
 }
 
@@ -480,16 +480,16 @@ int baseForm::isSignature()
     std::string path = depFolder + "/firma.png";
     if( access( path.c_str(), F_OK ) != -1 )
         exist = 1;
-        
+
     return exist;
 }
 
 void baseForm::backupFiles(std::string movFolder)
 {
     int ret;
-    ret = system("mkdir backup");
+    ret = system("mkdir -p backup");
 
-    std::string command = "mkdir \"backup/";
+    std::string command = "mkdir -p \"backup/";
     command += movFolder;
     command +="\"";
     ret = system(command.c_str());
@@ -564,7 +564,7 @@ int baseForm::showPermisos()
             {
                 std::cout << "Nos lo piden? " << (productPermits.at(i)==true ? "Sí!" : "No!");
                 std::cout << std::endl;
-                std::cout << "permisovalor: " << clientProductPermits.at(i-1) << std::endl;	  
+                std::cout << "permisovalor: " << clientProductPermits.at(i-1) << std::endl;
             }
         }
     }
@@ -601,7 +601,7 @@ int baseForm::checkPermisos()
                     if(std::stoi(clientProductPermits.at(1))==1)
                         nptPermit=true;
                     else
-                        nptPermit=false;		    
+                        nptPermit=false;
                 }
             }
             else if (i==3) //CB
@@ -612,7 +612,7 @@ int baseForm::checkPermisos()
                     if(std::stoi(clientProductPermits.at(2))==1)
                         cbPermit=true;
                     else
-                        cbPermit=false;		    
+                        cbPermit=false;
                 }
             }
             else if (i==4) //CP
@@ -623,7 +623,7 @@ int baseForm::checkPermisos()
                     if(std::stoi(clientProductPermits.at(3))==1)
                         cpPermit=true;
                     else
-                        cpPermit=false;		    
+                        cpPermit=false;
                 }
             }
             else if (i==5) //DCP
@@ -634,9 +634,9 @@ int baseForm::checkPermisos()
                     if(std::stoi(clientProductPermits.at(4))==1)
                         dcpPermit=true;
                     else
-                        dcpPermit=false;		    
+                        dcpPermit=false;
                 }
-        
+
             }
         }
     }
@@ -653,7 +653,7 @@ void baseForm::setDatePermit(std::string strDate)
     bool permit = false;
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
-    
+
     std::string strYear = strDate.substr(0,4);
     std::string strMonth = strDate.substr(5,2);
     std::string strDay = strDate.substr(8,2);
@@ -695,7 +695,7 @@ void baseForm::setDatePermit(std::string strDate)
         else if(strMonth_chkd == (timePtr->tm_mon + 1))
         {
             if( strDay_chkd >= (timePtr->tm_mday))
-                permit = true;	  
+                permit = true;
         }
     }
     contractDatePermit = permit;
@@ -715,7 +715,7 @@ std::string baseForm::createArrDi(qtDatabase & localDatabase)
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovsByClientProduct(sql, retArrCosCode(), retArrProdCode());  
+    selLastDiFromMovsByClientProduct(sql, retArrCosCode(), retArrProdCode());
     localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())
@@ -724,9 +724,9 @@ std::string baseForm::createArrDi(qtDatabase & localDatabase)
         temporalDIDate = ourData.at(0).at(1);
     }
     //REFRESH COSTUMER NIF
-    setAllArrCostumerData(localDatabase);	   
+    setAllArrCostumerData(localDatabase);
     if(isNewYear(temporalDIDate,year)) //new year, new DI
-        temporalDI.clear();	    
+        temporalDI.clear();
     di = generateDi(temporalDI,1);
     setArrDi(di);
     //FOLDER
@@ -734,7 +734,7 @@ std::string baseForm::createArrDi(qtDatabase & localDatabase)
         setArrDateTime(getCurrentDate());
     std::string folder =retArrDi() + " "+ retArrDateTime();
     setArrDiFolder(folder);
-        
+
     return retArrDi();
 }
 
@@ -747,13 +747,13 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
     time_t myTime = time(NULL);
     struct tm *aTime = localtime(&myTime);
     int year = aTime->tm_year + 1900;
-            
+
 
     std::string temporalDI;
     std::string temporalDIDate;
     std::vector<std::vector<std::string>> ourData;
     //LAST DI
-    selLastDiFromMovsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());  
+    selLastDiFromMovsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());
     localDatabase.query(NULL, sql.c_str());
     ourData = localDatabase.retData2();
     if(ourData.size())
@@ -761,9 +761,9 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
         temporalDI = ourData.at(0).at(0);
         temporalDIDate = ourData.at(0).at(1);
     }
-      
+
     if(isNewYear(temporalDIDate,year)) //new year, new DI
-        temporalDI.clear();	    
+        temporalDI.clear();
     di = generateDi(temporalDI, 0);
 
     if(oldDi.compare(di)) //COPYING DATA
@@ -776,8 +776,8 @@ std::string baseForm::createDepDi(qtDatabase & localDatabase)
             newFolder += " " + retDepDateTime();
         }
         oldFolder += "\"";
-        newFolder += "\""; 
-        
+        newFolder += "\"";
+
         std::string command = "mkdir " + newFolder;
         system(command.c_str());
         command = "cp " + oldFolder + "/* " + newFolder;
@@ -810,27 +810,27 @@ std::string baseForm::generateDi(std::string lastDi, int arrive)
     if(!lastDi.empty())
     {
         if(lastDi.length() >= 18) //DI(2)+NIF(9)+YYYY+XXXXXXX(7)
-	    {
-	        int lastnumber_chkd;
-	        try
-	        {
-	            lastnumber_chkd = std::stoi(lastDi.substr(lastDi.length() - 7));
-	        }
-	        catch(...)
-	        {
-	            lastnumber_chkd = 0;
-	        }
-	        int lastNumber = lastnumber_chkd;
-	        lastNumber++;
-	        if(lastNumber > 9999999)
+        {
+            int lastnumber_chkd;
+            try
             {
-	            lastNumber = 9999999;
+                lastnumber_chkd = std::stoi(lastDi.substr(lastDi.length() - 7));
             }
-	        di = "di"+NIF+actualYear+zeroPadNumber(lastNumber,7);	  
-	    }
+            catch(...)
+            {
+                lastnumber_chkd = 0;
+            }
+            int lastNumber = lastnumber_chkd;
+            lastNumber++;
+            if(lastNumber > 9999999)
+            {
+                lastNumber = 9999999;
+            }
+            di = "di"+NIF+actualYear+zeroPadNumber(lastNumber,7);
+        }
         else
         {
-	        di = "di"+NIF+actualYear+"0000001";
+            di = "di"+NIF+actualYear+"0000001";
         }
     }
     else
@@ -850,29 +850,29 @@ void baseForm::checkInIncident(int edited,std::string incidentCode, std::string 
   if(!incidentCode.empty() && !message.empty())
     {
       if(edited)
-	{
-	  for(iter=iIncidents.begin();iter!=iIncidents.end() && !alreadyDone;++iter)
-	    {
-	      std::string code = iter->substr(0,incidentCode.length());
-	      if(!code.compare(incidentCode))
-		{
-		  iIncidents.erase(iter);
-		  alreadyDone=1;
-		}
-	    }
-	  iIncidents.push_back(message);
-	}
+    {
+      for(iter=iIncidents.begin();iter!=iIncidents.end() && !alreadyDone;++iter)
+        {
+          std::string code = iter->substr(0,incidentCode.length());
+          if(!code.compare(incidentCode))
+        {
+          iIncidents.erase(iter);
+          alreadyDone=1;
+        }
+        }
+      iIncidents.push_back(message);
+    }
       else
-	{
-	  for(iter=iIncidents.begin();iter!=iIncidents.end();)
-	    {
-	      std::string code = iter->substr(0,incidentCode.length());
-	      if(!code.compare(incidentCode))
-		iter= iIncidents.erase(iter);
-	      else
-		++iter;
-	    }
-	}
+    {
+      for(iter=iIncidents.begin();iter!=iIncidents.end();)
+        {
+          std::string code = iter->substr(0,incidentCode.length());
+          if(!code.compare(incidentCode))
+        iter= iIncidents.erase(iter);
+          else
+        ++iter;
+        }
+    }
     }
 }
 
@@ -884,29 +884,29 @@ void baseForm::checkOutIncident(int edited,std::string incidentCode, std::string
   if(!incidentCode.empty() && !message.empty())
     {
       if(edited)
-	{
-	  for(iter=oIncidents.begin();iter!=oIncidents.end() && !alreadyDone;++iter)
-	    {
-	      std::string code = iter->substr(0,incidentCode.length());
-	      if(!code.compare(incidentCode))
-		{
-		  iter= oIncidents.erase(iter);
-		  alreadyDone=1;
-		}
-	    }
-	  oIncidents.push_back(message);
-	}
+    {
+      for(iter=oIncidents.begin();iter!=oIncidents.end() && !alreadyDone;++iter)
+        {
+          std::string code = iter->substr(0,incidentCode.length());
+          if(!code.compare(incidentCode))
+        {
+          iter= oIncidents.erase(iter);
+          alreadyDone=1;
+        }
+        }
+      oIncidents.push_back(message);
+    }
       else
-	{
-	  for(iter=oIncidents.begin();iter!=oIncidents.end();)
-	    {
-	      std::string code = iter->substr(0,incidentCode.length());
-	      if(!code.compare(incidentCode))
-		iter= oIncidents.erase(iter);
-	      else
-		++iter;
-	    }
-	}
+    {
+      for(iter=oIncidents.begin();iter!=oIncidents.end();)
+        {
+          std::string code = iter->substr(0,incidentCode.length());
+          if(!code.compare(incidentCode))
+        iter= oIncidents.erase(iter);
+          else
+        ++iter;
+        }
+    }
     }
 }
 int baseForm::isInIncident(std::string incidentCode)
@@ -918,7 +918,7 @@ int baseForm::isInIncident(std::string incidentCode)
     {
       std::string code = iter->substr(0,incidentCode.length());
       if(!code.compare(incidentCode))
-	exists = 1;       
+    exists = 1;
     }
 
   return exists;
@@ -933,7 +933,7 @@ int baseForm::isOutIncident(std::string incidentCode)
     {
       std::string code = iter->substr(0,incidentCode.length());
       if(!code.compare(incidentCode))
-	exists = 1;       
+    exists = 1;
     }
 
   return exists;
@@ -1278,7 +1278,7 @@ void baseForm::inputConcatenate(std::vector<std::string> newIncidents)
       //getting incident code
       code = extractIncidentCode(*iter);
       if(!isInIncident(code))
-	iIncidents.push_back(*iter);
+    iIncidents.push_back(*iter);
     }
 }
 void baseForm::outputConcatenate(std::vector<std::string> newIncidents)
@@ -1291,7 +1291,7 @@ void baseForm::outputConcatenate(std::vector<std::string> newIncidents)
       //getting incident code
       code = extractIncidentCode(*iter);
       if(!isOutIncident(code))
-	oIncidents.push_back(*iter);
+    oIncidents.push_back(*iter);
     }
 }
 
@@ -1310,7 +1310,7 @@ int baseForm::isArrPlateRegistered(qtDatabase & myDatabase)
         {
             std::vector<std::vector<std::string>> retData;
             std::vector<std::vector<std::string>>::iterator iter;
-            retData = myDatabase.retData2();     
+            retData = myDatabase.retData2();
             for(iter=retData.begin();iter!=retData.end()&&!reg;++iter)
             {
                 if(iter->size())
@@ -1375,7 +1375,7 @@ std::vector<std::string> baseForm::ret_all_cos_4_combo(qtDatabase & my_database)
             field = 0;
             full_name += std::to_string(code);
             costumers_name.push_back(full_name);
-        }    
+        }
     }
     if (sql != NULL)
         delete [] sql;
@@ -1386,7 +1386,7 @@ std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
 {
     char * sql =NULL;
     std::vector <std::string> productsName;
- 
+
     selAllProds(sql);
     if(!myDatabase.query(NULL,sql))
     {
@@ -1415,12 +1415,12 @@ std::vector<std::string> baseForm::retAllProds4Combo(qtDatabase & myDatabase)
                 {
                     fullName += *prodField;
                     fullName += " ";
-                }	      
+                }
                 field++;
             }
             fullName += std::to_string(code);
             productsName.push_back(fullName);
-        }             
+        }
     }
     if (sql != NULL)
         delete[] sql;
@@ -1432,16 +1432,16 @@ int baseForm::setAllProductData(qtDatabase & myDatabase)
     char * sql = NULL;
     int ret = -1;
     std::vector<std::vector<std::string>> retData;
-        
+
     selProdDataByCode(sql, retDepProdCode());
     if(!myDatabase.query(NULL,sql))
     {
         retData = myDatabase.retData2();
         if(retData.size())
         {
-            setDepProdDATA(retData[0]);		 
+            setDepProdDATA(retData[0]);
             ret = 0;
-        }  
+        }
     }
     if (sql != NULL)
         delete [] sql;
@@ -1459,7 +1459,7 @@ void baseForm::setDepProdDATA(std::vector <std::string> newDATA)
             setDepProdName2(*iter);
         else if(field==3) //Nombre3
             setDepProdName3(*iter);
-        else if(field==4) //Ler	
+        else if(field==4) //Ler
         {
             try
             {
@@ -1467,7 +1467,7 @@ void baseForm::setDepProdDATA(std::vector <std::string> newDATA)
             }
             catch (...)
             {
-                setDepProdLER(0);		
+                setDepProdLER(0);
             }
         }
         else if(field==5) //Descripcion de peligro
@@ -1493,16 +1493,16 @@ int baseForm::setAllArrProductData(qtDatabase & myDatabase)
     char * sql = NULL;
     int ret = -1;
     std::vector<std::vector<std::string>> retData;
-        
+
     selProdDataByCode(sql, retArrProdCode());
     if(!myDatabase.query(NULL,sql))
     {
         retData = myDatabase.retData2();
         if(retData.size())
         {
-            setArrProdDATA(retData[0]);		 
+            setArrProdDATA(retData[0]);
             ret = 0;
-        }  
+        }
     }
     if (sql != NULL)
         delete [] sql;
@@ -1520,7 +1520,7 @@ void baseForm::setArrProdDATA(std::vector <std::string> newDATA)
             setArrProdName2(*iter);
         else if(field==3) //Nombre3
             setArrProdName3(*iter);
-        else if(field==4) //Ler	
+        else if(field==4) //Ler
         {
             try
             {
@@ -1528,11 +1528,11 @@ void baseForm::setArrProdDATA(std::vector <std::string> newDATA)
             }
             catch (...)
             {
-                setArrProdLER(0);		
+                setArrProdLER(0);
             }
         }
         else if(field==5) //Comunidad
-            setArrProdPeligro(*iter);   
+            setArrProdPeligro(*iter);
         field++;
     }
     return;
@@ -1546,7 +1546,7 @@ void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* typ
     resetArrProdPermits();
     selProdPermits(sql, type, retArrProdCode());
     if(!myDatabase.query(NULL,sql))
-    {      
+    {
         ourData = myDatabase.retData2();
         if(ourData.size())
         {
@@ -1559,7 +1559,7 @@ void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* typ
     {
         selProdCosPermits(sql, type, retArrProdCode(), retArrCosCode());
         if(!myDatabase.query(NULL,sql))
-        {      
+        {
             ourData = myDatabase.retData2();
             if(ourData.size())
             {
@@ -1585,7 +1585,7 @@ int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
         {
             ret = 1;
             setArrPermitGralFlag(0);
-        }	      
+        }
         //CONTRATO
         try
         {
@@ -1605,7 +1605,7 @@ int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
         {
             ret = 1;
             setArrPermitNptFlag(0);
-        }	      
+        }
         //CB
         try
         {
@@ -1615,7 +1615,7 @@ int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
         {
             ret = 1;
             setArrPermitCbFlag(0);
-        }	      
+        }
         //CP
         try
         {
@@ -1625,7 +1625,7 @@ int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
         {
             ret = 1;
             setArrPermitCpFlag(0);
-        }	      
+        }
         //DCP
         try
         {
@@ -1646,59 +1646,59 @@ int baseForm::setArrPermits(std::vector<std::string> ourData)
   int ret = 1;
   std::vector<std::string>::iterator iter;
   int field=0;
-  
+
   for(iter = ourData.begin(); iter != ourData.end(); ++iter)
     {
       if(field==0)//CONTRATO
-	setArrPermitDate(ourData[0]);
+    setArrPermitDate(ourData[0]);
       else if (field == 1)//NPT
-	{
-	  try
-	    {
-	      setArrPermitNpt(std::stoul(ourData[1]));
-	    }
-	  catch(...)
-	    {
-	      ret = 1;
-	      setArrPermitNpt(0);
-	    }
-	}
+    {
+      try
+        {
+          setArrPermitNpt(std::stoul(ourData[1]));
+        }
+      catch(...)
+        {
+          ret = 1;
+          setArrPermitNpt(0);
+        }
+    }
       else if(field==2)//CB
-	{
-	  try
-	    {
-	      setArrPermitCb(std::stoi(ourData[2]));
-	    }
-	  catch(...)
-	    {
-	      ret = 1;
-	      setArrPermitCb(0);
-	    }
-	}
+    {
+      try
+        {
+          setArrPermitCb(std::stoi(ourData[2]));
+        }
+      catch(...)
+        {
+          ret = 1;
+          setArrPermitCb(0);
+        }
+    }
       else if(field==3)//CP
-	{
-	  try
-	    {
-	      setArrPermitCp(std::stoi(ourData[3]));
-	    }
-	  catch(...)
-	    {
-	      ret = 1;
-	      setArrPermitCp(0);
-	    }
-	}
+    {
+      try
+        {
+          setArrPermitCp(std::stoi(ourData[3]));
+        }
+      catch(...)
+        {
+          ret = 1;
+          setArrPermitCp(0);
+        }
+    }
       else if(field==4)//DCP
-	{
-	  try
-	    {
-	      setArrPermitDcp(std::stoi(ourData[4]));
-	    }
-	  catch(...)
-	    {
-	      ret = 1;
-	      setArrPermitDcp(0);
-	    }
-	}
+    {
+      try
+        {
+          setArrPermitDcp(std::stoi(ourData[4]));
+        }
+      catch(...)
+        {
+          ret = 1;
+          setArrPermitDcp(0);
+        }
+    }
       field++;
       ret = 0;
     }
@@ -1706,7 +1706,7 @@ int baseForm::setArrPermits(std::vector<std::string> ourData)
 }
 int baseForm::isArrProdDatePermit()
 {
-  int ret = 1;  
+  int ret = 1;
   std::string date,current;
 
 
@@ -1716,9 +1716,9 @@ int baseForm::isArrProdDatePermit()
       current = getCurrentDate();
       ret = compareDates(date, current);
       if(ret >=0)
-	ret = 1;
+    ret = 1;
       else
-	ret = 0;
+    ret = 0;
     }
   return ret;
 }
@@ -1727,8 +1727,8 @@ int baseForm::isArrProdNptPermit()
   int ret = 1;
   if(retArrPermitNptFlag() > 0)
     {
-      if(retArrPermitNpt() <= 0)	
-	ret = 0;	  
+      if(retArrPermitNpt() <= 0)
+    ret = 0;
     }
   return ret;
 }
@@ -1737,8 +1737,8 @@ int baseForm::isArrProdCbPermit()
   int ret = 1;
   if(retArrPermitCbFlag() > 0)
     {
-      if(retArrPermitCb() <= 0)	
-	ret = 0;	  
+      if(retArrPermitCb() <= 0)
+    ret = 0;
     }
   return ret;
 }
@@ -1747,8 +1747,8 @@ int baseForm::isArrProdCpPermit()
   int ret = 1;
   if(retArrPermitCpFlag() > 0)
     {
-      if(retArrPermitCp() <= 0)	
-	ret = 0;	  
+      if(retArrPermitCp() <= 0)
+    ret = 0;
     }
   return ret;
 }
@@ -1757,8 +1757,8 @@ int baseForm::isArrProdDcpPermit()
   int ret = 1;
   if(retArrPermitDcpFlag() > 0)
     {
-      if(retArrPermitDcp() <= 0)	
-	ret = 0;	  
+      if(retArrPermitDcp() <= 0)
+    ret = 0;
     }
   return ret;
 }
@@ -1768,16 +1768,16 @@ int baseForm::setAllArrCostumerData(qtDatabase & myDatabase)
     std::string sql;
     int ret = -1;
     std::vector<std::vector<std::string>> retData;
-    
+
     selCosDataByCode(sql, retArrCosCode());
     if(!myDatabase.query(NULL, sql.c_str()))
     {
         retData = myDatabase.retData2();
         if(retData.size())
-	    {
-	        setArrCosDATA(retData[0]);
-	        ret = 0;
-	    }  
+        {
+            setArrCosDATA(retData[0]);
+            ret = 0;
+        }
     }
     return ret;
 }
@@ -1797,33 +1797,33 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
     {
         retData = myDatabase.retData2();
         if(retData.size())
-	    {
-	        std::vector <std::string> result = retData.at(0);
-	        try //NPT
-	        {
-	            setDepPermitNPT(std::stoul(result.at(0)));
-	        }
-	        catch(...)
-	        {
-	            setDepPermitNPT(0);	    
-	        }
-	        try //price
-	        {
-	            price = std::stof(result.at(1));
-	        }
-	        catch(...)
-	        {
-	            price = 0.0;
-	        }
-	        if(price > 0.0)
-	            setDepPrice(price);
-	        ret=0;
-	    }
+        {
+            std::vector <std::string> result = retData.at(0);
+            try //NPT
+            {
+                setDepPermitNPT(std::stoul(result.at(0)));
+            }
+            catch(...)
+            {
+                setDepPermitNPT(0);
+            }
+            try //price
+            {
+                price = std::stof(result.at(1));
+            }
+            catch(...)
+            {
+                price = 0.0;
+            }
+            if(price > 0.0)
+                setDepPrice(price);
+            ret=0;
+        }
         else
-	    {
-	        setDepPermitNPT(0);
-	        //no costumer - product price defined
-	    }
+        {
+            setDepPermitNPT(0);
+            //no costumer - product price defined
+        }
     }
     if (sql)
     {
@@ -1846,20 +1846,20 @@ int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
     {
         retData = myDatabase.retData2();
         if(retData.size())
-	    {
-	        std::vector <std::string> result = retData.at(0);
-	        try //NPT
-	        {
-	            setArrPermitNpt(std::stoul(result.at(0)));
-	        }
-	        catch(...)
-	        {
-	            setArrPermitNpt(0);	    
-	        }
-	        ret=0;
-	    }
+        {
+            std::vector <std::string> result = retData.at(0);
+            try //NPT
+            {
+                setArrPermitNpt(std::stoul(result.at(0)));
+            }
+            catch(...)
+            {
+                setArrPermitNpt(0);
+            }
+            ret=0;
+        }
         else
-	        setArrPermitNpt(0);
+            setArrPermitNpt(0);
     }
     delete sql;
     return ret;
@@ -1872,74 +1872,74 @@ void baseForm::setArrCosDATA(std::vector <std::string> newDATA)
     for(iter=newDATA.begin();iter!=newDATA.end();++iter)
     {
         if(field==1) //NOmbre
-	        setArrCosName(*iter);
+            setArrCosName(*iter);
         else if(field==2) //NIF
-	        setArrCosNif(*iter);
+            setArrCosNif(*iter);
         else if(field==3) //DIRECCION
-	        setArrCosAddr(*iter);
+            setArrCosAddr(*iter);
         else if(field==4) //PROVINCIA
-	        setArrCosProv(*iter);
+            setArrCosProv(*iter);
         else if(field==5) //POBLACIÓN
-	        setArrCosCity(*iter);
-        else if(field==6) //CP	
-	    {
-	        try
-	        {
-	            setArrCosZip(std::stoul(*iter));
-	        }
-	        catch (...)
-	        {
-	            setArrCosZip(0);		
-	        }
-	    }
+            setArrCosCity(*iter);
+        else if(field==6) //CP
+        {
+            try
+            {
+                setArrCosZip(std::stoul(*iter));
+            }
+            catch (...)
+            {
+                setArrCosZip(0);
+            }
+        }
         else if(field==9) //Type
-	    {
-	        try
-	        {
-	            setArrCosTypeDef(std::stoul(*iter));
-	        }
-	        catch (...)
-	        {
-	            setArrCosTypeDef(0);		
-	        }
-	    }
+        {
+            try
+            {
+                setArrCosTypeDef(std::stoul(*iter));
+            }
+            catch (...)
+            {
+                setArrCosTypeDef(0);
+            }
+        }
         else if(field==10) //Comunidad
-	        setArrCosReg(*iter);
+            setArrCosReg(*iter);
         else if(field==11) //NIMA
-	    {
-	        try
-	        {
-	            setArrCosNima(std::stol(*iter));
-	        }
-	        catch (...)
-	        {
-	            setArrCosNima(0);		
-	        }
-	    }
+        {
+            try
+            {
+                setArrCosNima(std::stol(*iter));
+            }
+            catch (...)
+            {
+                setArrCosNima(0);
+            }
+        }
         else if(field==12) //NUM INSCRIPCIÓN EN EL REGISTRO
-	    {
-	        try
-	        {
-	            setArrCosNumIns(std::stol(*iter));
-	        }
-	        catch (...)
-	        {
-	            setArrCosNumIns(0);		
-	        }
-	    }
+        {
+            try
+            {
+                setArrCosNumIns(std::stol(*iter));
+            }
+            catch (...)
+            {
+                setArrCosNumIns(0);
+            }
+        }
         else if(field==13) //TELEFONO
-	    {
-	        try
-	        {
-	            setArrCosPhone(std::stol(*iter));
-	        }
-	        catch (...)
-	        {
-	            setArrCosPhone(0);		
-	        }
-	    }     
+        {
+            try
+            {
+                setArrCosPhone(std::stol(*iter));
+            }
+            catch (...)
+            {
+                setArrCosPhone(0);
+            }
+        }
         else if(field==14) //MAIL
-            setArrCosMail(*iter);     
+            setArrCosMail(*iter);
         field++;
     }
     return;
@@ -1969,19 +1969,19 @@ void baseForm::resetDrivers()
     for (std::vector< driver* >::iterator it = allDrivers.begin() ; it != allDrivers.end(); ++it)
     {
         delete (*it);
-    } 
+    }
     allDrivers.clear();
 }
-      
+
 void baseForm::insertDriver(std::vector<std::string> record)
 {
     try
-	{
+    {
         allDrivers.push_back(new driver(record));
-	}
+    }
     catch(...)
-	{
-	    std::cout << "baseForm::insertDriver, NOT a driver database data row provided, passing..." << std::endl;
+    {
+        std::cout << "baseForm::insertDriver, NOT a driver database data row provided, passing..." << std::endl;
     }
     return;
 }
@@ -1994,9 +1994,9 @@ std::vector<std::string> baseForm::retAllDriversNames()
     if(!allDrivers.empty())
     {
         for (iter = allDrivers.begin(); iter != allDrivers.end();++iter)
-	    {
-	        names.push_back((*iter)->getName());
-	    }
+        {
+            names.push_back((*iter)->getName());
+        }
     }
     return names;
 }
@@ -2010,12 +2010,12 @@ int baseForm::setDriverByName(std::string name)
     while(iter != allDrivers.end() && !ret)
     {
         if(!(*iter)->getName().compare(name))
-	    {
-	        if(depDriver)
-	            delete depDriver;
-	        depDriver = new driver(*iter);
-	        ret = 1;
-	    }
+        {
+            if(depDriver)
+                delete depDriver;
+            depDriver = new driver(*iter);
+            ret = 1;
+        }
         ++iter;
     }
     return ret;
@@ -2026,7 +2026,7 @@ int baseForm::setDriverByCode(long code, qtDatabase & local_database)
     if(code > 0)
     {
         if(depDriver)
-	        delete depDriver;
+            delete depDriver;
         depDriver = new driver(code, local_database);
     }
     else
@@ -2075,12 +2075,12 @@ int baseForm::default_driver(qtDatabase & local_database)
                 }
             }
         }
-        if (sql) 
+        if (sql)
         {
             delete [] sql;
             sql = NULL;
         }
-    }   
+    }
     return set;
 }
 
@@ -2095,7 +2095,7 @@ std::vector<std::string> baseForm::retStationsLst(qtDatabase & myDatabase, int i
     if(internal)
         selIntCentersNameCode(sql);
     else
-        selExtCentersNameCode(sql);   
+        selExtCentersNameCode(sql);
     if(!myDatabase.query(NULL,sql))
     {
         std::vector<std::vector<std::string>> myData = myDatabase.retData2();
@@ -2138,28 +2138,28 @@ int baseForm::set_all_billing_info(qtDatabase & local_database)
         str_log_message += sql;
         log_message(str_log_message, 1);
         if(!local_database.query(NULL, sql))
-	    {
-	        log_message("(DI DATA) local OK", 1);
-	        returned_data = local_database.retData2();
-	        if(returned_data.size())
-	        {
-	            if(returned_data[0].size())
-		        {
-		            try
-		            {
-		                paying_method = std::stoi(returned_data[0][0]);
-		            }
-		            catch(...)
-		            {
-		                paying_method = 1;
-		            }
-		        }
-	        }
-	    }
+        {
+            log_message("(DI DATA) local OK", 1);
+            returned_data = local_database.retData2();
+            if(returned_data.size())
+            {
+                if(returned_data[0].size())
+                {
+                    try
+                    {
+                        paying_method = std::stoi(returned_data[0][0]);
+                    }
+                    catch(...)
+                    {
+                        paying_method = 1;
+                    }
+                }
+            }
+        }
         else
-	    {
-	        log_message("(DI DATA) local ERROR", 2);
-	    }
+        {
+            log_message("(DI DATA) local ERROR", 2);
+        }
         if(sql)
         {
             delete [] sql;
@@ -2185,7 +2185,7 @@ std::string baseForm::getLastMovCode(qtDatabase &localDatabase, station *myStati
     if(ourData.size())
     {
         lastMovCode = ourData.at(0).at(0);
-    }	
+    }
     return lastMovCode;
 }
 
@@ -2196,18 +2196,18 @@ std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, in
     long lastCode = std::stol(sLastCode);
     std::string newCode;
     std::string str_station_code = std::to_string(myStation->getCode());
-  
+
     if (lastCode > 0 && sLastCode.size() > 11)
     {
         // std::cout << "(DEBUG) Have last code = " << lastCode << std::endl;
         std::string prefix = sLastCode.substr(0,sLastCode.size()-7);
         std::string sIndex = sLastCode.substr(sLastCode.size()-7,6);
 
-        std::string prefix_year = prefix.substr(0,4); 
+        std::string prefix_year = prefix.substr(0,4);
         long index = std::stol(sIndex);
         index++;
         if(index > 999999)
-	        index = 999999;
+            index = 999999;
         std::string newIndex = zeroPadNumber(index,6);
         newCode = prefix_year + str_station_code + newIndex + std::to_string(movementTypeCode);
         // std::cout << "(DEBUG) newcode is: (prefix_year)" << prefix_year << " (str_station_code)" << str_station_code;
@@ -2246,7 +2246,7 @@ void baseForm::resetArrCostumer()
 
     if(arrCostumer != NULL)
         arrCostumer->reset();
-    else    
+    else
         arrCostumer = new costumer();
 }
 void baseForm::resetDepCostumer()
@@ -2268,7 +2268,7 @@ void baseForm::resetDepCostumer()
 
     if(depCostumer != NULL)
         depCostumer->reset();
-    else    
+    else
         depCostumer = new costumer();
 }
 void baseForm::resetArrProduct()
@@ -2307,7 +2307,7 @@ void baseForm::resetArrScale()
 void baseForm::resetDepScale()
 {
     myDepMovement.PESO_SALIDA = 0;
-    incDepScaleEdited(0); 
+    incDepScaleEdited(0);
 }
 
 void baseForm::resetArrPlate()
@@ -2318,7 +2318,7 @@ void baseForm::resetArrPlate()
   incArrPlateEdited(0);
   incArrPlateAuto(0);
   incArrParticular(0);
- 
+
   std::string command;
   command ="rm \"";
   command += arrFolder;
@@ -2362,7 +2362,7 @@ void baseForm::resetArrOrigin()
 {
   if(arrOriginStation != NULL)
     arrOriginStation->reset();
-  else    
+  else
     arrOriginStation = new station();
 }
 
@@ -2388,7 +2388,7 @@ void baseForm::resetDepDestination()
     depDestinationStation->reset();
   else
     depDestinationStation = new station();
-  
+
   incDestEdited(0);
 }
 
@@ -2405,14 +2405,14 @@ void baseForm::resetStaff()
 {
     if(staff_in_charge != NULL)
         staff_in_charge->reset();
-    else    
+    else
         staff_in_charge = new staff();
 }
 void baseForm::resetDepDriver()
 {
     if(depDriver != NULL)
         depDriver->reset();
-    else    
+    else
         depDriver = new driver();
 }
 /**************************/
@@ -2428,18 +2428,18 @@ int baseForm::set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF
       //recalculating max size and font size
       HPDF_Page_SetFontAndSize (my_page, my_font, font_size-1);
       max_size = (int)(max_size/(font_size-1)) * font_size;
-      
+
       HPDF_Page_BeginText (my_page);
       paragraph = ret_paragraph_with_lines_return(my_text,max_size);
       my_text = paragraph.at(0);
       std::string my_text2 = paragraph.at(1);
       if (my_text2.length() >= 45)
-	{
-	  my_text2[45] = '\0';
-	  my_text2[44] = '.';
-	  my_text2[43] = '.';
-	  my_text2[42] = '.';
-	}
+    {
+      my_text2[45] = '\0';
+      my_text2[44] = '.';
+      my_text2[43] = '.';
+      my_text2[42] = '.';
+    }
       HPDF_Page_MoveTextPos (my_page, start_x, start_y+7);
       HPDF_Page_ShowText (my_page, my_text.c_str());
       HPDF_Page_EndText (my_page);
@@ -2452,10 +2452,10 @@ int baseForm::set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF
     {
       HPDF_Page_BeginText (my_page);
       HPDF_Page_MoveTextPos (my_page, start_x, start_y);
-      HPDF_Page_ShowText (my_page, my_text.c_str());       
+      HPDF_Page_ShowText (my_page, my_text.c_str());
     }
   HPDF_Page_EndText (my_page);
   HPDF_Page_SetFontAndSize (my_page, my_font, font_size);
-  
+
   return ret;
 }
