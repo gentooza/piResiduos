@@ -381,12 +381,19 @@ static int syncTransfers(PARAM *p, long codigo_estacion)
 		            log_message("(SINCRO)(transferencias) BD local -> delete from transferencias", 1);
 		            if(localDatabase.query(p, "delete from transferencias"))
 		                log_message("(SINCRO)(transferencias) Error BD local", 2);
-		            loadTransfers(sql, dataReturn);
-		            str_log_message = "(SINCRO)(transferencias) BD local -> ";
-		            str_log_message += sql;
-		            log_message(str_log_message, 1);
-		            if(localDatabase.query(p, sql.c_str()))
-		                log_message("(SINCRO)(transferencias) Error BD local", 2);
+                    if(dataReturn.size())
+                    {
+		                loadTransfers(sql, dataReturn);
+		                str_log_message = "(SINCRO)(transferencias) BD local -> ";
+		                str_log_message += sql;
+		                log_message(str_log_message, 1);
+		                if(localDatabase.query(p, sql.c_str()))
+		                    log_message("(SINCRO)(transferencias) Error BD local", 2);
+                    }
+                    else
+                    {
+                        log_message("(SINCRO)(transferencias) no transfers movements to load locally", 1);
+                    }
 		        }
 	        }
 	  
@@ -432,7 +439,10 @@ static int syncOrders(PARAM *p)
 	            str_log_message += sql;
 	            log_message(str_log_message, 1);
 	            if(localDatabase.query(p, sql.c_str()))
+                {
+                    log_message("(SINCRO)(orders) Error local BD (query?)", 2);
 	                ret = -1;
+                }
 	        }
 	        else
 	        {
@@ -578,7 +588,7 @@ static int syncMovements(PARAM *p,long codigo_estacion)
 		}
       	else
 		{
-	  		log_message("(SINCRO)(movimientos) Error BD remota (query)", 2);
+	  		log_message("(SINCRO)(movimientos) Error BD local (query)", 2);
 	  		ret = -2;
 		}
       	//2 - only selecting last movement in station, in remote database
