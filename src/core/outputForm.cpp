@@ -858,14 +858,12 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
 /*! function for managing all new information preset by the order*/
 int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
 {
-    char * sql = NULL;
+    std::string sql;
     int numCol=0;
     long costumer_code = 0;
     long station_code = 0;
     selOrderById(sql, order_code);
-    localDatabase.query(NULL,sql);
-    if (sql)
-        delete [] sql;
+    localDatabase.query(NULL, sql.c_str());
 
     std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
     std::vector<std::string>::iterator col;
@@ -1077,6 +1075,13 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
             if(!depAuthCostumer)
                 depAuthCostumer = new costumer();
             depAuthCostumer->setMail(*col);
+	    }
+        else if(numCol == 38) // NUMERODI
+	    {
+            std::string tmpDI = "";
+            if(col->find_first_not_of(' ') != std::string::npos)
+                tmpDI = *col;
+            setDepDi(tmpDI);
 	    }
 	    numCol++;
 	}

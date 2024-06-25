@@ -57,7 +57,7 @@ void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataRet
 //TABLE ORDERS
 void selAllFromOrders(std::string& sql, long station_code);
 void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer_code, long product);
-void selOrderById(char *& myQuery, long order_code);
+void selOrderById(std::string& myQuery, long order_code);
 
 void rmtSelAllOrders(std::string& sql, long fromStation);
 
