@@ -55,7 +55,7 @@ void rmtSelAllCenters(std::string& sql);
 void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE ORDERS
-void selectAllFromOrders(char *& sql, long station_code);
+void selAllFromOrders(std::string& sql, long station_code);
 void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer_code, long product);
 void selOrderById(char *& myQuery, long order_code);
 
@@ -112,7 +112,6 @@ void updtSyncroMovs(std::string& sql, std::vector<std::vector<std::string>> data
 void rmtUpdtMovs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 void rmtSelLastMov(std::string& sql, long codigo_estacion, int year);
 void selLastMovCode(std::string& sql, std::string codigo_estacion);
-void selAllMovements(char*&sql);
 
 //TABLE ARRIVING TRANSIT
 void updtScaleOutTrans(char *& sql, const char* fecha_hora, long codigo_cliente, long codigo_producto, unsigned int peso_salida, const char* comentario, const char * incidencias);
@@ -183,7 +182,6 @@ void delTransfer(char*&sql,const char* fecha_hora, long codigo_origen, long codi
 //remote mysql
 std::string remote_selectAllCostumers();
 void rmt_selAllFromTransito(char *& sql,int fromStation);
-void rmt_selAllMovements(char *& sql);
 
 ////syncronize
 //local

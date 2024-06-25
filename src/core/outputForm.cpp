@@ -3,7 +3,7 @@ This file is part of PiResiduos.
 
 Copyright 2017-2018, Prointegra SL.
 Copyright 2019-2022, Pixelada S. Coop. And. <info (at) pixelada (dot) org>
-Copyright 2023 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
+Copyright 2023, 2024 Joaquín Cuéllar <joa (dot) cuellar (at) riseup (dot) net>
 
 PiResiduos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -250,114 +250,113 @@ int outputForm::storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my
 }
 void outputForm::setOrders(qtDatabase & myDatabase, long station_code)
 {
-  char * sql;
-  int numCol=0;
-  struMovement myOrder;
+    std::string sql;
+    int numCol=0;
+    struMovement myOrder;
 
-  allOrders.clear();
-  selectAllFromOrders(sql,station_code);
-  myDatabase.query(NULL,sql);
+    allOrders.clear();
+    selAllFromOrders(sql, station_code);
+    myDatabase.query(NULL, sql.c_str());
 
-  std::vector<std::vector<std::string>> ourData = myDatabase.retData2();
-  std::vector <std::vector<std::string>>::iterator row;
-  std::vector<std::string>::iterator col;
-  for(row=ourData.begin();  row != ourData.end(); ++row)
+    std::vector<std::vector<std::string>> ourData = myDatabase.retData2();
+    std::vector <std::vector<std::string>>::iterator row;
+    std::vector<std::string>::iterator col;
+    for(row=ourData.begin();  row != ourData.end(); ++row)
     {
-      myOrder = struMovement {};
-      numCol = 0;
-      for(col=row->begin(); col != row->end(); ++col)
-	{
-	  if(numCol == 0) // CODIGO_ORDEN
+        myOrder = struMovement {};
+        numCol = 0;
+        for(col=row->begin(); col != row->end(); ++col)
 	    {
-	      try
-		{
-		  myOrder.CODIGO_ORDEN = std::stoi(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.CODIGO_ORDEN = -1;
-		}
+	        if(numCol == 0) // CODIGO_ORDEN
+	        {	      
+                try
+		        {
+		            myOrder.CODIGO_ORDEN = std::stoi(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.CODIGO_ORDEN = -1;
+		        }
+	        }
+	        else if(numCol == 2) // CODIGO_CLIENTE
+	        {
+	            try
+		        {
+		            myOrder.CODIGO_CLIENTE = std::stoul(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.CODIGO_CLIENTE = 0;
+		        }
+	        }
+	        else if(numCol == 3) // CODIGO_PRODUCTO
+	        {
+	            try
+		        {
+		            myOrder.CODIGO_PRODUCTO = std::stoul(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.CODIGO_PRODUCTO = 0;
+		        }
+	        }
+	        else if(numCol == 4) // FECHA_FIRMA
+	            myOrder.FECHA_FIRMA = *col;
+	        else if(numCol == 5) // FECHA_PROGRAMADA
+	            myOrder.FECHA_PROGRAMADA = *col;
+	        else if(numCol == 7) // PESO_A_RETIRAR
+	        {
+	            try
+		        {
+		            myOrder.PESO_A_RETIRAR = std::stoul(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.PESO_A_RETIRAR = 0;
+		        }
+	        }
+	        else if(numCol == 8) // CODIGO_DESTINO ORIGIN FROM MOVEMENT
+	        {
+	            try
+		        {
+		            myOrder.CODIGO_ORIGEN = std::stoul(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.CODIGO_ORIGEN = 0;
+		        }
+	        }
+	        else if(numCol == 10) // REPETIR
+	        {
+	            try
+		        {
+		            myOrder.REPETIR = std::stoi(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.REPETIR = 0;
+		        }
+	        }
+	        else if(numCol == 38) // CLIENTE NOMBRE
+	            myOrder.CLIENTE_NOMBRE = *col;
+	        else if(numCol == 39) // CODIGO LER
+	        {
+	            try
+		        {
+		            myOrder.PRODUCTO_LER = std::stoul(*col);
+		        }
+	            catch(...)
+		        {
+		            myOrder.PRODUCTO_LER = 0;
+		        }
+	        }
+	        numCol++;	    	  
 	    }
-	  else if(numCol == 2) // CODIGO_CLIENTE
-	    {
-	      try
-		{
-		  myOrder.CODIGO_CLIENTE = std::stoul(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.CODIGO_CLIENTE = 0;
-		}
-	    }
-	  else if(numCol == 3) // CODIGO_PRODUCTO
-	    {
-	      try
-		{
-		  myOrder.CODIGO_PRODUCTO = std::stoul(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.CODIGO_PRODUCTO = 0;
-		}
-	    }
-	  else if(numCol == 4) // FECHA_FIRMA
-	    myOrder.FECHA_FIRMA = *col;
-	  else if(numCol == 5) // FECHA_PROGRAMADA
-	    myOrder.FECHA_PROGRAMADA = *col;
-	  else if(numCol == 7) // PESO_A_RETIRAR
-	    {
-	      try
-		{
-		  myOrder.PESO_A_RETIRAR = std::stoul(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.PESO_A_RETIRAR = 0;
-		}
-	    }
-	  else if(numCol == 8) // CODIGO_DESTINO ORIGIN FROM MOVEMENT
-	    {
-	      try
-		{
-		  myOrder.CODIGO_ORIGEN = std::stoul(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.CODIGO_ORIGEN = 0;
-		}
-	    }
-	  else if(numCol == 10) // REPETIR
-	    {
-	      try
-		{
-		  myOrder.REPETIR = std::stoi(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.REPETIR = 0;
-		}
-	    }
-	  else if(numCol == 38) // CLIENTE NOMBRE
-	    myOrder.CLIENTE_NOMBRE = *col;
-	  else if(numCol == 39) // CODIGO LER
-	    {
-	      try
-		{
-		  myOrder.PRODUCTO_LER = std::stoul(*col);
-		}
-	      catch(...)
-		{
-		  myOrder.PRODUCTO_LER = 0;
-		}
-	    }
-
-	  numCol++;	    	  
-	}
-      allOrders.push_back(myOrder);
+        allOrders.push_back(myOrder);
     }	    
-
-  return;
+    return;
 }
+
 std::vector<std::string> outputForm::retOrdersTable()
 {
 
