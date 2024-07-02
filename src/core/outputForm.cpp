@@ -792,7 +792,145 @@ int outputForm::getFzCurrentProduct()
 
 std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive)
 {
-    std::string DI;
+    station *myStation = NULL;
+    costumer *me = NULL;
+    costumer *operCostumer = NULL;
+
+    retOurStation(myStation);
+    retOurId(me);
+    retArrCostumer(operCostumer);
+
+
+    int movType = DEF_MOV_LOADING;
+    if(arrive)
+        movType = retArrMovType();
+    else
+        movType = retDepMovType();
+    if(movType <= 0)
+        movType = DEF_MOV_LOADING;
+
+    // TODO: TO IMPROVE, inside the class?
+    std::string DI = "";
+
+    // we are NOT the operators
+    if (me->getCode() != operCostumer->getCode())
+    {
+        if(arrive)
+        {
+            myArrMovement.DI = getMovCode(localDatabase, myStation, movType);
+            DI = myArrMovement.DI;
+        }
+        else
+        {
+            myDepMovement.DI = getMovCode(localDatabase, myStation, movType);
+            DI = myDepMovement.DI;
+        }
+    }
+    // we ARE the operators
+    else
+    {
+        // NP present?
+        int NP = 0;
+        if(arrive)
+            NP = isArrProdNptPermit();
+        else
+           NP = isDepProdNptPermit(); 
+        if(!NP)
+        {
+            std::time_t t = std::time(nullptr);
+            std::tm *const pTInfo = std::localtime(&t);
+            std::string actualYear = std::to_string(1900 + pTInfo->tm_year);
+            std::string valueYear = "";
+            DI = myStation->getNima() + actualYear;
+            int correlNumber = 0;
+            std::string sql;
+            getParamValue(sql, "NUMBER");
+            log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+            if(!localDatabase.query(NULL, sql.c_str()))
+            {
+                std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+                if(dataReturn.size())
+                {
+                    try
+                    {
+                        correlNumber = std::stoi(dataReturn[0].at(0));
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cout << e.what() << '\n';
+                        log_message("(LOADING)(DI number creation) Exception can't convert to number", 2);
+                    }
+                    valueYear = dataReturn[0].at(1);
+                    if (correlNumber > 9999999)
+                    {
+                        correlNumber = 0;
+                        setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
+                        log_message("(LOADING)(DI number creation)(Number overflowed) BD local -> " + sql, 1);
+                        if(localDatabase.query(NULL, sql.c_str()))
+                            log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    }
+                    if (valueYear != actualYear)
+                    {
+                        correlNumber = 0;
+                        setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
+                        log_message("(LOADING)(DI number creation)(OLD year) BD local -> " + sql, 1);
+                        if(localDatabase.query(NULL, sql.c_str()))
+                            log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    }
+                }
+                else
+                {
+                    correlNumber = 0;
+                    setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
+                    log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+                    if(localDatabase.query(NULL, sql.c_str()))
+                        log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                }
+            }
+            else
+            {
+                log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                correlNumber = 0;
+                setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
+                log_message("(LOADING)(DI number creation)() BD local -> " + sql, 1);
+                if(localDatabase.query(NULL, sql.c_str()))
+                    log_message("(LOADING)(DI number creation) Query ERROR", 2);
+            } 
+            DI += zeroPadNumber(correlNumber, 7);
+            if(arrive)
+                myArrMovement.DI = DI;
+            else
+                myDepMovement.DI = DI;
+        }
+        else
+        {
+            if (movType == DEF_MOV_TRANSFER)
+            {
+                log_message("(LOADING)(DI number creation) if DEF_MOV_TRANSFER and no NP not implemented", 2);
+            }
+            else
+            {
+                log_message("(LOADING)(DI number creation) if NOT DEF_MOV_TRANSFER and no NP not implemented", 2);
+            }
+        }
+    }
+    std::string folder;
+    if(arrive)
+    {
+        if(retArrDateTime().empty())
+            setArrDateTime(getCurrentDate());
+
+        folder = DI + " " + retArrDateTime();
+        setArrDiFolder(folder);
+    }
+    else
+    {
+        if(retDepDateTime().empty())
+            setDepDateTime(getCurrentDate());
+
+        folder = DI + " " + retDepDateTime();
+        setDepDiFolder(folder);
+    }
     return DI;
 }
 
@@ -1080,7 +1218,10 @@ int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)
 	    {
             std::string tmpDI = "";
             if(col->find_first_not_of(' ') != std::string::npos)
-                tmpDI = *col;
+            {
+                if(!col->empty())
+                    tmpDI = *col;
+            }
             setDepDi(tmpDI);
 	    }
 	    numCol++;
@@ -1124,7 +1265,7 @@ void outputForm::createPdf(std::string printerId)
     myDi->setProductLer(std::to_string(retDepProdLER()));
     myDi->setProductDanger(retDepProdPeligro());
     myDi->setDiCode(retDepDi());
-    myDi->setDiNpt(std::to_string(retDepPermitNPT()));
+    myDi->setDiNpt(retDepPermitNpt());
     myDi->setDiDateTime(retDepDateTime());
     // ap4
     costumer *myCostumer = NULL;

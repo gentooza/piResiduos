@@ -86,7 +86,7 @@ typedef struct struPermits
     std::string CONTRATO;
     
     int FLAG_NPT;
-    long NPT;
+    std::string NPT;
     
     int FLAG_CP;
     int CP;
@@ -99,7 +99,7 @@ typedef struct struPermits
 };
 static struPermits resetPermits()
 {
-    struPermits myPermits = {0,0,"",0,0,0,0,0,0,0,0};
+    struPermits myPermits = {0,0,"",0,"",0,0,0,0,0,0};
     return myPermits;
 }
 
@@ -503,10 +503,10 @@ class  baseForm
         int retArrPermitNptFlag(){return myArrMovement.PERMISOS_PRODUCTO.FLAG_NPT;};
         void setDepPermitNptFlag(int value){myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = value;};
         int retDepPermitNptFlag(){return myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT;};   
-        long retArrPermitNpt(){return myArrMovement.PERMISOS_PRODUCTO.NPT;};
-        void setArrPermitNpt(long newValue){myArrMovement.PERMISOS_PRODUCTO.NPT = newValue;};
-        long retDepPermitNPT(){return myDepMovement.PERMISOS_PRODUCTO.NPT;};
-        void setDepPermitNPT(long newValue){myDepMovement.PERMISOS_PRODUCTO.NPT = newValue;};
+        std::string retArrPermitNpt(){return myArrMovement.PERMISOS_PRODUCTO.NPT;};
+        void setArrPermitNpt(std::string newValue){myArrMovement.PERMISOS_PRODUCTO.NPT = newValue;};
+        std::string retDepPermitNpt(){return myDepMovement.PERMISOS_PRODUCTO.NPT;};
+        void setDepPermitNpt(std::string newValue){myDepMovement.PERMISOS_PRODUCTO.NPT = newValue;};
         //////
         void setArrPermitCbFlag(int value){myArrMovement.PERMISOS_PRODUCTO.FLAG_CB = value;};
         int retArrPermitCbFlag(){return myArrMovement.PERMISOS_PRODUCTO.FLAG_CB;};
@@ -542,7 +542,9 @@ class  baseForm
         int isArrProdNptPermit();
         int isArrProdCbPermit();
         int isArrProdCpPermit();
-        int isArrProdDcpPermit(); 
+        int isArrProdDcpPermit();
+
+        int isDepProdNptPermit();
         
         void clearPermits(){myArrMovement.PERMISOS_PRODUCTO = (const struct struPermits){ 0 };return;};
 
@@ -713,7 +715,6 @@ class  baseForm
         std::vector <bool> productPermits;
         std::vector <std::string> clientProductPermits;
 
-        // std::string di;
         std::string diDate;
         std::string diTime;
 

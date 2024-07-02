@@ -1537,6 +1537,7 @@ void baseForm::setArrProdDATA(std::vector <std::string> newDATA)
     }
     return;
 }
+
 void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* type)
 {
     char * sql = NULL;
@@ -1571,6 +1572,7 @@ void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* typ
     }
     return;
 }
+
 int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
 {
     int ret = 0;
@@ -1643,66 +1645,66 @@ int baseForm::setArrPermitsFlags(std::vector<std::string> ourData)
 }
 int baseForm::setArrPermits(std::vector<std::string> ourData)
 {
-  int ret = 1;
-  std::vector<std::string>::iterator iter;
-  int field=0;
+    int ret = 1;
+    std::vector<std::string>::iterator iter;
+    int field=0;
 
-  for(iter = ourData.begin(); iter != ourData.end(); ++iter)
+    for(iter = ourData.begin(); iter != ourData.end(); ++iter)
     {
-      if(field==0)//CONTRATO
-    setArrPermitDate(ourData[0]);
-      else if (field == 1)//NPT
-    {
-      try
+        if(field==0)//CONTRATO
+            setArrPermitDate(ourData[0]);
+        else if (field == 1)//NPT
         {
-          setArrPermitNpt(std::stoul(ourData[1]));
+            try
+            {
+                setArrPermitNpt(ourData[1]);
+            }
+            catch(...)
+            {
+                ret = 1;
+                setArrPermitNpt("");
+            }
         }
-      catch(...)
+        else if(field==2)//CB
         {
-          ret = 1;
-          setArrPermitNpt(0);
+            try
+            {
+                setArrPermitCb(std::stoi(ourData[2]));
+            }
+            catch(...)
+            {
+                ret = 1;
+                setArrPermitCb(0);
+            }
         }
+        else if(field==3)//CP
+        {
+            try
+            {
+                setArrPermitCp(std::stoi(ourData[3]));
+            }
+            catch(...)
+            {
+                ret = 1;
+                setArrPermitCp(0);
+            }
+        }
+        else if(field==4)//DCP
+        {
+            try
+            {
+                setArrPermitDcp(std::stoi(ourData[4]));
+            }
+            catch(...)
+            {
+                ret = 1;
+                setArrPermitDcp(0);
+            }
+        }
+        field++;
+        ret = 0;
     }
-      else if(field==2)//CB
-    {
-      try
-        {
-          setArrPermitCb(std::stoi(ourData[2]));
-        }
-      catch(...)
-        {
-          ret = 1;
-          setArrPermitCb(0);
-        }
-    }
-      else if(field==3)//CP
-    {
-      try
-        {
-          setArrPermitCp(std::stoi(ourData[3]));
-        }
-      catch(...)
-        {
-          ret = 1;
-          setArrPermitCp(0);
-        }
-    }
-      else if(field==4)//DCP
-    {
-      try
-        {
-          setArrPermitDcp(std::stoi(ourData[4]));
-        }
-      catch(...)
-        {
-          ret = 1;
-          setArrPermitDcp(0);
-        }
-    }
-      field++;
-      ret = 0;
-    }
-  return ret;
+    return ret;
 }
 int baseForm::isArrProdDatePermit()
 {
@@ -1722,16 +1724,29 @@ int baseForm::isArrProdDatePermit()
     }
   return ret;
 }
+
 int baseForm::isArrProdNptPermit()
 {
-  int ret = 1;
-  if(retArrPermitNptFlag() > 0)
+    int ret = 1;
+    if(retArrPermitNptFlag() > 0)
     {
-      if(retArrPermitNpt() <= 0)
-    ret = 0;
+        if(retArrPermitNpt().empty())
+            ret = 0;
     }
-  return ret;
+    return ret;
 }
+
+int baseForm::isDepProdNptPermit()
+{
+    int ret = 1;
+    if(retDepPermitNptFlag() > 0)
+    {
+        if(retDepPermitNpt().empty())
+            ret = 0;
+    }
+    return ret;
+}
+
 int baseForm::isArrProdCbPermit()
 {
   int ret = 1;
@@ -1799,14 +1814,8 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
         if(retData.size())
         {
             std::vector <std::string> result = retData.at(0);
-            try //NPT
-            {
-                setDepPermitNPT(std::stoul(result.at(0)));
-            }
-            catch(...)
-            {
-                setDepPermitNPT(0);
-            }
+            //NPT
+            setDepPermitNpt(result.at(0));
             try //price
             {
                 price = std::stof(result.at(1));
@@ -1821,7 +1830,7 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
         }
         else
         {
-            setDepPermitNPT(0);
+            setDepPermitNpt(0);
             //no costumer - product price defined
         }
     }
@@ -1848,18 +1857,11 @@ int baseForm::setAllArrCosProdData(qtDatabase & myDatabase,  station* myStation)
         if(retData.size())
         {
             std::vector <std::string> result = retData.at(0);
-            try //NPT
-            {
-                setArrPermitNpt(std::stoul(result.at(0)));
-            }
-            catch(...)
-            {
-                setArrPermitNpt(0);
-            }
-            ret=0;
+            //NPT
+            setArrPermitNpt(result.at(0));
         }
         else
-            setArrPermitNpt(0);
+            setArrPermitNpt("");
     }
     delete sql;
     return ret;
