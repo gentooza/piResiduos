@@ -72,7 +72,7 @@ static int slotInit(PARAM *p, DATA *d)
     pvSetText(p, EDITDI, myText.c_str());
     myText.clear();
     //2.- NPT
-    myText = std::to_string(formDI->retDepPermitNPT());
+    myText = formDI->retDepPermitNpt();
     pvSetText(p, EDITNOTPRE, myText.c_str());
     myText.clear();
     //3.- DATE TIME

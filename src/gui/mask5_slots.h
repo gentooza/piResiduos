@@ -108,6 +108,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retArrProdCode()):"null") << "\" Permitido?:\"" << (formSalida?(formSalida->isArrProdPermit()?"si!":"no!"):"null") << "\" ," ;
     std::cout <<  std::endl;
+    std::cout << "DI NUMBER = " << (formSalida?formSalida->retDepDi():"null") << std::endl;
     std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getInputIncidents(),"  || ")  << std::endl;
     std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getInputComment():"null") << "\"" << std::endl;
     std::cout << "CARPETA:\"" << (formSalida?formSalida->retArrDiFolder():"null") << std::endl;  

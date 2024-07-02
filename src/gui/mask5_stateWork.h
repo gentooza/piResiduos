@@ -86,7 +86,7 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p,d,formSalida,EDITCOMMENTENT); 
-                pvSetText(p,EDITDIPROV,formSalida->createArrDi(localDatabase).c_str());	    
+                pvSetText(p,EDITDIPROV,formSalida->createDINumber(localDatabase, remoteDatabase, 1).c_str());
                 if(!formSalida->isIncArrPlateEdited())
                     formSalida->savePlateImage(3,"entrada");
                 break;
