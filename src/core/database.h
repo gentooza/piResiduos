@@ -159,10 +159,12 @@ void loadBilling(std::string& sql,std::vector< std::vector< std::string>> load_d
 //TABLE DRIVERS
 void selDriverDataByCode(std::string& sql, long code);
 void selAllDrivers(std::string& sql);
-
 void rmtSelAllDrivers(std::string& sql);
-
 void loadDrivers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+
+// PARAMS
+void getParamValue(std::string& sql, std::string pname);
+void setParamValue(std::string& sql, std::string pname, std::string pvalue, std::string year);
 
 //unsorted and deprecated
 void selectAllFromClient(char *&sql, const char *cliente);

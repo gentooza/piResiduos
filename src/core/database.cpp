@@ -925,6 +925,20 @@ void loadDrivers(std::string& sql, std::vector<std::vector<std::string>> dataRet
     return;
 }
 
+// table params
+
+void getParamValue(std::string& sql, std::string pname)
+{
+    sql = "select pvalue, year from params where pname == " + pname;
+    return;
+}
+void setParamValue(std::string& sql, std::string pname, std::string pvalue, std::string year)
+{
+    sql = "INSERT OR REPLACE INTO params (pname, pvalue, year) VALUES ( \'";
+    sql += pname + "\', \'" + pvalue + " \', \'" + year + " \')";
+    return;
+}
+
 /////////////////////////////////////////
 void selectAllFromClient(char * &sql, const char *cliente)
 {
