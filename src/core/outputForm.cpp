@@ -350,6 +350,10 @@ void outputForm::setOrders(qtDatabase & myDatabase, long station_code)
 		            myOrder.PRODUCTO_LER = 0;
 		        }
 	        }
+	        else if(numCol == 40) // NUMERODI
+	        {
+		        myOrder.DI = *col;
+	        }
 	        numCol++;	    	  
 	    }
         allOrders.push_back(myOrder);
@@ -388,12 +392,12 @@ std::vector<std::string> outputForm::retOrdersTable()
 
 struMovement outputForm::selOrder(unsigned int index)
 {
-  struMovement myOrder;
-  
-  if(index < allOrders.size())
-    myOrder = allOrders.at(index);
+    struMovement myOrder;
 
-  return myOrder;
+    if(index < allOrders.size())
+        myOrder = allOrders.at(index);
+
+    return myOrder;
 }
 
 //!creating a transfer movement
@@ -910,7 +914,8 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
             }
             else
             {
-                log_message("(LOADING)(DI number creation) if NOT DEF_MOV_TRANSFER and no NP not implemented", 2);
+                std::cout << "somos los clientes, el producto tiene NPT y el DI viene de la base de datos, es: " << myArrMovement.DI << std::endl;
+                DI = myArrMovement.DI;
             }
         }
     }
