@@ -702,99 +702,6 @@ void baseForm::setDatePermit(std::string strDate)
     return;
 }
 
-std::string baseForm::createArrDi(qtDatabase & localDatabase)
-{
-    std::string di;
-    std::string sql;
-    //our year
-    time_t myTime = time(NULL);
-    struct tm *aTime = localtime(&myTime);
-    int year = aTime->tm_year + 1900;
-
-    std::string temporalDI;
-    std::string temporalDIDate;
-    std::vector<std::vector<std::string>> ourData;
-    //LAST DI
-    selLastDiFromMovsByClientProduct(sql, retArrCosCode(), retArrProdCode());
-    localDatabase.query(NULL, sql.c_str());
-    ourData = localDatabase.retData2();
-    if(ourData.size())
-    {
-        temporalDI = ourData.at(0).at(0);
-        temporalDIDate = ourData.at(0).at(1);
-    }
-    //REFRESH COSTUMER NIF
-    setAllArrCostumerData(localDatabase);
-    if(isNewYear(temporalDIDate,year)) //new year, new DI
-        temporalDI.clear();
-    di = generateDi(temporalDI,1);
-    setArrDi(di);
-    //FOLDER
-    if(retArrDateTime().empty())
-        setArrDateTime(getCurrentDate());
-    std::string folder =retArrDi() + " "+ retArrDateTime();
-    setArrDiFolder(folder);
-
-    return retArrDi();
-}
-
-std::string baseForm::createDepDi(qtDatabase & localDatabase)
-{
-    std::string oldDi = retDepDi();
-    std::string di;
-    std::string sql;
-    //our year
-    time_t myTime = time(NULL);
-    struct tm *aTime = localtime(&myTime);
-    int year = aTime->tm_year + 1900;
-
-
-    std::string temporalDI;
-    std::string temporalDIDate;
-    std::vector<std::vector<std::string>> ourData;
-    //LAST DI
-    selLastDiFromMovsByClientProduct(sql, depCostumer->getCode(), retDepProdCode());
-    localDatabase.query(NULL, sql.c_str());
-    ourData = localDatabase.retData2();
-    if(ourData.size())
-    {
-        temporalDI = ourData.at(0).at(0);
-        temporalDIDate = ourData.at(0).at(1);
-    }
-
-    if(isNewYear(temporalDIDate,year)) //new year, new DI
-        temporalDI.clear();
-    di = generateDi(temporalDI, 0);
-
-    if(oldDi.compare(di)) //COPYING DATA
-    {
-        std::string oldFolder = "\"saves/" + retDepDi();
-        std::string newFolder = "\"saves/" + di;
-        if(!retDepDateTime().empty())
-        {
-            oldFolder += " " + retDepDateTime();
-            newFolder += " " + retDepDateTime();
-        }
-        oldFolder += "\"";
-        newFolder += "\"";
-
-        std::string command = "mkdir " + newFolder;
-        system(command.c_str());
-        command = "cp " + oldFolder + "/* " + newFolder;
-        system(command.c_str());
-        command = "rm -r " + oldFolder;
-        system(command.c_str());
-    }
-    setDepDi(di);
-    //FOLDER
-    std::string folder = retDepDi();
-    if(!retDepDateTime().empty())
-        folder += " "+ retDepDateTime();
-    setDepDiFolder(folder);
-
-    return retDepDi();
-}
-
 std::string baseForm::generateDi(std::string lastDi, int arrive)
 {
     std::string di;
@@ -1077,19 +984,19 @@ int baseForm::isIncArrParticular()
 ////products
 void baseForm::incArrProdFz( int edited)
 {
-  if(ourStation)
+    if(ourStation)
     {
-      std::string sStationCode = std::to_string(ourStation->getCode());
-      std::string incident,sIncidentCode;
+        std::string sStationCode = std::to_string(ourStation->getCode());
+        std::string incident,sIncidentCode;
 
-      sIncidentCode = sStationCode;
-      sIncidentCode += "-";
-      sIncidentCode += "00020"; //arrive product permissions forced
+        sIncidentCode = sStationCode;
+        sIncidentCode += "-";
+        sIncidentCode += "00020"; //arrive product permissions forced
 
-      std::string message = sIncidentCode;
-      message +=": los permisos del producto se han forzado para poder descargar en la planta";
+        std::string message = sIncidentCode;
+        message +=": los permisos del producto se han forzado para poder descargar en la planta";
 
-      checkInIncident(edited,sIncidentCode,message);
+        checkInIncident(edited,sIncidentCode,message);
     }
 }
 int baseForm::isIncArrProdFz()
