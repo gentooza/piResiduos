@@ -133,7 +133,7 @@ static int stateNext(PARAM *p, DATA *d)
 	                d->enFutEstado = 1100;	
                 }
 	        }
-            else if(formSalida->isArrMov()>0)
+            else if(formSalida->isArrMov() > 0)
 	        {
 	            d->enFutEstado = 501;		       	  
 	        }
@@ -275,7 +275,7 @@ static int stateNext(PARAM *p, DATA *d)
 	            d->cancelar = d->retroceder = 0;
 	            d->enFutEstado = 500; //cancelamos
 	            d->selectedOrder = -1;
-	            resetForm(p,d,formSalida);
+	            resetForm(p, d, formSalida);
 	        }
             break;
         }
@@ -297,7 +297,7 @@ static int stateNext(PARAM *p, DATA *d)
 	        }
             else if(formSalida->isPlateInTransit(formSalida->retDepPlate()))
 	        {
-	            formSalida->setTransitMov(d->camionElegido,formSalida->retDepPlate(),localDatabase);
+	            formSalida->setTransitMov(d->camionElegido, formSalida->retDepPlate(), localDatabase);
 	            d->enFutEstado = 1120;
 	        }       
             else if(d->plateTaking) //si pulsamos en tomar maricula pasamos a capturarla

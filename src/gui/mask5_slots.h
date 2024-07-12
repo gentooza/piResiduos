@@ -108,7 +108,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retArrProdCode()):"null") << "\" Permitido?:\"" << (formSalida?(formSalida->isArrProdPermit()?"si!":"no!"):"null") << "\" ," ;
     std::cout <<  std::endl;
-    std::cout << "DI NUMBER = " << (formSalida?formSalida->retDepDi():"null") << std::endl;
+    std::cout << "DI NUMBER = " << (formSalida?formSalida->retArrDi():"null") << std::endl;
     std::cout << "INCIDENCIAS:\"" << vectorToString(formSalida->getInputIncidents(),"  || ")  << std::endl;
     std::cout << "COMENTARIO:\"" << (formSalida?formSalida->getInputComment():"null") << "\"" << std::endl;
     std::cout << "CARPETA:\"" << (formSalida?formSalida->retArrDiFolder():"null") << std::endl;  
@@ -120,6 +120,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retDepProdCode()):"null") << "\"";
     std::cout << std::endl;
+    std::cout << "DI NUMBER = " << (formSalida?formSalida->retDepDi():"null") << std::endl;
     std::cout << "TRANSPORTISTA:\"" << (formSalida?std::to_string(formSalida->depDriver->getCode()):"null")  << "\"";
     std::cout << std::endl;
     std::cout << "PESO TOTAL:\"" << (formSalida?std::to_string(formSalida->retNetWeight()):"null")  << "\"" << std::endl;
@@ -237,14 +238,17 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
     pvText(p,EDITCOMMENTSAL);
     d->editDI = 1;
   }
-  else if(id == BUTSETORDER)
-  {
-    if(d->selectedOrder >=0)
-	  {
-	    formSalida->setArrMov(formSalida->selOrder(d->selectedOrder));
-	    formSalida->setAllArrProductData(localDatabase);
-	  }
-  }
+    else if(id == BUTSETORDER)
+    {
+        if(d->selectedOrder >=0)
+	    {
+            costumer* ourId = new costumer(DEF_BIORECICLAJE_CODE, localDatabase);
+            formSalida->setOurId(ourId);
+            delete ourId;
+	        formSalida->setArrMov(formSalida->selOrder(d->selectedOrder), localDatabase);
+	        formSalida->setAllArrProductData(localDatabase);
+	    }
+    }
   else if(id == BUTEDITCAM1)
   {
     pvInputDialog(p,BUTEDITCAM1,"Inserte valor para la matrícula de entrada:","");

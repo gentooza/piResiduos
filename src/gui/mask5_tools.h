@@ -280,7 +280,7 @@ static int resetForm(PARAM *p,DATA* d, baseForm *& myForm)
     int movType = 1;
     if(myForm->getState() >= 1000)
     {
-        formType=1;
+        formType = 1;
         movType =  myForm->retDepMovType();
     }
     else
