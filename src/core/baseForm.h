@@ -246,9 +246,6 @@ class  baseForm
 
         //DI CODE GENERATION
         virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive){return "";};
-        std::string createArrDi(qtDatabase & localDatabase);
-        std::string createDepDi(qtDatabase & localDatabase);
-        std::string generateDi(std::string lastDi, int arrive);
 
         //FOLDER TO SAVE CAPTURES, SIGNATURE, DI...
         void setArrDiFolder(std::string folder){arrFolder = "saves/" + folder; return;};

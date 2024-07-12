@@ -702,50 +702,6 @@ void baseForm::setDatePermit(std::string strDate)
     return;
 }
 
-std::string baseForm::generateDi(std::string lastDi, int arrive)
-{
-    std::string di;
-    std::string NIF;
-    std::string actualYear = getCurrentDate().substr(0,4);
-
-    if(arrive)
-        NIF = retArrCosNif();
-    else
-        NIF = depCostumer->getNif();
-    if (NIF.empty())
-        NIF = "AXXXXXXXX";
-    if(!lastDi.empty())
-    {
-        if(lastDi.length() >= 18) //DI(2)+NIF(9)+YYYY+XXXXXXX(7)
-        {
-            int lastnumber_chkd;
-            try
-            {
-                lastnumber_chkd = std::stoi(lastDi.substr(lastDi.length() - 7));
-            }
-            catch(...)
-            {
-                lastnumber_chkd = 0;
-            }
-            int lastNumber = lastnumber_chkd;
-            lastNumber++;
-            if(lastNumber > 9999999)
-            {
-                lastNumber = 9999999;
-            }
-            di = "di"+NIF+actualYear+zeroPadNumber(lastNumber,7);
-        }
-        else
-        {
-            di = "di"+NIF+actualYear+"0000001";
-        }
-    }
-    else
-    {
-        di = "di"+NIF+actualYear+"0000001";
-    }
-    return di;
-}
 /******************************/
 //INCIDENTS GENERATION FUNCTIONS
 
