@@ -242,11 +242,20 @@ void baseForm::clearMovement(struMovement & myMovement)
     myMovement.REPETIR = 0;
     return;
 }
-/*!fucntion loading to movement our order information*/
-void baseForm::setArrMov(struMovement myOrder)
+/*!function loading to movement our order information*/
+void baseForm::setArrMov(struMovement myOrder, qtDatabase & localDatabase)
 {
     clearMovement(myArrMovement);
     myArrMovement = myOrder;
+    // entities
+    if(myOrder.CODIGO_CLIENTE > 0)
+    {
+        costumer* arrCostumer = NULL;
+        arrCostumer = new costumer(myOrder.CODIGO_CLIENTE, localDatabase);
+        setArrCostumer(arrCostumer);
+        if (arrCostumer != NULL)
+            delete arrCostumer;
+    }
     setArrDateTime(getCurrentDate());
 
     return;
@@ -390,7 +399,39 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
 
     return movCode;
 }
+/*!  Folder creation for saving images, signatures, files... 
+ inputs DI code for folder generation, arrive flag if arriving or leaving facility */
+int baseForm::createDIFolder(std::string DI, int arrive)
+{
+    int ret = 0;
+    std::string folder;
+    if(arrive)
+    {
+        if(retArrDiFolder().empty())
+        {
+            if(retArrDateTime().empty())
+                setArrDateTime(getCurrentDate());
 
+            folder = DI + " " + retArrDateTime();
+            setArrDiFolder(folder);
+            ret = 1;
+        }
+    }
+    else
+    {
+        if(retDepDiFolder().empty())
+        {
+            if(retDepDateTime().empty())
+                setDepDateTime(getCurrentDate());
+
+            folder = DI + " " + retDepDateTime();
+            setDepDiFolder(folder);
+            ret = 1;
+        }
+    }
+
+    return ret;
+}
 void baseForm::savePlateImage(int pos,const char* entrada_salida)
 {
     int ret;

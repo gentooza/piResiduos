@@ -248,6 +248,7 @@ class  baseForm
         virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive){return "";};
 
         //FOLDER TO SAVE CAPTURES, SIGNATURE, DI...
+        int createDIFolder(std::string DI, int arrive);
         void setArrDiFolder(std::string folder){arrFolder = "saves/" + folder; return;};
         void clearArrDiFolder(){arrFolder.clear(); return;};
         void rmArrDiFolder(){if(!arrFolder.empty()){std::string command = "rm -r \"" +arrFolder +"\""; system(command.c_str());}};
@@ -290,7 +291,8 @@ class  baseForm
         virtual std::vector<std::string> retOrdersTable(){std::vector<std::string> empty; return empty;};
         virtual std::vector<struMovement> retOrders(){std::vector<struMovement> empty; return empty;};
         virtual struMovement selOrder(unsigned int index){struMovement myOrder; return myOrder;};
-        void setArrMov(struMovement myOrder);
+        // TODO: this function uses old parameters and should be improved
+        void setArrMov(struMovement myOrder, qtDatabase & localDatabase);
 
         virtual void setTransit(std::vector<std::vector<std::string>> transit){return;};
         virtual std::vector<std::vector<std::string>> retTransit(){std::vector<std::vector<std::string>> empty; return empty;};
