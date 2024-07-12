@@ -490,85 +490,86 @@ int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDataba
 /*! FUNCTION IS WRONG! FIX IT*/
 int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase, station * myStation, int remote_host_connected)
 {
-  int ret = 0;
-  std::string str_log_message;
+    int ret = 0;
+    std::string str_log_message;
   
-  std::string mysql_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR) values (\"";
-  std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO) values (\"";
+    std::string mysql_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR) values (\"";
+    std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO, FOLDER) values (\"";
   
-  std::string common_sql = retArrDi();
-  common_sql += "\",\"";	    
-  common_sql += retArrDateTime();
-  common_sql += "\",";
-  common_sql += std::to_string(retArrCosCode());
-  common_sql += ",";
-  common_sql += std::to_string(retArrProdCode());
-  common_sql += ",";
-  common_sql += std::to_string(retArrScaleIn());
-  common_sql += ",\"";
-  common_sql += retArrPlate();
-  common_sql += "\",\"";
-  common_sql += retArrPlateAtt();
-  common_sql += "\",";
-  common_sql += std::to_string(retArrWeightToTakeAway());
-  common_sql += ",";
-  common_sql += "0"; //PESO_RETIRADO
-  common_sql += ",";
-  if(arrDestinationStation != NULL)
-    common_sql += std::to_string(arrDestinationStation->getCode());
-  else
-    common_sql += "0";
-  common_sql += ",";
-  common_sql += std::to_string(myArrMovement.CODIGO_ORDEN);// order code
-  common_sql += ",\"";	
-  common_sql += vectorToString(getInputIncidents(),"; ");
-  common_sql += "\",\"";
-  common_sql += getInputComment();
-  common_sql += "\"";
+    std::string common_sql = retArrDi();
+    common_sql += "\",\"";	    
+    common_sql += retArrDateTime();
+    common_sql += "\",";
+    common_sql += std::to_string(retArrCosCode());
+    common_sql += ",";
+    common_sql += std::to_string(retArrProdCode());
+    common_sql += ",";
+    common_sql += std::to_string(retArrScaleIn());
+    common_sql += ",\"";
+    common_sql += retArrPlate();
+    common_sql += "\",\"";
+    common_sql += retArrPlateAtt();
+    common_sql += "\",";
+    common_sql += std::to_string(retArrWeightToTakeAway());
+    common_sql += ",";
+    common_sql += "0"; //PESO_RETIRADO
+    common_sql += ",";
+    if(arrDestinationStation != NULL)
+        common_sql += std::to_string(arrDestinationStation->getCode());
+    else
+        common_sql += "0";
+    common_sql += ",";
+    common_sql += std::to_string(myArrMovement.CODIGO_ORDEN);// order code
+    common_sql += ",\"";	
+    common_sql += vectorToString(getInputIncidents(),"; ");
+    common_sql += "\",\"";
+    common_sql += getInputComment();
+    common_sql += "\"";
 
-  mysql_sql += common_sql;
-  mysql_sql += ")";
+    mysql_sql += common_sql;
+    mysql_sql += ")";
 
-  sqlite_sql += common_sql;
+    sqlite_sql += common_sql;
 
-  //trying remote database first!
-  if(remote_host_connected)
+    //trying remote database first!
+    if(remote_host_connected)
     {
-      str_log_message = "(LOADING)(to transit) remote db -> ";
-      str_log_message += mysql_sql;
-      log_message(str_log_message, 1);
-      if(!remoteDatabase.query(NULL,mysql_sql.c_str()))
-	{
-	  log_message("(LOADING)(to transit) remote BD query seems to be OK", 2);
-	  sqlite_sql += ",1)";
-	}
-      else
-	{
-	  log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
-	  ret = -1;//database error
-	  sqlite_sql += ",0)";
-	}
-      str_log_message = "(LOADING)(to transit) local db -> ";
-      str_log_message += sqlite_sql;
-      log_message(str_log_message, 1);
-      myDatabase.query(NULL,sqlite_sql.c_str());
-
+        str_log_message = "(LOADING)(to transit) remote db -> ";
+        str_log_message += mysql_sql;
+        log_message(str_log_message, 1);
+        if(!remoteDatabase.query(NULL,mysql_sql.c_str()))
+	    {
+	        log_message("(LOADING)(to transit) remote BD query seems to be OK", 2);
+	        sqlite_sql += ",1 ,\'";
+            sqlite_sql += retArrDiFolder() + "\')";
+	    }
+        else
+	    {
+	        log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
+	        ret = -1;//database error
+	        sqlite_sql += ",0 ,\'";
+            sqlite_sql += retArrDiFolder() + "\')";
+	    }
+        str_log_message = "(LOADING)(to transit) local db -> ";
+        str_log_message += sqlite_sql;
+        log_message(str_log_message, 1);
+        myDatabase.query(NULL,sqlite_sql.c_str());
     }
-  else
+    else
     {
-      log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
-      ret = -1;
-      sqlite_sql += ",0)";
-      str_log_message = "(LOADING)(to transit) local db -> ";
-      str_log_message += sqlite_sql;
-      log_message(str_log_message, 1);
-      if(!myDatabase.query(NULL,sqlite_sql.c_str()))
-	log_message("(LOADING)(to transit) local BD query seems to be OK", 1);
-      else
-	log_message("(LOADING)(to transit) local BD query seems to be ERROR (DONE NOTHING!)", 2);
+        log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
+        ret = -1;
+        sqlite_sql += ",0 ,\'";
+        sqlite_sql += retArrDiFolder() + "\')";
+        str_log_message = "(LOADING)(to transit) local db -> ";
+        str_log_message += sqlite_sql;
+        log_message(str_log_message, 1);
+        if(!myDatabase.query(NULL,sqlite_sql.c_str()))
+	        log_message("(LOADING)(to transit) local BD query seems to be OK", 1);
+        else
+	        log_message("(LOADING)(to transit) local BD query seems to be ERROR (DONE NOTHING!)", 2);
     }
- 
-  return ret;
+    return ret;
 }
 
 int outputForm::isPlateInTransit(std::string plate)
@@ -802,33 +803,34 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
 
     retOurStation(myStation);
     retOurId(me);
-    retArrCostumer(operCostumer);
-
 
     int movType = DEF_MOV_LOADING;
     if(arrive)
+    {
+        retArrCostumer(operCostumer);
         movType = retArrMovType();
+    }
     else
+    {
         movType = retDepMovType();
+        retDepCostumer(operCostumer);
+    }
     if(movType <= 0)
         movType = DEF_MOV_LOADING;
 
     // TODO: TO IMPROVE, inside the class?
     std::string DI = "";
 
+    // std::cout << "(DI GENERATION): COMPARING OPERATOR WITH US" << std::endl;
+    // std::cout << "Operator name = " <<  operCostumer->getName() << " and code = " << std::to_string(operCostumer->getCode()) << std::endl;
+    // std::cout << "Us name = " <<  me->getName() << " and code = " << std::to_string(me->getCode()) << std::endl;
     // we are NOT the operators
     if (me->getCode() != operCostumer->getCode())
     {
-        if(arrive)
-        {
-            myArrMovement.DI = getMovCode(localDatabase, myStation, movType);
-            DI = myArrMovement.DI;
-        }
-        else
-        {
-            myDepMovement.DI = getMovCode(localDatabase, myStation, movType);
-            DI = myDepMovement.DI;
-        }
+        DI = getMovCode(localDatabase, myStation, movType);
+        if (!arrive)
+            myDepMovement.DI = DI;
+        std::cout << "(DI GENERATION): OPERATOR IS NOT US, CASE: 1, DI GENERATED = " << DI << std::endl;
     }
     // we ARE the operators
     else
@@ -901,10 +903,9 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
                     log_message("(LOADING)(DI number creation) Query ERROR", 2);
             } 
             DI += zeroPadNumber(correlNumber, 7);
-            if(arrive)
-                myArrMovement.DI = DI;
-            else
+            if(!arrive)
                 myDepMovement.DI = DI;
+            std::cout << "(DI GENERATION): OPERATOR IS US, NO NPT CASE: 2, DI GENERATED = " << DI << std::endl;
         }
         else
         {
@@ -912,30 +913,18 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
             {
                 log_message("(LOADING)(DI number creation) if DEF_MOV_TRANSFER and no NP not implemented", 2);
             }
-            else
+            else // DI from web form in order
             {
-                std::cout << "somos los clientes, el producto tiene NPT y el DI viene de la base de datos, es: " << myArrMovement.DI << std::endl;
-                DI = myArrMovement.DI;
+                if (arrive)
+                    DI = myArrMovement.DI;
+                else
+                    DI = myDepMovement.DI;
+                std::cout << "(DI GENERATION): OPERATOR IS US, AND NPT! CASE: 3, DI GENERATED = " << DI << std::endl;
             }
         }
     }
-    std::string folder;
-    if(arrive)
-    {
-        if(retArrDateTime().empty())
-            setArrDateTime(getCurrentDate());
-
-        folder = DI + " " + retArrDateTime();
-        setArrDiFolder(folder);
-    }
-    else
-    {
-        if(retDepDateTime().empty())
-            setDepDateTime(getCurrentDate());
-
-        folder = DI + " " + retDepDateTime();
-        setDepDiFolder(folder);
-    }
+    createDIFolder(DI, arrive);
+    std::cout << "(DI GENERATION): FINAL DI GENERATED = " << DI << std::endl;
     return DI;
 }
 
