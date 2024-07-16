@@ -677,7 +677,7 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 
     while(row != vctAllTransit.end())
     {
-        if(row->size() >= 15) //DATABASE DEPENDANT
+        if(row->size() >= 14) //DATABASE DEPENDANT
 	    {
 	        if(!byPlate.compare(row->at(5)) && (num_of_row >= index || index == -1)) //DATABASE DEPENDANT
 	        {
