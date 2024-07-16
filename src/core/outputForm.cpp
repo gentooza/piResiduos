@@ -494,7 +494,7 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
     std::string str_log_message;
   
     std::string mysql_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR) values (\"";
-    std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO, FOLDER) values (\"";
+    std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO, FOLDER, NPT) values (\"";
   
     std::string common_sql = retArrDi();
     common_sql += "\",\"";	    
@@ -541,14 +541,16 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
 	    {
 	        log_message("(LOADING)(to transit) remote BD query seems to be OK", 2);
 	        sqlite_sql += ",1 ,\'";
-            sqlite_sql += retArrDiFolder() + "\')";
+            sqlite_sql += retArrDiFolder() + "\', ";
+            sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
 	    }
         else
 	    {
 	        log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
 	        ret = -1;//database error
 	        sqlite_sql += ",0 ,\'";
-            sqlite_sql += retArrDiFolder() + "\')";
+            sqlite_sql += retArrDiFolder() + "\', ";
+            sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
 	    }
         str_log_message = "(LOADING)(to transit) local db -> ";
         str_log_message += sqlite_sql;
@@ -560,7 +562,8 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
         log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
         ret = -1;
         sqlite_sql += ",0 ,\'";
-        sqlite_sql += retArrDiFolder() + "\')";
+        sqlite_sql += retArrDiFolder() + "\', ";
+        sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
         str_log_message = "(LOADING)(to transit) local db -> ";
         str_log_message += sqlite_sql;
         log_message(str_log_message, 1);
@@ -673,7 +676,7 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 
     while(row != vctAllTransit.end())
     {
-        if(row->size() >= 13) //DATABASE DEPENDANT
+        if(row->size() >= 15) //DATABASE DEPENDANT
 	    {
 	        if(!byPlate.compare(row->at(5)) && (num_of_row >= index || index == -1)) //DATABASE DEPENDANT
 	        {
@@ -738,6 +741,10 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 	            //
 	            setOutputComment(row->at(12));  //COMENTARIO OPERADOR
 	            setDepMovType(type);
+                //
+                setDepDiFolder(row->at(13));
+                //  NPT
+                setDepNPTData(myDatabase, "SAL");
 	            /**/
 	            ret = 0;
 	            break;
@@ -746,6 +753,33 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
         ++row;
         num_of_row++;
     }
+    return ret;
+}
+int outputForm::setDepNPTData(qtDatabase & localDatabase, const char * type)
+{
+    int ret = -1;
+    std::string sql;
+
+    if(depCostumer != NULL && retDepProdCode() > 0)
+    {
+        selProdPermits(sql, type, retDepProdCode());
+        if(!localDatabase.query(NULL, sql.c_str()))
+        {
+            std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+            if(dataReturn.size())
+            {
+                try
+                {
+                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = std::stol(dataReturn[0].at(2));
+                }
+                catch(...)
+                {
+                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = 0;
+                }
+            }
+        }
+    }
+
     return ret;
 }
 void outputForm::forceCurrentProduct()

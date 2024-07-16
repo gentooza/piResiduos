@@ -1445,12 +1445,13 @@ void baseForm::setArrProdDATA(std::vector <std::string> newDATA)
 void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* type)
 {
     char * sql = NULL;
+    std::string query;
     std::vector<std::vector<std::string>> ourData;
     int ret = 0;
 
     resetArrProdPermits();
-    selProdPermits(sql, type, retArrProdCode());
-    if(!myDatabase.query(NULL,sql))
+    selProdPermits(query, type, retArrProdCode());
+    if(!myDatabase.query(NULL, query.c_str()))
     {
         ourData = myDatabase.retData2();
         if(ourData.size())
@@ -1458,8 +1459,6 @@ void baseForm::setArrCosProdPermitsBase(qtDatabase & myDatabase, const char* typ
             ret = setArrPermitsFlags(ourData[0]);
         }
     }
-    if(sql != NULL)
-        delete [] sql;
     if(!ret)
     {
         selProdCosPermits(sql, type, retArrProdCode(), retArrCosCode());
@@ -1734,7 +1733,7 @@ int baseForm::setAllDepCosProdData(qtDatabase & myDatabase,  station* myStation)
         }
         else
         {
-            setDepPermitNpt(0);
+            setDepPermitNpt("");
             //no costumer - product price defined
         }
     }

@@ -101,6 +101,7 @@ class outputForm: public baseForm
   void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
   int getAllOrderInfo(qtDatabase & localDatabase, long order_code);
   int isDiComplete();
+  int setDepNPTData(qtDatabase & localDatabase, const char* type);
 
   void createPdf(std::string printerId);
 

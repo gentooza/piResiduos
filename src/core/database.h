@@ -74,7 +74,7 @@ void rmtUpdtTransfers(std::string& sql, std::vector< std::vector <std::string>> 
 void loadTransfers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE PRODUCTS
-void selProdPermits(char *& sql, const char* type, long product_code);
+void selProdPermits(std::string & sql, const char* type, long product_code);
 void selProdDataByCode(char *& sql, long code);
 void selProductBasisByCode(std::string& sql, std::string code);
 void selProdsAllowedToClient(char *& sql, const char* codigoCliente, const char* tipoEstacion, bool temporal);

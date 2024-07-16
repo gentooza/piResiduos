@@ -285,13 +285,22 @@ void loadTransfers(std::string& sql, std::vector<std::vector<std::string>> dataR
 
 ////////////////
 ////****table products****////
-void selProdPermits(char *& sql, const char* type, long product_code)
+void selProdPermits(std::string & sql, const char* type, long product_code)
 {
-  sql = new char[sizeof("select PERMISO_XX,CONTRATO_XX,NPT_XX,CB_XX,CP_XX,DCP_XX from productos WHERE CODIGO_PRODUCTO = XXXXX")+32];
-  
-  sprintf(sql,"select PERMISO_%s,CONTRATO_%s,NPT_%s,CB_%s,CP_%s,DCP_%s from productos WHERE CODIGO_PRODUCTO = %lu",type,type,type,type,type,type,product_code);
-  
-  return;
+    sql = "select PERMISO_";
+    sql += type;
+    sql += ", CONTRATO_";
+    sql += type;
+    sql += ", NPT_";
+    sql += type;
+    sql += ", CB_";
+    sql += type;
+    sql += ", CP_";
+    sql += type;
+    sql += ", DCP_";
+    sql += type;
+    sql += " from productos WHERE CODIGO_PRODUCTO = " + std::to_string(product_code);
+    return;
 }
 void selProdDataByCode(char *& sql, long code)
 { 
@@ -698,7 +707,7 @@ void sel_all_unsyncro_transito_dep(char *& sql,long fromStation)
 
 void selAllTransitDep(std::string& sql)
 {
-    sql = "SELECT DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR FROM TRANSITO_SALIDAS";
+    sql = "SELECT DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, FOLDER FROM TRANSITO_SALIDAS";
     return;
 }
 
