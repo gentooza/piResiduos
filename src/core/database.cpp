@@ -408,13 +408,21 @@ void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataR
 }
 ////////
 ////****table costumers-products****////
-void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code)
+void selProdCosPermits(std::string& sql, const char* type, long product_code, long costumer_code)
 {
-  sql = new char[sizeof("select CONTRATO_XX,NPT_XX,CB_XX,CP_XX,DCP_XX from clientes_products WHERE CODIGO_PRODUCTO = XXXXX AND CODIGO_CLIENTE = XXXXX")+32];
-  
-  sprintf(sql,"select CONTRATO_%s,NPT_%s,CB_%s,CP_%s,DCP_%s from clientes_productos WHERE CODIGO_PRODUCTO = %lu AND CODIGO_CLIENTE = %lu",type,type,type,type,type,product_code, costumer_code);
-  
-  return;
+    sql = "select CONTRATO_";
+    sql += type;
+    sql +=", NPT_";
+    sql += type;
+    sql += ", CB_";
+    sql += type;
+    sql += ", CP_";
+    sql += type;
+    sql += ", DCP_";
+    sql += type;
+    sql +=" from clientes_productos WHERE CODIGO_PRODUCTO = " + std::to_string(product_code);
+    sql +=" AND CODIGO_CLIENTE = " + std::to_string(costumer_code);
+    return;
 }
 
 void sel_price_cos_prod(char *&sql, long product_code, long costumer_code)

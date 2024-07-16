@@ -494,7 +494,7 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
     std::string str_log_message;
   
     std::string mysql_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR) values (\"";
-    std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO, FOLDER, NPT) values (\"";
+    std::string sqlite_sql = "insert into transito_salidas (DI, FECHA_HORA, CODIGO_CLIENTE, CODIGO_PRODUCTO, PESO_ENTRADA, MATRICULA, REMOLQUE, PESO_A_RETIRAR, PESO_RETIRADO, CODIGO_ESTACION, CODIGO_ORDEN, INCIDENCIAS, COMENTARIO_OPERADOR, SINCRONIZADO, FOLDER) values (\"";
   
     std::string common_sql = retArrDi();
     common_sql += "\",\"";	    
@@ -541,29 +541,30 @@ int outputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase
 	    {
 	        log_message("(LOADING)(to transit) remote BD query seems to be OK", 2);
 	        sqlite_sql += ",1 ,\'";
-            sqlite_sql += retArrDiFolder() + "\', ";
-            sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
+            sqlite_sql += retArrDiFolder() + "\')";
 	    }
         else
 	    {
 	        log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
 	        ret = -1;//database error
 	        sqlite_sql += ",0 ,\'";
-            sqlite_sql += retArrDiFolder() + "\', ";
-            sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
+            sqlite_sql += retArrDiFolder() + "\')";
 	    }
         str_log_message = "(LOADING)(to transit) local db -> ";
         str_log_message += sqlite_sql;
         log_message(str_log_message, 1);
-        myDatabase.query(NULL,sqlite_sql.c_str());
+        if(myDatabase.query(NULL, sqlite_sql.c_str()))
+        {
+            log_message("(LOADING)(to transit) local BD query seems to be ERROR (DONE NOTHING!)", 2);
+            ret = -1;
+        }
     }
     else
     {
         log_message("(LOADING)(to transit) remote BD query seems to be ERROR", 2);
         ret = -1;
         sqlite_sql += ",0 ,\'";
-        sqlite_sql += retArrDiFolder() + "\', ";
-        sqlite_sql += std::to_string(isArrProdNptPermit()) + " )";
+        sqlite_sql += retArrDiFolder() + "\')";
         str_log_message = "(LOADING)(to transit) local db -> ";
         str_log_message += sqlite_sql;
         log_message(str_log_message, 1);
@@ -778,6 +779,23 @@ int outputForm::setDepNPTData(qtDatabase & localDatabase, const char * type)
                 }
             }
         }
+        selProdCosPermits(sql, type, retDepProdCode(), depCostumer->getCode());
+        if(!localDatabase.query(NULL, sql.c_str()))
+        {
+            std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+            if(dataReturn.size())
+            {
+                try
+                {
+                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = std::stol(dataReturn[0].at(2));
+                }
+                catch(...)
+                {
+                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = 0;
+                }
+            }
+        }
+
     }
 
     return ret;
@@ -870,12 +888,12 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
     else
     {
         // NP present?
-        int NP = 0;
+        std::string NP;
         if(arrive)
-            NP = isArrProdNptPermit();
+            NP = myArrMovement.PERMISOS_PRODUCTO.NPT;
         else
-           NP = isDepProdNptPermit(); 
-        if(!NP)
+           NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
+        if(NP.empty())
         {
             std::time_t t = std::time(nullptr);
             std::tm *const pTInfo = std::localtime(&t);

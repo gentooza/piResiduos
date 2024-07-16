@@ -95,7 +95,7 @@ void rmtSelAllCostumers(std::string& sql);
 void loadCostumers(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE COSTUMERS-PRODUCTS
-void selProdCosPermits(char *& sql, const char* type, long product_code, long costumer_code);
+void selProdCosPermits(std::string& sql, const char* type, long product_code, long costumer_code);
 void sel_price_cos_prod(char *&sql, long product_code, long costumer_code);
 void sel_DIbasis_cos_prod(char *& sql,const char* tipoEstacion, long codigoCliente, long codigoProducto);
 
