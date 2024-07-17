@@ -213,7 +213,7 @@ static int popteTransito(PARAM *p,DATA* d,int id, baseForm *& formulario)
     selAllTransitDep(sql);
     localDatabase.query(p, sql.c_str());
     std::vector<std::vector<std::string>> ourData = localDatabase.retData2();
-    if(are2dMatrixDifferents(ourData,formulario->retTransit()))
+    if(are2dMatrixDifferents(ourData, formulario->retTransit()))
     {
         formulario->setTransit(ourData);
     }
