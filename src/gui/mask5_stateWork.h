@@ -178,6 +178,9 @@ static int stateWork(PARAM *p, DATA *d)
                 formSalida->setDepMovType(DEF_MOV_LOADING);
                 d->transito_plate.clear();
                 d->post_transito_plate.clear();
+                costumer* us = new costumer(DEF_BIORECICLAJE_CODE, localDatabase);
+                formSalida->setOurId(us);
+                delete us;
                 break;
             }
 	        case(1200):
@@ -210,12 +213,12 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(1120):
             {
                 //operator comment
-                refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);
+                refreshOperatorComment(p, d, formSalida,EDITCOMMENTSAL);
                 pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, remoteDatabase, 0).c_str());    
                 if(!formSalida->isIncDepPlateEdited())	    
                     formSalida->savePlateImage(4,"salida");
                 std::string pesoSalida = std::to_string(formSalida->retDepScaleOut());
-                pvSetText(p,EDITPESOSAL,pesoSalida.c_str());
+                pvSetText(p, EDITPESOSAL, pesoSalida.c_str());
                 //default driver
                 if(formSalida->default_driver(localDatabase))
                 {
