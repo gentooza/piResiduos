@@ -743,7 +743,9 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 	            setOutputComment(row->at(12));  //COMENTARIO OPERADOR
 	            setDepMovType(type);
                 //
-                setDepDiFolder(row->at(13));
+                std::string toRemove = "saves/";
+                std::string folder = row->at(13);
+                setDepDiFolder(folder.substr(toRemove.size(), folder.size() - toRemove.size()));
                 //  NPT
                 setDepNPTData(myDatabase, "SAL");
 	            /**/
@@ -785,17 +787,10 @@ int outputForm::setDepNPTData(qtDatabase & localDatabase, const char * type)
             std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
             if(dataReturn.size())
             {
-                try
-                {
-                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = std::stol(dataReturn[0].at(2));
-                }
-                catch(...)
-                {
-                    myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = 0;
-                }
+                myDepMovement.PERMISOS_PRODUCTO.NPT = dataReturn[0].at(1);
             }
         }
-
+        std::cout << "NPT data, FLAG = " <<  myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT << ", NPT = " << myDepMovement.PERMISOS_PRODUCTO.NPT << std::endl;
     }
 
     return ret;
@@ -892,7 +887,7 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & 
         if(arrive)
             NP = myArrMovement.PERMISOS_PRODUCTO.NPT;
         else
-           NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
+            NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
         if(NP.empty())
         {
             std::time_t t = std::time(nullptr);
