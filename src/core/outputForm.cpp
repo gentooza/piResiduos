@@ -456,22 +456,24 @@ int outputForm::retDepScaleExpected()
     return weight;
 }
 
-/*! function to save and calculate total scale 
-TODO: USELESS to REMOVE*/
-void outputForm::setAndCalcScaleOut(unsigned int scale)
+void outputForm::setDepScaleOut(unsigned int scale)
 {
-    setDepScaleOut(scale);  
+    myDepMovement.PESO_SALIDA = scale;
+    long newNet = retDepScaleOut() - retDepScaleIn();
+    if(newNet < 0)
+        newNet = 0;
+    setNetWeight((unsigned int) newNet);
+    return;
 }
 
 /*! function to save scale out in database*/
-int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort )
+int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort)
 {
     std::string sql;
     int ret = 1;
 
-    setAndCalcScaleOut(retDepScaleOut());
     // this function must be fixed, using grossWeight not netWeight, for saving simply scaling as in Arriving Transit.
-    updtScaleOutTransSal(sql, retDepDateTime(), depCostumer->getCode(), retDepProdCode(), retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+    updtScaleOutTransSal(sql, retDepDateTime(), depCostumer->getCode(), retDepProdCode(), retNetWeight(), getOutputComment().c_str(), vectorToString(getOutputIncidents(), ";").c_str());
   
     if(!myDatabase.query(NULL, sql.c_str()))
     {
@@ -481,7 +483,6 @@ int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDataba
 	        remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
 	        myRemoteDatabase.query(NULL, sql.c_str());
 	    }
-
     }
     return ret;
 }
@@ -727,6 +728,7 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 		        {
 		            setDepScaleOut(retDepScaleIn());
 		        }
+                std::cout << "PESO BÁSCULA SALIDA = " << retDepScaleOut() << std::endl;
 	            try
 		        {
 		            myDepMovement.CODIGO_ORDEN = std::stol(row->at(10)); //ORDER CODE
@@ -742,6 +744,10 @@ int outputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDat
 	            //
 	            setOutputComment(row->at(12));  //COMENTARIO OPERADOR
 	            setDepMovType(type);
+                // tare and net weight:
+                setTareWeight(retDepScaleIn());
+                setGrossWeight(retDepScaleOut());
+                setNetWeight(retDepScaleOut() - retDepScaleIn());
                 //
                 std::string toRemove = "saves/";
                 std::string folder = row->at(13);
