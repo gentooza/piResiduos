@@ -417,42 +417,42 @@ by criteria: we have both product and costumer codes
 */
 int outputForm::isArrMov()
 {
-  int ret = 0;
-  if(retArrCosCode() >=0 && retArrProdCode() >=0)
-    ret = 1;
+    int ret = 0;
+    if(retArrCosCode() >=0 && retArrProdCode() >=0)
+        ret = 1;
   
-  return ret;
+    return ret;
 }
 
 //SCALING
 int outputForm::isArrPesoOk()
 {
-  int ret = 0;
-  if(retArrScaleIn() > 2)
+    int ret = 0;
+    if(retArrScaleIn() > 2)
     {
-      ret = 1;
+        ret = 1;
     }
-  return ret;
+    return ret;
 }
 
 int outputForm::isDepPesoOk()
 {
-  //std::cout << "debug: inside outputForm::isDepPesoOk:" << std::endl;
-  int ret = 0;
+    //std::cout << "debug: inside outputForm::isDepPesoOk:" << std::endl;
+    int ret = 0;
 
-  long maxExpected = (retDepScaleIn() + retDepWeightToTakeAway()) * ((100.0+retErrorScale())/100.0);
-  long minExpected = (retDepScaleIn() + retDepWeightToTakeAway()) * ((100.0-retErrorScale())/100.0);
+    long maxExpected = (retDepScaleIn() + retDepWeightToTakeAway()) * ((100.0+retErrorScale())/100.0);
+    long minExpected = (retDepScaleIn() + retDepWeightToTakeAway()) * ((100.0-retErrorScale())/100.0);
   
-  if(retDepScaleOut() <= maxExpected && retDepScaleOut() >= minExpected)    
-    ret = 1;
-  else if(retDepScaleOut() < minExpected)
-    ret = -1;
+    if(retDepScaleOut() <= maxExpected && retDepScaleOut() >= minExpected)    
+        ret = 1;
+    else if(retDepScaleOut() < minExpected)
+        ret = -1;
 
-  return ret;
+    return ret;
 }
 int outputForm::retDepScaleExpected()
 {
-  int weight = retDepWeightToTakeAway() + retDepScaleIn();
+    int weight = retDepWeightToTakeAway() + retDepScaleIn();
     return weight;
 }
 
