@@ -94,6 +94,7 @@ class outputForm: public baseForm
         //
         //DI INFORMATION
         std::string createDINumber(qtDatabase & localDatabase, int arrive);
+        int upgradeLocalIncremental(qtDatabase & localDatabase);
         void setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode);
         int getAllOrderInfo(qtDatabase & localDatabase, long order_code);
         int isDiComplete();

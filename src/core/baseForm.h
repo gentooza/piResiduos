@@ -246,6 +246,7 @@ class  baseForm
 
         //DI CODE GENERATION
         virtual std::string createDINumber(qtDatabase & localDatabase, int arrive){return "";};
+        virtual int upgradeLocalIncremental(qtDatabase & localDatabase){ return 0; };
 
         //FOLDER TO SAVE CAPTURES, SIGNATURE, DI...
         int createDIFolder(std::string DI, int arrive);

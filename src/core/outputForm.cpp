@@ -36,6 +36,8 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
     setTareWeight(retDepScaleIn());
     setGrossWeight(retDepScaleOut());
     setNetWeight((long)(retDepScaleOut() - retDepScaleIn()));
+    // upgrading definetively the DI number
+    setDepDi(createDINumber(localDatabase, 0));
     //getting sql queries
     std::string myMoveCode = storeMov(sqliteQuery, mysqlQuery, depOriginStation, localDatabase);
 
@@ -74,7 +76,9 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 	        log_message(str_log_message, 1);
 	        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //saving in local server
 	        {
-	            //deleting from transit
+                // upgrading local incremental number (if we have) 
+                upgradeLocalIncremental(localDatabase);
+	            // deleting from transit
 	            ret = 0;
 	            mysqlQuery.clear();
 	            mysqlQuery = "delete from transito_salidas where (FECHA_HORA =\"";
@@ -981,6 +985,84 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
     return DI;
 }
 
+int outputForm::upgradeLocalIncremental(qtDatabase & localDatabase)
+{
+    int ret = 0;
+    station *myStation = NULL;
+    costumer *me = NULL;
+    costumer *operCostumer = NULL;
+
+    retOurStation(myStation);
+    retOurId(me);
+    retDepCostumer(operCostumer);
+
+    int movType = retDepMovType();
+    if(movType <= 0)
+        movType = DEF_MOV_LOADING;
+
+    // we ARE the operators
+    if (me->getCode() == operCostumer->getCode())
+    {
+        // NP present?
+        std::string NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
+        if(NP.empty())
+        {
+            std::time_t t = std::time(nullptr);
+            std::tm *const pTInfo = std::localtime(&t);
+            std::string actualYear = std::to_string(1900 + pTInfo->tm_year);
+            std::string sql;
+            int correlNumber = 0;
+            getParamValue(sql, "NUMBER");
+            log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+            if(!localDatabase.query(NULL, sql.c_str()))
+            {
+                std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+                if(dataReturn.size())
+                {
+                    try
+                    {
+                        correlNumber = std::stoi(dataReturn[0].at(0));
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cout << e.what() << '\n';
+                        log_message("(LOADING)(DI number creation) Exception can't convert to number", 2);
+                    }
+                    correlNumber++;
+                    if (correlNumber > 9999999)
+                        correlNumber = 0;
+
+                    setParamValue(sql, "NUMBER", "0", actualYear);
+                    log_message("(LOADING)(DI number creation)(Number overflowed) BD local -> " + sql, 1);
+                    if(localDatabase.query(NULL, sql.c_str()))
+                        log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    ret = 1;
+                }
+                else
+                {
+                    correlNumber = 0;
+                    setParamValue(sql, "NUMBER", "0", actualYear);
+                    log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+                    if(localDatabase.query(NULL, sql.c_str()))
+                        log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    ret = 2;
+                }
+            }
+            else
+            {
+                log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                correlNumber = 0;
+                setParamValue(sql, "NUMBER", "0", actualYear);
+                log_message("(LOADING)(DI number creation)() BD local -> " + sql, 1);
+                if(localDatabase.query(NULL, sql.c_str()))
+                    log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                ret = 3;
+            } 
+        }
+    }
+    return ret; 
+}
+
 // TODO: error handling not implemented
 void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode)
 {
@@ -1304,7 +1386,6 @@ void outputForm::createDocs(std::string printerId, std::string tkPrinterId, std:
     costumer *theCostumer = NULL;
     retDepCostumer(theCostumer);
     retOurId(us);
-    setDepDi(createDINumber(localDatabase, 0));
     if(retDepMovType() != DEF_MOV_TRANSFER || theCostumer->getCode() != us->getCode())
     {    
         createTicket(tkPrinterId, ticketCode, localDatabase);
