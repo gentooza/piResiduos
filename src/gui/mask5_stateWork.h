@@ -86,7 +86,7 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p,d,formSalida,EDITCOMMENTENT); 
-                pvSetText(p, EDITDIPROV, formSalida->createDINumber(localDatabase, remoteDatabase, 1).c_str());
+                pvSetText(p, EDITDIPROV, formSalida->createDINumber(localDatabase, 1).c_str());
                 if(!formSalida->isIncArrPlateEdited())
                     formSalida->savePlateImage(3,"entrada");
                 break;
@@ -214,7 +214,7 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p, d, formSalida,EDITCOMMENTSAL);
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, remoteDatabase, 0).c_str());    
+                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());    
                 if(!formSalida->isIncDepPlateEdited())	    
                     formSalida->savePlateImage(4,"salida");
                 std::string pesoSalida = std::to_string(formSalida->retDepScaleOut());
@@ -249,7 +249,7 @@ static int stateWork(PARAM *p, DATA *d)
                 {
                     DatabaseData_chkd = 0;
                 }
-                formSalida->saveScaleOut(localDatabase,remoteDatabase,remoteDatabaseData.db_host.c_str(), DatabaseData_chkd);
+                formSalida->saveScaleOut(localDatabase, remoteDatabase, remoteDatabaseData.db_host.c_str(), DatabaseData_chkd);
                 break;
             }
 	        case(1223):
@@ -412,7 +412,7 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p, d, formSalida, EDITCOMMENTSAL);	    
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, remoteDatabase, 1).c_str());
+                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 1).c_str());
                 //Create fake signature for transportist not present	    
                 formSalida->saveSignature("image/void.png");
                 //default driver
@@ -465,7 +465,12 @@ static int stateWork(PARAM *p, DATA *d)
                         remote_connected = 1;
                 }
                 d->ret = 0;
-
+                std::string myTicketPrinter;
+                std::string ticketCode;
+                miIni->retTicketPrinterId(myTicketPrinter);
+                miIni->retTicketCode(ticketCode);
+                if(myTicketPrinter.empty())
+                    console.push_back("AVISO: no se va a imprimir el ticket, al no tener configurada la impresora");
                 std::string myPrinter;
                 miIni->retPrinterId(myPrinter);
                 if(myPrinter.empty())
@@ -487,7 +492,7 @@ static int stateWork(PARAM *p, DATA *d)
                             console.push_back("*ERROR* ¡Hubo errores al guardar el movimiento en el servidor central!");
                             console.push_back("*ERROR* ¡Necesita sincronizar! Si se trata de un movimiento de transferencia la estación de destino no lo verá");
                         }
-                        formSalida->createPdf(myPrinter);
+                        formSalida->createDocs(myPrinter, myTicketPrinter, ticketCode, localDatabase);
                         d->ret = 0;
                     }
                 }
@@ -515,8 +520,8 @@ static int stateWork(PARAM *p, DATA *d)
                     {
                         // saving signature
                         formSalida->saveSignature();
-                        // printing DI
-                        formSalida->createPdf(myPrinter);
+                        // printing DI or Ticket
+                        formSalida->createDocs(myPrinter, myTicketPrinter, ticketCode, localDatabase);
                         // sending incidents email
                         if(mailClient->sendIncidentsMail(myStation,formSalida))
                             console.push_back("*ERROR* ¡Error en el sistema de envío de emails");

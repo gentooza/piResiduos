@@ -101,6 +101,7 @@ static int slotNullEvent(PARAM *p, DATA *d)
     if(p == NULL || d == NULL) return -1;
     std::cout << "#####DEBUG SALIDA DE MATERIAL#####" << std::endl;
     std::cout << "ESTADO ACTUAL:\"" << (formSalida?std::to_string(formSalida->getState()):"null") << "\", ESTADO FUTURO:\"" << d->enFutEstado << "\""<< std::endl;
+    std::cout << "**********" << std::endl;
     std::cout << "--DATOS ENTRADA A PLANTA--" << std::endl;
     std::cout << "MATRICULA:\"" << (formSalida?formSalida->retArrPlate():"null") << "\"";
     std::cout << " TIPO DE MOVIMIENTO:\"" << (formSalida?std::to_string(formSalida->retArrMovType()):"null") << "\"";

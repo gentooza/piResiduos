@@ -442,7 +442,7 @@ int inputForm::storeTransit(qtDatabase & myDatabase,qtDatabase & remoteDatabase,
     std::string my_mysql = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION) values (\"";
     std::string my_sqlite = "insert into transito (DI,FECHA_HORA,TIPO_MOVIMIENTO,CODIGO_CLIENTE,CODIGO_PRODUCTO,PESO_ENTRADA,PRECIO,MATRICULA,REMOLQUE,CODIGO_ORIGEN,INCIDENCIAS,COMENTARIO_OPERADOR,PESO_SALIDA,CODIGO_ESTACION, SINCRONIZADO) values (\"";
 
-    std::string query = createDINumber(myDatabase, remoteDatabase, 1); //DI
+    std::string query = createDINumber(myDatabase, 1); //DI
     query += "\",\"";
     //  query += getCurrentDate();   BUG esto nos rompe la definción de la carpeta de save de documentos
     query += retArrDateTime();
@@ -769,7 +769,7 @@ int inputForm::getFzCurrentProduct()
   return isForced;
 }
 /*! DI number in all unloading movements are the movement number */
-std::string inputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive)
+std::string inputForm::createDINumber(qtDatabase & localDatabase, int arrive)
 {
     station *myStation = NULL;
     if(arrive)

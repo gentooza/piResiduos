@@ -42,7 +42,7 @@ static int stateNext(PARAM *p, DATA *d)
                 if(d->enFutEstado >= 1020)
                 {
                     //Saving destination where files are stored
-                    std::string di = formEntrada->createDINumber(localDatabase, remoteDatabase, 0);
+                    std::string di = formEntrada->createDINumber(localDatabase, 0);
                     pvSetText(p, EDITDIDEF, di.c_str());
                     std::string peso = std::to_string(formEntrada->retDepScaleOut());
                     pvSetText(p,EDITPESOTARA,peso.c_str());

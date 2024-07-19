@@ -68,7 +68,7 @@ static int slotInit(PARAM *p, DATA *d)
     }
     myText.clear();
     //1.- DI
-    myText = formDI->createDINumber(localDatabase, remoteDatabase, 0);
+    myText = formDI->createDINumber(localDatabase, 0);
     pvSetText(p, EDITDI, myText.c_str());
     myText.clear();
     //2.- NPT

@@ -848,7 +848,7 @@ int outputForm::getFzCurrentProduct()
   return isForced;
 }
 
-std::string outputForm::createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive)
+std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
 {
     station *myStation = NULL;
     costumer *me = NULL;
@@ -1296,6 +1296,28 @@ int outputForm::isDiComplete()
     if(depDestinationStation->getCode() <= 0 && !depDestinationStation->isManuallyEdited())
         ret = 0;
     return ret;
+}
+
+void outputForm::createDocs(std::string printerId, std::string tkPrinterId, std::string ticketCode, qtDatabase & localDatabase)
+{
+    costumer *us = NULL;
+    costumer *theCostumer = NULL;
+    retDepCostumer(theCostumer);
+    retOurId(us);
+    setDepDi(createDINumber(localDatabase, 0));
+    if(retDepMovType() != DEF_MOV_TRANSFER || theCostumer->getCode() != us->getCode())
+    {    
+        createTicket(tkPrinterId, ticketCode, localDatabase);
+    }
+    else
+    {
+        createPdf(printerId);
+    }
+    if (us != NULL)
+        delete us;
+    if (theCostumer != NULL)
+        delete theCostumer;
+    return;
 }
 
 //////////////////////////////////////////////////////////////////

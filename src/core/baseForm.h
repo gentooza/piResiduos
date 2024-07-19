@@ -245,7 +245,7 @@ class  baseForm
         void setDatePermit(std::string strdate);
 
         //DI CODE GENERATION
-        virtual std::string createDINumber(qtDatabase & localDatabase, qtDatabase & remoteDatabase, int arrive){return "";};
+        virtual std::string createDINumber(qtDatabase & localDatabase, int arrive){return "";};
 
         //FOLDER TO SAVE CAPTURES, SIGNATURE, DI...
         int createDIFolder(std::string DI, int arrive);
@@ -316,8 +316,9 @@ class  baseForm
         virtual void saveSignature(int blank_signature = 0);
         virtual void saveSignature(const char* file);  
         virtual int isSignature();
-        virtual void createPdf(std::string printerId){};
-        virtual int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase){};
+        virtual void createDocs(std::string printerId, std::string tkPrinterId, std::string ticketCode, qtDatabase & localDatabase){ return; };
+        virtual void createPdf(std::string printerId){ return; };
+        virtual int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase){ return 0; };
         int set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
         void backupFiles(std::string movFolder);
 
