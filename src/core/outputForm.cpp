@@ -886,7 +886,7 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
     // std::cout << "Operator name = " <<  operCostumer->getName() << " and code = " << std::to_string(operCostumer->getCode()) << std::endl;
     // std::cout << "Us name = " <<  me->getName() << " and code = " << std::to_string(me->getCode()) << std::endl;
     // we are NOT the operators
-    if (me->getCode() != operCostumer->getCode())
+    if (me->getCode() != operCostumer->getCode() && movType != DEF_MOV_TRANSFER)
     {
         DI = getMovCode(localDatabase, myStation, movType);
         if (!arrive)
@@ -902,7 +902,7 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
             NP = myArrMovement.PERMISOS_PRODUCTO.FLAG_NPT;
         else
             NP = myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT;
-        if(!NP)
+        if(!NP || movType == DEF_MOV_TRANSFER)
         {
             std::time_t t = std::time(nullptr);
             std::tm *const pTInfo = std::localtime(&t);
@@ -968,24 +968,22 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
                     log_message("(LOADING)(DI number creation) Query ERROR", 2);
             } 
             DI += zeroPadNumber(correlNumber, 7);
+            if(NP && movType == DEF_MOV_TRANSFER)
+            {
+                DI = "DCS01" + DI;
+            }
             if(!arrive)
                 myDepMovement.DI = DI;
-            std::cout << "(DI GENERATION): OPERATOR IS US, NO NPT CASE: 2, DI GENERATED = " << DI << std::endl;
+
+            std::cout << "(DI GENERATION): OPERATOR IS US, NO NPT CASE: 2 (OR TRANSFER MOVEMENT!), DI GENERATED = " << DI << std::endl;
         }
         else
         {
-            if (movType == DEF_MOV_TRANSFER)
-            {
-                log_message("(LOADING)(DI number creation) if DEF_MOV_TRANSFER and no NP not implemented", 2);
-            }
-            else // DI from web form in order
-            {
-                if (arrive)
-                    DI = myArrMovement.DI;
-                else
-                    DI = myDepMovement.DI;
-                std::cout << "(DI GENERATION): OPERATOR IS US, AND NPT! CASE: 3, DI GENERATED = " << DI << std::endl;
-            }
+            if (arrive)
+                DI = myArrMovement.DI;
+            else
+                DI = myDepMovement.DI;
+            std::cout << "(DI GENERATION): OPERATOR IS US, AND NPT! CASE: 3, DI GENERATED = " << DI << std::endl;
         }
     }
     createDIFolder(DI, arrive);
