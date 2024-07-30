@@ -220,8 +220,6 @@ void baseForm::clearMovement(struMovement & myMovement)
     myMovement.PRODUCTO_NOMBRE3.clear();
     myMovement.PRODUCTO_PELIGROSIDAD.clear();
 
-    myMovement.CLIENTE_PRODUCTO_NPT = -1;
-
     myMovement.FECHA_FIRMA.clear();
     myMovement.FECHA_PROGRAMADA.clear();
     myMovement.PRECIO_TN = -1;
@@ -2182,7 +2180,6 @@ void baseForm::resetArrProduct()
   myArrMovement.PRODUCTO_NOMBRE3.clear();
   myArrMovement.PRODUCTO_PELIGROSIDAD.clear();
 
-  myArrMovement.CLIENTE_PRODUCTO_NPT = 0;
   resetArrProdPermits();
   incArrProdFz(0);
 }
@@ -2195,7 +2192,6 @@ void baseForm::resetDepProduct()
   myDepMovement.PRODUCTO_NOMBRE3.clear();
   myDepMovement.PRODUCTO_PELIGROSIDAD.clear();
 
-  myDepMovement.CLIENTE_PRODUCTO_NPT = 0;
   resetDepProdPermits();
   incDepProdFz(0);
 }

@@ -142,8 +142,6 @@ typedef struct struMovement
     std::string PRODUCTO_NOMBRE3;
     std::string PRODUCTO_PELIGROSIDAD;
 
-    long CLIENTE_PRODUCTO_NPT;
-
     long CODIGO_ORDEN;
     int ECOEMBES;
     std::string FECHA_FIRMA;
