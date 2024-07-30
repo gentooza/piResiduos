@@ -76,8 +76,6 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 	        log_message(str_log_message, 1);
 	        if(!localDatabase.query(NULL,sqliteQuery.c_str())) //saving in local server
 	        {
-                // upgrading local incremental number (if we have) 
-                upgradeLocalIncremental(localDatabase);
 	            // deleting from transit
 	            ret = 0;
 	            mysqlQuery.clear();
@@ -175,6 +173,12 @@ int outputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDataba
 	        log_message("(CARGA) registro en BD local parece ERROR, es catastrófico!", 2);
 	        ret = -2;
 	    }
+    }
+    std::cout << "ACTUALIZAMOS INDEX? ret = " << ret << std::endl;
+    if (ret != -2)
+    {
+        // upgrading local incremental number (if we have) 
+        upgradeLocalIncremental(localDatabase);
     }
     return ret;
 }
@@ -893,12 +897,12 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
     else
     {
         // NP present?
-        std::string NP;
+        int NP;
         if(arrive)
-            NP = myArrMovement.PERMISOS_PRODUCTO.NPT;
+            NP = myArrMovement.PERMISOS_PRODUCTO.FLAG_NPT;
         else
-            NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
-        if(NP.empty())
+            NP = myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT;
+        if(!NP)
         {
             std::time_t t = std::time(nullptr);
             std::tm *const pTInfo = std::localtime(&t);
@@ -926,14 +930,16 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
                     valueYear = dataReturn[0].at(1);
                     if (correlNumber > 9999999)
                     {
+                        std::cout << " correlNumber: " << correlNumber << " overflowed " << std::endl;
                         correlNumber = 0;
                         setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
                         log_message("(LOADING)(DI number creation)(Number overflowed) BD local -> " + sql, 1);
                         if(localDatabase.query(NULL, sql.c_str()))
                             log_message("(LOADING)(DI number creation) Query ERROR", 2);
                     }
-                    if (valueYear != actualYear)
+                    if (std::stoi(valueYear) != std::stoi(actualYear))
                     {
+                        std::cout << " valueYear: " << valueYear << " is different to the actual year: " << actualYear << std::endl;
                         correlNumber = 0;
                         setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
                         log_message("(LOADING)(DI number creation)(OLD year) BD local -> " + sql, 1);
@@ -943,19 +949,21 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
                 }
                 else
                 {
+                    std::cout << " NO DATA RETURNED " << std::endl;
                     correlNumber = 0;
                     setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
-                    log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+                    log_message("(LOADING)(DI number creation)(no data returned) BD local -> " + sql, 1);
                     if(localDatabase.query(NULL, sql.c_str()))
                         log_message("(LOADING)(DI number creation) Query ERROR", 2);
                 }
             }
             else
             {
+                std::cout << " QUERY ERROR " << std::endl;
                 log_message("(LOADING)(DI number creation) Query ERROR", 2);
                 correlNumber = 0;
                 setParamValue(sql, "NUMBER", "0", std::to_string(1900 + pTInfo->tm_year));
-                log_message("(LOADING)(DI number creation)() BD local -> " + sql, 1);
+                log_message("(LOADING)(DI number creation)(query error) BD local -> " + sql, 1);
                 if(localDatabase.query(NULL, sql.c_str()))
                     log_message("(LOADING)(DI number creation) Query ERROR", 2);
             } 
@@ -1004,8 +1012,7 @@ int outputForm::upgradeLocalIncremental(qtDatabase & localDatabase)
     if (me->getCode() == operCostumer->getCode())
     {
         // NP present?
-        std::string NP = myDepMovement.PERMISOS_PRODUCTO.NPT;
-        if(NP.empty())
+        if(!myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT)
         {
             std::time_t t = std::time(nullptr);
             std::tm *const pTInfo = std::localtime(&t);
@@ -1032,30 +1039,30 @@ int outputForm::upgradeLocalIncremental(qtDatabase & localDatabase)
                     if (correlNumber > 9999999)
                         correlNumber = 0;
 
-                    setParamValue(sql, "NUMBER", "0", actualYear);
-                    log_message("(LOADING)(DI number creation)(Number overflowed) BD local -> " + sql, 1);
+                    setParamValue(sql, "NUMBER", std::to_string(correlNumber), actualYear);
+                    log_message("(LOADING)(upgrading local index) BD local -> " + sql, 1);
                     if(localDatabase.query(NULL, sql.c_str()))
-                        log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                        log_message("(LOADING)(upgrading local index) Query ERROR", 2);
                     ret = 1;
                 }
                 else
                 {
                     correlNumber = 0;
                     setParamValue(sql, "NUMBER", "0", actualYear);
-                    log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+                    log_message("(LOADING)(upgrading local index) BD local -> " + sql, 1);
                     if(localDatabase.query(NULL, sql.c_str()))
-                        log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                        log_message("(LOADING)(upgrading local index) Query ERROR", 2);
                     ret = 2;
                 }
             }
             else
             {
-                log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                log_message("(LOADING)(upgrading local index) Query ERROR", 2);
                 correlNumber = 0;
                 setParamValue(sql, "NUMBER", "0", actualYear);
-                log_message("(LOADING)(DI number creation)() BD local -> " + sql, 1);
+                log_message("(LOADING)(upgrading local index) BD local -> " + sql, 1);
                 if(localDatabase.query(NULL, sql.c_str()))
-                    log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    log_message("(LOADING)(upgrading local index) Query ERROR", 2);
                 ret = 3;
             } 
         }
@@ -1386,8 +1393,9 @@ void outputForm::createDocs(std::string printerId, std::string tkPrinterId, std:
     costumer *theCostumer = NULL;
     retDepCostumer(theCostumer);
     retOurId(us);
-    if(retDepMovType() != DEF_MOV_TRANSFER || theCostumer->getCode() != us->getCode())
-    {    
+    std::cout << "checking if movement is transfer: " << retDepMovType() << " is different to: " << DEF_MOV_TRANSFER << ". and if operator: " << theCostumer->getCode() << ", is different to us: " << us->getCode() << std::endl;
+    if(retDepMovType() != DEF_MOV_TRANSFER && theCostumer->getCode() != us->getCode())
+    {
         createTicket(tkPrinterId, ticketCode, localDatabase);
     }
     else
