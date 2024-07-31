@@ -121,6 +121,8 @@ static int slotNullEvent(PARAM *p, DATA *d)
     std::cout << std::endl;
     std::cout << "CÓDIGO PRODUCTO:\"" <<  (formSalida?std::to_string(formSalida->retDepProdCode()):"null") << "\"";
     std::cout << std::endl;
+    std::cout << "NPT PRODUCTO:\"" <<  (formSalida?formSalida->retDepPermitNptFlag():0) << "\"";
+    std::cout << std::endl;
     std::cout << "DI NUMBER = " << (formSalida?formSalida->retDepDi():"null") << " // CODIGO_ORDEN = " << (formSalida?formSalida->retDepMovement().CODIGO_ORDEN:-1) << std::endl;
     std::cout << "TRANSPORTISTA:\"" << (formSalida?std::to_string(formSalida->depDriver->getCode()):"null")  << "\"";
     std::cout << std::endl;
