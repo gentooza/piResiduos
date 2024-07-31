@@ -782,6 +782,7 @@ int outputForm::setDepNPTData(qtDatabase & localDatabase, const char * type)
         selProdPermits(sql, type, retDepProdCode());
         if(!localDatabase.query(NULL, sql.c_str()))
         {
+            ret = 0;
             std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
             if(dataReturn.size())
             {
@@ -792,6 +793,7 @@ int outputForm::setDepNPTData(qtDatabase & localDatabase, const char * type)
                 catch(...)
                 {
                     myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT = 0;
+                    ret = -2;
                 }
             }
         }
@@ -1077,6 +1079,8 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
     {
         if(setAllProductData(localDatabase)) // TODO: error handling
 	        std::cout << "*ERROR*" << std::endl;
+        if(setDepNPTData(localDatabase, "SAL")) // TODO: error handling, always SAL?
+            std::cout << "*ERROR*" << std::endl;        
     }
     //costumer information
     // pass
