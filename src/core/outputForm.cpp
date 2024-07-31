@@ -875,8 +875,8 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
     }
     else
     {
-        movType = retDepMovType();
         retDepCostumer(operCostumer);
+        movType = retDepMovType();
     }
     if(movType <= 0)
         movType = DEF_MOV_LOADING;
@@ -1073,8 +1073,8 @@ int outputForm::upgradeLocalIncremental(qtDatabase & localDatabase)
 // TODO: error handling not implemented
 void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, long ourCode, long defDriverCode)
 {
-    //common data
-    //product information
+    // common data
+    // product information
     if(retDepProdCode()>0)
     {
         if(setAllProductData(localDatabase)) // TODO: error handling
@@ -1082,15 +1082,15 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
         if(setDepNPTData(localDatabase, "SAL")) // TODO: error handling, always SAL?
             std::cout << "*ERROR*" << std::endl;        
     }
-    //costumer information
+    // costumer information
     // pass
-    //costumer-product information
-    if(retDepProdCode()>0 && depCostumer->getCode()>0)
+    // costumer-product information
+    if(retDepProdCode()>0 && depCostumer->getCode() > 0)
     {
-        if(setAllDepCosProdData(localDatabase,myStation))
+        if(setAllDepCosProdData(localDatabase, myStation))
 	        std::cout << "*ERROR*" << std::endl;
     }
-    //billing method and price
+    // billing method and price
     if(set_all_billing_info(localDatabase))
         std::cout << "*ERROR*" << std::endl;
     // origin station, us!
@@ -1130,6 +1130,7 @@ void outputForm::setAllDiData(qtDatabase & localDatabase, station *myStation, lo
 	        }
 	    }
     }
+    return;
 }
 /*! function for managing all new information preset by the order*/
 int outputForm::getAllOrderInfo(qtDatabase & localDatabase, long order_code)

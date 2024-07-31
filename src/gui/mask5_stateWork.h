@@ -272,6 +272,8 @@ static int stateWork(PARAM *p, DATA *d)
                 formSalida->setOurId(ourId);
                 delete ourId;
                 formSalida->setAllDiData(localDatabase, myStation, DEF_BIORECICLAJE_CODE, DEF_TRANS_CODE);
+                // upgrading DI code after data edition
+                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());
                 break;
             }
 	        case(1126):
@@ -412,7 +414,7 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p, d, formSalida, EDITCOMMENTSAL);	    
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 1).c_str());
+                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());
                 //Create fake signature for transportist not present	    
                 formSalida->saveSignature("image/void.png");
                 //default driver
