@@ -262,7 +262,7 @@ int printableTicket::composeOrigin()
     currentLine = currentLine - finalLine + fontSize_xl;
 
     finalLine = 2*fontSize_xl;
-    myText = "CIF: " + ticket_costumerNif;
+    myText = "CIF: " + ticket_ourCIF;
     if(myText.length() > 26)
         finalLine += fontSize_xl;
     if(myText.length() > 52)
