@@ -254,6 +254,12 @@ int outputForm::storeDepTransfer(qtDatabase & my_local_database, qtDatabase & my
         log_message("(CARGA) registro en BD local parece ERROR, catastrófico", 2);
         ret = -2;
     }
+    std::cout << "ACTUALIZAMOS INDEX? ret = " << ret << std::endl;
+    if (ret != -2)
+    {
+        // upgrading local incremental number (if we have)
+        upgradeLocalIncremental(my_local_database);
+    }
     return ret;
 }
 void outputForm::setOrders(qtDatabase & myDatabase, long station_code)
@@ -1560,7 +1566,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode, qtDa
     myTicket->setTicketCode(ticketCode);
     costumer * our_costumer;
     retOurId(our_costumer);
-    myTicket->setOurCIF(our_costumer->getNif());
+    myTicket->setCostumerNif(our_costumer->getNif());
     station * localDestination;
     retDepOriginStation(localDestination);
     myTicket->setStationName(localDestination->getName());
