@@ -790,8 +790,15 @@ std::string inputForm::createDINumber(qtDatabase & localDatabase, int arrive)
 
     if(movType <= 0)
         movType = DEF_MOV_UNLOADING;
-    std::string DI = getMovCode(localDatabase, myStation, movType);
-    
+    if(movType != DEF_MOV_TRANSFER)
+        std::string DI = getMovCode(localDatabase, myStation, movType);
+    else
+    {
+        if(arrive)
+            std::string DI = retArrDi();
+        else
+            std::string DI = retDepDi();
+    }
     std::string folder;
     if(arrive)
     {
