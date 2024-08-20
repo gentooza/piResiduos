@@ -917,7 +917,12 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
     retDepDestinationStation(localDestination);
     myTicket->setStationName(localDestination->getName());
     myTicket->setStationNIMA(localDestination->getNima());
-    myTicket->setMovCode(getMovCode(localDatabase, localDestination, retDepMovType()));
+    std::string movCode;
+    if(retDepMovType() == DEF_MOV_TRANSFER)
+        movCode = retDepDi();
+    else
+        movCode = getMovCode(localDatabase, localDestination, retDepMovType());
+    myTicket->setMovCode(movCode);
     if (localDestination != NULL)
         delete localDestination;
     myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
