@@ -607,10 +607,11 @@ int upload_movement_files_from_sql(std::vector< std::vector< std::string>> data_
 
 int copy_files_to_remote_server(std::string folder_in_backup)
 {
-    std::string command = "rsync -r --exclude '*.pdf' \"backup/";
+    std::string command = "rsync -r \"backup/";
     command += folder_in_backup;
     command += "\"";
     command += " biogesin@bioreciclaje.es:/home/biogesin/public_html/movimientos &";
+    std::cout << "In copy_files_to_remote_Server, executing: " << command << std::endl;
     return(system(command.c_str()));
 }
 
