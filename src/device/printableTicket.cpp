@@ -262,7 +262,7 @@ int printableTicket::composeOrigin()
     currentLine = currentLine - finalLine + fontSize_xl;
 
     finalLine = 2*fontSize_xl;
-    myText = "CIF: " + ticket_ourCIF;
+    myText = "CIF: " + ticket_costumerNif;
     if(myText.length() > 26)
         finalLine += fontSize_xl;
     if(myText.length() > 52)
@@ -322,6 +322,7 @@ int printableTicket::composeProduct()
     int finalLine = 2*fontSize;
 
     // product LER and NAME
+    HPDF_Page_SetFontAndSize (hpdfPage, hpdfFont, fontSize);
     HPDF_Page_SetTextLeading(hpdfPage, fontSize);
     HPDF_Page_BeginText (hpdfPage);
     myText = "LER-PRODUCTO: " + ticket_productLER + " - " + ticket_productName;
@@ -331,7 +332,7 @@ int printableTicket::composeProduct()
         finalLine += fontSize;
     if(myText.length() > 84)
         finalLine += fontSize;
-    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine - fontSize, 190, (currentLine - finalLine),
+    if(HPDF_Page_TextRect( hpdfPage, 0, currentLine, 190, (currentLine - finalLine),
                 myText.c_str(), HPDF_TALIGN_LEFT, NULL) == HPDF_PAGE_INSUFFICIENT_SPACE) 
         std::cout << "TODO: not enough space, text length: " << myText.length() << std::endl;
     HPDF_Page_EndText (hpdfPage);
