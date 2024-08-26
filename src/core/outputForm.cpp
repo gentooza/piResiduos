@@ -1545,6 +1545,7 @@ void outputForm::createPdf(std::string printerId)
 
     myDi->composeFile();
     myDi->saveFile();
+    myDi->saveFile(retDepDiFolder() + "/DI.pdf");
     myDi->printFile();
     delete myDi;
     return;
@@ -1606,6 +1607,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode, qtDa
     myTicket->setSignaturePath(signaturePath);
     myTicket->composeFile();
     myTicket->saveFile();
+    myTicket->saveFile(retDepDiFolder() + "/" + fileName);
     myTicket->printFile();
     delete myTicket;
     return 0;

@@ -47,7 +47,6 @@ baseForm::baseForm(int type, int entrance)
         formType = type;
         formState = -1;
     }
-    formLlegada = entrance;
     /*****************/
 
     //plate dimensions
@@ -523,7 +522,7 @@ int baseForm::isSignature()
     return exist;
 }
 
-void baseForm::backupFiles(std::string movFolder)
+void baseForm::backupFiles(std::string movFolder, int entranceMov)
 {
     int ret;
     ret = system("mkdir -p backup");
@@ -545,8 +544,8 @@ void baseForm::backupFiles(std::string movFolder)
     command += depFolder + "\" &";
     ret = system(command.c_str());
     std::cout << "backing up files to server? is retDepMovtype != DEF_MOV_TRANSFER?" << retDepMovType() << "!=" << DEF_MOV_TRANSFER << std::endl;
-    std::cout << "OR It's an entrance? " << formLlegada << std::endl;
-    if((retDepMovType() != DEF_MOV_TRANSFER) || formLlegada)
+    std::cout << "OR It's an entrance? " << entranceMov << std::endl;
+    if((retDepMovType() != DEF_MOV_TRANSFER) || entranceMov)
     {
         //remote copying
         copy_files_to_remote_server(movFolder);

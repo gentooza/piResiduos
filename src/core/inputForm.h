@@ -58,6 +58,7 @@ class inputForm: public baseForm
     inputForm() : baseForm(){};
     ~inputForm(){};
 
+    int isEntrance(){ return entranceMov;};
     int getFormType(){return DISCHARGE_FORM;};
     //movement data
     int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase, int remote_host_connected);
@@ -72,10 +73,6 @@ class inputForm: public baseForm
     int isPlateInTransit(std::string);
     int setTransitMov(int index, std::string plate, qtDatabase & myDatabase);
     int delTransit(int index,std::string plate, qtDatabase & myDatabase, qtDatabase & myRemoteDatabase, std::string host, int port, long station_code);
-
-    //all costumers
-    std::vector<std::string> retAllCos4Combo(qtDatabase & myDatabase);
-    ///
 
     //product permits
     //datatabase dependant
@@ -103,8 +100,9 @@ class inputForm: public baseForm
     void calculateTicketHeight(int& lines);
     //
     private:
-    std::vector<std::vector<std::string>> vctAllTransfers;
-    std::vector<std::vector<std::string>> vctAllTransit;
+        std::vector<std::vector<std::string>> vctAllTransfers;
+        std::vector<std::vector<std::string>> vctAllTransit;
+        const int entranceMov = 1;
 };
 
 #endif

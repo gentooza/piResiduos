@@ -703,25 +703,7 @@ int inputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myData
     }
     return ret;
 }
-//TODO
-//costumer functions
-/*! this function return a list of possible costumers linked to a plate*/
-std::vector<std::string> inputForm::retAllCos4Combo(qtDatabase & myDatabase)
-{
-  std::string myPlate;
-  std::vector<std::string> allCostumers;
-  char * sql;
 
-  myPlate = retArrPlate();
-  if(!myPlate.empty())
-    {
-      // sel_all_costumers_from_car(sql,myPlate.c_str());
-      allCostumers.push_back("empty, TODO!");
-
-    }
-  return allCostumers;
-}
-//
 void inputForm::forceCurrentProduct()
 {
   std::vector<std::string>::iterator iter;
@@ -921,7 +903,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
     if(retDepMovType() == DEF_MOV_TRANSFER)
         movCode = retDepDi();
     else
-        movCode = getMovCode(localDatabase, localDestination, retDepMovType());
+        movCode = getLastMovCode(localDatabase, localDestination);
     myTicket->setMovCode(movCode);
     if (localDestination != NULL)
         delete localDestination;
@@ -947,6 +929,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
     myTicket->setSignaturePath(signaturePath);
     myTicket->composeFile();
     int ret = myTicket->saveFile();
+    ret += myTicket->saveFile(retDepDiFolder() + "/" + fileName);
     ret += myTicket->printFile();
     if (myTicket != NULL)
         delete myTicket;

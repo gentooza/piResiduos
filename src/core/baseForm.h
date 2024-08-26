@@ -174,6 +174,8 @@ class  baseForm
 
         void copyFrom(baseForm *reference);
         virtual void resetForm(int departure);
+
+        virtual int isEntrance(){return 0;}
         //state navigation
         virtual int setState(int state){ formState = state; (state>=1000?formFinalState=state:formInicState=state); return 0;};
         virtual int getState(){return formState;};  
@@ -319,7 +321,7 @@ class  baseForm
         virtual void createPdf(std::string printerId){ return; };
         virtual int createTicket(std::string printerId, std::string ticketCode, qtDatabase & localDatabase){ return 0; };
         int set_di_text(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);
-        void backupFiles(std::string movFolder);
+        void backupFiles(std::string movFolder, int entranceMov);
 
         //test
         int showPermisos();
@@ -698,8 +700,6 @@ class  baseForm
         staff *staff_in_charge;
     
     private:
-        //
-        int formLlegada;
         int formState;
         int formInicState;
         int formFinalState;

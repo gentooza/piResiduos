@@ -56,6 +56,7 @@ class outputForm: public baseForm
         outputForm() : baseForm(){};
         ~outputForm(){};
 
+        int isEntrance(){ return entranceMov;};
         int getFormType(){return LOAD_FORM;};
   
         int storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabase,int remote_host_connected);
@@ -121,6 +122,7 @@ class outputForm: public baseForm
         std::vector<std::vector<std::string>> vctAllOrders;
         std::vector<std::vector<std::string>> vctAllTransit;
         std::vector <struMovement> allOrders;
+        const int entranceMov = 0;
 };
 
 #endif
