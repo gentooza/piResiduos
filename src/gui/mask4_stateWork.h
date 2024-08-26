@@ -427,8 +427,6 @@ static int stateWork(PARAM *p, DATA *d)
             }
             case 1020: //hemos seleccionado un transporte de la tabla de tránsito
             {
-                //operator comment
-                refreshOperatorComment(p,d,formEntrada,EDITCOMMENTSAL);
                 formEntrada->setTransitMov(d->camionElegido,formEntrada->retDepPlate(), localDatabase);
                 if(formEntrada->retDepMovType() == DEF_MOV_TRANSFER)
                 {
@@ -455,6 +453,7 @@ static int stateWork(PARAM *p, DATA *d)
                     pvSetText(p,EDITCODETRANSP,"N/A");
                     pvSetText(p,EDITNAMETRANSP,"N/A");
                 }
+                refreshOperatorComment(p, d, formEntrada, EDITCOMMENTSAL);
                 break;
             }
             case 1021: //almacenamos la tara en DB
