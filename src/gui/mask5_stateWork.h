@@ -528,7 +528,7 @@ static int stateWork(PARAM *p, DATA *d)
                         if(mailClient->sendIncidentsMail(myStation,formSalida))
                             console.push_back("*ERROR* ¡Error en el sistema de envío de emails");
                         // backing up files
-                        formSalida->backupFiles(formSalida->getMovCode(localDatabase, myStation, formSalida->retDepMovType()));
+                        formSalida->backupFiles(formSalida->getLastMovCode(localDatabase, myStation), formEntrada->isEntrance());
                     }
                 }
                 cameraSemaphore(4,1,globalConfiguration.traffic_lights_enabled);

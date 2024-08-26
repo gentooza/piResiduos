@@ -93,7 +93,7 @@ class printable
     printable();
     virtual ~printable(){return;};
 
-    int saveFile();
+    int saveFile(std::string altPath = "");
     int printFile();
 
     int _HaruText(HPDF_Page & my_page,float font_size,int max_size, HPDF_Font my_font,std::string my_text,int start_x,int start_y);

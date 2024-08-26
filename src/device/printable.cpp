@@ -22,24 +22,18 @@ If not, see <https://www.gnu.org/licenses/>.
 */
 #include "printable.h"
 
-
 #ifdef HPDF_DLL
-void  __stdcall
+    void  __stdcall
 #else
-void
+    void
 #endif
-error_handler (HPDF_STATUS   error_no,
-               HPDF_STATUS   detail_no,
-               void         *user_data)
+error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
 {
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
+    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no, (HPDF_UINT)detail_no); 
     longjmp(env, 1);
 }
 
-void
-print_grid  (HPDF_Doc     pdf,
-             HPDF_Page    page)
+void print_grid(HPDF_Doc pdf, HPDF_Page page)
 {
     HPDF_REAL height = HPDF_Page_GetHeight (page);
     HPDF_REAL width = HPDF_Page_GetWidth (page);
@@ -52,10 +46,12 @@ print_grid  (HPDF_Doc     pdf,
 
     /* Draw horizontal lines */
     y = 0;
-    while (y < height) {
+    while (y < height) 
+    {
         if (y % 10 == 0)
             HPDF_Page_SetLineWidth (page, 0.5);
-        else {
+        else 
+        {
             if (HPDF_Page_GetLineWidth (page) != 0.25)
                 HPDF_Page_SetLineWidth (page, 0.25);
         }
@@ -64,7 +60,8 @@ print_grid  (HPDF_Doc     pdf,
         HPDF_Page_LineTo (page, width, y);
         HPDF_Page_Stroke (page);
 
-        if (y % 10 == 0 && y > 0) {
+        if (y % 10 == 0 && y > 0) 
+        {
             HPDF_Page_SetGrayStroke (page, 0.5);
 
             HPDF_Page_MoveTo (page, 0, y);
@@ -80,10 +77,12 @@ print_grid  (HPDF_Doc     pdf,
 
     /* Draw virtical lines */
     x = 0;
-    while (x < width) {
+    while (x < width) 
+    {
         if (x % 10 == 0)
             HPDF_Page_SetLineWidth (page, 0.5);
-        else {
+        else 
+        {
             if (HPDF_Page_GetLineWidth (page) != 0.25)
                 HPDF_Page_SetLineWidth (page, 0.25);
         }
@@ -92,7 +91,8 @@ print_grid  (HPDF_Doc     pdf,
         HPDF_Page_LineTo (page, x, height);
         HPDF_Page_Stroke (page);
 
-        if (x % 50 == 0 && x > 0) {
+        if (x % 50 == 0 && x > 0) 
+        {
             HPDF_Page_SetGrayStroke (page, 0.5);
 
             HPDF_Page_MoveTo (page, x, 0);
@@ -111,8 +111,10 @@ print_grid  (HPDF_Doc     pdf,
 
     /* Draw horizontal text */
     y = 0;
-    while (y < height) {
-        if (y % 10 == 0 && y > 0) {
+    while (y < height) 
+    {
+        if (y % 10 == 0 && y > 0) 
+        {
             char buf[12];
 
             HPDF_Page_BeginText (page);
@@ -133,7 +135,8 @@ print_grid  (HPDF_Doc     pdf,
     /* Draw virtical text */
     x = 0;
     while (x < width) {
-        if (x % 50 == 0 && x > 0) {
+        if (x % 50 == 0 && x > 0) 
+        {
             char buf[12];
 
             HPDF_Page_BeginText (page);
@@ -159,14 +162,12 @@ print_grid  (HPDF_Doc     pdf,
     HPDF_Page_SetGrayStroke (page, 0);
 }
 
-void
-show_stripe_pattern  (HPDF_Page   page,
-                      HPDF_REAL   x,
-                      HPDF_REAL   y)
+void show_stripe_pattern  (HPDF_Page page, HPDF_REAL x, HPDF_REAL y)
 {
     HPDF_UINT iy = 0;
 
-    while (iy < 50) {
+    while (iy < 50) 
+    {
         HPDF_Page_SetRGBStroke (page, 0.0, 0.0, 0.5);
         HPDF_Page_SetLineWidth (page, 1);
         HPDF_Page_MoveTo (page, x, y + iy);
@@ -181,10 +182,7 @@ show_stripe_pattern  (HPDF_Page   page,
 
 
 void
-show_description  (HPDF_Page          page,
-                   HPDF_REAL          x,
-                   HPDF_REAL          y,
-                   const char   *text)
+show_description  (HPDF_Page page, HPDF_REAL x, HPDF_REAL y, const char *text)
 {
     float fsize = HPDF_Page_GetCurrentFontSize (page);
     HPDF_Font font = HPDF_Page_GetCurrentFont (page);
@@ -200,45 +198,38 @@ show_description  (HPDF_Page          page,
     HPDF_Page_SetFontAndSize (page, font, fsize);
     HPDF_Page_SetRGBFill (page, c.r, c.g, c.b);
 }
-void
-draw_image (HPDF_Doc     pdf,
-            const char  *filename,
-            float        x,
-            float        y,
-            const char  *text,int png_jpeg)
-{
 
+void draw_image (HPDF_Doc pdf, const char *filename, float x, float y, const char  *text, int png_jpeg)
+{
     HPDF_Page page = HPDF_GetCurrentPage (pdf);
     HPDF_Image image;
 
     if(!png_jpeg)
-      image = HPDF_LoadPngImageFromFile (pdf, filename);
+        image = HPDF_LoadPngImageFromFile (pdf, filename);
     else
-      image = HPDF_LoadJpegImageFromFile (pdf, filename);     
+        image = HPDF_LoadJpegImageFromFile (pdf, filename);     
     //dimensiones 200x200 max
     float width = HPDF_Image_GetWidth (image);
     float heigth = HPDF_Image_GetHeight (image);
     if(heigth > width)
-      {
-	width = width*200.0/heigth;
-	heigth = 200.0;
-	if(width < 10.0)
-	  width = 10.0;
-      }
+    {
+	    width = width*200.0/heigth;
+	    heigth = 200.0;
+	    if(width < 10.0)
+	        width = 10.0;
+    }
     else if(heigth < width)
-      {
-	heigth = heigth*200.0/width;
-	width = 200.0;
-	if(heigth < 10.0)
-	  heigth = 10.0;
-      }
+    {
+	    heigth = heigth*200.0/width;
+	    width = 200.0;
+	    if(heigth < 10.0)
+	        heigth = 10.0;
+    }
     else
-      {
-	heigth=width=200.0;
-      }
-    
+    {
+	    heigth=width=200.0;
+    }
     /* Draw image to the canvas. */
-  
     HPDF_Page_DrawImage (page, image, x, y, (int) width,(int)heigth);
 
     /* Print the text. */
@@ -254,11 +245,14 @@ printable::printable() {
     return;
 }
 
-int printable::saveFile() 
+int printable::saveFile(std::string altPath)
 {
+    std::string _fileName = fileName;
+    if (!altPath.empty())
+        _fileName = altPath;
     // saving the document to a file
-    std::cout << "INFO: saving to file (v2): " << fileName << std::endl;
-    hpdfStatus = HPDF_SaveToFile (hpdfDoc, fileName.c_str());
+    std::cout << "INFO: saving to file (v2): " << _fileName << std::endl;
+    hpdfStatus = HPDF_SaveToFile (hpdfDoc, _fileName.c_str());
     if (hpdfStatus != HPDF_OK) {
         return -1;
     }
@@ -266,7 +260,7 @@ int printable::saveFile()
     max_iterations = 15000;
     iterations = 0;
     struct stat buffer;   
-    while(stat (fileName.c_str(), &buffer) && iterations<max_iterations)
+    while(stat (_fileName.c_str(), &buffer) && iterations<max_iterations)
     {
         iterations++;
     }

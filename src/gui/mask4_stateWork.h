@@ -697,7 +697,7 @@ static int stateWork(PARAM *p, DATA *d)
                     // backing up files
                     try
                     {
-                        formEntrada->backupFiles(formEntrada->getMovCode(localDatabase, myStation, formEntrada->retDepMovType()));
+                        formEntrada->backupFiles(formEntrada->getLastMovCode(localDatabase, myStation), formEntrada->isEntrance());
                     }
                     catch(...)
                     {
