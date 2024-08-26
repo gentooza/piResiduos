@@ -544,7 +544,8 @@ void baseForm::backupFiles(std::string movFolder)
     command = "rm -R \"";
     command += depFolder + "\" &";
     ret = system(command.c_str());
-
+    std::cout << "backing up files to server? is retDepMovtype != DEF_MOV_TRANSFER?" << retDepMovType() << "!=" << DEF_MOV_TRANSFER << std::endl;
+    std::cout << "OR It's an entrance? " << formLlegada << std::endl;
     if((retDepMovType() != DEF_MOV_TRANSFER) || formLlegada)
     {
         //remote copying
