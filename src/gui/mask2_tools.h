@@ -339,11 +339,11 @@ static void globalSyncronization(PARAM *p, DATA* d)
             if(error)
                 console.push_back("¡Error al sincronizar la tabla de transportistas!");
             wasError = wasError + error;
-            error = syncMovements(p,myStation->getCode());
+            error = syncMovements(p, myStation->getCode());
             if(error)
                 console.push_back("¡Error al sincronizar la tabla de movimientos!");
             wasError = wasError + error;
-            error = syncTransitDep(p,myStation->getCode());
+            error = syncTransitDep(p, myStation->getCode());
             if(error)
                 console.push_back("¡Error al sincronizar la tabla de transito de cargas de material!");
             wasError = wasError + error;
@@ -351,9 +351,13 @@ static void globalSyncronization(PARAM *p, DATA* d)
             if(error)
                 console.push_back("¡Error al sincronizar la tabla de centros!");
             wasError = wasError + error;
-            error = syncTransfers(p,myStation->getCode());
+            error = syncTransfers(p, myStation->getCode());
             if(error)
                 console.push_back("¡Error al sincronizar la tabla de transferencias!");
+            wasError = wasError + error;
+            error = syncStationDIs(p, myStation->getCode());
+            if(error)
+                console.push_back("¡Error al sincronizar la tabla de DIs de estación!");
             wasError = wasError + error;
         }
         else

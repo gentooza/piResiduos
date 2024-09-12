@@ -752,15 +752,21 @@ static void globalSyncronization(PARAM *p, DATA* d, baseForm *& myForm)
         if(error == -1)
             reconnectSSH(NULL);
         wasError = wasError + error;
-        error = syncTransit(p,myStation->getCode());
+        error = syncTransit(p, myStation->getCode());
         if(error)
             console.push_back("¡Error al sincronizar la tabla de transito en descargas de material!");
         if(error == -1)
             reconnectSSH(NULL);
         wasError = wasError + error;
-        error = syncTransfers(p,myStation->getCode());
+        error = syncTransfers(p, myStation->getCode());
         if(error)
             console.push_back("¡Error al sincronizar la tabla de transferencias!");
+        if(error == -1)
+            reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncStationDIs(p, myStation->getCode());
+        if(error)
+            console.push_back("¡Error al sincronizar la tabla de DIs de estación!");
         if(error == -1)
             reconnectSSH(NULL);
         wasError = wasError + error;

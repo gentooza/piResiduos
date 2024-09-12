@@ -663,129 +663,133 @@ static void refreshSemaphores(PARAM *p,DATA *d)
 
 static void globalSyncronization(PARAM *p, DATA* d, baseForm *& myForm)
 {
-  //block gui
-  pvSetMovie(p,LOADINGFORM,1,myResources.RES_LOADING.c_str());
-  pvMovieControl(p,LOADINGFORM,-2); // restart
-  pvShow(p,LOADINGFORM);       
-  /**CONTROL PANEL**/
-  toolsSetControl(p,d,CTRL_NONE);
-  /**desactive all**/
-  toolsDeactivateGUI(p,d,2,myForm);
-  /**COMMON**/
-  toolsSetNAV(p,d,0);
-  toolsSetArrDep(p,d,0);
-  /**special**/
-  pvSetEnabled(p,BUTSINCRONIZA,0);
-  pvSetEnabled(p,TABLATRANSITO,0);
-  //syncronize
-  console.push_back("(INFO) sincronizando con la base de datos central...");
+    //block gui
+    pvSetMovie(p,LOADINGFORM,1,myResources.RES_LOADING.c_str());
+    pvMovieControl(p,LOADINGFORM,-2); // restart
+    pvShow(p,LOADINGFORM);       
+    /**CONTROL PANEL**/
+    toolsSetControl(p,d,CTRL_NONE);
+    /**desactive all**/
+    toolsDeactivateGUI(p,d,2,myForm);
+    /**COMMON**/
+    toolsSetNAV(p,d,0);
+    toolsSetArrDep(p,d,0);
+    /**special**/
+    pvSetEnabled(p,BUTSINCRONIZA,0);
+    pvSetEnabled(p,TABLATRANSITO,0);
+    //syncronize
+    console.push_back("(INFO) sincronizando con la base de datos central...");
 
-  int DatabaseData_chkd;
-  try
+    int DatabaseData_chkd;
+    try
     {
-      DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
+        DatabaseData_chkd = std::stoi(remoteDatabaseData.db_port);
     }
-  catch(...)
+    catch(...)
     {
-      DatabaseData_chkd = 0;
+        DatabaseData_chkd = 0;
     }
-
-  if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
+    if(isConnected(remoteDatabaseData.db_host.c_str(), DatabaseData_chkd))
     {
-      //syncReconnectIfNeeded();
-      reconnectSSH(NULL);
-      int wasError=0;
-      int error = syncCostumers(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de clientes!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncProducts(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de productos!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncCostumersProducts(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de clientes-productos!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncCars(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de vehiculos!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncOrders(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de ordenes!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncDrivers(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de transportistas!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncMovements(p,myStation->getCode());
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de movimientos!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncTransitDep(p,myStation->getCode());
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de transito de cargas de material!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncStations(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de centros!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncTransfers(p,myStation->getCode());
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de centros!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncBilling(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de entidades de facturación!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;
-      error = syncStaff(p);
-      if(error)
-	console.push_back("¡Error al sincronizar la tabla de basculistas!");
-      if(error == -1)
-	reconnectSSH(NULL);
-      wasError = wasError + error;   
-	  	      
-      if(wasError)
-	console.push_back("*ERROR* ¡Hubo errores al conectarse y/o procesar tablas!");
-      else
-	console.push_back("(INFO) ¡Sincronización completada!");
+        //syncReconnectIfNeeded();
+        reconnectSSH(NULL);
+        int wasError=0;
+        int error = syncCostumers(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de clientes!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncProducts(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de productos!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncCostumersProducts(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de clientes-productos!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncCars(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de vehiculos!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncOrders(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de ordenes!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncDrivers(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de transportistas!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncMovements(p,myStation->getCode());
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de movimientos!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncTransitDep(p,myStation->getCode());
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de transito de cargas de material!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncStationDIs(p, myStation->getCode());
+        if(error)
+            console.push_back("¡Error al sincronizar la tabla de DIs de estación!");
+        if(error == -1)
+            reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncStations(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de centros!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncTransfers(p,myStation->getCode());
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de centros!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncBilling(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de entidades de facturación!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;
+        error = syncStaff(p);
+        if(error)
+	        console.push_back("¡Error al sincronizar la tabla de basculistas!");
+        if(error == -1)
+	        reconnectSSH(NULL);
+        wasError = wasError + error;         
+        if(wasError)
+	        console.push_back("*ERROR* ¡Hubo errores al conectarse y/o procesar tablas!");
+        else
+	        console.push_back("(INFO) ¡Sincronización completada!");
     }
-  else
+    else
     {
-      log_message("(SINCRO) fallo en ping al servidor remoto", 2);   
-      console.push_back("*ERROR* ¡No podemos conectar con la base de datos central!");
-      reconnectSSH(NULL);
+        log_message("(SINCRO) fallo en ping al servidor remoto", 2);   
+        console.push_back("*ERROR* ¡No podemos conectar con la base de datos central!");
+        reconnectSSH(NULL);
     }
-  //recover gui
-  /**special**/
-  pvSetEnabled(p,BUTSINCRONIZA,1);
-  pvSetEnabled(p,TABLATRANSITO,1);
-  pvHide(p,LOADINGFORM);
-  /**/
-  return;
+    //recover gui
+    /**special**/
+    pvSetEnabled(p,BUTSINCRONIZA,1);
+    pvSetEnabled(p,TABLATRANSITO,1);
+    pvHide(p,LOADINGFORM);
+    /**/
+    return;
 }
 
 /*
