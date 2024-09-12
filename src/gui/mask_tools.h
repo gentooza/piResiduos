@@ -793,6 +793,47 @@ static int syncStations(PARAM *p)
   	return ret;
 }
 
+//! function for syncing station DIs from central Database, 
+// for transfer movements
+static int syncStationDIs(PARAM *p, long stationId)
+{
+	int ret = 0;
+	std::string sql;
+  	std::string str_log_message;
+  	str_log_message = "(SINCRO)(remote CENTROS_DI) syncing stationDIs table... ";
+    log_message(str_log_message, 1);
+  	if(remoteDatabase.isOpen())
+	{
+    	std::vector <std::vector <std::string>> dataReturn;
+    	rmtSelAllStationDIs(sql, stationId);
+    	str_log_message = "(SINCRO)(remote CENTROS_DI) BD remota -> ";
+    	str_log_message += sql;
+    	log_message(str_log_message, 1);
+    	if(!remoteDatabase.query(p, sql.c_str()))
+		{
+	  		localDatabase.query(p, "delete from STATION_CI");
+	  		log_message("(SINCRO)(local STATION_DI) BD local -> delete from STATION_DI", 1);
+	  		dataReturn = remoteDatabase.retData2();
+	  		loadStationDIs(sql, dataReturn);
+	  		str_log_message = "(SINCRO)(local STATION_DI) BD local -> ";
+	  		str_log_message += sql;
+	  		log_message(str_log_message, 1);
+	  		localDatabase.query(p, sql.c_str());
+		}
+      	else
+		{
+	  		log_message("(SINCRO)(remote CENTROS_DI) Error BD remota (query)", 2);
+	  		ret = -2;
+		}
+    }
+  	else
+    {
+    	log_message("(SINCRO)(remote CENTROS_DI) Error BD remota (conexión)", 2);
+      	ret = -1;
+    }
+  	return ret;
+}
+
 
 /*! function for automatic formatting title based in our station data*/
 static std::string getTitle()

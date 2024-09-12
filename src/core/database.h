@@ -54,6 +54,11 @@ void rmtSelAllCenters(std::string& sql);
 
 void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
+//TABLE STATION_DI and remote CENTROS_DI
+void rmtSelAllStationDIs(std::string& sql, long stationId);
+
+void loadStationDIs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
+
 //TABLE ORDERS
 void selAllFromOrders(std::string& sql, long station_code);
 void delOrder(std::string& sltQuery, std::string& myQuery,long destiny,long costumer_code, long product);

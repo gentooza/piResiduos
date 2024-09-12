@@ -88,6 +88,31 @@ void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataRet
     return;
 }
 
+//TABLE STATION_DI and remote CENTROS_DI
+void rmtSelAllStationDIs(std::string& sql, long stationId)
+{
+    sql = "select MES, ANYO, DI FROM centros_di ";
+    sql += "WHERE CODIGOCENTRO_DI = " + std::to_string(stationId);
+    return;
+}
+
+void loadStationDIs(std::string& sql, std::vector<std::vector<std::string>> dataReturn)
+{
+    std::vector<std::vector<std::string>>::iterator myRow;
+    long unsigned int row = 0;
+    sql = "insert into STATION_DI (MONTH, YEAR, DI) values ";
+    for(myRow = dataReturn.begin(); myRow != dataReturn.end(); ++myRow)
+    {
+        sql +="(\"";
+        sql += vectorToString(*myRow,"\",\"");
+        sql +="\")";
+        if(row < dataReturn.size()-1)
+      	    sql += ",";
+        row++;
+    }
+    return;
+}
+
 //table orders
 void selAllFromOrders(std::string& sql, long station_code)
 {
