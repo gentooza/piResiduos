@@ -56,6 +56,11 @@ baseForm::baseForm(int type, int entrance)
     //departure movement index in matrix
     depMovIndex = -1;
 
+    // weights
+    tareWeight = 0;
+    grossWeight = 0;
+    netWeight = 0;
+
     return;
 }
 baseForm::baseForm()
@@ -73,6 +78,10 @@ baseForm::baseForm()
     staff_in_charge = new staff();
     depDriver = NULL;
     depAuthCostumer = NULL;
+    // weights
+    tareWeight = 0;
+    grossWeight = 0;
+    netWeight = 0;
     return;
 }
 baseForm::~baseForm()
@@ -142,7 +151,10 @@ void baseForm::copyFrom(baseForm * toCopy)
         std::cout << "TODO: memory error in redDepAuthCostumer" << std::endl;
         depAuthCostumer = new costumer();
     }
-
+    // weights
+    tareWeight = toCopy->retTareWeight();
+    grossWeight = toCopy->retGrossWeight();
+    netWeight = toCopy->retNetWeight();
     return;
 }
 
@@ -174,6 +186,10 @@ void baseForm::resetForm(int departure)
         resetDepDriver();
         resetStaff();
     }
+    // weights
+    tareWeight = 0;
+    grossWeight = 0;
+    netWeight = 0;
     return;
 }
 
