@@ -85,8 +85,11 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(510): //DI creation and folder saving
             {
                 //operator comment
-                refreshOperatorComment(p,d,formSalida,EDITCOMMENTENT); 
-                pvSetText(p, EDITDIPROV, formSalida->createDINumber(localDatabase, 1).c_str());
+                refreshOperatorComment(p,d,formSalida,EDITCOMMENTENT);
+                std::string myDI = formSalida->createDINumber(localDatabase, 1).c_str();
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
+                pvSetText(p, EDITDIPROV, myDI.c_str());
                 if(!formSalida->isIncArrPlateEdited())
                     formSalida->savePlateImage(3,"entrada");
                 break;
@@ -214,7 +217,10 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 //operator comment
                 refreshOperatorComment(p, d, formSalida,EDITCOMMENTSAL);
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());    
+                std::string myDI = formSalida->createDINumber(localDatabase, 0).c_str();
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
+                pvSetText(p, EDITDIDEF, myDI.c_str());    
                 if(!formSalida->isIncDepPlateEdited())	    
                     formSalida->savePlateImage(4,"salida");
                 std::string pesoSalida = std::to_string(formSalida->retDepScaleOut());
@@ -273,7 +279,10 @@ static int stateWork(PARAM *p, DATA *d)
                 delete ourId;
                 formSalida->setAllDiData(localDatabase, myStation, DEF_BIORECICLAJE_CODE, DEF_TRANS_CODE);
                 // upgrading DI code after data edition
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());
+                std::string myDI = formSalida->createDINumber(localDatabase, 0).c_str();
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
+                pvSetText(p, EDITDIDEF, myDI.c_str());
                 break;
             }
 	        case(1126):
@@ -413,8 +422,11 @@ static int stateWork(PARAM *p, DATA *d)
 	        case(1221):
             {
                 //operator comment
-                refreshOperatorComment(p, d, formSalida, EDITCOMMENTSAL);	    
-                pvSetText(p, EDITDIDEF, formSalida->createDINumber(localDatabase, 0).c_str());
+                refreshOperatorComment(p, d, formSalida, EDITCOMMENTSAL);	
+                std::string myDI = formSalida->createDINumber(localDatabase, 0);
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
+                pvSetText(p, EDITDIDEF, myDI.c_str());
                 //Create fake signature for transportist not present	    
                 formSalida->saveSignature("image/void.png");
                 //default driver

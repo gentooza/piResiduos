@@ -137,7 +137,8 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
                 std::string myDI = formEntrada->createDINumber(localDatabase, 1);
-                //if(!formEntrada->isIncArrPlateEdited()) //chequeo de imagen
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
                 formEntrada->savePlateImage(1,"entrada");
                 pvSetText(p,EDITDIPROV,myDI.c_str());
                 break;
@@ -280,7 +281,9 @@ static int stateWork(PARAM *p, DATA *d)
             {
                 refreshOperatorComment(p,d,formEntrada,EDITCOMMENTENT);
                 //
-                std::string myDI = formEntrada->createDINumber(localDatabase, 1);            
+                std::string myDI = formEntrada->createDINumber(localDatabase, 1);
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
                 formEntrada->savePlateImage(1,"entrada");
                 pvSetText(p,EDITDIPROV,myDI.c_str());
                 break;
@@ -388,7 +391,8 @@ static int stateWork(PARAM *p, DATA *d)
                 pvSetText(p,EDITPRODUCTOS,productText.c_str());
                 //DI and folder
                 std::string myDI = formEntrada->createDINumber(localDatabase, 1);
-                //if(!formEntrada->isIncArrPlateEdited())//chequeo de imagen
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
                 formEntrada->savePlateImage(1,"entrada");
                 pvSetText(p,EDITDIPROV,myDI.c_str());
                 break;
@@ -433,8 +437,10 @@ static int stateWork(PARAM *p, DATA *d)
                     formEntrada->incDepPlateEdited(0);
                 }
                 //load DI
-                std::string di = formEntrada->createDINumber(localDatabase, 0);
-                pvSetText(p, EDITDIDEF, di.c_str());
+                std::string myDI = formEntrada->createDINumber(localDatabase, 0);
+                if(myDI.empty())
+                    console.push_back("ERROR* Número de DI vacío, quizá se necesite sincronización");
+                pvSetText(p, EDITDIDEF, myDI.c_str());
                 //if(!formEntrada->isIncDepPlateEdited())//chequeo de imagen
                 formEntrada->savePlateImage(2,"salida");
                 std::string pesoSalida = std::to_string(formEntrada->retDepScaleOut());
