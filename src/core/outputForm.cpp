@@ -1012,6 +1012,10 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
                     log_message("(LOADING)(DI number creation) Query ERROR", 2);
                     DI.clear();
                 }
+                if(arrive)
+                    myArrMovement.DI = DI;
+                else
+                    myDepMovement.DI = DI;
                 std::cout << "(DI GENERATION): TRANSFER MOVEMENT AND NPT! CASE: 4, DI GENERATED = " << DI << std::endl;
             }
             else
