@@ -55,6 +55,7 @@ void rmtSelAllCenters(std::string& sql);
 void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataReturn);
 
 //TABLE STATION_DI and remote CENTROS_DI
+void selStationDI(std::string& sql, int actualMonth, int actualYear);
 void rmtSelAllStationDIs(std::string& sql, long stationId);
 
 void loadStationDIs(std::string& sql, std::vector<std::vector<std::string>> dataReturn);

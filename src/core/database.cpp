@@ -89,6 +89,13 @@ void loadCenters(std::string& sql, std::vector<std::vector<std::string>> dataRet
 }
 
 //TABLE STATION_DI and remote CENTROS_DI
+void selStationDI(std::string& sql, int actualMonth, int actualYear)
+{
+    sql = "select DI FROM STATION_DI ";
+    sql += "WHERE MONTH = " + std::to_string(actualMonth);
+    sql += " AND YEAR = " + std::to_string(actualYear);
+    return;
+}
 void rmtSelAllStationDIs(std::string& sql, long stationId)
 {
     sql = "select MES, ANYO, DI FROM centros_di ";

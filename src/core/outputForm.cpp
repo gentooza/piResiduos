@@ -910,7 +910,7 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
             NP = myArrMovement.PERMISOS_PRODUCTO.FLAG_NPT;
         else
             NP = myDepMovement.PERMISOS_PRODUCTO.FLAG_NPT;
-        if(!NP || movType == DEF_MOV_TRANSFER)
+        if(!NP)
         {
             std::time_t t = std::time(nullptr);
             std::tm *const pTInfo = std::localtime(&t);
@@ -976,22 +976,52 @@ std::string outputForm::createDINumber(qtDatabase & localDatabase, int arrive)
                     log_message("(LOADING)(DI number creation) Query ERROR", 2);
             } 
             DI += zeroPadNumber(correlNumber, 7);
-            if(NP && movType == DEF_MOV_TRANSFER)
-            {
-                DI = "DCS01" + DI;
-            }
             if(!arrive)
                 myDepMovement.DI = DI;
 
-            std::cout << "(DI GENERATION): OPERATOR IS US, NO NPT CASE: 2 (OR TRANSFER MOVEMENT!), DI GENERATED = " << DI << std::endl;
+            std::cout << "(DI GENERATION): OPERATOR IS US, NO NPT CASE: 2 (OR TRANSFER MOVEMENT WITH NO NPT!), DI GENERATED = " << DI << std::endl;
         }
         else
         {
-            if (arrive)
-                DI = myArrMovement.DI;
+            if(movType == DEF_MOV_TRANSFER)
+            {
+                std::string sql;
+                std::time_t t = std::time(nullptr);
+                std::tm *const pTInfo = std::localtime(&t);
+                int actualYear = 1900 + pTInfo->tm_year;
+                int actualMonth = 1 + pTInfo->tm_mon;
+                selStationDI(sql, actualMonth, actualYear);
+                log_message("(LOADING)(DI number creation) BD local -> " + sql, 1);
+                if(!localDatabase.query(NULL, sql.c_str()))
+                {
+                    std::vector <std::vector <std::string>> dataReturn = localDatabase.retData2();
+                    if(dataReturn.size())
+                    {
+                        DI = dataReturn[0].at(0);
+                    }
+                    else
+                    {
+                        // NEED SYNCING!
+                        std::cout << " NO DATA RETURNED " << std::endl;
+                        log_message("(LOADING)(DI number creation)(no data returned NEED SYNCING) BD local -> " + sql, 1);                    
+                        DI.clear();
+                    }
+                }
+                else
+                {
+                    log_message("(LOADING)(DI number creation) Query ERROR", 2);
+                    DI.clear();
+                }
+                std::cout << "(DI GENERATION): TRANSFER MOVEMENT AND NPT! CASE: 4, DI GENERATED = " << DI << std::endl;
+            }
             else
-                DI = myDepMovement.DI;
-            std::cout << "(DI GENERATION): OPERATOR IS US, AND NPT! CASE: 3, DI GENERATED = " << DI << std::endl;
+            {
+                if (arrive)
+                    DI = myArrMovement.DI;
+                else
+                    DI = myDepMovement.DI;
+                std::cout << "(DI GENERATION): OPERATOR IS US, AND NPT! CASE: 3, DI GENERATED = " << DI << std::endl;
+            }
         }
     }
     createDIFolder(DI, arrive);
