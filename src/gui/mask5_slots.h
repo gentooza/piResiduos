@@ -299,107 +299,104 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 
 static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
 {
-  if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
-  else if(id == BUTEDITCAM1)
+    if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
+    else if(id == BUTEDITCAM1)
     {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	  boost::to_upper(receivedText);
-	  formSalida->setArrPlate(receivedText);
-	  formSalida->incArrPlateEdited(1);
-	  pvSetText(p,EDITCAM,receivedText.c_str());
-	}
-    }
-  else if(id == BUTEDITPESOENT)
-    {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	int peso;
-	 try
+        if(strcmp(text,""))
 	    {
-	      peso = std::stoi(receivedText);
+	        std::string receivedText = text;
+	        boost::to_upper(receivedText);
+	        formSalida->setArrPlate(receivedText);
+	        formSalida->incArrPlateEdited(1);
+	        pvSetText(p,EDITCAM,receivedText.c_str());
 	    }
-	  catch(...)
-	    {
-	      peso = 0;
-	    }
-	  formSalida->setArrScaleIn(peso);
-	  formSalida->incArrScaleEdited(1);
-	  pvSetText(p,EDITPESOENT,receivedText.c_str());
-	}
     }
-  else if(id == BUTEDITCAM2)
+    else if(id == BUTEDITPESOENT)
     {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	  boost::to_upper(receivedText);
-	  formSalida->setDepPlate(receivedText);
-	  if(formSalida->retDepMovType() != DEF_MOV_TRANSFER)
-	    formSalida->incDepPlateEdited(1);
-	  else
-	    formSalida->incDepPlateEdited(0);
-	  pvSetText(p,EDITCAM_E2,receivedText.c_str());
-	  d->camionElegido = -1;
-	}
-    }
-  else if(id == BUTEDITPESOSAL)
-    {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	  int peso;
-	  try
+        if(strcmp(text,""))
 	    {
-	      peso = std::stoi(receivedText);
+	        std::string receivedText = text;
+	        int peso;
+	        try
+	        {
+	            peso = std::stoi(receivedText);
+	        }
+	        catch(...)
+	        {
+	            peso = 0;
+	        }
+	        formSalida->setArrScaleIn(peso);
+	        formSalida->incArrScaleEdited(1);
+	        pvSetText(p,EDITPESOENT,receivedText.c_str());
 	    }
-	  catch(...)
-	    {
-	      peso = 0;
-	    }
-	  formSalida->setDepScaleOut(peso);
-	  formSalida->incDepScaleEdited(1);
-	  pvSetText(p,EDITPESOSAL,receivedText.c_str());
-	  setPesoSal(p,d, WEIGTH_ANALYSIS, formSalida);
-	  //experimental
-	  //always we edit weigth we have to analys it again, state 1020
-	  d->enFutEstado=1120;
-	}
-	
     }
-  else if(id == TABLATRANSITO)
+    else if(id == BUTEDITCAM2)
     {
-      //	std::cout << "txt pressend on " << text << std::endl;
-      std::string new_selection = text;
-      new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), '\n'), new_selection.end());
-      new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), ' '), new_selection.end());
-      std::cout << "PREVIO pre: " << d->pre_transito_plate << " ,post: " << d->post_transito_plate << " ,final: " << d->transito_plate << std::endl;
-      if(!d->pre_transito_plate.compare(new_selection)) //double check, caused by double effect when button released
-	{
-	  if(!d->post_transito_plate.compare(new_selection))
-	    d->transito_plate = new_selection;
-	  else
-	    d->post_transito_plate = new_selection;
-	}
+        if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        boost::to_upper(receivedText);
+	        formSalida->setDepPlate(receivedText);
+	        if(formSalida->retDepMovType() != DEF_MOV_TRANSFER)
+	            formSalida->incDepPlateEdited(1);
+	        else
+	            formSalida->incDepPlateEdited(0);
+	        pvSetText(p,EDITCAM_E2,receivedText.c_str());
+	        d->camionElegido = -1;
+	    }
     }
-  else if(id == BUTPROCEDER_E1)
-      {
-	std::string temp = text;
-	long code = -1;
-	try
-	  {
-	    code = std::stol(temp);
-	  }
-	catch(...)
-	  {	    
-	    code = -1;
-	  }
-	formSalida->setStaff(code, localDatabase);
-      }
-
-  return 0;
+    else if(id == BUTEDITPESOSAL)
+    {
+        if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        int peso;
+	        try
+	        {
+	            peso = std::stoi(receivedText);
+	        }
+	        catch(...)
+	        {
+	            peso = 0;
+	        }
+	        formSalida->setDepScaleOut(peso);
+	        formSalida->incDepScaleEdited(1);
+	        pvSetText(p,EDITPESOSAL,receivedText.c_str());
+	        setPesoSal(p,d, WEIGTH_ANALYSIS, formSalida);
+	        formSalida->saveScaleOut(localDatabase, remoteDatabase);
+	        d->enFutEstado=1120;
+	    }
+    }
+    else if(id == TABLATRANSITO)
+    {
+        //	std::cout << "txt pressend on " << text << std::endl;
+        std::string new_selection = text;
+        new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), '\n'), new_selection.end());
+        new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), ' '), new_selection.end());
+        std::cout << "PREVIO pre: " << d->pre_transito_plate << " ,post: " << d->post_transito_plate << " ,final: " << d->transito_plate << std::endl;
+        if(!d->pre_transito_plate.compare(new_selection)) //double check, caused by double effect when button released
+	    {
+	        if(!d->post_transito_plate.compare(new_selection))
+	            d->transito_plate = new_selection;
+	        else
+	            d->post_transito_plate = new_selection;
+	    }
+    }
+    else if(id == BUTPROCEDER_E1)
+    {
+	    std::string temp = text;
+	    long code = -1;
+	    try
+	    {
+	        code = std::stol(temp);
+	    }
+	    catch(...)
+	    {	    
+	        code = -1;
+	    }
+	    formSalida->setStaff(code, localDatabase);
+    }
+    return 0;
 }
 
 static int slotSliderEvent(PARAM *p, int id, DATA *d, int val)
