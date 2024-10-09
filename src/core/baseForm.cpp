@@ -321,7 +321,7 @@ std::string baseForm::storeMov(std::string & sqliteQuery, std::string & mysqlQue
     values += ",";
     values += std::to_string(retTareWeight());
     values += ",";
-    values += std::to_string(retDepScaleOut());
+    values += std::to_string(retGrossWeight());
     values += ",";
     values += std::to_string(retDepPrice());
     values += ",\"";
