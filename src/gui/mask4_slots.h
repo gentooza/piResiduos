@@ -281,150 +281,143 @@ static int slotButtonReleasedEvent(PARAM *p, int id, DATA *d)
 
 static int slotTextEvent(PARAM *p, int id, DATA *d, const char *text)
 {
-  if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
-  if(id == COMBOCLIENTES)
+    if(p == NULL || id == 0 || d == NULL || text == NULL) return -1;
+    if(id == COMBOCLIENTES)
     {
-      if(strcmp(text,"ELIJA") && strcmp(text,d->formEnCliente.c_str())) //elegimos uno
-	{
-	  d->comboCliente = text;
-	  pvToolTip(p,id,d->comboCliente.c_str());
-	}
-      else
-	{
-	  d->comboCliente.clear();
-	  pvToolTip(p,id,"ELIJA");
-	}
+        if(strcmp(text,"ELIJA") && strcmp(text,d->formEnCliente.c_str())) //elegimos uno
+	    {
+	        d->comboCliente = text;
+	        pvToolTip(p,id,d->comboCliente.c_str());
+	    }
+        else
+	    {
+	        d->comboCliente.clear();
+	        pvToolTip(p,id,"ELIJA");
+	    }
     }
-  else if(id == COMBOPRODUCTOS)
+    else if(id == COMBOPRODUCTOS)
     {
-      if(!strcmp(text,"ELIJA")) //deselegimos
-	{
-	  d->comboProducto.clear();
-	}
-      else if(!strcmp(text,"MOSTRAR TODOS"))
-	{
-	  d->comboProducto = text;
-	  pvToolTip(p,id,"ELIJA");
-	}
-      else //hemos definitivamente elegido uno
-	{
-	  d->comboProducto = text;
-	}
+        if(!strcmp(text,"ELIJA")) //deselegimos
+	    {
+	        d->comboProducto.clear();
+	    }
+        else if(!strcmp(text,"MOSTRAR TODOS"))
+	    {
+	        d->comboProducto = text;
+	        pvToolTip(p,id,"ELIJA");
+	    }
+        else //hemos definitivamente elegido uno
+	    {
+	        d->comboProducto = text;
+	    }
     }  
-  else if(id == COMBOLERS)
+    else if(id == COMBOLERS)
     {
-      if(!strcmp(text,"ELIJA")) //des elegimos
-	{
-	  d->comboProducto2.clear();
-	}
-      else //hemos definitivamente elegido uno
-	{
-	  d->comboProducto2 = text;
-	}
+        if(!strcmp(text,"ELIJA")) //des elegimos
+	        d->comboProducto2.clear();
+        else //hemos definitivamente elegido uno
+	        d->comboProducto2 = text;
     }
-  else if(id == EDITCLIENTES)
+    else if(id == EDITCLIENTES)
     {
-      std::string receivedText = text;
-      d->tmpClient = text;
+        std::string receivedText = text;
+        d->tmpClient = text;
     }
-  else if(id == BUTEDITCAM)
+    else if(id == BUTEDITCAM)
     {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	  boost::to_upper(receivedText);
-	  formEntrada->setArrPlate(receivedText);
-	  formEntrada-> incArrPlateEdited(1);
-	  pvSetText(p,EDITCAM,receivedText.c_str());
-	  d->enFutEstado=0;
-	}
+        if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        boost::to_upper(receivedText);
+	        formEntrada->setArrPlate(receivedText);
+	        formEntrada-> incArrPlateEdited(1);
+	        pvSetText(p,EDITCAM,receivedText.c_str());
+	        d->enFutEstado=0;
+	    }
     }
     else if(id == BUTEDITPESOENT)
-      {
-	if(strcmp(text,""))
-	  {
-	    std::string receivedText = text;
-	    long peso = 0;
-	    try
-	      {
-		peso = std::stol(receivedText);
-	      }
-	    catch(...)
-	      {
-		std::cout << "*ERROR*: stol falló, mask4_slots.h, en slotTextEvent, intentado transformar:" << receivedText << std::endl;
-	      }
-	    formEntrada->setArrScaleIn(peso);
-	    formEntrada->incArrScaleEdited(1);
-	    pvSetText(p,EDITPESOENT,receivedText.c_str());
+    {
+	    if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        long peso = 0;
+	        try
+	        {
+		        peso = std::stol(receivedText);
+	        }
+	        catch(...)
+	        {
+		        std::cout << "*ERROR*: stol falló, mask4_slots.h, en slotTextEvent, intentado transformar:" << receivedText << std::endl;
+	        }
+	        formEntrada->setArrScaleIn(peso);
+	        formEntrada->incArrScaleEdited(1);
+	        pvSetText(p, EDITPESOENT, receivedText.c_str());
 	  }
-      }
+    }
     else if(id == BUTEDITCAM2)
     {
-      if(strcmp(text,""))
-	{
-	  std::string receivedText = text;
-	  boost::to_upper(receivedText);
-	  formEntrada->setDepPlate(receivedText);
-	  formEntrada->incDepPlateEdited(1);
-	  pvSetText(p,EDITCAM_E2,receivedText.c_str());
-	  d->camionElegido = -1;
-	}
+        if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        boost::to_upper(receivedText);
+	        formEntrada->setDepPlate(receivedText);
+	        formEntrada->incDepPlateEdited(1);
+	        pvSetText(p,EDITCAM_E2,receivedText.c_str());
+	        d->camionElegido = -1;
+	    }
     }
     else if(id == BUTEDITPESOSAL)
-      {
-	if(strcmp(text,""))
-	  {
-	    std::string receivedText = text;
-	    long peso = 0;
-	    try
-	      {
-		peso = std::stol(receivedText);
-	      }
-	    catch(...)
-	      {
-		std::cout << "*ERROR*: stol falló, mask4_slots.h, en slotTextEvent, intentado transformar:" << receivedText << std::endl;
-	      }
-	    formEntrada->setDepScaleOut(peso);
-	    formEntrada->incDepScaleEdited(1);
-	    pvSetText(p,EDITPESOTARA,receivedText.c_str());
-	    setPesoSal(p,d, WEIGTH_ANALYSIS, formEntrada);
-	    //experimental
-	    //always we edit weigth we have to analys it again, state 1020
-	    d->enFutEstado=1020;
-	  }
-	
-      }
-    else if(id == BUTPROCEDER_E1)
-      {
-	std::string temp = text;
-	long code = -1;
-	try
-	  {
-	    code = std::stol(temp);
-	  }
-	catch(...)
-	  {	    
-	    code = -1;
-	  }
-	formEntrada->setStaff(code, localDatabase);
-      }
-    else if(id == TABLATRANSITO)
-      {
-	//	std::cout << "txt pressend on " << text << std::endl;
-	std::string new_selection = text;
-	new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), '\n'), new_selection.end());
-	new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), ' '), new_selection.end());
-	std::cout << "PREVIO pre: " << d->pre_transito_plate << " ,post: " << d->post_transito_plate << " ,final: " << d->transito_plate << std::endl;
-	if(!d->pre_transito_plate.compare(new_selection)) //double check, caused by double effect when button released
-	  {
-	    if(!d->post_transito_plate.compare(new_selection))
-	      d->transito_plate = new_selection;
-	    else
-	      d->post_transito_plate = new_selection;
-	  }
+    {
+	    if(strcmp(text,""))
+	    {
+	        std::string receivedText = text;
+	        long peso = 0;
+	        try
+	        {
+		        peso = std::stol(receivedText);
+	        }
+	        catch(...)
+	        {
+		        std::cout << "*ERROR*: stol falló, mask4_slots.h, en slotTextEvent, intentado transformar:" << receivedText << std::endl;
+	        }
+	        formEntrada->setDepScaleOut(peso);
+	        formEntrada->incDepScaleEdited(1);
+	        pvSetText(p, EDITPESOTARA, receivedText.c_str());
+	        setPesoSal(p, d, WEIGTH_ANALYSIS, formEntrada);
+	        formEntrada->saveScaleOut(localDatabase, remoteDatabase);
+	        d->enFutEstado = 1020;
+	    }
     }
-
-  return 0;
+    else if(id == BUTPROCEDER_E1)
+    {
+	    std::string temp = text;
+	    long code = -1;
+	    try
+	    {
+	        code = std::stol(temp);
+	    }
+	    catch(...)
+	    {	    
+	        code = -1;
+	    }
+	    formEntrada->setStaff(code, localDatabase);
+    }
+    else if(id == TABLATRANSITO)
+    {
+	    //	std::cout << "txt pressend on " << text << std::endl;
+	    std::string new_selection = text;
+	    new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), '\n'), new_selection.end());
+	    new_selection.erase(std::remove(new_selection.begin(), new_selection.end(), ' '), new_selection.end());
+	    std::cout << "PREVIO pre: " << d->pre_transito_plate << " ,post: " << d->post_transito_plate << " ,final: " << d->transito_plate << std::endl;
+	    if(!d->pre_transito_plate.compare(new_selection)) //double check, caused by double effect when button released
+	    {
+	        if(!d->post_transito_plate.compare(new_selection))
+	            d->transito_plate = new_selection;
+	        else
+	            d->post_transito_plate = new_selection;
+	    }
+    }
+    return 0;
 }
 
 static int slotSliderEvent(PARAM *p, int id, DATA *d, int val)

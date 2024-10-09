@@ -431,6 +431,7 @@ static int stateWork(PARAM *p, DATA *d)
             }
             case 1020: //hemos seleccionado un transporte de la tabla de tránsito
             {
+                popteTransito(p, d, TABLATRANSITO, formEntrada);
                 formEntrada->setTransitMov(d->camionElegido,formEntrada->retDepPlate(), localDatabase);
                 if(formEntrada->retDepMovType() == DEF_MOV_TRANSFER)
                 {
@@ -467,16 +468,7 @@ static int stateWork(PARAM *p, DATA *d)
                 //saving weight!
                 d->test = 0;
                 refreshOperatorComment(p,d,formEntrada,EDITCOMMENTSAL);
-                int DatabaseData_chkd;
-                try
-                {
-                    DatabaseData_chkd= std::stoi(remoteDatabaseData.db_port);
-                }
-                catch(...)
-                {
-                    DatabaseData_chkd = 0;
-                }
-                formEntrada->saveScaleOut(localDatabase,remoteDatabase,remoteDatabaseData.db_host.c_str(), DatabaseData_chkd);
+                formEntrada->saveScaleOut(localDatabase, remoteDatabase);
                 break;
             }
             case(1022):

@@ -550,9 +550,8 @@ static void toolsSetArrDep(PARAM *p, DATA* d, int setStatus)
 static void setPesoSal(PARAM *p, DATA* d, int status, baseForm *& myForm)
 {
     //std::cout << "debug: inside Mask4 setPesoSal:" << std::endl;
-    std::string myPeso = std::to_string(myForm->retDepScaleOut());
-    pvSetText(p,EDITPESOTARA,myPeso.c_str());
-    
+    // std::string myPeso = std::to_string(myForm->retDepScaleOut());
+    // pvSetText(p,EDITPESOTARA,myPeso.c_str());
     if(status == WEIGTH_ANALYSIS)
     {
         std::string inTheoryWeight = "( 0 < PESO < "  + std::to_string(myForm->retDepScaleIn()) + ")";

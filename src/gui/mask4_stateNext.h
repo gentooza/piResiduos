@@ -1014,100 +1014,110 @@ static int stateNext(PARAM *p, DATA *d)
             }
             break;
         }
-    case 1021: //truck scaled
-      if(formEntrada->isSignature())
-    d->enFutEstado = 1023; //it' s signed
-      else
-    d->enFutEstado = 1022; //no it isn't
-      break;
-    case 1022: //not signed
-      if(d->pesaje2) //pesaje de tara
-    {
-      d->pesaje2 = 0;
-      d->enFutEstado = 1025;
-    }
-      else if(d->cancelar || d->retroceder)
-    {
-      d->cancelar = d->retroceder = 0;
-      d->enFutEstado = 1000; //cancelamos
-      pvSetText(p,EDITCAM_E2,"");
-      pvSetText(p,EDITDIDEF,"");
-      resetForm(p,d,formEntrada);
-    }
-      else if(d->firmar)
-    {
-      d->firmado = 0;
-      d->firmar = 0;
-      d->enFutEstado=1035;
-    }
-      else if(d->test)
-    {
-      d->test = 0;
-      formEntrada->saveSignature(1);
-      d->enFutEstado = 1023;
-    }
-      break;
-    case 1023: //animation DI ready?
-      d->enFutEstado = 1024;
-      break;
-    case 1024: //DI ready?
-      if(formEntrada->isDiComplete())
-    d->enFutEstado = 1030;
-      else
-    d->enFutEstado = 1031;
-      break;
-
-    case 1025: //transición pesaje báscula 2
-      d->enFutEstado = 1026;
-      break;
-    case 1026: //pesaje báscula puesto 2
-      d->enFutEstado = 1020;
-      break;
-
-    case 1030: //DI ready!
-      if (d->pesaje2)
-    {
-      pvSetEnabled(p,BUTEDITDIDEF,0);
-      d->pesaje2=0;
-      d->enFutEstado = 1025;
-    }
-      else if(d->firmar)
-    {
-      pvSetEnabled(p,BUTEDITDIDEF,0);
-      d->firmado = 0;
-      d->firmar = 0;
-      d->enFutEstado=1035;
-    }
-      else if(d->retroceder || d->cancelar)
-    {
-      d->retroceder = 0;
-      d->cancelar = 0;
-      d->enFutEstado = 1000;
-      pvSetText(p,EDITCAM_E2,"");
-      pvSetText(p,EDITDIDEF,"");
-      resetForm(p,d,formEntrada);
-    }
-      else if(d->proceder)
-    {
-      pvSetEnabled(p,BUTEDITDIDEF,0);
-      d->proceder =0;
-      d->enFutEstado = 1097;
-      //d->enFutEstado = 1098; //deprecated
-      /////////////////////////
-    }
-      else if(d->editDI)
-    {
-      std::cout << "NOS VAMOS A EDICION DEL DI!!" << std::endl;
-      pvSetEnabled(p,BUTEDITDIDEF,0);
-      d->editDI=0;
-      formEntrada->setState(1023);
-      if(formDI!= NULL)
-        delete formDI;
-      formDI = new inputForm();
-      formDI->copyFrom(formEntrada);
-      show_mask6(p);
-    }
-      break;
+        case 1021: //truck scaled
+        {
+            if(formEntrada->isSignature())
+                d->enFutEstado = 1023; //it' s signed
+            else
+                d->enFutEstado = 1022; //no it isn't
+            break;
+        }
+        case 1022: //not signed
+        {
+            if(d->pesaje2) //pesaje de tara
+            {
+                d->pesaje2 = 0;
+                d->enFutEstado = 1025;
+            }
+            else if(d->cancelar || d->retroceder)
+            {
+                d->cancelar = d->retroceder = 0;
+                d->enFutEstado = 1000; //cancelamos
+                pvSetText(p,EDITCAM_E2,"");
+                pvSetText(p,EDITDIDEF,"");
+                resetForm(p,d,formEntrada);
+            }
+            else if(d->firmar)
+            {
+                d->firmado = 0;
+                d->firmar = 0;
+                d->enFutEstado=1035;
+            }
+            else if(d->test)
+            {
+                d->test = 0;
+                formEntrada->saveSignature(1);
+                d->enFutEstado = 1023;
+            }
+            break;
+        }
+        case 1023: //animation DI ready?
+        {
+            d->enFutEstado = 1024;
+            break;
+        }
+        case 1024: //DI ready?
+        {
+            if(formEntrada->isDiComplete())
+                d->enFutEstado = 1030;
+            else
+                d->enFutEstado = 1031;
+            break;
+        }
+        case 1025: //transición pesaje báscula 2
+        {
+            d->enFutEstado = 1026;
+            break;
+        }
+        case 1026: //pesaje báscula puesto 2
+        {
+            d->enFutEstado = 1020;
+            break;
+        }
+        case 1030: //DI ready!
+        {
+            if (d->pesaje2)
+            {
+                pvSetEnabled(p,BUTEDITDIDEF,0);
+                d->pesaje2=0;
+                d->enFutEstado = 1025;
+            }
+            else if(d->firmar)
+            {
+                pvSetEnabled(p,BUTEDITDIDEF,0);
+                d->firmado = 0;
+                d->firmar = 0;
+                d->enFutEstado=1035;
+            }
+            else if(d->retroceder || d->cancelar)
+            {
+                d->retroceder = 0;
+                d->cancelar = 0;
+                d->enFutEstado = 1000;
+                pvSetText(p,EDITCAM_E2,"");
+                pvSetText(p,EDITDIDEF,"");
+                resetForm(p,d,formEntrada);
+            }
+            else if(d->proceder)
+            {
+                pvSetEnabled(p,BUTEDITDIDEF,0);
+                d->proceder =0;
+                d->enFutEstado = 1097;
+            }
+            else if(d->editDI)
+            {
+                std::cout << "NOS VAMOS A EDICION DEL DI!!" << std::endl;
+                pvSetEnabled(p,BUTEDITDIDEF,0);
+                d->editDI=0;
+                formEntrada->setState(1023);
+                if(formDI!= NULL)
+                    delete formDI;
+                formDI = new inputForm();
+                formDI->copyFrom(formEntrada);
+                show_mask6(p);
+            }
+            break;
+        }
         case 1031: //DI INCOMPLETE
         {
             if (d->pesaje2)
@@ -1146,64 +1156,73 @@ static int stateNext(PARAM *p, DATA *d)
             }
             break;
         }
-    case 1097://staff selection screen
-      if(formEntrada->isStaffConfigured()>=0)
-    {
-      if(formEntrada->isStaffConfigured()>0)
-        d->enFutEstado = 1098;
-      else
+        case 1097://staff selection screen
         {
-          pvMessageBox(p,BUTPROCEDER_E1,BoxWarning,"El código de basculista introducido no está registrado en el sistema",MessageBoxOk,0,0);
-          d->enFutEstado = 1030;
+            if(formEntrada->isStaffConfigured()>=0)
+            {
+                if(formEntrada->isStaffConfigured()>0)
+                    d->enFutEstado = 1098;
+                else
+                {
+                    pvMessageBox(p,BUTPROCEDER_E1,BoxWarning,"El código de basculista introducido no está registrado en el sistema",MessageBoxOk,0,0);
+                    d->enFutEstado = 1030;
+                }
+            }
+            break;
+        }
+        case 1098://animation state
+        {
+            d->error=0;
+            d->enFutEstado = 1099;
+            break;
+        }
+        case 1099:
+        {
+            if(!d->error)
+            {
+                pvSetText(p,EDITDIDEF,"");
+                pvSetText(p,EDITPESOTARA,"");
+                pvSetText(p,EDITCAM_E2,"");
+                resetForm(p,d,formEntrada);
+                d->enFutEstado = 1000;
+                cameraSemaphore(2,1,globalConfiguration.traffic_lights_enabled);
+                console.push_back("INFO: Formulario finalizado!");
+            }
+            else
+            {
+                d->error=0;
+                d->enFutEstado = 1030;
+            }
+            break;
+        }
+        case 1035: //fin de firma
+        {
+            d->enFutEstado = 1036;
+            break;
+        }
+        case 1036: //fin de firma
+        {
+            if(!d->miTableta)
+                d->enFutEstado = 1021;
+            else if(d->firmado)
+            {
+                d->firmado = 0;
+                d->miTableta->stopCapture();
+                delete d->miTableta;
+                espera(1);
+                formEntrada->saveSignature();
+                d->enFutEstado = 1023;
+            }
+            break;
+        }
+        default:
+        {
+            //no state, we reset!
+            d->enFutEstado = -2;
+            break;
         }
     }
-      break;
-    case 1098://animation state
-      d->error=0;
-      d->enFutEstado = 1099;
-      break;
-    case 1099:
-        if(!d->error)
-          {
-              pvSetText(p,EDITDIDEF,"");
-              pvSetText(p,EDITPESOTARA,"");
-              pvSetText(p,EDITCAM_E2,"");
-              resetForm(p,d,formEntrada);
-              d->enFutEstado = 1000;
-        cameraSemaphore(2,1,globalConfiguration.traffic_lights_enabled);
-              console.push_back("INFO: Formulario finalizado!");
-          }
-      else
-          {
-              d->error=0;
-              d->enFutEstado = 1030;
-          }
-        break;
-
-    case 1035: //fin de firma
-      d->enFutEstado = 1036;
-      break;
-
-    case 1036: //fin de firma
-      if(!d->miTableta)
-    d->enFutEstado = 1021;
-      else if(d->firmado)
-    {
-      d->firmado = 0;
-      d->miTableta->stopCapture();
-      delete d->miTableta;
-      espera(1);
-      formEntrada->saveSignature();
-      d->enFutEstado = 1023;
-    }
-      break;
-
-    default:
-      //no state, we reset!
-      d->enFutEstado = -2;
-      break;
-    }
-  return ret;
+    return ret;
 }
 
 #endif
