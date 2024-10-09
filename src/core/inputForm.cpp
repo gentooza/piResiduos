@@ -34,7 +34,7 @@ int inputForm::storeDepMov(qtDatabase & localDatabase,qtDatabase & remoteDatabas
     setGrossWeight(retDepScaleIn());
     setNetWeight((long)(retDepScaleIn() - retDepScaleOut()));
     ////////////////////////////////////////
-    std::string myMoveCode = storeMov(sqliteQuery,mysqlQuery,depDestinationStation,localDatabase);
+    std::string myMoveCode = storeMov(sqliteQuery, mysqlQuery, depDestinationStation, localDatabase);
 
     if(remote_host_connected) //SAVING MOVEMENT IN REMOTE SERVER
     {
