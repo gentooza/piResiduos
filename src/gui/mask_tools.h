@@ -811,7 +811,7 @@ static int syncStationDIs(PARAM *p, long stationId)
     	log_message(str_log_message, 1);
     	if(!remoteDatabase.query(p, sql.c_str()))
 		{
-	  		localDatabase.query(p, "delete from STATION_CI");
+	  		localDatabase.query(p, "delete from STATION_DI");
 	  		log_message("(SINCRO)(local STATION_DI) BD local -> delete from STATION_DI", 1);
 	  		dataReturn = remoteDatabase.retData2();
 	  		loadStationDIs(sql, dataReturn);
