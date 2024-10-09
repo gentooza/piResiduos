@@ -532,6 +532,8 @@ static int stateWork(PARAM *p, DATA *d)
                 {
                     delete testBascula;
                 }
+                setPesoSal(p, d, WEIGTH_ANALYSIS, formEntrada);
+                formEntrada->saveScaleOut(localDatabase, remoteDatabase);
                 break;
             }
             case 1030:
