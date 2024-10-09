@@ -618,7 +618,7 @@ class  baseForm
         virtual int isDepPesoOk(){return 0;};
         virtual int retDepScaleExpected(){return 0;};
         virtual void setAndCalcScaleOut(unsigned int scale){myDepMovement.PESO_SALIDA = scale;};
-        virtual int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort ){ return 1;};
+        virtual int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase){ return 1;};
         void setErrorScale(float error){ERROR_ACCEPTED_WEIGHT = error;};
         float retErrorScale(){return ERROR_ACCEPTED_WEIGHT;};
         unsigned int retDepScaleOut(){return myDepMovement.PESO_SALIDA;};

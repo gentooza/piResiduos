@@ -246,16 +246,7 @@ static int stateWork(PARAM *p, DATA *d)
                 //operator comment
                 refreshOperatorComment(p,d,formSalida,EDITCOMMENTSAL);
                 d->test= 0;
-                int DatabaseData_chkd;
-                try
-                {
-                    DatabaseData_chkd= std::stoi(remoteDatabaseData.db_port);
-                }
-                catch(...)
-                {
-                    DatabaseData_chkd = 0;
-                }
-                formSalida->saveScaleOut(localDatabase, remoteDatabase, remoteDatabaseData.db_host.c_str(), DatabaseData_chkd);
+                formSalida->saveScaleOut(localDatabase, remoteDatabase);
                 break;
             }
 	        case(1223):

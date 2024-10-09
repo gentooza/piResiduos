@@ -284,8 +284,9 @@ void inputForm::setAndCalcScaleOut(unsigned int scale)
     setDepScaleOut(scale);
 }
 
-/*! function to save scale out in database*/
-int inputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort )
+/*! TODO: modernize a bit, c++ style
+function to save scale out in database*/
+int inputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase)
 {
     int ret = 1;
 
@@ -296,12 +297,9 @@ int inputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabas
     if(!myDatabase.query(NULL,sql))
     {
         ret = 0;
-        if(isConnected(remoteHost, remotePort))
-        {
-            std::string another_sql;
-            remote_updatePesoSalidaTransito(another_sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepScaleOut(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-            myRemoteDatabase.query(NULL,another_sql.c_str());
-        }
+        std::string another_sql;
+        remote_updatePesoSalidaTransito(another_sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retDepScaleOut(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+        myRemoteDatabase.query(NULL,another_sql.c_str());
     }
     if (sql != NULL)
         delete[] sql;
@@ -609,6 +607,7 @@ int inputForm::delTransit(int index,std::string plate, qtDatabase & myDatabase, 
 }
 int inputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myDatabase)
 {
+    std::cout << "DEBUG: setTransitMove" << std::endl;
     int ret = -1, num_of_row = 0;
     std::vector<std::vector<std::string>>::iterator row;
     row = vctAllTransit.begin();
@@ -688,6 +687,7 @@ int inputForm::setTransitMov(int index, std::string byPlate, qtDatabase & myData
                 setOutputComment(row->at(11));  //COMENTARIO OPERADOR
                 try
                 {
+                    std::cout << "DEBUG: sobreescribiendo peso de salida, es: " << row->at(12) << std::endl;
                     setDepScaleOut(std::stoul(row->at(12))); //PESO_SALIDA
                 }
                 catch(...)

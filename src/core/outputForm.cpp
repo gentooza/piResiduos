@@ -481,7 +481,7 @@ void outputForm::setDepScaleOut(unsigned int scale)
 }
 
 /*! function to save scale out in database*/
-int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort)
+int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase)
 {
     std::string sql;
     int ret = 1;
@@ -492,11 +492,8 @@ int outputForm::saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDataba
     if(!myDatabase.query(NULL, sql.c_str()))
     {
         ret = 0;
-        if(isConnected(remoteHost, remotePort))
-	    {
-	        remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
-	        myRemoteDatabase.query(NULL, sql.c_str());
-	    }
+	    remote_updatePesoSalidaTransitoSalida(sql, depCostumer->getCode(), retDepDateTime().c_str(),ourStation->getCode(),retNetWeight(),getOutputComment().c_str(),vectorToString(getOutputIncidents(),";").c_str());
+	    myRemoteDatabase.query(NULL, sql.c_str());
     }
     return ret;
 }

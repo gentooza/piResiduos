@@ -91,7 +91,7 @@ class outputForm: public baseForm
         int isDepPesoOk();
         int retDepScaleExpected();
         void setDepScaleOut(unsigned int scale);
-        int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase, const char * remoteHost, int remotePort );
+        int saveScaleOut(qtDatabase & myDatabase, qtDatabase &myRemoteDatabase);
         //
         //DI INFORMATION
         std::string createDINumber(qtDatabase & localDatabase, int arrive);
