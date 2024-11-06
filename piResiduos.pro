@@ -30,7 +30,9 @@ HEADERS += ./src/pvapp.h      \
             ./src/gui/mask6_data.h \
             ./src/gui/mask6_slots.h \
             ./src/gui/mask_tools.h \
-            ./src/gui/mask5_actualiza.h \
+            ./src/gui/mask5_stateNext.h \
+            ./src/gui/mask5_stateWork.h \
+            ./src/gui/mask5_stateGUI.h \
             ./src/gui/mask5_tools.h \
             ./src/gui/mask5_data.h \
             ./src/gui/mask5_slots.h \
@@ -63,7 +65,7 @@ HEADERS += ./src/pvapp.h      \
             ./src/device/camera.h \
             ./src/device/printable.h \
             ./src/device/printableTicket.h \
-            ./src/device/printableDI.h
+            ./src/device/printableDi.h
 SOURCES += ./src/main.cpp     \
             ./src/gui/mask10.cpp \
             ./src/gui/mask9.cpp \
@@ -92,7 +94,7 @@ SOURCES += ./src/main.cpp     \
             ./src/device/bascula.cpp  \
             ./src/device/printable.cpp \
             ./src/device/printableTicket.cpp \
-            ./src/device/printableDI.cpp
+            ./src/device/printableDi.cpp
 
 QMAKE_LIBDIR += ./lib
 !macx {
@@ -109,8 +111,9 @@ unix:INCLUDEPATH  += /usr/include/libusb-1.0
 unix:INCLUDEPATH  += WacomGSS/include
 unix:INCLUDEPATH  += ./lib
 unix:INCLUDEPATH  += ./lib/SmtpClient-for-Qt/src
-unix:LIBS         += ./lib/SmtpClient-for-Qt/libSMTPEmail.so
-
+# unix:LIBS         += ./lib/SmtpClient-for-Qt/libSMTPEmail.so
+unix:LIBS         += -L"$$PWD/lib/SmtpClient-for-Qt"
+unix:LIBS         += -lSMTPEmail
 }
 
 macx:LIBS         += /opt/pvb/pvserver/libpvsmt.a /usr/lib/libpthread.dylib
