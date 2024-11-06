@@ -2,6 +2,8 @@
 
 ## behaviour changes
 + Not generated DI document in input movements or in deposit station
++ New philosophy of DI number generation.
++ Database has changed a lot.
 
 ## improves
 + upgraded pvbrowser version, and using qt5 now.
@@ -19,6 +21,7 @@
 + Formulario files to baseForm renaming
 + Removed unused staff in baseForm class.
 + State machine source code splitted in several files for easy reading, fixing and improving.
++ migrated some legacy code from C to C++.
 
 # 2022/04/28 version 0.2rc1 
 
