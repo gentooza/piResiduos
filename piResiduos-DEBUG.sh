@@ -30,8 +30,7 @@ export LD_LIBRARY_PATH=$SCRIPT_PATH/lib:$LD_LIBRARY_PATH
 # gdb ./piResiduos
 # valgrind --leak-check=full ./piResiduos
 # valgrind ./piResiduos
-valgrind --track-origins=yes ./piResiduos
-#./piResiduos &
-#sleep 1
+valgrind --track-origins=yes ./piResiduos > piResiduos-DEBUG.log 2>&1 &
+#sleep 5
 #pvbrowser
 ##
