@@ -888,7 +888,10 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
     printable * myTicket = NULL;
     std::string fileName = "ticket.pdf";
     myTicket = new printableTicket(fileName, printerId);
-    myTicket->setTicketType("REGISTRO DE ENTRADA");
+    if(retDepMovType() == DEF_MOV_TRANSFER)
+        myTicket->setTicketType("REGISTRO DE TRANSFERENCIA");
+    else
+        myTicket->setTicketType("REGISTRO DE ENTRADA");
     myTicket->setTicketCode(ticketCode);
     costumer * ourCostumer = NULL;
     retOurId(ourCostumer);
@@ -909,8 +912,20 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
         delete localDestination;
     myTicket->setMovDate(retDepFinalDateTime().substr(0, retDepFinalDateTime().find(' ')));
     myTicket->setMovTime(retDepFinalDateTime().substr(retDepFinalDateTime().find(' '), retDepFinalDateTime().length()));
-    myTicket->setCostumerName(depCostumer->getName());
-    myTicket->setCostumerNif(depCostumer->getNif());
+    if(retDepMovType() == DEF_MOV_TRANSFER)
+    {
+        station * originDestination = NULL;
+        retDepDestinationStation(originDestination);
+        myTicket->setCostumerName(originDestination->getName());
+        myTicket->setCostumerNif(originDestination->getNif());
+        if(originDestination != NULL)
+            delete originDestination;
+    }
+    else
+    {
+        myTicket->setCostumerName(depCostumer->getName());
+        myTicket->setCostumerNif(depCostumer->getNif());
+    }
     myTicket->setTransportName(depDriver->getName());
     myTicket->setTransportPlate(retDepPlate());
     myTicket->setProductName(retDepProdFullName());
