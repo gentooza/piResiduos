@@ -2106,10 +2106,12 @@ std::string baseForm::getLastMovCode(qtDatabase &localDatabase, station *myStati
 }
 
 ///
-std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode)
+std::string baseForm::getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode, int lastOne)
 {
     std::string sLastCode = getLastMovCode(myDatabase, myStation);
     long lastCode = std::stol(sLastCode);
+    if(lastOne)
+        return sLastCode;
     std::string newCode;
     std::string str_station_code = std::to_string(myStation->getCode());
 

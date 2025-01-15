@@ -310,7 +310,7 @@ class  baseForm
         //
         //codigo movimiento
         std::string getLastMovCode(qtDatabase &localDatabase, station *myStation);
-        std::string getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode);
+        std::string getMovCode(qtDatabase & myDatabase, station *myStation, int movementTypeCode, int lastOne = 0);
         // virtual int setMovCode(std::string lastCode, int stationCode, int movementTypeCode){return 0;};
         //
         

@@ -1607,7 +1607,7 @@ int outputForm::createTicket(std::string printerId, std::string ticketCode, qtDa
     costumer * depCostumer;
     retDepCostumer(depCostumer);
     if(our_costumer->getCode() != depCostumer->getCode())
-        diCode = getMovCode(localDatabase, localDestination, retDepMovType());
+        diCode = getMovCode(localDatabase, localDestination, retDepMovType(), true);
     // else
     //   diCode = getDI();
     delete depCostumer;
