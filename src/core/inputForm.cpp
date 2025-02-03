@@ -915,7 +915,7 @@ int inputForm::createTicket(std::string printerId, std::string ticketCode, qtDat
     if(retDepMovType() == DEF_MOV_TRANSFER)
     {
         station * originDestination = NULL;
-        retDepDestinationStation(originDestination);
+        retDepOriginStation(originDestination);
         myTicket->setCostumerName(originDestination->getName());
         myTicket->setCostumerNif(originDestination->getNif());
         if(originDestination != NULL)
